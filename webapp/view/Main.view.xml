@@ -1,64 +1,6 @@
 <mvc:View controllerName="zui3derp.controller.Main" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:tnt="sap.tnt" xmlns:core="sap.ui.core">
-    <tnt:ToolPage id="toolPage">
-		<tnt:header>
-			<tnt:ToolHeader>
-				<Button id="sideNavigationToggleButton"
-						icon="sap-icon://menu2"
-						type="Transparent"
-						press="onSideNavButtonPress">
-					<layoutData>
-						<OverflowToolbarLayoutData priority="NeverOverflow" />
-					</layoutData>
-				</Button>
-				<ToolbarSpacer width="20px" />
-				<Button text="File" type="Transparent">
-					<layoutData>
-						<OverflowToolbarLayoutData priority="Low" />
-					</layoutData>
-				</Button>
-				<tnt:ToolHeaderUtilitySeparator />
-				<ToolbarSpacer>
-					<layoutData>
-						<OverflowToolbarLayoutData priority="NeverOverflow" minWidth="20px" />
-					</layoutData>
-				</ToolbarSpacer>
-				<Button text="Alan Smith" type="Transparent" press="handleUserNamePress">
-					<layoutData>
-						<OverflowToolbarLayoutData priority="NeverOverflow" />
-					</layoutData>
-				</Button>
-
-			</tnt:ToolHeader>
-		</tnt:header>
-		<tnt:sideContent>
-			<tnt:SideNavigation expanded="true"
-								selectedKey="{/selectedKey}"
-								itemSelect="onItemSelect">
-				<tnt:NavigationList items="{path: '/navigation'}">
-					<tnt:NavigationListItem text="{title}"
-											icon="{icon}"
-											enabled="{enabled}"
-											expanded="{expanded}"
-											items="{items}"
-											key="{key}">
-						<tnt:NavigationListItem text="{title}"
-												key="{key}"
-												enabled="{enabled}">
-						</tnt:NavigationListItem>
-					</tnt:NavigationListItem>
-				</tnt:NavigationList>
-				<tnt:fixedItem>
-					<tnt:NavigationList items="{path: '/fixedNavigation'}">
-						<tnt:NavigationListItem text="{title}"
-												icon="{icon}">
-						</tnt:NavigationListItem>
-					</tnt:NavigationList>
-				</tnt:fixedItem>
-			</tnt:SideNavigation>
-		</tnt:sideContent>
-		<tnt:mainContents>
-            <App id="mainContents"/>
-		</tnt:mainContents>
-	</tnt:ToolPage>
+    xmlns="sap.m">
+    <Page showHeader="false">
+        <Label text="Main"></Label>
+    </Page>
 </mvc:View>
