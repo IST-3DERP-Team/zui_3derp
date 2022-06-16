@@ -1,6 +1,21 @@
 <mvc:View controllerName="zui3derp.controller.Main" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
+    xmlns="sap.m" xmlns:l="sap.ui.layout">
     <Page showHeader="false">
-        <Label text="Main"></Label>
+        <!--<Label text="Main"></Label>-->
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="FORECAST">
+		    <TileContent>
+			    <NumericContent value="5000" withMargin="false" />
+		    </TileContent>
+	    </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="ORDER">
+		    <TileContent>
+			    <NumericContent value="4500" withMargin="false" />
+		    </TileContent>
+	    </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="SHIPPED">
+		    <TileContent>
+			    <NumericContent value="2000" withMargin="false" />
+		    </TileContent>
+	    </GenericTile>
     </Page>
 </mvc:View>
