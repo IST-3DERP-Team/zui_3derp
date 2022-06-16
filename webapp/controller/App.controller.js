@@ -15,6 +15,7 @@ sap.ui.define(
         },
 
         onAfterRendering: function() {
+            this.onSideNavButtonPress();
             this.navigatePage('RouteMain');
         },
 
