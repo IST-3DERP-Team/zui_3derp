@@ -6,7 +6,7 @@
     <tnt:ToolPage id="toolPage">
 		<tnt:header>
 			<tnt:ToolHeader>
-				<Button id="sideNavigationToggleButton"
+                <Button id="sideNavigationToggleButton"
 						icon="sap-icon://menu2"
 						type="Transparent"
 						press="onSideNavButtonPress">
@@ -14,6 +14,10 @@
 						<OverflowToolbarLayoutData priority="NeverOverflow" />
 					</layoutData>
 				</Button>
+                <HBox alignContent="Center">
+                    <Image height="1.5rem" src="https://www2.luenthai.com/wp-content/uploads/2018/05/logo.png"/>
+                </HBox>
+				
 				<ToolbarSpacer/>
 				<Button icon="sap-icon://business-objects-mobile" type="Transparent">
 					<layoutData>
@@ -23,7 +27,7 @@
 				</tnt:ToolHeader>
 		</tnt:header>
 		<tnt:sideContent>
-			<tnt:SideNavigation expanded="true"
+			<tnt:SideNavigation expanded="false"
 								selectedKey="{/selectedKey}"
 								itemSelect="onItemSelect">
 				<tnt:NavigationList items="{path: '/navigation'}">
