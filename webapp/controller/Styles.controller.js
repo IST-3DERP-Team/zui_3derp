@@ -8,10 +8,10 @@ sap.ui.define([
     function (Controller, JSONModel) {
         "use strict";
 
-        return Controller.extend("zui3derp.controller.Main", {
-            
+        return Controller.extend("zui3derp.controller.Styles", {
+             
             onInit: function () {
-                
+                console.log("from styles")
             }
         });
     });
