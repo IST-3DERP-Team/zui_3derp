@@ -1,0 +1,17 @@
+{
+    "selectedKey": "root1",
+    "navigation": [{
+        "title": "Home",
+        "icon": "sap-icon://building",
+        "key": "root1"
+    }, {
+        "title": "Manage Styles",
+        "icon": "sap-icon://building",
+        "key": "root2"
+    }
+    ],
+    "fixedNavigation": [{
+        "title": "Settings",
+        "icon": "sap-icon://employee"
+    }]
+}

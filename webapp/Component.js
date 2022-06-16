@@ -1,14 +1,17 @@
 sap.ui.define([
-        "sap/ui/core/UIComponent",
-        "sap/ui/Device",
-        "zui3derp/model/models"
-    ],
+    "sap/ui/core/UIComponent",
+    "sap/ui/Device",
+    "zui3derp/model/models"
+],
     function (UIComponent, Device, models) {
         "use strict";
 
         return UIComponent.extend("zui3derp.Component", {
             metadata: {
-                manifest: "json"
+                manifest: "json",
+                config: { fullWidth: true }
+
+
             },
 
             /**

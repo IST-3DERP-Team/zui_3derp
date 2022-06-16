@@ -33,5 +33,15 @@
       "@sap/ux-ui5-fe-mockserver-middleware"
     ]
   },
-  "sapuxLayer": "CUSTOMER_BASE"
+  "sapuxLayer": "CUSTOMER_BASE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/psmlaiz/zui_3derp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/psmlaiz/zui_3derp/issues"
+  },
+  "homepage": "https://github.com/psmlaiz/zui_3derp#readme"
 }
