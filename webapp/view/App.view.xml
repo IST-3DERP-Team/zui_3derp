@@ -17,11 +17,15 @@
                 <HBox alignContent="Center">
                     <Image height="1.5rem" src="https://www2.luenthai.com/wp-content/uploads/2018/05/logo.png"/>
                 </HBox>
-				
-				<ToolbarSpacer/>
+                <ToolbarSpacer/>
+                <SearchField width="30%">
+                    <layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow" />
+					</layoutData>
+                </SearchField>
 				<Button icon="sap-icon://business-objects-mobile" type="Transparent">
 					<layoutData>
-						<OverflowToolbarLayoutData priority="Low" />
+						<OverflowToolbarLayoutData priority="NeverOverflow" />
 					</layoutData>
 				</Button>
 				</tnt:ToolHeader>

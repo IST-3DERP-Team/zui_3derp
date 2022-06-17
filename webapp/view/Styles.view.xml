@@ -1,6 +1,42 @@
-<mvc:View controllerName="zui3derp.controller.Styles" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
-    <Page showHeader="false">
-        <Label text="Style Header"></Label>
+<mvc:View xmlns:layout="sap.ui.layout" controllerName="zui3derp.controller.Styles" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:fb="sap.ui.comp.filterbar" >
+    <Page showHeader="false"> 
+        <HBox class="whiteBackground">
+            <Title class="sapUiSmallMarginBegin sapUiTinyMarginTop" titleStyle="H4" text="Manage Styles"/>
+        </HBox>
+        <fb:FilterBar reset="onReset" search="onSearch" useToolbar="false" showFilterConfiguration="false">
+			<fb:filterGroupItems>
+				<fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F1" label="SBU" visibleInFilterBar="true">
+					<fb:control>
+						<Input type="Text"/>
+					</fb:control>				
+				</fb:FilterGroupItem>
+				
+				<fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F2" label="Sales Group" visibleInFilterBar="true">
+					<fb:control>
+						<Input type="Text"/>
+					</fb:control>				
+				</fb:FilterGroupItem>				
+				
+				<fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F3" label="Customer Group" visibleInFilterBar="true">
+					<fb:control>
+						<Input type="Text"/>
+					</fb:control>				
+				</fb:FilterGroupItem>
+				
+				<fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F4" label="Season" visibleInFilterBar="true">
+					<fb:control>
+						<Input type="Text"/>
+					</fb:control>				
+				</fb:FilterGroupItem>			
+
+                <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F5" label="Product Type" visibleInFilterBar="true">
+					<fb:control>
+						<Input type="Text"/>
+					</fb:control>				
+				</fb:FilterGroupItem>					 
+			</fb:filterGroupItems>				
+					
+	    </fb:FilterBar>		
     </Page>
 </mvc:View>
