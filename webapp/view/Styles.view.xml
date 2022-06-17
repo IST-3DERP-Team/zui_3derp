@@ -37,27 +37,8 @@
 				</fb:FilterGroupItem>					 
 			</fb:filterGroupItems>				
 	    </fb:FilterBar>
+
         
-        <Toolbar class="sapUiMediumMargin" id="tableToolbar" height="3rem">
-            <Title text="10 Styles"/>
-			<!-- <ToolbarSpacer/> -->
-            <layout:HorizontalLayout class="sapUiResponsiveContentPadding">
-            <GenericTag text="{i18n>forecast}" design="Full" status="Warning"  class="sapUiSmallMarginBottom">
-					<ObjectNumber state="Warning" emphasized="false" number="5000"/>
-				</GenericTag>
-            <GenericTag text="{i18n>order}" design="Full" status="Information"  class="sapUiSmallMarginBottom">
-					<ObjectNumber state="Information" emphasized="false" number="4500"/>
-				</GenericTag>
-            <GenericTag text="{i18n>shipped}" design="Full" status="Success"  class="sapUiSmallMarginBottom">
-                <ObjectNumber state="Success" emphasized="false" number="200"/>
-            </GenericTag>
-        </layout:HorizontalLayout>
-        <ToolbarSpacer/>
-            <Button icon="sap-icon://search"/>
-			<Button icon="sap-icon://add"/>
-            <Button icon="sap-icon://copy"/>
-            <Button icon="sap-icon://upload"/>
-		</Toolbar>
 
     </Page>
 </mvc:View>
