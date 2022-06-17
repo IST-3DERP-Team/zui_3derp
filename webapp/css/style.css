@@ -1,4 +1,8 @@
 /* Enter your custom styles here */
+.whiteBackground {
+    background-color: white;
+}
+  
 .mainLogoBg {
     background-color: #14254c;
 }
@@ -13,4 +17,8 @@
 
 .tag3Numbers{
     color: #c6e0b4;
+}
+
+.shippedTile{
+    background-color: #c6e0b4;
 }
