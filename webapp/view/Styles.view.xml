@@ -38,6 +38,30 @@
 				</fb:FilterGroupItem>					 
 			</fb:filterGroupItems>				
 	    </fb:FilterBar>
+	    
+	    <Toolbar class="sapUiMediumMarginTop" id="toolbar3">
+			<SearchField width="90%" placeholder="Search"/>
+			<Button icon="sap-icon://add" >
+				<layoutData>
+						<ToolbarLayoutData shrinkable="true"/>
+				</layoutData>
+			</Button>
+            <Button icon="sap-icon://copy" >
+            	<layoutData>
+						<ToolbarLayoutData shrinkable="true"/>
+				</layoutData>
+			</Button>
+            <Button icon="sap-icon://upload" >
+            	<layoutData>
+						<ToolbarLayoutData shrinkable="true"/>
+				</layoutData>
+			</Button>
+            <Button icon="sap-icon://action-settings" >
+            	<layoutData>
+						<ToolbarLayoutData shrinkable="true"/>
+				</layoutData>
+			</Button>
+		</Toolbar>
 
     </Page>
 </mvc:View>
