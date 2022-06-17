@@ -38,7 +38,5 @@
 			</fb:filterGroupItems>				
 	    </fb:FilterBar>
 
-        
-
     </Page>
 </mvc:View>
