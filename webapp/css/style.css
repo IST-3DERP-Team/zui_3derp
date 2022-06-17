@@ -2,3 +2,15 @@
 .mainLogoBg {
     background-color: #14254c;
 }
+
+.forecastTile{
+    background-color: #fff2cc;
+}
+
+.orderTile{
+    background-color: #ff7979;
+}
+
+.shippedTile{
+    background-color: #c6e0b4;
+}

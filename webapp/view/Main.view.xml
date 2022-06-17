@@ -2,17 +2,17 @@
     xmlns="sap.m" xmlns:l="sap.ui.layout">
     <Page showHeader="false">
         <!--<Label text="Main"></Label>-->
-        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="FORECAST">
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout forecastTile" header="{i18n>forecast}">
 		    <TileContent>
 			    <NumericContent value="5000" withMargin="false" />
 		    </TileContent>
 	    </GenericTile>
-        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="ORDER">
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout orderTile" header="{i18n>order}">
 		    <TileContent>
 			    <NumericContent value="4500" withMargin="false" />
 		    </TileContent>
 	    </GenericTile>
-        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="SHIPPED">
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout shippedTile" header="{i18n>shipped}">
 		    <TileContent>
 			    <NumericContent value="2000" withMargin="false" />
 		    </TileContent>
