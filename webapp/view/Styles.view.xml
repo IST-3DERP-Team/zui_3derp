@@ -40,24 +40,26 @@
           </fb:filterGroupItems>				
 	        </fb:FilterBar>
 	    
-      <Toolbar class="sapUiSmallMarginTop" id="toolbar3">	
-        
-        <layout:HorizontalLayout class="sapUiResponsiveContentPadding">
-            <GenericTag text="{i18n>forecast}" design="Full" status="Warning"  class="sapUiSmallMarginBottom">
-                    <ObjectNumber state="Warning" emphasized="false" number="5000"/>
-                </GenericTag>
-            <GenericTag text="{i18n>order}" design="Full" status="Information"  class="sapUiSmallMarginBottom">
-                    <ObjectNumber state="Information" emphasized="false" number="4500"/>
-                </GenericTag>
-            <GenericTag text="{i18n>shipped}" design="Full" status="Success"  class="sapUiSmallMarginBottom">
-                <ObjectNumber state="Success" emphasized="false" number="200"/>
-            </GenericTag>
-        </layout:HorizontalLayout>
+        <!-- <layout:Grid containerQuery="true" class="sapUiSmallMarginTop" hSpacing="0" defaultSpan="XL2 L2 M6 S12">
+            <layout:content> -->
+            <layout:HorizontalLayout class="sapUiResponsiveContentPadding">
+                <GenericTag text="{i18n>forecast}" design="StatusIconHidden" status="Warning" class="sapUiSmallMarginBottom tag">
+					<ObjectNumber emphasized="true" number="5000" state="Warning"/>
+				</GenericTag>
+                <GenericTag text="{i18n>order}" design="StatusIconHidden" status="Information" class="sapUiSmallMarginBottom tag">
+					<ObjectNumber emphasized="true" number="4500" state="Information"/>
+				</GenericTag>
+                <GenericTag text="{i18n>shipped}" design="StatusIconHidden" status="Success" class="sapUiSmallMarginBottom tag">
+					<ObjectNumber emphasized="true" number="2000" state="Success"/>
+				</GenericTag>
+            </layout:HorizontalLayout>
+            <!-- </layout:content>
+        </layout:Grid> -->
         
         <Toolbar id="tableToolbar">
             <Title text="10 Styles"/>
             <ToolbarSpacer/>
-            <SearchField width="50%" placeholder="Search"/>
+            <SearchField width="30%" placeholder="Search"/>
             <Button icon="sap-icon://search"/>
 			      <Button icon="sap-icon://add" >
               <layoutData>
@@ -79,14 +81,13 @@
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-		    </Toolbar>
-
-<!--         <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true"> -->
-        <!-- Our code in the controller goes here -->
-<!--         </Table>     -->
+        </Toolbar>
        
         <Panel class="sapUiTinyMarginTop">
             <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
+            <!--         <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true"> -->
+            <!-- Our code in the controller goes here -->
+            <!--         </Table>     -->
                 <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact">
                 </c:DynamicTable>
             </ScrollContainer>
