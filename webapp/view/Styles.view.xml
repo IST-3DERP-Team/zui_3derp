@@ -39,7 +39,7 @@
 			</fb:filterGroupItems>				
 	    </fb:FilterBar>
 	    
-	    <Toolbar class="sapUiMediumMarginTop" id="toolbar3">
+	    <Toolbar class="sapUiSmallMarginTop" id="toolbar3">
 			<SearchField width="90%" placeholder="Search"/>
 			<Button icon="sap-icon://add" >
 				<layoutData>
@@ -63,5 +63,9 @@
 			</Button>
 		</Toolbar>
 
+        <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true">
+        <!-- Our code in the controller goes here -->
+        </Table>    
+        
     </Page>
 </mvc:View>
