@@ -1,0 +1,16 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <P13nDialog showReset="false" ok="onOK" cancel="onCancel" class="sapUiSizeCompact">
+        <panels>
+            <P13nColumnsPanel changeColumnsItems="onChangeColumnsItems"
+                              items="{path: '/results'}"
+                              columnsItems="{path: '/results'}">
+                <items>
+                    <P13nItem columnKey="{ColumnName}" text="{ColumnName}"/>
+                </items>
+                <columnsItems>
+                    <P13nColumnsItem columnKey="{ColumnName}" index="1" visible="true"/>
+                </columnsItems>
+            </P13nColumnsPanel>
+        </panels>
+    </P13nDialog>
+</core:FragmentDefinition>
