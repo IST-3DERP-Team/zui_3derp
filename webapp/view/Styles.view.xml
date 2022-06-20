@@ -1,71 +1,96 @@
 <mvc:View xmlns:layout="sap.ui.layout" controllerName="zui3derp.controller.Styles" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m" xmlns:fb="sap.ui.comp.filterbar" >
+    xmlns="sap.m" xmlns:c="zui3derp.control" xmlns:plugins="sap.ui.table.plugins" xmlns:fb="sap.ui.comp.filterbar" >
     <Page showHeader="false">
-    <!--TEST INPUT FROM AZURIN--> 
+      
         <HBox class="whiteBackground">
             <Title class="sapUiSmallMarginBegin sapUiTinyMarginTop" titleStyle="H4" text="Manage Styles"/>
         </HBox>
+      
         <fb:FilterBar reset="onReset" search="onSearch" useToolbar="false" showFilterConfiguration="false">
-			<fb:filterGroupItems>
-				<fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F1" label="SBU" visibleInFilterBar="true">
-					<fb:control>
-						<Input type="Text"/>
-					</fb:control>				
-				</fb:FilterGroupItem>
-				
-				<fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F2" label="Sales Group" visibleInFilterBar="true">
-					<fb:control>
-						<Input type="Text"/>
-					</fb:control>				
-				</fb:FilterGroupItem>				
-				
-				<fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F3" label="Customer Group" visibleInFilterBar="true">
-					<fb:control>
-						<Input type="Text"/>
-					</fb:control>				
-				</fb:FilterGroupItem>
-				
-				<fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F4" label="Season" visibleInFilterBar="true">
-					<fb:control>
-						<Input type="Text"/>
-					</fb:control>				
-				</fb:FilterGroupItem>			
+          <fb:filterGroupItems>
+            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F1" label="SBU" visibleInFilterBar="true">
+              <fb:control>
+                <Input type="Text"/>
+              </fb:control>				
+            </fb:FilterGroupItem>
 
-                <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F5" label="Product Type" visibleInFilterBar="true">
-					<fb:control>
-						<Input type="Text"/>
-					</fb:control>				
-				</fb:FilterGroupItem>					 
-			</fb:filterGroupItems>				
-	    </fb:FilterBar>
+            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F2" label="Sales Group" visibleInFilterBar="true">
+              <fb:control>
+                <Input type="Text"/>
+              </fb:control>				
+            </fb:FilterGroupItem>				
+
+            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F3" label="Customer Group" visibleInFilterBar="true">
+              <fb:control>
+                <Input type="Text"/>
+              </fb:control>				
+            </fb:FilterGroupItem>
+
+            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F4" label="Season" visibleInFilterBar="true">
+              <fb:control>
+                <Input type="Text"/>
+              </fb:control>				
+            </fb:FilterGroupItem>			
+
+                    <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F5" label="Product Type" visibleInFilterBar="true">
+              <fb:control>
+                <Input type="Text"/>
+              </fb:control>				
+            </fb:FilterGroupItem>					 
+          </fb:filterGroupItems>				
+	        </fb:FilterBar>
 	    
-	    <Toolbar class="sapUiSmallMarginTop" id="toolbar3">
-			<SearchField width="90%" placeholder="Search"/>
-			<Button icon="sap-icon://add" >
-				<layoutData>
-						<ToolbarLayoutData shrinkable="true"/>
-				</layoutData>
-			</Button>
-            <Button icon="sap-icon://copy" >
-            	<layoutData>
-						<ToolbarLayoutData shrinkable="true"/>
-				</layoutData>
-			</Button>
-            <Button icon="sap-icon://upload" >
-            	<layoutData>
-						<ToolbarLayoutData shrinkable="true"/>
-				</layoutData>
-			</Button>
-            <Button icon="sap-icon://action-settings" >
-            	<layoutData>
-						<ToolbarLayoutData shrinkable="true"/>
-				</layoutData>
-			</Button>
-		</Toolbar>
-
-        <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true">
-        <!-- Our code in the controller goes here -->
-        </Table>    
+      <Toolbar class="sapUiSmallMarginTop" id="toolbar3">	
         
+        <layout:HorizontalLayout class="sapUiResponsiveContentPadding">
+            <GenericTag text="{i18n>forecast}" design="Full" status="Warning"  class="sapUiSmallMarginBottom">
+                    <ObjectNumber state="Warning" emphasized="false" number="5000"/>
+                </GenericTag>
+            <GenericTag text="{i18n>order}" design="Full" status="Information"  class="sapUiSmallMarginBottom">
+                    <ObjectNumber state="Information" emphasized="false" number="4500"/>
+                </GenericTag>
+            <GenericTag text="{i18n>shipped}" design="Full" status="Success"  class="sapUiSmallMarginBottom">
+                <ObjectNumber state="Success" emphasized="false" number="200"/>
+            </GenericTag>
+        </layout:HorizontalLayout>
+        
+        <Toolbar id="tableToolbar">
+            <Title text="10 Styles"/>
+            <ToolbarSpacer/>
+            <SearchField width="50%" placeholder="Search"/>
+            <Button icon="sap-icon://search"/>
+			      <Button icon="sap-icon://add" >
+              <layoutData>
+                  <ToolbarLayoutData shrinkable="true"/>
+              </layoutData>
+            </Button>
+            <Button icon="sap-icon://copy" >
+              <layoutData>
+                  <ToolbarLayoutData shrinkable="true"/>
+              </layoutData>
+            </Button>
+            <Button icon="sap-icon://upload" >
+              <layoutData>
+                  <ToolbarLayoutData shrinkable="true"/>
+              </layoutData>
+            </Button>
+            <Button icon="sap-icon://action-settings" >
+              <layoutData>
+                  <ToolbarLayoutData shrinkable="true"/>
+              </layoutData>
+            </Button>
+		    </Toolbar>
+
+<!--         <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true"> -->
+        <!-- Our code in the controller goes here -->
+<!--         </Table>     -->
+       
+        <Panel class="sapUiTinyMarginTop">
+            <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
+                <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact">
+                </c:DynamicTable>
+            </ScrollContainer>
+        </Panel>
+
     </Page>
 </mvc:View>

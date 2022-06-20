@@ -9,9 +9,7 @@ sap.ui.define([
         "use strict";
 
         return Controller.extend("zui3derp.controller.Main", {
+
             
-            onInit: function () {
-                
-            }
         });
     });
