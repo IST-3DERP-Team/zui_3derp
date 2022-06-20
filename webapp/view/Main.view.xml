@@ -1,32 +1,6 @@
 <mvc:View controllerName="zui3derp.controller.Main" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m" xmlns:l="sap.ui.layout">
     <Page showHeader="false">
-        <!--<Label text="Main"></Label>-->
-        <!--TEST INPUT FROM AZURIN-->
-        <l:Grid containerQuery="true" class="sapUiSmallMarginTop" hSpacing="0" defaultSpan="XL2 L2 M6 S12">
-		<l:content>
-		<TileContent class="sapUiSmallMargin">
-			<content>
-				<GenericTag text="{i18n>forecast}" design="StatusIconHidden" status="Warning" class="sapUiSmallMarginBottom tag">
-					<ObjectNumber emphasized="true" number="5000" class="tag1Numbers"/>
-				</GenericTag>
-			</content>
-		</TileContent>
-        <TileContent class="sapUiSmallMargin">
-			<content>
-				<GenericTag text="{i18n>order}" design="StatusIconHidden" status="Error" class="sapUiSmallMarginBottom tag">
-					<ObjectNumber emphasized="true" number="4500" class="tag2Numbers"/>
-				</GenericTag>
-			</content>
-		</TileContent>
-        <TileContent class="sapUiSmallMargin">
-			<content>
-				<GenericTag text="{i18n>shipped}" design="StatusIconHidden" status="Success" class="sapUiSmallMarginBottom tag">
-					<ObjectNumber emphasized="true" number="2000" class="tag3Numbers"/>
-				</GenericTag>
-			</content>
-		</TileContent>
-		</l:content>
-	</l:Grid>
+        
     </Page>
 </mvc:View>

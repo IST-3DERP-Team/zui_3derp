@@ -1,7 +1,6 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/library",
-    "sap/ui/model/json/JSONModel"
     "sap/ui/model/json/JSONModel",
     "../control/DynamicTable"
 ],
@@ -16,17 +15,14 @@ sap.ui.define([
             onInit: function () {
                 console.log("from styles")
             },
-
-//             onAfterRender: function(){
+            
+            onAfterRendering: function() {
 //                 var oTable = this.getView().byId("idMyTable");
 //                 for (i = 0; i < s; i++) {
 //                     var oColumn = new sap.m.Column("col" + i, {
 //                         width: "1em",
 //                         header: new sap.m.Label({
 //                             text: "Data No. "+i
-//             },
-
-            onAfterRendering: function() {
                 this.getData();
             },
 
