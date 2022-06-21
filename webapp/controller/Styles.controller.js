@@ -14,6 +14,7 @@ sap.ui.define([
         return Controller.extend("zui3derp.controller.Styles", {
             onInit: function () {
                 console.log("from styles")
+                this.onStyleReader();
             },
             
             onAfterRendering: function() {
@@ -173,6 +174,47 @@ sap.ui.define([
     
                 var aDataRuntime = fnGetUnion(this.oDataInitial.ColumnsItems, this.oJSONModel.getProperty("/ColumnsItems"));
                 return !fnIsEqual(aDataRuntime, this.oDataInitial.ColumnsItems);
+            },
+
+            onStyleReader: function(){
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var entitySet = "/StyleStatsSet('')";
+                var oJSONObject = new sap.ui.model.json.JSONModel();
+                var oJSONObject2 = new sap.ui.model.json.JSONModel();
+                var oJSONObject3 = new sap.ui.model.json.JSONModel();
+                var oForecast = this.getView().byId("forecastNumber");
+                var oOrder = this.getView().byId("orderNumber");
+                var oShipped = this.getView().byId("shippedNumber");
+
+
+                oModel.read(entitySet,{
+                    success:function(oData){
+                        oJSONObject.setData(oData)
+                        oForecast.setNumber(oData.Forecast);
+                    },
+
+                    error: function(err){}
+                });
+
+                oModel.read(entitySet,{
+                    success:function(oData){
+                        oJSONObject2.setData(oData)
+                        oOrder.setNumber(oData.Order);
+                    },
+
+                    error: function(err){}
+                });
+
+                oModel.read(entitySet,{
+                    success:function(oData){
+                        oJSONObject3.setData(oData)
+                        oShipped.setNumber(oData.Shipped);
+                    },
+
+                    error: function(err){}
+                });
+
             }
             
         });

@@ -44,13 +44,13 @@
             <layout:content> -->
             <layout:HorizontalLayout class="sapUiResponsiveContentPadding">
                 <GenericTag text="{i18n>forecast}" design="StatusIconHidden" status="Warning" class="sapUiSmallMarginBottom tag">
-					<ObjectNumber emphasized="true" number="5000" state="Warning"/>
+					<ObjectNumber emphasized="true" number="{model>forecast}" state="Warning" id="forecastNumber"/>
 				</GenericTag>
                 <GenericTag text="{i18n>order}" design="StatusIconHidden" status="Information" class="sapUiSmallMarginBottom tag">
-					<ObjectNumber emphasized="true" number="4500" state="Information"/>
+					<ObjectNumber emphasized="true" number="{model>order}" state="Information" id="orderNumber"/>
 				</GenericTag>
                 <GenericTag text="{i18n>shipped}" design="StatusIconHidden" status="Success" class="sapUiSmallMarginBottom tag">
-					<ObjectNumber emphasized="true" number="2000" state="Success"/>
+					<ObjectNumber emphasized="true" number="{model>shipped}" state="Success" id="shippedNumber"/>
 				</GenericTag>
             </layout:HorizontalLayout>
             <!-- </layout:content>
