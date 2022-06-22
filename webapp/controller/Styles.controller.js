@@ -20,6 +20,8 @@ sap.ui.define([
 
                 this._Model = this.getOwnerComponent().getModel();
                 this._User = sap.ushell.Container.getService("UserInfo").getId();
+
+                this.onStyleReader();
             },
 
             _routePatternMatched: function (oEvent) {
@@ -368,6 +370,46 @@ sap.ui.define([
                 num = num.toString();
                 while (num.length < size) num = "0" + num;
                 return num;
+            },
+          
+            onStyleReader: function(){
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var entitySet = "/StyleStatsSet('')";
+                var oJSONObject = new sap.ui.model.json.JSONModel();
+                var oJSONObject2 = new sap.ui.model.json.JSONModel();
+                var oJSONObject3 = new sap.ui.model.json.JSONModel();
+                var oForecast = this.getView().byId("forecastNumber");
+                var oOrder = this.getView().byId("orderNumber");
+                var oShipped = this.getView().byId("shippedNumber");
+
+
+                oModel.read(entitySet,{
+                    success:function(oData){
+                        oJSONObject.setData(oData)
+                        oForecast.setNumber(oData.Forecast);
+                    },
+
+                    error: function(err){}
+                });
+
+                oModel.read(entitySet,{
+                    success:function(oData){
+                        oJSONObject2.setData(oData)
+                        oOrder.setNumber(oData.Order);
+                    },
+
+                    error: function(err){}
+                });
+
+                oModel.read(entitySet,{
+                    success:function(oData){
+                        oJSONObject3.setData(oData)
+                        oShipped.setNumber(oData.Shipped);
+                    },
+
+                    error: function(err){}
+                });
             }
 
         });
