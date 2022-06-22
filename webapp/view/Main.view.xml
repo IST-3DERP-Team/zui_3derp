@@ -1,6 +1,46 @@
 <mvc:View controllerName="zui3derp.controller.Main" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m" xmlns:l="sap.ui.layout">
+    xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.f" xmlns:card="sap.f.cards" xmlns:tnt="sap.tnt">
     <Page showHeader="false">
-         
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Feed Tile that shows updates of the last feeds given to a specific topic:"
+		frameType="TwoByOne" press="press">
+		    <TileContent footer="New Notifications">
+			    <FeedContent contentText="@@notify Great outcome of the Presentation today. New functionality well received."
+				subheader="About 1 minute ago in Computer Market" value="352" />
+		    </TileContent>
+	    </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Feed Tile that shows updates of the last feeds given to a specific topic:"
+		frameType="TwoByOne" press="press">
+		    <TileContent footer="New Notifications">
+			    <FeedContent contentText="@@notify Great outcome of the Presentation today. New functionality well received."
+				subheader="About 1 minute ago in Computer Market" value="352" />
+		    </TileContent>
+	    </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Feed Tile that shows updates of the last feeds given to a specific topic:"
+		frameType="TwoByOne" press="press">
+		    <TileContent footer="New Notifications">
+			    <FeedContent contentText="@@notify Great outcome of the Presentation today. New functionality well received."
+				subheader="About 1 minute ago in Computer Market" value="352" />
+		    </TileContent>
+	    </GenericTile>
+        <f:Card
+			class="sapUiMediumMargin"
+			width="300px">
+			<f:header>
+				<card:Header
+					title="Styles Report"
+			    />
+			</f:header>
+			<f:content>
+						<VBox alignItems="Center" justifyContent="SpaceBetween">
+								<Title level="H3" text="{i18n>forecast}" />
+                                <tnt:InfoLabel text="{model>forecast}" renderMode="Narrow" colorScheme="1" displayOnly= "true" id="forecastNumber"/>
+                                <Title level="H3" text="{i18n>order}" />
+                                <tnt:InfoLabel text="{model>order}" renderMode="Narrow" colorScheme="5" displayOnly= "true" id="orderNumber"/>
+                                <Title level="H3" text="{i18n>shipped}" />
+                                <tnt:InfoLabel text="{model>shipped}" renderMode="Narrow" colorScheme="8" displayOnly= "true" id="shippedNumber"/>
+						</VBox>
+                        
+			</f:content>
+		</f:Card>
     </Page>
 </mvc:View>
