@@ -198,7 +198,9 @@ sap.ui.define([
                 var oItem, oCtx;
                 oItem = oEvent.getSource();
                 oCtx = oItem.getBindingContext("DynData");
-                alert(oCtx.getProperty("Col001"));
+                // alert(oCtx.getProperty("Col001"));
+                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                oRouter.navTo("RouteStyleDetail");
             },
 
             getFiltersData: function () {
