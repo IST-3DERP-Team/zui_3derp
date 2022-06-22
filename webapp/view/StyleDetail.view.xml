@@ -1,0 +1,6 @@
+<mvc:View controllerName="zui3derp.controller.StyleDetail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:l="sap.ui.layout">
+    <Page showHeader="false">
+         
+    </Page>
+</mvc:View>

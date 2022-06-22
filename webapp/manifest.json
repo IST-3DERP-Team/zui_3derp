@@ -109,6 +109,14 @@
                     "target": [
                         "TargetStyles"
                     ]
+                },
+                {
+                    "name": "RouteStyleDetail",
+                    "pattern": "RouteStyleDetail",
+                    "greedy": false,
+                    "target": [
+                        "TargetStyleDetail"
+                    ]
                 }
             ],
             "targets": {
@@ -125,7 +133,15 @@
                     "clearControlAggregation": false,
                     "viewId": "Styles",
                     "viewName": "Styles"
+                },
+                "TargetStyleDetail": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "StyleDetail",
+                    "viewName": "StyleDetail"
                 }
+                
             }
         },
         "rootView": {
