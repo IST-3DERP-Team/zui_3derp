@@ -23,6 +23,7 @@ sap.ui.define([
             },
 
             _routePatternMatched: function (oEvent) {
+                this.onStyleReader();
                 this.refreshFilters();
                 this.refreshData();
             },
@@ -181,9 +182,16 @@ sap.ui.define([
                 var oItem, oCtx;
                 oItem = oEvent.getSource();
                 oCtx = oItem.getBindingContext("DynData");
+                this.navToDetail();
+                
                 // alert(oCtx.getProperty("Col001"));
+                // var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                // this._router.navTo("RouteStyleDetail");
+            },
+
+            navToDetail: function() {
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-                oRouter.navTo("RouteStyleDetail");
+			    oRouter.navTo("RouteStyleDetail", {} );
             },
 
             getFiltersData: function () {
@@ -355,6 +363,47 @@ sap.ui.define([
                 num = num.toString();
                 while (num.length < size) num = "0" + num;
                 return num;
+            },
+            
+            onStyleReader: function(){
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var entitySet = "/StyleStatsSet('')";
+                var oJSONObject = new sap.ui.model.json.JSONModel();
+                var oJSONObject2 = new sap.ui.model.json.JSONModel();
+                var oJSONObject3 = new sap.ui.model.json.JSONModel();
+                var oForecast = this.getView().byId("forecastNumber");
+                var oOrder = this.getView().byId("orderNumber");
+                var oShipped = this.getView().byId("shippedNumber");
+
+
+                oModel.read(entitySet,{
+                    success:function(oData){
+                        oJSONObject.setData(oData)
+                        oForecast.setNumber(oData.Forecast);
+                    },
+
+                    error: function(err){}
+                });
+
+                oModel.read(entitySet,{
+                    success:function(oData){
+                        oJSONObject2.setData(oData)
+                        oOrder.setNumber(oData.Order);
+                    },
+
+                    error: function(err){}
+                });
+
+                oModel.read(entitySet,{
+                    success:function(oData){
+                        oJSONObject3.setData(oData)
+                        oShipped.setNumber(oData.Shipped);
+                    },
+
+                    error: function(err){}
+                });
+
             }
 
         });
