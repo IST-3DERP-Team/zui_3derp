@@ -1,6 +1,227 @@
-<mvc:View controllerName="zui3derp.controller.StyleDetail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m" xmlns:l="sap.ui.layout">
+<mvc:View controllerName="zui3derp.controller.StyleDetail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns:u="sap.uxap"
+    xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt">
     <Page showHeader="false">
-         
+        <ObjectHeader
+		id="oh1"
+		responsive="true"
+		fullScreenOptimized="true"
+		intro="Current Version: 1"
+		title="Style VERSTY-001"
+		number="CMT"
+		numberUnit="STATUS"
+		numberState="Success"
+		backgroundDesign="Translucent">
+		<attributes>
+			<ObjectAttribute title="Created By" text="EMALLARI"/>
+            <ObjectAttribute title="Created Date" text="06/22/2022"/>
+            <ObjectAttribute title="Updated By" text="EMALLARI"/>
+            <ObjectAttribute title="Updated Date" text="06/22/2022"/>
+        </attributes>
+		<!-- <statuses>
+			<ObjectStatus title="Status" text="CRT" state="Error"/>
+		</statuses> -->
+	</ObjectHeader>
+         <VBox>
+            <Toolbar id="TB1" class="sapUiSmallMargin">
+                <ToolbarSpacer />
+                <Button icon="sap-icon://save"/>
+                <Button icon="sap-icon://edit" />
+                <Button icon="sap-icon://delete" />
+            </Toolbar>
+            <f:Form id="StyleHeaderForm1" editable="true" class="sapUiNoContentPadding">
+                <f:layout>
+                    <f:ResponsiveGridLayout columnsXL="4" columnsL="4" columnsM="4"/>
+                </f:layout>
+                <f:formContainers>
+                    <f:FormContainer ariaLabelledBy="Grp1" class="sapUiNoContentPadding">
+                        <f:formElements>
+                            <f:FormElement label="Style Code">
+                                <f:fields>
+                                    <Input value="{SupplierName}">
+                                    
+                                    </Input>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="Style Description">
+                                <f:fields>
+                                    <Input value="{Street}"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                        <f:layoutData>
+                            <l:GridData span="XL6 L6 M6 S3" />
+                        </f:layoutData>
+                    </f:FormContainer>
+                    <f:FormContainer ariaLabelledBy="Grp2">
+                        <f:formElements>
+                            <!-- <f:FormElement label="Syle No.">
+                                <f:fields>
+                                    <Input value="{Url}" type="Url"/>
+                                </f:fields>
+                            </f:FormElement> -->
+                            <f:FormElement label="Season">
+                                <f:fields>
+                                    <Input value="{Twitter}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="Factory Style">
+                                <f:fields>
+                                    <Input value="{Url}" type="Url"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer>
+                    <!-- <f:FormContainer ariaLabelledBy="Grp3">
+                        <f:formElements>
+                            
+                            <f:FormElement label="Status">
+                                <f:fields>
+                                    <Input value="{Twitter}"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer> -->
+                </f:formContainers>
+            </f:Form>
+        <!-- </VBox>
+        <VBox class="sapUiSmallMargin"> -->
+            <f:Form id="StyleHeaderForm2" editable="true">
+                <f:layout>
+                    <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3" singleContainerFullSize="false" />
+                </f:layout>
+                <f:formContainers>
+                    <f:FormContainer>
+                        <f:formElements>
+                            <f:FormElement label="Product Type">
+                                <f:fields>
+                                    <Input value="{SupplierName}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="Style Category">
+                                <f:fields>
+                                    <Input value="{Street}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="Cust Product Type">
+                                <f:fields>
+                                    <Input value="{Street}"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer>
+                    <f:FormContainer>
+                        <f:formElements>
+                            <f:FormElement label="Sales Group">
+                                <f:fields>
+                                    <Input value="{SupplierName}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="Product Group">
+                                <f:fields>
+                                    <Input value="{Street}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="Style Group">
+                                <f:fields>
+                                    <Input value="{Street}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            
+                        </f:formElements>
+                    </f:FormContainer>
+                    <f:FormContainer ariaLabelledBy="Grp3">
+                        <f:formElements>
+                            <f:FormElement label="Customer Group">
+                                <f:fields>
+                                    <Input value="{SupplierName}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="Sold-to Customer">
+                                <f:fields>
+                                    <Input value="{Street}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="Size Group">
+                                <f:fields>
+                                    <Input value="{Street}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            
+                        </f:formElements>
+                    </f:FormContainer>
+                    <f:FormContainer ariaLabelledBy="Grp4">
+                        <f:formElements>
+                            <f:FormElement label="UOM">
+                                <f:fields>
+                                    <Input value="{Street}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="Fabrication">
+                                <f:fields>
+                                    <Input value="{Street}"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer>
+                </f:formContainers>
+            </f:Form>
+            <f:Form id="StyleHeaderForm3" editable="true">
+                <f:layout>
+                    <f:ResponsiveGridLayout columnsXL="2" columnsL="1" columnsM="1" singleContainerFullSize="false" />
+                </f:layout>
+                <f:formContainers>
+                    <f:FormContainer>
+                        <f:formElements>
+                            <f:FormElement label="Remarks">
+                                <f:fields>
+                                    <TextArea placeholder="Enter Text" growing="true" growingMaxLines="7" width="100%"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer>
+                </f:formContainers>
+            </f:Form>
+        </VBox>
+        <IconTabBar id="idIconTabBarMulti" expanded="{device>/isNoPhone}" class="sapUiResponsiveContentPadding" tabDensityMode="Compact" expandable="false">
+            <items>
+                <IconTabFilter icon="sap-icon://hint" text="Attributes">
+                    <VBox>
+                        <Text text="General"/>
+                        <Text text="Colors"/>
+                        <Text text="Sizes"/>
+                        <Text text="Processes"/>
+                    </VBox>
+                </IconTabFilter>
+                <IconTabFilter icon="sap-icon://notes" text="Versions">
+                    <Text text="Versions ..." />
+                </IconTabFilter>
+                <IconTabFilter
+                    icon="sap-icon://attachment" text="Attachments">
+                    <Text text="Attachments ..." />
+                </IconTabFilter>
+            </items>
+	    </IconTabBar>
+        <!-- <u:ObjectPageLayout id="ObjectPageLayout" enableLazyLoading="false" useIconTabBar="true">
+            <u:sections>
+                <u:ObjectPageSection title="my section">
+                    <u:subSections>
+                        <u:ObjectPageSubSection title="Section 1" mode="Expanded" id="Section1">
+                            <u:blocks>
+                                <VBox/>
+                            </u:blocks>
+                        </u:ObjectPageSubSection>
+                    </u:subSections>
+                </u:ObjectPageSection>
+                <u:ObjectPageSection title="my section">
+                    <u:subSections>
+                        <u:ObjectPageSubSection title="Section 2" mode="Expanded" id="Section2">
+                            <u:blocks>
+                                <VBox/>
+                            </u:blocks>
+                        </u:ObjectPageSubSection>
+                    </u:subSections>
+                </u:ObjectPageSection>
+            </u:sections>
+        </u:ObjectPageLayout> -->
     </Page>
 </mvc:View>

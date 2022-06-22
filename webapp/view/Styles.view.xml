@@ -42,8 +42,8 @@
 
             <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F5" label="{i18n>ProductTypeFilter}" visibleInFilterBar="true">
               <fb:control>
-                <ComboBox id="filterProductType" items="{ path: '/results', sorter: { path: 'ProdTyp' } }">
-                    <core:ListItem key="{ProdTyp}" text="{Desc1}"/>
+                <ComboBox id="filterProductType" items="{ path: '/results', sorter: { path: 'ProdTyp' } }" showSecondaryValues= "true">
+                    <core:ListItem key="{ProdTyp}" text="{Desc1}" additionalText = "{ProdTyp}"/>
                 </ComboBox>
               </fb:control>				
             </fb:FilterGroupItem>					 
@@ -71,7 +71,7 @@
             <ToolbarSpacer/>
             <SearchField width="30%" placeholder="Search"/>
             <Button icon="sap-icon://search"/>
-			      <Button icon="sap-icon://add" >
+			<Button icon="sap-icon://add" press="createNewStyle">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
