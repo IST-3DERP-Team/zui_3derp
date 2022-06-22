@@ -1,5 +1,5 @@
 <mvc:View xmlns:layout="sap.ui.layout" controllerName="zui3derp.controller.Styles" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m" xmlns:c="zui3derp.control" xmlns:plugins="sap.ui.table.plugins" xmlns:fb="sap.ui.comp.filterbar" >
+    xmlns="sap.m" xmlns:c="zui3derp.control" xmlns:core="sap.ui.core" xmlns:plugins="sap.ui.table.plugins" xmlns:fb="sap.ui.comp.filterbar" >
     <Page showHeader="false">
       
         <HBox class="whiteBackground">
@@ -8,33 +8,43 @@
       
         <fb:FilterBar reset="onReset" search="onSearch" useToolbar="false" showFilterConfiguration="false">
           <fb:filterGroupItems>
-            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F1" label="SBU" visibleInFilterBar="true">
+            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F1" label="{i18n>SBUFilter}" visibleInFilterBar="true">
               <fb:control>
-                <Input type="Text"/>
+                <ComboBox id="filterSBU" items="{ path: '/results', sorter: { path: 'Sbu' } }">
+                    <core:Item key="{Sbu}" text="{Sbu}" />
+                </ComboBox>
               </fb:control>				
             </fb:FilterGroupItem>
 
-            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F2" label="Sales Group" visibleInFilterBar="true">
+            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F2" label="{i18n>SalesGroupFilter}" visibleInFilterBar="true">
               <fb:control>
-                <Input type="Text"/>
+                <ComboBox id="filterSalesGroup" items="{ path: '/results', sorter: { path: 'SalesGrp' } }">
+                    <core:ListItem key="{SalesGrp}" text="{SalesGrp}"/>
+                </ComboBox>
               </fb:control>				
             </fb:FilterGroupItem>				
 
-            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F3" label="Customer Group" visibleInFilterBar="true">
+            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F3" label="{i18n>CustomerGroupFilter}" visibleInFilterBar="true">
               <fb:control>
-                <Input type="Text"/>
+                <ComboBox id="filterCustomerGroup" items="{ path: '/results', sorter: { path: 'CustGrp' } }">
+                    <core:ListItem key="{CustGrp}" text="{CustGrp}"/>
+                </ComboBox>
               </fb:control>				
             </fb:FilterGroupItem>
 
-            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F4" label="Season" visibleInFilterBar="true">
+            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F4" label="{i18n>SeasonFilter}" visibleInFilterBar="true">
               <fb:control>
-                <Input type="Text"/>
+                <ComboBox id="filterSeason" items="{ path: '/results', sorter: { path: 'Seasoncd' } }" showSecondaryValues= "true">
+                    <core:ListItem key="{Seasoncd}" text="{Desc1}" additionalText = "{Yr}"/>
+                </ComboBox>
               </fb:control>				
             </fb:FilterGroupItem>			
 
-                    <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F5" label="Product Type" visibleInFilterBar="true">
+            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F5" label="{i18n>ProductTypeFilter}" visibleInFilterBar="true">
               <fb:control>
-                <Input type="Text"/>
+                <ComboBox id="filterProductType" items="{ path: '/results', sorter: { path: 'ProdTyp' } }">
+                    <core:ListItem key="{ProdTyp}" text="{Desc1}"/>
+                </ComboBox>
               </fb:control>				
             </fb:FilterGroupItem>					 
           </fb:filterGroupItems>				
@@ -76,7 +86,7 @@
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-            <Button icon="sap-icon://action-settings" >
+            <Button icon="sap-icon://action-settings" press="onPersoButtonPressed">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
