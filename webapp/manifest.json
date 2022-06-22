@@ -112,7 +112,7 @@
                 },
                 {
                     "name": "RouteStyleDetail",
-                    "pattern": "RouteStyleDetail",
+                    "pattern": "RouteStyleDetail/{styleno}",
                     "greedy": false,
                     "target": [
                         "TargetStyleDetail"

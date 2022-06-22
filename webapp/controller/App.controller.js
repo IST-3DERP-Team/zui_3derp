@@ -22,6 +22,9 @@ sap.ui.define(
         navigatePage: function(oRouteName) {
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
             oRouter.navTo(oRouteName);
+            // oRouter.navTo("RouteStyleDetail", {
+            //     styleno: "1"
+            // } );
         },
 
         onItemSelect: function (oEvent) {

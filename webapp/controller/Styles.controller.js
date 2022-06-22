@@ -10,10 +10,12 @@ sap.ui.define([
     function (Controller, JSONModel, control) {
         "use strict";
 
+        var that;
 
         return Controller.extend("zui3derp.controller.Styles", {
 
             onInit: function () {
+                that = this;                
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteStyles").attachPatternMatched(this._routePatternMatched, this);
@@ -24,54 +26,31 @@ sap.ui.define([
 
             _routePatternMatched: function (oEvent) {
                 this.onStyleReader();
-                this.refreshFilters();
-                this.refreshData();
+                this.getDefaultFilters();
             },
 
-            // onAfterRendering: function() {
-            //                 var oTable = this.getView().byId("idMyTable");
-            //                 for (i = 0; i < s; i++) {
-            //                     var oColumn = new sap.m.Column("col" + i, {
-            //                         width: "1em",
-            //                         header: new sap.m.Label({
-            //                             text: "Data No. "+i
-            //     this.refreshAllData();
-            // },
-
-            refreshFilters: function () {
-                this._SBU = this.getDefaultSBU();
-                this._Season = this.getDefaultSeason();
-                this.getFiltersData();
+            getDefaultFilters: function() {
+                var me = this;
+                var entitySet = "/DefaultFilterSet('')";
+                this._Model.read(entitySet, {
+                    success: function (oData, oResponse) {
+                        var defaultFilters = {
+                            sbu: oData.Sbu,
+                            salesgrp: oData.Salesgrp,
+                            custgrp: oData.Custgrp,
+                            season: oData.Seasoncd,
+                            prodtyp: oData.Prodtyp
+                        }
+                        me.getFiltersData(defaultFilters);
+                    },
+                    error: function (err) { }
+                });
             },
 
-            refreshData: function () {
+            onSearch: function() {
                 this.getDynamicTable();
-            },
-
-            getDefaultSBU: function () {
-                var sbu = "VER";
-                var entitySet = "/SBUSet('')";
-
-                this._Model.read(entitySet, {
-                    success: function (oData, oResponse) {
-                        // sbu = "VER"
-                    },
-                    error: function (err) { }
-                });
-                return sbu;
-            },
-
-            getDefaultSeason: function () {
-                var sbu = "SU22";
-
-                var entitySet = "/SeasonSet('')";
-                this._Model.read(entitySet, {
-                    success: function (oData, oResponse) {
-                        // sbu = "VER"
-                    },
-                    error: function (err) { }
-                });
-                return sbu;
+                // this.saveDefaultFilters();
+                // this.getDefaultFilters();                
             },
 
             getDynamicTable: function () {
@@ -100,14 +79,20 @@ sap.ui.define([
                     error: function (err) { }
                 });
 
+                var sbu = this.getView().byId("filterSBU").getSelectedKey();
+                var salesgrp = this.getView().byId("filterSalesGroup").getSelectedKey();
+                var custgrp = this.getView().byId("filterCustomerGroup").getSelectedKey();
+                var season = this.getView().byId("filterSeason").getSelectedKey();
+                var prodtyp = this.getView().byId("filterProductType").getSelectedKey();
+                
                 //get dynamic data
                 var oJSONDataModel = new sap.ui.model.json.JSONModel();
                 this._Model.setHeaders({
-                    sbu: this._SBU,
-                    salesgrp: "POL",
-                    custgrp: "6A",
-                    season: "SP21",
-                    prodtyp: "1000",
+                    sbu: sbu,
+                    salesgrp: salesgrp,
+                    custgrp: custgrp,
+                    season: season,
+                    prodtyp: prodtyp,
                     type: 'STYLHDR'
                 });
                 this._Model.read("/DynamicDataSet", {
@@ -163,9 +148,17 @@ sap.ui.define([
                     var lv_field = "{DynData>" + lv1 + lv2 + "}";
 
                     var cell;
-                    cell = new sap.m.Text({
-                        text: lv_field
-                    });
+                    if(i===6) {
+                        cell = new sap.tnt.InfoLabel({
+                            text: lv_field,
+                            colorScheme: `{= $${lv_field} === 'CMP' ? 8 : $${lv_field} === 'CRT' ? 3 : 1}`
+                        });
+                    } else {
+                        cell = new sap.m.Text({
+                            text: lv_field
+                        });
+                    }
+                    
                     oCell.push(cell);
                 }
 
@@ -178,26 +171,26 @@ sap.ui.define([
                 oTable.bindItems("DynData>/results", aColList);
             },
 
+            createNewStyle: function() {
+                this.navToDetail("NEW");
+            },
+
             goToDetail: function (oEvent) {
                 var oItem, oCtx;
                 oItem = oEvent.getSource();
                 oCtx = oItem.getBindingContext("DynData");
-                this.navToDetail();
-                
-                // alert(oCtx.getProperty("Col001"));
-                // var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-                // this._router.navTo("RouteStyleDetail");
+                var styleNo = oCtx.getProperty("Col002");
+                that.navToDetail(styleNo);
             },
 
-            navToDetail: function() {
-                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-			    oRouter.navTo("RouteStyleDetail", {} );
+            navToDetail: function(styleNo) {
+			    that._router.navTo("RouteStyleDetail", {
+                    styleno: styleNo
+                } );
             },
 
-            getFiltersData: function () {
-                var sbu = this._SBU;
-                var season = this._Season;
-
+            getFiltersData: function (defaultFilters) {
+                var me = this;
                 var oJSONModel = new sap.ui.model.json.JSONModel();
 
                 //get SBUs
@@ -209,7 +202,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         filterSBU.setModel(oJSONModel);
-                        filterSBU.setSelectedKey(sbu);
+                        filterSBU.setSelectedKey(defaultFilters.sbu);
                     },
                     error: function (err) { }
                 });
@@ -224,6 +217,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel2.setData(oData);
                         filterSalesGroup.setModel(oJSONModel2);
+                        filterSalesGroup.setSelectedKey(defaultFilters.salesgrp);
                     },
                     error: function (err) { }
                 });
@@ -238,6 +232,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel3.setData(oData);
                         filterCustomerGroup.setModel(oJSONModel3);
+                        filterCustomerGroup.setSelectedKey(defaultFilters.custgrp);
                     },
                     error: function (err) { }
                 });
@@ -246,27 +241,29 @@ sap.ui.define([
                 var oJSONModel4 = new sap.ui.model.json.JSONModel();
                 var filterSeason = this.getView().byId("filterSeason");
                 this._Model.setHeaders({
-                    sbu: this._SBU
+                    sbu: defaultFilters.sbu
                 });
                 this._Model.read("/SeasonSet", {
                     success: function (oData, oResponse) {
                         oJSONModel4.setData(oData);
                         filterSeason.setModel(oJSONModel4);
-                        filterSeason.setSelectedKey(season);
+                        filterSeason.setSelectedKey(defaultFilters.season);
                     },
                     error: function (err) { }
                 });
 
                 //get Product Types
                 var oJSONModel5 = new sap.ui.model.json.JSONModel();
+                oJSONModel5.setSizeLimit(1000);
                 var filterProductType = this.getView().byId("filterProductType");
                 this._Model.setHeaders({
-                    sbu: this._SBU
+                    sbu: defaultFilters.sbu
                 });
                 this._Model.read("/ProductTypeSet", {
                     success: function (oData, oResponse) {
                         oJSONModel5.setData(oData);
                         filterProductType.setModel(oJSONModel5);
+                        filterProductType.setSelectedKey(defaultFilters.prodtyp);
                     },
                     error: function (err) { }
                 });
@@ -364,7 +361,7 @@ sap.ui.define([
                 while (num.length < size) num = "0" + num;
                 return num;
             },
-            
+
             onStyleReader: function(){
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
