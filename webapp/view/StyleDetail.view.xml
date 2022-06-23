@@ -1,90 +1,65 @@
 <mvc:View controllerName="zui3derp.controller.StyleDetail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns:u="sap.uxap"
-    xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt">
+    xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
+    xmlns:c="zui3derp.control">
     <Page showHeader="false">
-        <ObjectHeader
-		id="oh1"
-		responsive="true"
-		fullScreenOptimized="true"
-		intro="Current Version: 1"
-		title="Style VERSTY-001"
-		number="CMT"
-		numberUnit="STATUS"
-		numberState="Success"
-		backgroundDesign="Translucent">
-		<attributes>
-			<ObjectAttribute title="Created By" text="EMALLARI"/>
-            <ObjectAttribute title="Created Date" text="06/22/2022"/>
-            <ObjectAttribute title="Updated By" text="EMALLARI"/>
-            <ObjectAttribute title="Updated Date" text="06/22/2022"/>
-        </attributes>
-		<!-- <statuses>
-			<ObjectStatus title="Status" text="CRT" state="Error"/>
-		</statuses> -->
-	</ObjectHeader>
-         <VBox>
-            <Toolbar id="TB1" class="sapUiSmallMargin">
-                <ToolbarSpacer />
-                <Button icon="sap-icon://save"/>
-                <Button icon="sap-icon://edit" />
-                <Button icon="sap-icon://delete" />
-            </Toolbar>
+        <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>CurrentVersion}: 1" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
+		title="{headerData>/Styleno}" number="{headerData>/Statuscd}" numberUnit="{i18n>Status}" numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}">
+            <attributes>
+                <ObjectAttribute title="{i18n>CREATEDBY}" text="{headerData>/Createdby}"/>
+                <ObjectAttribute title="{i18n>CREATEDDT}" text="{headerData>/Createddt}"/>
+                <ObjectAttribute title="{i18n>UPDATEDBY}" text="{headerData>/Updatedby}"/>
+                <ObjectAttribute title="{i18n>UPDATEDDT}" text="{headerData>/Updateddt}"/>
+            </attributes>
+            <!-- <statuses>
+                <ObjectStatus title="Status" text="CRT" state="Error"/>
+            </statuses> -->
+        </ObjectHeader>
+         <Panel expandable="true" expanded="true" width="auto" class="sapUiSizeCompact whiteBackground">
+            <headerToolbar>
+                <Toolbar id="TB1" height="3rem" style="Clear">
+                    <Title text="Header" />
+                    <ToolbarSpacer />
+                    <Button icon="sap-icon://save"/>
+                    <Button icon="sap-icon://edit" />
+                    <Button icon="sap-icon://delete" />
+                </Toolbar>
+            </headerToolbar>
             <f:Form id="StyleHeaderForm1" editable="true" class="sapUiNoContentPadding">
                 <f:layout>
-                    <f:ResponsiveGridLayout columnsXL="4" columnsL="4" columnsM="4"/>
+                    <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3"/>
                 </f:layout>
                 <f:formContainers>
-                    <f:FormContainer ariaLabelledBy="Grp1" class="sapUiNoContentPadding">
+                    <f:FormContainer ariaLabelledBy="Grp1" class="sapUiNoContentPadding" >
                         <f:formElements>
-                            <f:FormElement label="Style Code">
+                            <f:FormElement label="{i18n>STYLECD}" >
                                 <f:fields>
-                                    <Input value="{SupplierName}">
-                                    
+                                    <Input value="{headerData>/Stylecd}">
                                     </Input>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Style Description">
+                            <f:FormElement label="{i18n>DESC1}">
                                 <f:fields>
-                                    <Input value="{Street}"/>
+                                    <Input value="{headerData>/Desc1}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
-                        <f:layoutData>
-                            <l:GridData span="XL6 L6 M6 S3" />
-                        </f:layoutData>
                     </f:FormContainer>
                     <f:FormContainer ariaLabelledBy="Grp2">
                         <f:formElements>
-                            <!-- <f:FormElement label="Syle No.">
+                            <f:FormElement label="{i18n>SEASONCD}">
                                 <f:fields>
-                                    <Input value="{Url}" type="Url"/>
-                                </f:fields>
-                            </f:FormElement> -->
-                            <f:FormElement label="Season">
-                                <f:fields>
-                                    <Input value="{Twitter}"/>
+                                    <Input value="{headerData>/Seasoncd}"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Factory Style">
+                            <f:FormElement label="{i18n>FTYSTYLE}">
                                 <f:fields>
-                                    <Input value="{Url}" type="Url"/>
+                                    <Input value="{headerData>/Ftystyle}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
                     </f:FormContainer>
-                    <!-- <f:FormContainer ariaLabelledBy="Grp3">
-                        <f:formElements>
-                            
-                            <f:FormElement label="Status">
-                                <f:fields>
-                                    <Input value="{Twitter}"/>
-                                </f:fields>
-                            </f:FormElement>
-                        </f:formElements>
-                    </f:FormContainer> -->
                 </f:formContainers>
             </f:Form>
-        <!-- </VBox>
-        <VBox class="sapUiSmallMargin"> -->
             <f:Form id="StyleHeaderForm2" editable="true">
                 <f:layout>
                     <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3" singleContainerFullSize="false" />
@@ -92,38 +67,38 @@
                 <f:formContainers>
                     <f:FormContainer>
                         <f:formElements>
-                            <f:FormElement label="Product Type">
+                            <f:FormElement label="{i18n>PRODTYP}">
                                 <f:fields>
-                                    <Input value="{SupplierName}"/>
+                                    <Input value="{headerData>/Prodtyp}"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Style Category">
+                            <f:FormElement label="{i18n>STYLECAT}">
                                 <f:fields>
-                                    <Input value="{Street}"/>
+                                    <Input value="{headerData>/Stylecat}"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Cust Product Type">
+                            <f:FormElement label="{i18n>CUSTPRDTYP}">
                                 <f:fields>
-                                    <Input value="{Street}"/>
+                                    <Input value="{headerData>/Custprdtyp}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
                     </f:FormContainer>
                     <f:FormContainer>
                         <f:formElements>
-                            <f:FormElement label="Sales Group">
+                            <f:FormElement label="{i18n>SALESGRP}">
                                 <f:fields>
-                                    <Input value="{SupplierName}"/>
+                                    <Input value="{headerData>/Salesgrp}"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Product Group">
+                            <f:FormElement label="{i18n>PRODGRP}">
                                 <f:fields>
-                                    <Input value="{Street}"/>
+                                    <Input value="{headerData>/Prodgrp}"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Style Group">
+                            <f:FormElement label="{i18n>STYLEGRP}">
                                 <f:fields>
-                                    <Input value="{Street}"/>
+                                    <Input value="{headerData>/Stylegrp}"/>
                                 </f:fields>
                             </f:FormElement>
                             
@@ -131,19 +106,19 @@
                     </f:FormContainer>
                     <f:FormContainer ariaLabelledBy="Grp3">
                         <f:formElements>
-                            <f:FormElement label="Customer Group">
+                            <f:FormElement label="{i18n>CUSTGRP}">
                                 <f:fields>
-                                    <Input value="{SupplierName}"/>
+                                    <Input value="{headerData>/Custgrp}"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Sold-to Customer">
+                            <f:FormElement label="{i18n>SOLDTOCUST}">
                                 <f:fields>
-                                    <Input value="{Street}"/>
+                                    <Input value="{headerData>/Soldtocust}"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Size Group">
+                            <f:FormElement label="{i18n>SIZEGRP}">
                                 <f:fields>
-                                    <Input value="{Street}"/>
+                                    <Input value="{headerData>/Sizegrp}"/>
                                 </f:fields>
                             </f:FormElement>
                             
@@ -151,14 +126,14 @@
                     </f:FormContainer>
                     <f:FormContainer ariaLabelledBy="Grp4">
                         <f:formElements>
-                            <f:FormElement label="UOM">
+                            <f:FormElement label="{i18n>UOM}">
                                 <f:fields>
-                                    <Input value="{Street}"/>
+                                    <Input value="{headerData>/Uom}"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Fabrication">
+                            <f:FormElement label="{i18n>FABRICATION}">
                                 <f:fields>
-                                    <Input value="{Street}"/>
+                                    <Input value="{headerData>/Fabrctn}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -167,61 +142,164 @@
             </f:Form>
             <f:Form id="StyleHeaderForm3" editable="true">
                 <f:layout>
-                    <f:ResponsiveGridLayout columnsXL="2" columnsL="1" columnsM="1" singleContainerFullSize="false" />
+                    <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3" singleContainerFullSize="false" />
                 </f:layout>
                 <f:formContainers>
                     <f:FormContainer>
                         <f:formElements>
-                            <f:FormElement label="Remarks">
+                            <f:FormElement label="{i18n>REMARKS}">
                                 <f:fields>
                                     <TextArea placeholder="Enter Text" growing="true" growingMaxLines="7" width="100%"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
+                        <f:layoutData>
+                            <l:GridData span="XL8 L8 M8 S3" />
+                        </f:layoutData>
                     </f:FormContainer>
                 </f:formContainers>
             </f:Form>
-        </VBox>
-        <IconTabBar id="idIconTabBarMulti" expanded="{device>/isNoPhone}" class="sapUiResponsiveContentPadding" tabDensityMode="Compact" expandable="false">
-            <items>
-                <IconTabFilter icon="sap-icon://hint" text="Attributes">
-                    <VBox>
-                        <Text text="General"/>
-                        <Text text="Colors"/>
-                        <Text text="Sizes"/>
-                        <Text text="Processes"/>
-                    </VBox>
-                </IconTabFilter>
-                <IconTabFilter icon="sap-icon://notes" text="Versions">
-                    <Text text="Versions ..." />
-                </IconTabFilter>
-                <IconTabFilter
-                    icon="sap-icon://attachment" text="Attachments">
-                    <Text text="Attachments ..." />
-                </IconTabFilter>
-            </items>
-	    </IconTabBar>
-        <!-- <u:ObjectPageLayout id="ObjectPageLayout" enableLazyLoading="false" useIconTabBar="true">
-            <u:sections>
-                <u:ObjectPageSection title="my section">
-                    <u:subSections>
-                        <u:ObjectPageSubSection title="Section 1" mode="Expanded" id="Section1">
-                            <u:blocks>
-                                <VBox/>
-                            </u:blocks>
-                        </u:ObjectPageSubSection>
-                    </u:subSections>
-                </u:ObjectPageSection>
-                <u:ObjectPageSection title="my section">
-                    <u:subSections>
-                        <u:ObjectPageSubSection title="Section 2" mode="Expanded" id="Section2">
-                            <u:blocks>
-                                <VBox/>
-                            </u:blocks>
-                        </u:ObjectPageSubSection>
-                    </u:subSections>
-                </u:ObjectPageSection>
-            </u:sections>
-        </u:ObjectPageLayout> -->
+        </Panel>
+        <Panel expandable="true" expanded="false" width="auto" class="sapUiSizeCompact whiteBackground">
+            <headerToolbar>
+                <Toolbar height="3rem" style="Clear">
+                    <Title text="Detail" />
+                </Toolbar>
+            </headerToolbar>
+            <IconTabBar id="idIconTabBarMulti" expanded="{device>/isNoPhone}" tabDensityMode="Compact" expandable="false">
+                <items>
+                    <IconTabFilter icon="sap-icon://hint" text="Attributes">
+                        <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                            <headerToolbar>
+                                <Toolbar height="3rem" style="Clear">
+                                    <Label text="General Attributes"/>
+                                    <ToolbarSpacer />
+                                    <Button icon="sap-icon://add" press="addGeneralAttr"/>
+                                    <Button icon="sap-icon://edit" />
+                                    <Button icon="sap-icon://save"/>
+                                    <Button icon="sap-icon://delete" />
+                                </Toolbar>
+                            </headerToolbar>
+                            <c:DynamicTable id="GeneralAttTable" items="{/Data}"  class="sapUiSizeCompact">
+                                <c:columns>
+                                    <Column><Label design="Bold" text="Attribute Type"/></Column>
+                                    <Column><Label design="Bold" text="Attribute Code"/></Column>
+                                    <Column><Label design="Bold" text="Description"/></Column>
+                                    <Column><Label design="Bold" text="Value"/></Column>
+                                    <Column><Label design="Bold" text="UOM"/></Column>
+                                </c:columns>
+                                <c:items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                        </cells>
+                                    </ColumnListItem>
+                                </c:items>
+                            </c:DynamicTable>
+                        </Panel>
+                        <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                            <headerToolbar>
+                                <Toolbar height="3rem" style="Clear">
+                                    <Label text="Colors" />
+                                    <ToolbarSpacer />
+                                    <Button icon="sap-icon://add"/>
+                                    <Button icon="sap-icon://edit" />
+                                    <Button icon="sap-icon://save"/>
+                                    <Button icon="sap-icon://delete" />
+                                </Toolbar>
+                            </headerToolbar>
+                            <c:DynamicTable id="ColorsAttTable" items="{/Data}"  class="sapUiSizeCompact">
+                                <c:columns>
+                                    <Column><Label design="Bold" text="Color Code"/></Column>
+                                    <Column><Label design="Bold" text="Description"/></Column>
+                                </c:columns>
+                                <c:items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                        </cells>
+                                    </ColumnListItem>
+                                </c:items>
+                            </c:DynamicTable>
+                        </Panel>
+                        <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                            <headerToolbar>
+                                <Toolbar height="3rem" style="Clear">
+                                    <Label text="Sizes" />
+                                    <ToolbarSpacer />
+                                    <Button icon="sap-icon://add"/>
+                                    <Button icon="sap-icon://edit" />
+                                    <Button icon="sap-icon://save"/>
+                                    <Button icon="sap-icon://delete" />
+                                </Toolbar>
+                            </headerToolbar>
+                            <c:DynamicTable id="SizesAttTable" items="{/Data}"  class="sapUiSizeCompact">
+                                <c:columns>
+                                    <Column><Label design="Bold" text="Size Range"/></Column>
+                                    <Column><Label design="Bold" text="Size Code"/></Column>
+                                    <Column><Label design="Bold" text="Base Ind"/></Column>
+                                </c:columns>
+                                <c:items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                        </cells>
+                                    </ColumnListItem>
+                                </c:items>
+                            </c:DynamicTable>
+                        </Panel>
+                        <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                            <headerToolbar>
+                                <Toolbar height="3rem" style="Clear">
+                                    <Label text="Processes" />
+                                    <ToolbarSpacer />
+                                    <Button icon="sap-icon://add"/>
+                                    <Button icon="sap-icon://edit" />
+                                    <Button icon="sap-icon://save"/>
+                                    <Button icon="sap-icon://delete" />
+                                </Toolbar>
+                            </headerToolbar>
+                            <c:DynamicTable id="ProcAttTable" items="{/Data}"  class="sapUiSizeCompact">
+                                <c:columns>
+                                    <Column><Label design="Bold" text="Seq."/></Column>
+                                    <Column><Label design="Bold" text="Process"/></Column>
+                                    <Column><Label design="Bold" text="VAS Type"/></Column>
+                                    <Column><Label design="Bold" text="Lead Time"/></Column>
+                                    <Column><Label design="Bold" text="Attr. Group"/></Column>
+                                    <Column><Label design="Bold" text="Attribute"/></Column>
+                                </c:columns>
+                                <c:items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                            <Input value="" width="50%"></Input>
+                                        </cells>
+                                    </ColumnListItem>
+                                </c:items>
+                            </c:DynamicTable>
+                        </Panel>
+                    </IconTabFilter>
+                    <IconTabFilter icon="sap-icon://notes" text="Versions">
+                        <Text text="Versions ..." />
+                    </IconTabFilter>
+                    <IconTabFilter
+                        icon="sap-icon://attachment" text="Attachments">
+                        <Text text="Attachments ..." />
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </Panel>
+        <VBox height="300px"/>
     </Page>
 </mvc:View>

@@ -3,6 +3,12 @@
     background-color: white;
 }
 
+.blueBorder {
+    border-style: solid;
+    border-width: .3px;
+    border-color: #354a5f;
+}
+
 .mainLogoBg {
     background-color: #14254c;
 }

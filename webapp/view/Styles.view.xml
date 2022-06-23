@@ -1,12 +1,12 @@
 <mvc:View xmlns:layout="sap.ui.layout" controllerName="zui3derp.controller.Styles" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m" xmlns:c="zui3derp.control" xmlns:core="sap.ui.core" xmlns:plugins="sap.ui.table.plugins" xmlns:fb="sap.ui.comp.filterbar" >
     <Page showHeader="false">
-      
-        <HBox class="whiteBackground">
-            <Title class="sapUiSmallMarginBegin sapUiTinyMarginTop" titleStyle="H4" text="Manage Styles"/>
-        </HBox>
-      
-        <fb:FilterBar reset="onReset" search="onSearch" useToolbar="false" showFilterConfiguration="false">
+        <Bar>
+            <contentLeft>
+                <Label text="{i18n>ManageStyles}" class="sapUiSmallMarginBegin"/>
+            </contentLeft>
+        </Bar>
+        <fb:FilterBar reset="onReset" search="onSearch" useToolbar="false" showFilterConfiguration="true">
           <fb:filterGroupItems>
             <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F1" label="{i18n>SBUFilter}" visibleInFilterBar="true">
               <fb:control>
@@ -66,26 +66,26 @@
             <!-- </layout:content>
         </layout:Grid> -->
         
-        <Toolbar id="tableToolbar">
-            <Title text="10 Styles"/>
+        <Toolbar id="tableToolbar" class="sapUiSmallMargin">
+            <Title text="Styles"/>
             <ToolbarSpacer/>
-            <SearchField width="30%" placeholder="Search"/>
-            <Button icon="sap-icon://search"/>
-			<Button icon="sap-icon://add" press="createNewStyle">
+            <SearchField width="30%" placeholder="{i18n>Search}"/>
+            <!-- <Button icon="sap-icon://search"/> -->
+			<Button text="{i18n>New}" icon="sap-icon://add-document" press="onCreateNewStyle">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-            <Button icon="sap-icon://copy" >
+            <Button text="{i18n>Copy}" icon="sap-icon://copy" press="onCopyStyles">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-            <Button icon="sap-icon://upload" >
+            <!-- <Button icon="sap-icon://upload" >
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
-            </Button>
+            </Button> -->
             <Button icon="sap-icon://action-settings" press="onPersoButtonPressed">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
@@ -98,7 +98,7 @@
             <!--         <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true"> -->
             <!-- Our code in the controller goes here -->
             <!--         </Table>     -->
-                <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact">
+                <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact" mode="MultiSelect">
                 </c:DynamicTable>
             </ScrollContainer>
         </Panel>
