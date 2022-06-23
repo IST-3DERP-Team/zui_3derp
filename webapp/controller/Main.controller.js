@@ -15,6 +15,14 @@ sap.ui.define([
                 this.onStyleReader();
         },
 
+        goToStyles: function() {
+            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+            oRouter.navTo("RouteStyles");
+            // oRouter.navTo("RouteStyleDetail", {
+            //     styleno: "1"
+            // } );
+        },
+
         onStyleReader: function(){
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();

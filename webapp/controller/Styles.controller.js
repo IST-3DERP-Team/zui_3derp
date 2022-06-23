@@ -64,7 +64,7 @@ sap.ui.define([
                 this._SBU = oFilterSBU.getSelectedKey();
                 this._Model.setHeaders({
                     sbu: this._SBU,
-                    type: 'STYLHDR'
+                    type: 'STYLINIT'
                 });
                 this._Model.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
@@ -93,7 +93,7 @@ sap.ui.define([
                     custgrp: custgrp,
                     season: season,
                     prodtyp: prodtyp,
-                    type: 'STYLHDR'
+                    type: 'STYLINIT'
                 });
                 this._Model.read("/DynamicDataSet", {
                     success: function (oData, oResponse) {
