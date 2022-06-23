@@ -1,16 +1,21 @@
 <mvc:View controllerName="zui3derp.controller.Main" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.f" xmlns:card="sap.f.cards" xmlns:tnt="sap.tnt" xmlns:micro="sap.suite.ui.microchart">
     <Page showHeader="false">
-        <Panel>
-            <headerToolbar>
+        <Bar>
+            <contentLeft>
+                <Label text="Welcome" class="sapUiTinyMarginBegin"/>
+            </contentLeft>
+        </Bar>
+        <HBox class="sapUiSmallMargin">
+            <!-- <headerToolbar>
                 <Toolbar height="2rem">
                     <Title text="Welcome"/>
                 </Toolbar>
-            </headerToolbar>
+            </headerToolbar> -->
             <f:Card class="sapUiTinyMargin"
                 width="300px">
                 <f:header>
-                    <card:Header title="Styles" subtitle="VER, SPRING 2021"/>
+                    <card:Header title="{i18n>style}" subtitle="VER, SPRING 2021"/>
                 </f:header>
                 <f:content>
                     <VBox>
@@ -75,16 +80,16 @@
         </SlideTile> -->
 
             
-        </Panel>
+        </HBox>
         <Panel>
             <headerToolbar>
                 <Toolbar height="2rem">
-                    <Title text="Quick Access"/>
+                    <Label text="Quick Access"/>
                 </Toolbar>
             </headerToolbar>
-            <GenericTile class="sapUiTinyMarginBegin" header="Manage Styles" press="goToStyles">
-                <TileContent footer="Open Orders">
-                    <NumericContent value="50" icon="sap-icon://puzzle" valueColor="Good" withMargin="false" />
+            <GenericTile class="sapUiTinyMarginBegin" header="{i18n>ManageStyles}" press="goToStyles">
+                <TileContent footer="{i18n>order}">
+                    <NumericContent value="3" icon="sap-icon://puzzle" valueColor="Neutral" withMargin="false" />
                 </TileContent>
             </GenericTile>
         </Panel>
