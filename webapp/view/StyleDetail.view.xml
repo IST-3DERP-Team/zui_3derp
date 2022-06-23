@@ -3,7 +3,7 @@
     xmlns:c="zui3derp.control">
     <Page showHeader="false">
         <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>CurrentVersion}: 1" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
-		title="{headerData>/Styleno}" number="{headerData>/Statuscd}" numberUnit="{i18n>Status}" numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}">
+		        title="{headerData>/Styleno}" number="{headerData>/Statuscd}" numberUnit="{i18n>Status}" numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}">
             <attributes>
                 <ObjectAttribute title="{i18n>CREATEDBY}" text="{headerData>/Createdby}"/>
                 <ObjectAttribute title="{i18n>CREATEDDT}" text="{headerData>/Createddt}"/>
@@ -159,6 +159,7 @@
                     </f:FormContainer>
                 </f:formContainers>
             </f:Form>
+
         </Panel>
         <Panel expandable="true" expanded="false" width="auto" class="sapUiSizeCompact whiteBackground">
             <headerToolbar>

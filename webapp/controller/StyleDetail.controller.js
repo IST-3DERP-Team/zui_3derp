@@ -14,6 +14,11 @@ sap.ui.define([
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteStyleDetail").attachPatternMatched(this._routePatternMatched, this);
+              
+                this.oGeneralTable();
+                this.oColorsTable();
+                this.oSizesTable();
+                this.oProcessesTable();
             },
 
             _routePatternMatched: function (oEvent) {
@@ -51,7 +56,25 @@ sap.ui.define([
 
             addGeneralAttr: function() {
                 
+            },
+
+            oGeneralTable:function(){
+                var me = this;
+                var oTable = this.getView().byId("generalTable");
+            },
+
+            oColorsTable:function(){
+                var me = this;
+                var oTable = this.getView().byId("colorsTable");
+            },
+
+            oSizesTable:function(){
+                var me = this;
+                var oTable = this.getView().byId("sizesTable");
+            },
+            oProcessesTable:function(){
+                var me = this;
+                var oTable = this.getView().byId("processesTable");
             }
-            
         });
     });
