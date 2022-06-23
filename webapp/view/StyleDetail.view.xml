@@ -1,5 +1,5 @@
 <mvc:View controllerName="zui3derp.controller.StyleDetail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns:u="sap.uxap"
-    xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt">
+    xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control">
     <Page showHeader="false">
         <ObjectHeader
 		id="oh1"
@@ -190,10 +190,41 @@
                         <Text text="Colors"/>
                         <Text text="Sizes"/>
                         <Text text="Processes"/>
+                        <Panel class="sapUiTinyMarginTop">
+                        <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
+                            <!--         <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true"> -->
+                            <!-- Our code in the controller goes here -->
+                            <!--         </Table>     -->
+                            <c:DynamicTable id="generalTable" class="sapUiSizeCompact">
+                            </c:DynamicTable>
+                        </ScrollContainer>
+                        <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
+                            <!--         <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true"> -->
+                            <!-- Our code in the controller goes here -->
+                            <!--         </Table>     -->
+                            <c:DynamicTable id="colorsTable" class="sapUiSizeCompact">
+                            </c:DynamicTable>
+                        </ScrollContainer>
+                        <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
+                            <!--         <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true"> -->
+                            <!-- Our code in the controller goes here -->
+                            <!--         </Table>     -->
+                            <c:DynamicTable id="sizesTable" class="sapUiSizeCompact">
+                            </c:DynamicTable>
+                        </ScrollContainer>
+                        <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
+                            <!--         <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true"> -->
+                            <!-- Our code in the controller goes here -->
+                            <!--         </Table>     -->
+                            <c:DynamicTable id="processesTable" class="sapUiSizeCompact">
+                            </c:DynamicTable>
+                        </ScrollContainer>
+                        </Panel>
                     </VBox>
                 </IconTabFilter>
                 <IconTabFilter icon="sap-icon://notes" text="Versions">
                     <Text text="Versions ..." />
+                    
                 </IconTabFilter>
                 <IconTabFilter
                     icon="sap-icon://attachment" text="Attachments">
