@@ -19,6 +19,8 @@ sap.ui.define([
                 this.oColorsTable();
                 this.oSizesTable();
                 this.oProcessesTable();
+                this.oVersionsTable();
+                this.oAttachmentsTable();
             },
 
             _routePatternMatched: function (oEvent) {
@@ -79,16 +81,71 @@ sap.ui.define([
             oColorsTable:function(){
                 var me = this;
                 var oTable = this.getView().byId("colorsTable");
+
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var oTable = this.getView().byId("colorsTable");
+                var entitySet = "/StyleAttributesColorSet"
+                oModel.setHeaders({
+                    styleno: this._styleNo
+                });
+                oModel.read(entitySet, {
+                    success: function(oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oTable.setModel(oJSONModel, "DataModel");
+                    },
+                    error: function() { }
+                })
             },
 
             oSizesTable:function(){
                 var me = this;
                 var oTable = this.getView().byId("sizesTable");
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var oTable = this.getView().byId("sizesTable");
+                var entitySet = "/StyleAttributesSizeSet"
+                oModel.setHeaders({
+                    styleno: this._styleNo
+                });
+                oModel.read(entitySet, {
+                    success: function(oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oTable.setModel(oJSONModel, "DataModel");
+                    },
+                    error: function() { }
+                })
+                
             },
 
             oProcessesTable:function(){
                 var me = this;
                 var oTable = this.getView().byId("processesTable");
+
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var oTable = this.getView().byId("processesTable");
+                var entitySet = "/StyleAttributesProcessSet"
+                oModel.setHeaders({
+                    styleno: this._styleNo
+                });
+                oModel.read(entitySet, {
+                    success: function(oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oTable.setModel(oJSONModel, "DataModel");
+                    },
+                    error: function() { }
+                })
+            },
+
+            oVersionsTable:function(){
+                var me = this;
+                var oTable = this.getView().byId("versionsTable");
+            },
+
+            oAttachmentsTable:function(){
+                var me = this;
+                var oTable = this.getView().byId("attachmentsTable");
             },
 
             addGeneralAttr: function() {

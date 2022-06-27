@@ -277,11 +277,45 @@
                         </Panel>
                     </IconTabFilter>
                     <IconTabFilter icon="sap-icon://notes" text="Versions">
-                        <Text text="Versions ..." />
+                        <!-- <Text text="Versions ..." /> -->
+                        <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                            <headerToolbar>
+                                <Toolbar height="3rem" style="Clear">
+                                    <Label text="Versions" />
+                                    <ToolbarSpacer />
+                                    <Button icon="sap-icon://add"/>
+                                    <Button icon="sap-icon://edit" />
+                                    <Button icon="sap-icon://save"/>
+                                    <Button icon="sap-icon://delete" />
+                                </Toolbar>
+                            </headerToolbar>
+                            <c:DynamicTable id="versionsTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
+                                <c:columns>
+                                    
+                                </c:columns>
+                            </c:DynamicTable>
+                        </Panel>
                     </IconTabFilter>
                     <IconTabFilter
                         icon="sap-icon://attachment" text="Attachments">
-                        <Text text="Attachments ..." />
+                        <!-- <Text text="Attachments ..." /> -->
+                        <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                            <headerToolbar>
+                                <Toolbar height="3rem" style="Clear">
+                                    <Label text="Attachments" />
+                                    <ToolbarSpacer />
+                                    <Button icon="sap-icon://add"/>
+                                    <Button icon="sap-icon://edit" />
+                                    <Button icon="sap-icon://save"/>
+                                    <Button icon="sap-icon://delete" />
+                                </Toolbar>
+                            </headerToolbar>
+                            <c:DynamicTable id="attachmentsTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
+                                <c:columns>
+                                    
+                                </c:columns>
+                            </c:DynamicTable>
+                        </Panel>
                     </IconTabFilter>
                 </items>
             </IconTabBar>
