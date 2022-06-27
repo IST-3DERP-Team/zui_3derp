@@ -24,6 +24,15 @@
                     "localUri": "localService/metadata.xml",
                     "odataVersion": "2.0"
                 }
+            },
+            "StyleHeaderFilters": {
+                "uri": "/sap/opu/odata/sap/ZVI_3DERP_STYLES_FILTER_CDS/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "2.0"
+                }
             }
         }
     },
@@ -71,6 +80,11 @@
             },
             "": {
                 "dataSource": "mainService",
+                "preload": true,
+                "settings": {}
+            },
+            "StyleHeaderFilters": {
+                "dataSource": "StyleHeaderFilters",
                 "preload": true,
                 "settings": {}
             }

@@ -24,6 +24,7 @@ sap.ui.define([
                 this._Model = this.getOwnerComponent().getModel();
                 // this._User = sap.ushell.Container.getService("UserInfo").getId();
                 this._User = 'EMALLARI';
+                this.setSmartFilterModel();
             },
 
             _routePatternMatched: function (oEvent) {
@@ -31,9 +32,15 @@ sap.ui.define([
                 this.getDefaultFilters();
             },
 
+            setSmartFilterModel: function() {
+                var oModel = this.getOwnerComponent().getModel("StyleHeaderFilters");
+                var oSmartFilter = this.getView().byId("SmartFilterBar");
+                oSmartFilter.setModel(oModel);
+            },
+ 
             getDefaultFilters: function() {
                 var me = this;
-                var entitySet = "/DefaultFilterSet('')";
+                var entitySet = "/DefaultFilterSet('EMALLARI')";
                 this._Model.read(entitySet, {
                     success: function (oData, oResponse) {
                         var defaultFilters = {
@@ -50,9 +57,7 @@ sap.ui.define([
             },
 
             onSearch: function() {
-                this.getDynamicTableColumns();
-                // this.saveDefaultFilters();
-                // this.getDefaultFilters();                
+                this.getDynamicTableColumns();    
             },
 
             getDynamicTableColumns: function () {
@@ -85,10 +90,10 @@ sap.ui.define([
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
                 var sbu = this.getView().byId("filterSBU").getSelectedKey();
-                var salesgrp = this.getView().byId("filterSalesGroup").getSelectedKey();
-                var custgrp = this.getView().byId("filterCustomerGroup").getSelectedKey();
-                var season = this.getView().byId("filterSeason").getSelectedKey();
-                var prodtyp = this.getView().byId("filterProductType").getSelectedKey();
+                // var salesgrp = this.getView().byId("filterSalesGroup").getSelectedKey();
+                // var custgrp = this.getView().byId("filterCustomerGroup").getSelectedKey();
+                // var season = this.getView().byId("filterSeason").getSelectedKey();
+                // var prodtyp = this.getView().byId("filterProductType").getSelectedKey();
                 var selectString = "";
                 var lv1 = "Col";
                 var i = 1;
@@ -115,19 +120,18 @@ sap.ui.define([
                 //get dynamic data
                 var oJSONDataModel = new sap.ui.model.json.JSONModel();
                 oModel.setHeaders({
-                    sbu: sbu,
-                    salesgrp: salesgrp,
-                    custgrp: custgrp,
-                    season: season,
-                    prodtyp: prodtyp,
+                    sbu: 'VER',
+                    salesgrp: 'POL',
+                    custgrp: '6A',
+                    season: 'SP21',
+                    prodtyp: '1000',
                     type: 'STYLINIT'
                 });
+
+                var aFilters = this.getView().byId("SmartFilterBar").getFilters();
                 
-                // oModel.read("/DynamicDataSet", {
-                    // urlParameters: {
-                    //     "$select": selectString
-                    // },
                 oModel.read("/StyleSet", {
+                    filters: aFilters,
                     success: function (oData, oResponse) {
                         oJSONDataModel.setData(oData);
                         me.getView().setModel(oJSONDataModel, "DynData");
@@ -137,31 +141,27 @@ sap.ui.define([
                 });
             },
 
-            setTableColumns: function () {
-                var me = this;
+            // setTableColumns: function () {
+            //     var me = this;
 
-                var oModel = this.getView().getModel("DynColumns");
-                var oDynColumns = oModel.getProperty('/results');
+            //     var oModel = this.getView().getModel("DynColumns");
+            //     var oDynColumns = oModel.getProperty('/results');
+            //     var oTable = this.getView().byId("styleDynTable");
+            //     var i = 0;
 
-                var oTable = this.getView().byId("styleDynTable");
+            //     oTable.destroyColumns();
 
-                var i = 0;
-
-                oTable.destroyColumns();
-
-                for (i = 0; i < oDynColumns.length; i++) {
-
-                    var colName = "{i18n>" + oDynColumns[i].ColumnName + "}";
-
-                    var oColumn = new sap.ui.table.Column("Col" + i, {
-                        width: "10em",
-                        header: new sap.m.Label({
-                            text: colName
-                        })
-                    });
-                    oTable.addColumn(oColumn);
-                }
-            },
+            //     for (i = 0; i < oDynColumns.length; i++) {
+            //         var colName = "{i18n>" + oDynColumns[i].ColumnName + "}";
+            //         var oColumn = new sap.ui.table.Column("Col" + i, {
+            //             width: "10em",
+            //             header: new sap.m.Label({
+            //                 text: colName
+            //             })
+            //         });
+            //         oTable.addColumn(oColumn);
+            //     }
+            // },
 
             setTableData: function (statusColNo) {
                 var me = this;
@@ -191,17 +191,6 @@ sap.ui.define([
                     oTable.setVisibleRowCount(dataLength);            
                 }
 
-                // var oRowActionTemplate = new sap.ui.table.RowAction({items: [
-                //     new sap.ui.table.RowActionItem({
-                //         type: "Navigation",
-                //         press: me.goToDetail,
-                //         visible: true
-                //     })
-                // ]});
-                // oTable.setRowActionTemplate(oRowActionTemplate);
-
-                // var oTemplate = oTable.getRowActionTemplate();
-
                 oTable.setModel(oModel);
 
                 oTable.bindColumns("/columns", function(index, context) {
@@ -211,7 +200,6 @@ sap.ui.define([
                     return new sap.ui.table.Column({
                         id : sColumnId,
                         label: "{i18n>" + sColumnId + "}", 
-                        // template: new sap.m.Text({ text: "{" + sColumnId + "}" }),
                         template: me.columnTemplate(sColumnId, sColumnType),
                         width : me.getColumnSize(sColumnId, sColumnType),
                         sortProperty: sColumnId, 
@@ -220,57 +208,7 @@ sap.ui.define([
                     });
                 });
                 oTable.bindRows("/rows");    
-                // oTable.onAfterRendering = this.onTableRender();
-                
-                // oTable.addColumn(new sap.ui.table.Column({
-                //     id : "SEL",
-                //     label: "SEL", 
-                //     // template: new sap.m.Text({ text: "{" + sColumnId + "}" }),
-                //     template: me.columnTemplate("SEL"),
-                //     autoResizable: true
-                // }));
-
-                // oTable.setRowActionTemplate(oTemplate);
-			    // oTable.setRowActionCount(2);
-
-                //original
-                // var oCell = [];
-                // for (var i = 1; i < dataLen; i++) {
-
-                //     var lv1 = "Col";
-                //     var lv2 = this.pad(i, 3);
-                //     var lv_field = "{DynData>" + lv1 + lv2 + "}";
-
-                //     var cell;
-                //     if(i===statusColNo) {
-                //         cell = new sap.tnt.InfoLabel({
-                //             text: lv_field,
-                //             colorScheme: `{= $${lv_field} === 'CMP' ? 8 : $${lv_field} === 'CRT' ? 3 : 1}`
-                //         });
-                //     } else {
-                //         cell = new sap.m.Text({
-                //             text: lv_field
-                //         });
-                //     }
-                    
-                //     oCell.push(cell);
-                // }
-
-                // var aColList = new sap.m.ColumnListItem({
-                //     type: "Navigation",
-                //     press: this.goToDetail,
-                //     cells: oCell
-                // });
-
-                // oTable.bindRows("DynData>/results", aColList);
             },
-
-            // onTableRendered: function() {
-            //     var oTable = this.getView().byId("styleDynTable");
-            //     for(var i = 0; i < oTable.getColumns().length; i++ ) {
-            //         oTable.autoResizeColumn(i);
-            //     }
-            // },
 
             columnTemplate: function(sColumnId, sColumnType) {
                 var oColumnTemplate;
@@ -339,87 +277,27 @@ sap.ui.define([
                     error: function (err) { }
                 });
 
-                //get Sales Group
-                var oJSONModel2 = new sap.ui.model.json.JSONModel();
-                var filterSalesGroup = this.getView().byId("filterSalesGroup");
-                this._Model.setHeaders({
-                    username: this._User
-                });
-                this._Model.read("/SalesGroupSet", {
-                    success: function (oData, oResponse) {
-                        oJSONModel2.setData(oData);
-                        filterSalesGroup.setModel(oJSONModel2);
-                        filterSalesGroup.setSelectedKey(defaultFilters.salesgrp);
-                    },
-                    error: function (err) { }
-                });
-
-                //get Customer Group
-                var oJSONModel3 = new sap.ui.model.json.JSONModel();
-                var filterCustomerGroup = this.getView().byId("filterCustomerGroup");
-                this._Model.setHeaders({
-                    username: this._User
-                });
-                this._Model.read("/CustomerGroupSet", {
-                    success: function (oData, oResponse) {
-                        oJSONModel3.setData(oData);
-                        filterCustomerGroup.setModel(oJSONModel3);
-                        filterCustomerGroup.setSelectedKey(defaultFilters.custgrp);
-                    },
-                    error: function (err) { }
-                });
-
-                //get Season
-                var oJSONModel4 = new sap.ui.model.json.JSONModel();
-                var filterSeason = this.getView().byId("filterSeason");
-                this._Model.setHeaders({
-                    sbu: defaultFilters.sbu
-                });
-                this._Model.read("/SeasonSet", {
-                    success: function (oData, oResponse) {
-                        oJSONModel4.setData(oData);
-                        filterSeason.setModel(oJSONModel4);
-                        filterSeason.setSelectedKey(defaultFilters.season);
-                    },
-                    error: function (err) { }
-                });
-
-                //get Product Types
-                var oJSONModel5 = new sap.ui.model.json.JSONModel();
-                oJSONModel5.setSizeLimit(1000);
-                var filterProductType = this.getView().byId("filterProductType");
-                this._Model.setHeaders({
-                    sbu: defaultFilters.sbu
-                });
-                this._Model.read("/ProductTypeSet", {
-                    success: function (oData, oResponse) {
-                        oJSONModel5.setData(oData);
-                        filterProductType.setModel(oJSONModel5);
-                        filterProductType.setSelectedKey(defaultFilters.prodtyp);
-                    },
-                    error: function (err) { }
-                });
+                //set filter data
             },
 
             getSelectedStyles: function() {
-                var oTable = this.getView().byId("styleDynTable");
-                var selectedContexts = oTable.getSelectedContextPaths();
-                var i = 0;
-                var selectedItems = [];
+                // var oTable = this.getView().byId("styleDynTable");
+                // var selectedContexts = oTable.getSelectedContextPaths();
+                // var i = 0;
+                // var selectedItems = [];
 
-                selectedContexts.forEach((selectedItem) => {
-                    var oItem = oTable.getSelectedContexts()[i].getObject();
-                    i++;
-                    selectedItems.push(oItem);
-                })
+                // selectedContexts.forEach((selectedItem) => {
+                //     var oItem = oTable.getSelectedContexts()[i].getObject();
+                //     i++;
+                //     selectedItems.push(oItem);
+                // })
 
-                return selectedItems;
+                // return selectedItems;
             },
 
             onSBUChange: function () {
                 var oFilterSBU = this.getView().byId("filterSBU");
                 this.SBU = oFilterSBU.getSelectedKey();
-                this.refreshAllData();
             },
 
             onCreateNewStyle: function() {
@@ -483,85 +361,8 @@ sap.ui.define([
 
             onCancelCopyStyle: Common.onCancelCopyStyle,
 
-            onPersoButtonPressed: function () {
-                var oPersonalizationDialog = sap.ui.xmlfragment("zui3derp.view.fragments.StylesPerso", this);
-                // this.oJSONModel.setProperty("/ShowResetEnabled", this._isChangedColumnsItems());
-                oPersonalizationDialog.setModel(this.oJSONModel);
+            onSaveLayoutSettings: function() {
 
-                this.getView().addDependent(oPersonalizationDialog);
-
-                this.oDataBeforeOpen = jQuery.extend(true, {}, this.oJSONModel.getData());
-                oPersonalizationDialog.open();
-            },
-
-            onPersoOK: function () {
-
-            },
-
-            onChangeColumnsItems: function (oEvent) {
-                this.oJSONModel.setProperty("/ColumnsItems", oEvent.getParameter("items"));
-                this.oJSONModel.setProperty("/ShowResetEnabled", this._isChangedColumnsItems());
-            },
-
-            _isChangedColumnsItems: function () {
-                var fnGetArrayElementByKey = function (sKey, sValue, aArray) {
-                    var aElements = aArray.filter(function (oElement) {
-                        return oElement[sKey] !== undefined && oElement[sKey] === sValue;
-                    });
-                    return aElements.length ? aElements[0] : null;
-                };
-                var fnGetUnion = function (aDataBase, aData) {
-                    if (!aData) {
-                        return jQuery.extend(true, [], aDataBase);
-                    }
-                    var aUnion = jQuery.extend(true, [], aData);
-                    aDataBase.forEach(function (oMItemBase) {
-                        var oMItemUnion = fnGetArrayElementByKey("columnKey", oMItemBase.columnKey, aUnion);
-                        if (!oMItemUnion) {
-                            aUnion.push(oMItemBase);
-                            return;
-                        }
-                        if (oMItemUnion.visible === undefined && oMItemBase.visible !== undefined) {
-                            oMItemUnion.visible = oMItemBase.visible;
-                        }
-                        if (oMItemUnion.width === undefined && oMItemBase.width !== undefined) {
-                            oMItemUnion.width = oMItemBase.width;
-                        }
-                        if (oMItemUnion.total === undefined && oMItemBase.total !== undefined) {
-                            oMItemUnion.total = oMItemBase.total;
-                        }
-                        if (oMItemUnion.index === undefined && oMItemBase.index !== undefined) {
-                            oMItemUnion.index = oMItemBase.index;
-                        }
-                    });
-                    return aUnion;
-                };
-                var fnIsEqual = function (aDataBase, aData) {
-                    if (!aData) {
-                        return true;
-                    }
-                    if (aDataBase.length !== aData.length) {
-                        return false;
-                    }
-                    var fnSort = function (a, b) {
-                        if (a.columnKey < b.columnKey) {
-                            return -1;
-                        } else if (a.columnKey > b.columnKey) {
-                            return 1;
-                        } else {
-                            return 0;
-                        }
-                    };
-                    aDataBase.sort(fnSort);
-                    aData.sort(fnSort);
-                    var aItemsNotEqual = aDataBase.filter(function (oDataBase, iIndex) {
-                        return oDataBase.columnKey !== aData[iIndex].columnKey || oDataBase.visible !== aData[iIndex].visible || oDataBase.index !== aData[iIndex].index || oDataBase.width !== aData[iIndex].width || oDataBase.total !== aData[iIndex].total;
-                    });
-                    return aItemsNotEqual.length === 0;
-                };
-
-                var aDataRuntime = fnGetUnion(this.oDataInitial.ColumnsItems, this.oJSONModel.getProperty("/results"));
-                return !fnIsEqual(aDataRuntime, this.oDataInitial.ColumnsItems);
             },
 
             pad: function (num, size) {
@@ -571,44 +372,21 @@ sap.ui.define([
             },
 
             onStyleReader: function(){
-                var me = this;
                 var oModel = this.getOwnerComponent().getModel();
-                var entitySet = "/StyleStatsSet('')";
                 var oJSONObject = new sap.ui.model.json.JSONModel();
-                var oJSONObject2 = new sap.ui.model.json.JSONModel();
-                var oJSONObject3 = new sap.ui.model.json.JSONModel();
                 var oForecast = this.getView().byId("forecastNumber");
                 var oOrder = this.getView().byId("orderNumber");
                 var oShipped = this.getView().byId("shippedNumber");
 
-
-                oModel.read(entitySet,{
+                oModel.read("/StyleStatsSet('')",{
                     success:function(oData){
                         oJSONObject.setData(oData)
                         oForecast.setNumber(oData.Forecast);
-                    },
-
-                    error: function(err){}
-                });
-
-                oModel.read(entitySet,{
-                    success:function(oData){
-                        oJSONObject2.setData(oData)
                         oOrder.setNumber(oData.Order);
-                    },
-
-                    error: function(err){}
-                });
-
-                oModel.read(entitySet,{
-                    success:function(oData){
-                        oJSONObject3.setData(oData)
                         oShipped.setNumber(oData.Shipped);
                     },
-
                     error: function(err){}
                 });
-
             }
 
         });
