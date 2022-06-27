@@ -1,18 +1,43 @@
 <mvc:View xmlns:layout="sap.ui.layout" controllerName="zui3derp.controller.Styles" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m" xmlns:c="zui3derp.control" xmlns:core="sap.ui.core" xmlns:t="sap.ui.table" xmlns:plugins="sap.ui.table.plugins" xmlns:fb="sap.ui.comp.filterbar" >
+    xmlns="sap.m" xmlns:c="zui3derp.control" xmlns:core="sap.ui.core" xmlns:t="sap.ui.table" xmlns:plugins="sap.ui.table.plugins" xmlns:fb="sap.ui.comp.filterbar" 
+    xmlns:smartfilterbar="sap.ui.comp.smartfilterbar">
     <Page showHeader="false">
         <Bar>
             <contentLeft>
                 <Label text="{i18n>ManageStyles}" class="sapUiSmallMarginBegin"/>
             </contentLeft>
         </Bar>
-        <fb:FilterBar reset="onReset" search="onSearch" useToolbar="false" showFilterConfiguration="true">
+
+        <!-- >>> Filters <<< -->
+        <ComboBox id="filterSBU" items="{ path: '/results', sorter: { path: 'Sbu' } }"> 
+            <core:Item key="{Sbu}" text="{Sbu}" />
+        </ComboBox>
+        <smartfilterbar:SmartFilterBar id="SmartFilterBar" entitySet="ZVI_3DERP_STYLES_FILTER" search="onSearch" persistencyKey="3DERP_StylesPKey">
+            <!-- <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="SBU" groupId="_BASIC" label="{i18n>SBUFilter}" mandatory="mandatory">
+                    <smartfilterbar:customControl>
+                        
+                    </smartfilterbar:customControl>
+                </smartfilterbar:ControlConfiguration>
+            </smartfilterbar:controlConfiguration> -->
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{i18n>ProductTypeFilter}" controlType="dropDownList" displayBehaviour="descriptionAndId"
+                    hasTypeAhead="true" mandatory="mandatory">
+                </smartfilterbar:ControlConfiguration>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="PRODGRP" label="{i18n>PRODGRP}" visibleInAdvancedArea="true">
+                </smartfilterbar:ControlConfiguration>
+            </smartfilterbar:controlConfiguration>
+        </smartfilterbar:SmartFilterBar>
+
+        <!-- <fb:FilterBar reset="onReset" search="onSearch" useToolbar="false" showFilterConfiguration="true">
           <fb:filterGroupItems>
             <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F1" label="{i18n>SBUFilter}" visibleInFilterBar="true">
               <fb:control>
-                <ComboBox id="filterSBU" items="{ path: '/results', sorter: { path: 'Sbu' } }">
-                    <core:Item key="{Sbu}" text="{Sbu}" />
-                </ComboBox>
+                    <ComboBox id="filterSBU" items="{ path: '/results', sorter: { path: 'Sbu' } }">
+                        <core:Item key="{Sbu}" text="{Sbu}" />
+                    </ComboBox>
               </fb:control>				
             </fb:FilterGroupItem>
 
@@ -48,24 +73,21 @@
               </fb:control>				
             </fb:FilterGroupItem>					 
           </fb:filterGroupItems>				
-	        </fb:FilterBar>
+	    </fb:FilterBar> -->
 	    
-        <!-- <layout:Grid containerQuery="true" class="sapUiSmallMarginTop" hSpacing="0" defaultSpan="XL2 L2 M6 S12">
-            <layout:content> -->
-            <layout:HorizontalLayout class="sapUiResponsiveContentPadding">
-                <GenericTag text="{i18n>forecast}" design="StatusIconHidden" status="Warning" class="sapUiSmallMarginBottom tag">
-					<ObjectNumber emphasized="true" number="{model>forecast}" state="Warning" id="forecastNumber"/>
-				</GenericTag>
-                <GenericTag text="{i18n>order}" design="StatusIconHidden" status="Information" class="sapUiSmallMarginBottom tag">
-					<ObjectNumber emphasized="true" number="{model>order}" state="Information" id="orderNumber"/>
-				</GenericTag>
-                <GenericTag text="{i18n>shipped}" design="StatusIconHidden" status="Success" class="sapUiSmallMarginBottom tag">
-					<ObjectNumber emphasized="true" number="{model>shipped}" state="Success" id="shippedNumber"/>
-				</GenericTag>
-            </layout:HorizontalLayout>
-            <!-- </layout:content>
-        </layout:Grid> -->
-        
+        <!-- >>> Statistics <<< -->
+        <layout:HorizontalLayout class="sapUiResponsiveContentPadding">
+            <GenericTag text="{i18n>forecast}" design="StatusIconHidden" status="Warning" class="sapUiSmallMarginBottom tag">
+                <ObjectNumber emphasized="true" number="{model>forecast}" state="Warning" id="forecastNumber"/>
+            </GenericTag>
+            <GenericTag text="{i18n>order}" design="StatusIconHidden" status="Information" class="sapUiSmallMarginBottom tag">
+                <ObjectNumber emphasized="true" number="{model>order}" state="Information" id="orderNumber"/>
+            </GenericTag>
+            <GenericTag text="{i18n>shipped}" design="StatusIconHidden" status="Success" class="sapUiSmallMarginBottom tag">
+                <ObjectNumber emphasized="true" number="{model>shipped}" state="Success" id="shippedNumber"/>
+            </GenericTag>
+        </layout:HorizontalLayout>
+
         <Toolbar id="tableToolbar" class="sapUiSmallMargin">
             <Title text="Styles"/>
             <ToolbarSpacer/>
@@ -86,7 +108,7 @@
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button> -->
-            <Button icon="sap-icon://action-settings" press="onPersoButtonPressed">
+            <Button icon="sap-icon://grid" text="Save Layout" press="onSaveLayoutSettings">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
@@ -97,13 +119,6 @@
             <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
                 <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact" selectionMode="MultiToggle" 
                     showColumnVisibilityMenu="true">
-                    <!-- <c:rowActionTemplate>
-                        <t:RowAction>
-                            <t:items>
-                                <t:RowActionItem type="Navigation" press="onAttachmentDeletePress"></t:RowActionItem>
-                            </t:items>
-                        </t:RowAction>
-                    </c:rowActionTemplate> -->
                 </c:DynamicTable>
             </ScrollContainer>
         </Panel>
