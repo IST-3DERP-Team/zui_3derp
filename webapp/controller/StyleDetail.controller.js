@@ -18,6 +18,7 @@ sap.ui.define([
 
             _routePatternMatched: function (oEvent) {
                 var styleNo = oEvent.getParameter("arguments").styleno;
+                this._styleNo = styleNo;
                 if(styleNo === "NEW") {
                     var oJSONModel = new JSONModel();
                     var data = {
@@ -30,6 +31,7 @@ sap.ui.define([
                 } else {
                     this.getHeaderData(styleNo);
                 }
+                this.oGeneralTable();
             },
 
             getHeaderData: function(styleNo) {
@@ -48,10 +50,51 @@ sap.ui.define([
                 })
 
             },
+            
+            oGeneralTable:function(){
+                var me = this;
+                var oTable = this.getView().byId("generalTable");
+
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var oTable = this.getView().byId("generalTable");
+                var entitySet = "/StyleAttributesGeneralSet"
+                oModel.setHeaders({
+                    styleno: this._styleNo
+                });
+                oModel.read(entitySet, {
+                    success: function(oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oTable.setModel(oJSONModel, "DataModel");
+                    },
+                    error: function() { }
+                })
+            },
+
+            oColorsTable:function(){
+                var me = this;
+                var oTable = this.getView().byId("colorsTable");
+            },
+
+            oSizesTable:function(){
+                var me = this;
+                var oTable = this.getView().byId("sizesTable");
+            },
+
+            oProcessesTable:function(){
+                var me = this;
+                var oTable = this.getView().byId("processesTable");
+            },
 
             addGeneralAttr: function() {
-                
-            }
+                var oModel = this.getView().byId("generalTable").getModel("DataModel");
+                var oData = oModel.getProperty('/results');
+                oData.push({});
+
+                var oTable = this.getView().byId("generalTable");
+                oTable.getBinding("rows").refresh();
+            },
+
             
         });
     });
