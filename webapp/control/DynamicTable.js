@@ -1,6 +1,6 @@
 var currentRowIndex;
 sap.ui.define([
-	"sap/m/Table"
+	"sap/ui/table/Table"
 ], function(Table) {
 	return Table.extend("Table_Binding.DynamicTable", {
 		onInit: function() {
@@ -18,10 +18,10 @@ sap.ui.define([
 			// } else {
 				sNewCopiedData = rows.slice(0, oTableLength+1);
 			// }
-
-			var cells = table.getBindingInfo('items').template.getCells();
+            var cells = table.getRows()[0].getCells()
+			// var cells = table.getBindingInfo('rows').template.getCells();
 			var templateItem = [];
-			var itemsPath = table.getBindingPath('items');
+			var itemsPath = table.getBindingPath('rows');
 			var itemsArray = table.getModel(model).getProperty(itemsPath);
 			var startPropertyIndex = 0;
 			var model = table.getModel(model);
@@ -89,14 +89,15 @@ sap.ui.define([
 		},
 		onAfterRendering: function() {
 			var that = this;
-			sap.m.Table.prototype.onAfterRendering.apply(this, arguments);
-			this.attachBrowserEvent('paste', function(e) {
+			// sap.m.Table.prototype.onAfterRendering.apply(this, arguments);
+			sap.ui.table.Table.prototype.onAfterRendering.apply(this, arguments);
+            this.attachBrowserEvent('paste', function(e) {
 				e.preventDefault();
 				var text = (e.originalEvent || e).clipboardData.getData('text/plain');
 
 				that.insertRows(text, this, undefined);
 			});
-			this.getAggregation('items').forEach(function(row) {
+			this.getAggregation('rows').forEach(function(row) {
 				row.getCells().forEach(function(cell) {
 					cell.attachBrowserEvent('paste', function(e) {
 						e.stopPropagation();
@@ -105,20 +106,20 @@ sap.ui.define([
 						var text = (e.originalEvent || e).clipboardData.getData('text/plain');
 						var domCell = jQuery.sap.domById(e.currentTarget.id);
 						var insertCell = jQuery('#' + domCell.id).control()[0];
-						var itemsPath = that.getBindingPath('items');
-						var pathRow = insertCell.getBindingContext('DynData').sPath;
+						var itemsPath = that.getBindingPath('rows');
+						var pathRow = insertCell.getBindingContext('DataModel').sPath;
 
 						currentRowIndex = parseInt(pathRow.substring(pathRow.lastIndexOf('/') + 1)); //Selected row index
 
 						var startRowIndex = pathRow.split(itemsPath + "/")[1];
 						var startProperty = insertCell.getBindingPath('value');
-						that.insertRows(text, that, 'DynData', startRowIndex, startProperty);
+						that.insertRows(text, that, 'DataModel', startRowIndex, startProperty);
 					});
 				});
 			});
 
 		},
-		renderer: sap.m.Table.prototype.getRenderer()
-
+		// renderer: sap.m.Table.prototype.getRenderer()
+        renderer: sap.ui.table.Table.prototype.getRenderer()
 	});
 });

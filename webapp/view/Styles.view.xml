@@ -1,5 +1,5 @@
 <mvc:View xmlns:layout="sap.ui.layout" controllerName="zui3derp.controller.Styles" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m" xmlns:c="zui3derp.control" xmlns:core="sap.ui.core" xmlns:plugins="sap.ui.table.plugins" xmlns:fb="sap.ui.comp.filterbar" >
+    xmlns="sap.m" xmlns:c="zui3derp.control" xmlns:core="sap.ui.core" xmlns:t="sap.ui.table" xmlns:plugins="sap.ui.table.plugins" xmlns:fb="sap.ui.comp.filterbar" >
     <Page showHeader="false">
         <Bar>
             <contentLeft>
@@ -95,10 +95,15 @@
        
         <Panel class="sapUiTinyMarginTop">
             <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
-            <!--         <Table id="idMyTable"  inset="false" growing="true" growingScrollToLoad="true" alternateRowColors="true"> -->
-            <!-- Our code in the controller goes here -->
-            <!--         </Table>     -->
-                <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact" mode="MultiSelect">
+                <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact" selectionMode="MultiToggle" 
+                    showColumnVisibilityMenu="true">
+                    <!-- <c:rowActionTemplate>
+                        <t:RowAction>
+                            <t:items>
+                                <t:RowActionItem type="Navigation" press="onAttachmentDeletePress"></t:RowActionItem>
+                            </t:items>
+                        </t:RowAction>
+                    </c:rowActionTemplate> -->
                 </c:DynamicTable>
             </ScrollContainer>
         </Panel>

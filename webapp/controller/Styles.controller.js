@@ -72,11 +72,9 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONColumnsModel.setData(oData);
                         me.oJSONModel.setData(oData);
-
-                        var colNo = oData.results.length;
-
+                        // var colNo = oData.results.length;
                         me.getView().setModel(oJSONColumnsModel, "DynColumns");
-                        me.setTableColumns();
+                        // me.setTableColumns();
                         me.getDynamicTableData(oData.results);
                     },
                     error: function (err) { }
@@ -124,10 +122,12 @@ sap.ui.define([
                     prodtyp: prodtyp,
                     type: 'STYLINIT'
                 });
-                oModel.read("/DynamicDataSet", {
-                    urlParameters: {
-                        "$select": selectString
-                    },
+                
+                // oModel.read("/DynamicDataSet", {
+                    // urlParameters: {
+                    //     "$select": selectString
+                    // },
+                oModel.read("/StyleSet", {
                     success: function (oData, oResponse) {
                         oJSONDataModel.setData(oData);
                         me.getView().setModel(oJSONDataModel, "DynData");
@@ -144,6 +144,7 @@ sap.ui.define([
                 var oDynColumns = oModel.getProperty('/results');
 
                 var oTable = this.getView().byId("styleDynTable");
+
                 var i = 0;
 
                 oTable.destroyColumns();
@@ -152,7 +153,7 @@ sap.ui.define([
 
                     var colName = "{i18n>" + oDynColumns[i].ColumnName + "}";
 
-                    var oColumn = new sap.m.Column("Col" + i, {
+                    var oColumn = new sap.ui.table.Column("Col" + i, {
                         width: "10em",
                         header: new sap.m.Label({
                             text: colName
@@ -165,49 +166,152 @@ sap.ui.define([
             setTableData: function (statusColNo) {
                 var me = this;
 
-                var oModel = this.getView().getModel("DynData");
-                var oDynData = oModel.getProperty('/results');
-                var dataLen = 22;
+                var oColumnsModel = this.getView().getModel("DynColumns");
+                var oDataModel = this.getView().getModel("DynData");
 
-                var oTable = this.getView().byId("styleDynTable");
+                var oColumnsData = oColumnsModel.getProperty('/results');
+                var oData = oDataModel.getProperty('/results');
 
-                var oCell = [];
-                for (var i = 1; i < dataLen; i++) {
-
-                    var lv1 = "Col";
-                    var lv2 = this.pad(i, 3);
-                    var lv_field = "{DynData>" + lv1 + lv2 + "}";
-
-                    var cell;
-                    if(i===statusColNo) {
-                        cell = new sap.tnt.InfoLabel({
-                            text: lv_field,
-                            colorScheme: `{= $${lv_field} === 'CMP' ? 8 : $${lv_field} === 'CRT' ? 3 : 1}`
-                        });
-                    } else {
-                        cell = new sap.m.Text({
-                            text: lv_field
-                        });
-                    }
-                    
-                    oCell.push(cell);
-                }
-
-                var aColList = new sap.m.ColumnListItem({
-                    type: "Navigation",
-                    press: this.goToDetail,
-                    cells: oCell
+                oColumnsData.unshift({
+                    "ColumnName":"",
+                    "ColumnType":"SEL"
                 });
 
-                oTable.bindItems("DynData>/results", aColList);
+                var oModel = new sap.ui.model.json.JSONModel();
+                oModel.setData({
+                    columns: oColumnsData,
+                    rows: oData
+                });
+
+                var dataLength = oData.length;
+                
+                var oTable = this.getView().byId("styleDynTable");
+
+                if (dataLength < 10) {
+                    oTable.setVisibleRowCount(dataLength);            
+                }
+
+                // var oRowActionTemplate = new sap.ui.table.RowAction({items: [
+                //     new sap.ui.table.RowActionItem({
+                //         type: "Navigation",
+                //         press: me.goToDetail,
+                //         visible: true
+                //     })
+                // ]});
+                // oTable.setRowActionTemplate(oRowActionTemplate);
+
+                // var oTemplate = oTable.getRowActionTemplate();
+
+                oTable.setModel(oModel);
+
+                oTable.bindColumns("/columns", function(index, context) {
+                    var sColumnId = context.getObject().ColumnName;
+                    var sColumnType = context.getObject().ColumnType;
+                    //alert(sColumnId.);
+                    return new sap.ui.table.Column({
+                        id : sColumnId,
+                        label: "{i18n>" + sColumnId + "}", 
+                        // template: new sap.m.Text({ text: "{" + sColumnId + "}" }),
+                        template: me.columnTemplate(sColumnId, sColumnType),
+                        width : me.getColumnSize(sColumnId, sColumnType),
+                        sortProperty: sColumnId, 
+                        filterProperty: sColumnId,
+                        autoResizable: true
+                    });
+                });
+                oTable.bindRows("/rows");    
+                // oTable.onAfterRendering = this.onTableRender();
+                
+                // oTable.addColumn(new sap.ui.table.Column({
+                //     id : "SEL",
+                //     label: "SEL", 
+                //     // template: new sap.m.Text({ text: "{" + sColumnId + "}" }),
+                //     template: me.columnTemplate("SEL"),
+                //     autoResizable: true
+                // }));
+
+                // oTable.setRowActionTemplate(oTemplate);
+			    // oTable.setRowActionCount(2);
+
+                //original
+                // var oCell = [];
+                // for (var i = 1; i < dataLen; i++) {
+
+                //     var lv1 = "Col";
+                //     var lv2 = this.pad(i, 3);
+                //     var lv_field = "{DynData>" + lv1 + lv2 + "}";
+
+                //     var cell;
+                //     if(i===statusColNo) {
+                //         cell = new sap.tnt.InfoLabel({
+                //             text: lv_field,
+                //             colorScheme: `{= $${lv_field} === 'CMP' ? 8 : $${lv_field} === 'CRT' ? 3 : 1}`
+                //         });
+                //     } else {
+                //         cell = new sap.m.Text({
+                //             text: lv_field
+                //         });
+                //     }
+                    
+                //     oCell.push(cell);
+                // }
+
+                // var aColList = new sap.m.ColumnListItem({
+                //     type: "Navigation",
+                //     press: this.goToDetail,
+                //     cells: oCell
+                // });
+
+                // oTable.bindRows("DynData>/results", aColList);
             },
 
+            // onTableRendered: function() {
+            //     var oTable = this.getView().byId("styleDynTable");
+            //     for(var i = 0; i < oTable.getColumns().length; i++ ) {
+            //         oTable.autoResizeColumn(i);
+            //     }
+            // },
+
+            columnTemplate: function(sColumnId, sColumnType) {
+                var oColumnTemplate;
+
+                if(sColumnId === "STATUSCD") {
+                    oColumnTemplate = new sap.tnt.InfoLabel({ 
+                        text: "{" + sColumnId + "}", 
+                        colorScheme: "{= ${" + sColumnId + "} === 'CMP' ? 8 : ${" + sColumnId+ "} === 'CRT' ? 3 : 1}"
+                    })
+                }
+                else if(sColumnType === "SEL") {
+                    oColumnTemplate = new sap.m.Button({ 
+                        text: "",
+                        icon: "sap-icon://detail-view",
+                        type: "Ghost",
+                        press: this.goToDetail
+                    });
+                    oColumnTemplate.data("StyleNo", "{" + sColumnId + "}");
+                } else {
+                    oColumnTemplate = new sap.m.Text({ text: "{" + sColumnId + "}" });
+                }
+
+                return oColumnTemplate;
+            },
+
+            getColumnSize: function(sColumnId, sColumnType) {
+                var mSize = '120px';
+                if(sColumnType === "SEL") {
+                    mSize = '50px';
+                } else if(sColumnId === "STYLECD") {
+                    mSize = '200px';
+                } else if(sColumnId === "DESC1") {
+                    mSize = '180px';
+                }
+                
+                return mSize;
+            },
+            
             goToDetail: function (oEvent) {
-                var columnName = "Col" + that.pad(that._StyleNoColNo, 3)
-                var oItem, oCtx;
-                oItem = oEvent.getSource();
-                oCtx = oItem.getBindingContext("DynData");
-                var styleNo = oCtx.getProperty(columnName);
+                var oButton = oEvent.getSource();
+                var styleNo = oButton.data("StyleNo").STYLENO;
                 that.navToDetail(styleNo);
             },
 

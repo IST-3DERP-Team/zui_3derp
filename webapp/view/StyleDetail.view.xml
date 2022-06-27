@@ -1,6 +1,6 @@
 <mvc:View controllerName="zui3derp.controller.StyleDetail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns:u="sap.uxap"
     xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
-    xmlns:c="zui3derp.control">
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
     <Page showHeader="false">
         <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>CurrentVersion}: 1" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
 		        title="{headerData>/Styleno}" number="{headerData>/Statuscd}" numberUnit="{i18n>Status}" numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}">
@@ -48,12 +48,12 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>SEASONCD}">
                                 <f:fields>
-                                    <Input value="{headerData>/Seasoncd}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>FTYSTYLE}">
                                 <f:fields>
-                                    <Input value="{headerData>/Ftystyle}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -69,17 +69,17 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>PRODTYP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Prodtyp}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>STYLECAT}">
                                 <f:fields>
-                                    <Input value="{headerData>/Stylecat}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>CUSTPRDTYP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Custprdtyp}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -88,17 +88,17 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>SALESGRP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Salesgrp}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>PRODGRP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Prodgrp}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>STYLEGRP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Stylegrp}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                             
@@ -108,17 +108,17 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>CUSTGRP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Custgrp}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>SOLDTOCUST}">
                                 <f:fields>
-                                    <Input value="{headerData>/Soldtocust}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>SIZEGRP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Sizegrp}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                             
@@ -128,12 +128,12 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>UOM}">
                                 <f:fields>
-                                    <Input value="{headerData>/Uom}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>FABRICATION}">
                                 <f:fields>
-                                    <Input value="{headerData>/Fabrctn}"/>
+                                    <Input value=""/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -176,12 +176,12 @@
                                     <Label text="General Attributes"/>
                                     <ToolbarSpacer />
                                     <Button icon="sap-icon://add" press="addGeneralAttr"/>
-                                    <Button icon="sap-icon://edit" />
+                                    <Button icon="sap-icon://edit" press="saveSettings"/>
                                     <Button icon="sap-icon://save"/>
                                     <Button icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
-                            <c:DynamicTable id="GeneralAttTable" items="{/Data}"  class="sapUiSizeCompact">
+                            <!-- <c:DynamicTable id="GeneralAttTable" rows="{GeneralData>/results}"  class="sapUiSizeCompact"  mode="MultiSelect">
                                 <c:columns>
                                     <Column><Label design="Bold" text="Attribute Type"/></Column>
                                     <Column><Label design="Bold" text="Attribute Code"/></Column>
@@ -192,14 +192,36 @@
                                 <c:items>
                                     <ColumnListItem>
                                         <cells>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
+                                            <Input value="{GeneralData>Attribtype}" width="100%"></Input>
+                                            <Input value="{GeneralData>Attribcd}" width="100%"></Input>
+                                            <Input value="{GeneralData>Desc1}" width="100%"></Input>
+                                            <Input value="{GeneralData>Attribval}" width="100%"></Input>
+                                            <Input value="{GeneralData>Valunit}" width="100%"></Input>
                                         </cells>
                                     </ColumnListItem>
                                 </c:items>
+                            </c:DynamicTable> -->
+                            <c:DynamicTable id="generalTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
+                                <c:columns>
+                                    <t:Column width="11rem" filterProperty="Attribtype">
+                                        <Label text="Attribute Type" />
+                                        <t:template>
+                                            <Input value="{DataModel>Attribtype}"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="11rem">
+                                        <Label text="Attribute Code" />
+                                        <t:template>
+                                            <Input value="{DataModel>Attribcd}"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="11rem">
+                                        <Label text="Description" />
+                                        <t:template>
+                                            <Input value="{DataModel>Desc1}"/>
+                                        </t:template>
+                                    </t:Column>
+                                </c:columns>
                             </c:DynamicTable>
                         </Panel>
                         <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
@@ -213,19 +235,10 @@
                                     <Button icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
-                            <c:DynamicTable id="ColorsAttTable" items="{/Data}"  class="sapUiSizeCompact">
+                            <c:DynamicTable id="colorsTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
                                 <c:columns>
-                                    <Column><Label design="Bold" text="Color Code"/></Column>
-                                    <Column><Label design="Bold" text="Description"/></Column>
+                                    
                                 </c:columns>
-                                <c:items>
-                                    <ColumnListItem>
-                                        <cells>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                        </cells>
-                                    </ColumnListItem>
-                                </c:items>
                             </c:DynamicTable>
                         </Panel>
                         <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
@@ -239,21 +252,10 @@
                                     <Button icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
-                            <c:DynamicTable id="SizesAttTable" items="{/Data}"  class="sapUiSizeCompact">
+                            <c:DynamicTable id="sizesTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
                                 <c:columns>
-                                    <Column><Label design="Bold" text="Size Range"/></Column>
-                                    <Column><Label design="Bold" text="Size Code"/></Column>
-                                    <Column><Label design="Bold" text="Base Ind"/></Column>
+                                    
                                 </c:columns>
-                                <c:items>
-                                    <ColumnListItem>
-                                        <cells>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                        </cells>
-                                    </ColumnListItem>
-                                </c:items>
                             </c:DynamicTable>
                         </Panel>
                         <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
@@ -267,27 +269,10 @@
                                     <Button icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
-                            <c:DynamicTable id="ProcAttTable" items="{/Data}"  class="sapUiSizeCompact">
+                            <c:DynamicTable id="processesTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
                                 <c:columns>
-                                    <Column><Label design="Bold" text="Seq."/></Column>
-                                    <Column><Label design="Bold" text="Process"/></Column>
-                                    <Column><Label design="Bold" text="VAS Type"/></Column>
-                                    <Column><Label design="Bold" text="Lead Time"/></Column>
-                                    <Column><Label design="Bold" text="Attr. Group"/></Column>
-                                    <Column><Label design="Bold" text="Attribute"/></Column>
+                                    
                                 </c:columns>
-                                <c:items>
-                                    <ColumnListItem>
-                                        <cells>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                            <Input value="" width="50%"></Input>
-                                        </cells>
-                                    </ColumnListItem>
-                                </c:items>
                             </c:DynamicTable>
                         </Panel>
                     </IconTabFilter>
