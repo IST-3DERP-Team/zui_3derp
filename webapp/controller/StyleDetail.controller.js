@@ -14,13 +14,10 @@ sap.ui.define([
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteStyleDetail").attachPatternMatched(this._routePatternMatched, this);
-              
-                this.oGeneralTable();
-                this.oColorsTable();
-                this.oSizesTable();
-                this.oProcessesTable();
-                this.oVersionsTable();
-                this.oAttachmentsTable();
+
+                this._User = 'EMALLARI';
+                // this.oVersionsTable();
+                // this.oAttachmentsTable();
             },
 
             _routePatternMatched: function (oEvent) {
@@ -38,7 +35,11 @@ sap.ui.define([
                 } else {
                     this.getHeaderData(styleNo);
                 }
+                this.getComboBoxData();
                 this.oGeneralTable();
+                this.oColorsTable();
+                this.oSizesTable();
+                this.oProcessesTable();
             },
 
             getHeaderData: function(styleNo) {
@@ -57,6 +58,71 @@ sap.ui.define([
                 })
 
             },
+
+            getComboBoxData: function () {
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+
+                //get Seasons
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var seasonCB = this.getView().byId("seasonCB");
+                oModel.setHeaders({
+                    sbu: "VER"
+                });
+                oModel.read("/SeasonSet", {
+                    success: function (oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        seasonCB.setModel(oJSONModel);
+                    },
+                    error: function (err) { }
+                });
+
+                //get Product Types
+                var oJSONModel2 = new sap.ui.model.json.JSONModel();
+                var prodTypeCB = this.getView().byId("prodTypeCB");
+                oModel.setHeaders({
+                    sbu: "VER"
+                });
+                oModel.read("/ProductTypeSet", {
+                    success: function (oData, oResponse) {
+                        oJSONModel2.setData(oData);
+                        oJSONModel2.setSizeLimit(1000);
+                        prodTypeCB.setModel(oJSONModel2);
+                    },
+                    error: function (err) { }
+                });
+
+                //get Sales Groups
+                var oJSONModel3 = new sap.ui.model.json.JSONModel();
+                var salesGroupCB = this.getView().byId("salesGroupCB");
+                oModel.setHeaders({
+                    username: this._User
+                });
+                oModel.read("/SalesGroupSet", {
+                    success: function (oData, oResponse) {
+                        oJSONModel3.setData(oData);
+                        oJSONModel3.setSizeLimit(1000);
+                        salesGroupCB.setModel(oJSONModel3);
+                    },
+                    error: function (err) { }
+                });
+
+                //get Customer Groups
+                var oJSONModel4 = new sap.ui.model.json.JSONModel();
+                var customerGroupCB = this.getView().byId("customerGroupCB");
+                oModel.setHeaders({
+                    username: this._User
+                });
+                oModel.read("/CustomerGroupSet", {
+                    success: function (oData, oResponse) {
+                        oJSONModel4.setData(oData);
+                        oJSONModel4.setSizeLimit(1000);
+                        customerGroupCB.setModel(oJSONModel4);
+                    },
+                    error: function (err) { }
+                });
+            },
+
             
             oGeneralTable:function(){
                 var me = this;

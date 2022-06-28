@@ -9,24 +9,52 @@
         </Bar>
 
         <!-- >>> Filters <<< -->
-        <ComboBox id="filterSBU" items="{ path: '/results', sorter: { path: 'Sbu' } }"> 
-            <core:Item key="{Sbu}" text="{Sbu}" />
-        </ComboBox>
-        <smartfilterbar:SmartFilterBar id="SmartFilterBar" entitySet="ZVI_3DERP_STYLES_FILTER" search="onSearch" persistencyKey="3DERP_StylesPKey">
-            <!-- <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration key="SBU" groupId="_BASIC" label="{i18n>SBUFilter}" mandatory="mandatory">
-                    <smartfilterbar:customControl>
-                        
-                    </smartfilterbar:customControl>
-                </smartfilterbar:ControlConfiguration>
-            </smartfilterbar:controlConfiguration> -->
+        
+        <smartfilterbar:SmartFilterBar id="SmartFilterBar" entitySet="ZVI_3DERP_STYLES_FILTER" search="onSearch" persistencyKey="3DERP_StylesPKey" filterContainerWidth="15rem">
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{i18n>ProductTypeFilter}" controlType="dropDownList" displayBehaviour="descriptionAndId"
-                    hasTypeAhead="true" mandatory="mandatory">
+                <smartfilterbar:ControlConfiguration id="filterSBU" key="SBU" groupId="_BASIC" label="{i18n>SBUFilter}" mandatory="mandatory" controlType="dropDownList" filterType="single">
+                    <!-- <smartfilterbar:defaultFilterValues>
+                        <smartfilterbar:SelectOption operator="EQ" low="VER"></smartfilterbar:SelectOption>
+                    </smartfilterbar:defaultFilterValues> -->
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration key="PRODGRP" label="{i18n>PRODGRP}" visibleInAdvancedArea="true">
+                <smartfilterbar:ControlConfiguration id="filterSalesGroup" key="SALESGRP" groupId="_BASIC" label="{i18n>SalesGroupFilter}" controlType="dropDownList" displayBehaviour="descriptionAndId"
+                    mandatory="notMandatory">
+                    <!-- <smartfilterbar:defaultFilterValues>
+                        <smartfilterbar:SelectOption operator="EQ" low="POL"></smartfilterbar:SelectOption>
+                    </smartfilterbar:defaultFilterValues> -->
+                </smartfilterbar:ControlConfiguration>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration id="filterCustomerGroup" key="CUSTGRP" groupId="_BASIC" label="{i18n>CustomerGroupFilter}" controlType="dropDownList" displayBehaviour="idAndDescription"
+                    mandatory="notMandatory">
+                    <!-- <smartfilterbar:defaultFilterValues>
+                        <smartfilterbar:SelectOption operator="EQ" low="6A"></smartfilterbar:SelectOption>
+                    </smartfilterbar:defaultFilterValues> -->
+                </smartfilterbar:ControlConfiguration>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{i18n>SeasonFilter}" controlType="dropDownList" displayBehaviour="descriptionAndId"
+                    mandatory="notMandatory">
+                    <!-- <smartfilterbar:defaultFilterValues>
+                        <smartfilterbar:SelectOption operator="EQ" low="SP21"></smartfilterbar:SelectOption>
+                    </smartfilterbar:defaultFilterValues> -->
+                </smartfilterbar:ControlConfiguration>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{i18n>ProductTypeFilter}" controlType="dropDownList" displayBehaviour="descriptionAndId"
+                    mandatory="notMandatory">
+                    <!-- <smartfilterbar:defaultFilterValues>
+                        <smartfilterbar:SelectOption operator="EQ" low="1000"></smartfilterbar:SelectOption>
+                    </smartfilterbar:defaultFilterValues> -->
+                </smartfilterbar:ControlConfiguration>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="STYLENO" groupId="_ADVANCED" label="{i18n>STYLENO}">
+                    <!-- <smartfilterbar:defaultFilterValues>
+                        <smartfilterbar:SelectOption operator="EQ" low="1000"></smartfilterbar:SelectOption>
+                    </smartfilterbar:defaultFilterValues> -->
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
         </smartfilterbar:SmartFilterBar>
@@ -98,7 +126,7 @@
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-            <Button text="{i18n>Copy}" icon="sap-icon://copy" press="onCopyStyles">
+            <Button text="{i18n>Export}" icon="sap-icon://excel-attachment" press="onExportExcel">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
@@ -117,7 +145,7 @@
        
         <Panel class="sapUiTinyMarginTop">
             <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
-                <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact" selectionMode="MultiToggle" 
+                <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact" selectionMode="None" 
                     showColumnVisibilityMenu="true">
                 </c:DynamicTable>
             </ScrollContainer>

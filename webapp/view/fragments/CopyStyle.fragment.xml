@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
-	<Dialog title="Copy Style" contentWidth="75%">
+	<Dialog title="Copy Style {CopyModel>/STYLENO}" contentWidth="75%">
 		<Panel>
 			<f:Form id="StyleHeaderForm1" editable="true" class="sapUiNoContentPadding">
                 <f:layout>
@@ -10,12 +10,12 @@
                         <f:formElements>
                             <f:FormElement label="Source Style Code">
                                 <f:fields>
-                                    <Text text="G206SM01SSCN CLS MDL4"/>
+                                    <Text text="{CopyModel>/STYLECD}"/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="Source Season">
                                 <f:fields>
-                                    <Text text="SPRING 2021"/>
+                                    <Text text="{CopyModel>/SEASONCD}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
