@@ -41,16 +41,36 @@ sap.ui.define([
             getDefaultFilters: function() {
                 var me = this;
                 var entitySet = "/DefaultFilterSet('EMALLARI')";
+                
+                //Set SmartFilterBar initial values
+                var oSmartFilter = this.getView().byId("SmartFilterBar");
+                
                 this._Model.read(entitySet, {
                     success: function (oData, oResponse) {
-                        var defaultFilters = {
-                            sbu: oData.Sbu,
-                            salesgrp: oData.Salesgrp,
-                            custgrp: oData.Custgrp,
-                            season: oData.Seasoncd,
-                            prodtyp: oData.Prodtyp
-                        }
-                        me.getFiltersData(defaultFilters);
+                        var oDefaultFilter = {
+                            SBU: oData.Sbu,
+                            SALESGRP: {
+                                items: [{
+                                    key: oData.Salesgrp
+                                }]
+                            },
+                            CUSTGRP:{
+                                items: [{
+                                    key: oData.Custgrp
+                                }]
+                            },
+                            SEASONCD: {
+                                items: [{
+                                    key: oData.Seasoncd
+                                }]
+                            },
+                            PRODTYP: {
+                                items: [{
+                                    key: oData.Prodtyp
+                                }]
+                            } 
+                        };
+                        oSmartFilter.setFilterData(oDefaultFilter);
                     },
                     error: function (err) { }
                 });
@@ -58,6 +78,8 @@ sap.ui.define([
 
             onSearch: function() {
                 this.getDynamicTableColumns();    
+
+                var oSmartFilter = this.getView().byId("SmartFilterBar");
             },
 
             getDynamicTableColumns: function () {
@@ -68,7 +90,7 @@ sap.ui.define([
                 this.oJSONModel = new sap.ui.model.json.JSONModel();
 
                 var oFilterSBU = this.getView().byId("filterSBU");
-                this._SBU = oFilterSBU.getSelectedKey();
+                this._SBU = "VER"; // oFilterSBU.getSelectedKey();
                 this._Model.setHeaders({
                     sbu: this._SBU,
                     type: 'STYLINIT'
@@ -89,7 +111,7 @@ sap.ui.define([
             getDynamicTableData: function(columns) {
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
-                var sbu = this.getView().byId("filterSBU").getSelectedKey();
+                // var sbu = this.getView().byId("filterSBU").getSelectedKey();
                 // var salesgrp = this.getView().byId("filterSalesGroup").getSelectedKey();
                 // var custgrp = this.getView().byId("filterCustomerGroup").getSelectedKey();
                 // var season = this.getView().byId("filterSeason").getSelectedKey();
@@ -119,14 +141,14 @@ sap.ui.define([
 
                 //get dynamic data
                 var oJSONDataModel = new sap.ui.model.json.JSONModel();
-                oModel.setHeaders({
-                    sbu: 'VER',
-                    salesgrp: 'POL',
-                    custgrp: '6A',
-                    season: 'SP21',
-                    prodtyp: '1000',
-                    type: 'STYLINIT'
-                });
+                // oModel.setHeaders({
+                //     sbu: 'VER',
+                //     salesgrp: 'POL',
+                //     custgrp: '6A',
+                //     season: 'SP21',
+                //     prodtyp: '1000',
+                //     type: 'STYLINIT'
+                // });
 
                 var aFilters = this.getView().byId("SmartFilterBar").getFilters();
                 
@@ -173,10 +195,15 @@ sap.ui.define([
                 var oData = oDataModel.getProperty('/results');
 
                 oColumnsData.unshift({
-                    "ColumnName":"",
-                    "ColumnType":"SEL"
+                    "ColumnName":"Copy",
+                    "ColumnType":"COPY"
                 });
 
+                oColumnsData.unshift({
+                    "ColumnName":"View",
+                    "ColumnType":"SEL"
+                });
+                
                 var oModel = new sap.ui.model.json.JSONModel();
                 oModel.setData({
                     columns: oColumnsData,
@@ -187,9 +214,9 @@ sap.ui.define([
                 
                 var oTable = this.getView().byId("styleDynTable");
 
-                if (dataLength < 10) {
-                    oTable.setVisibleRowCount(dataLength);            
-                }
+                // if (dataLength < 10) {
+                //     oTable.setVisibleRowCount(dataLength);            
+                // }
 
                 oTable.setModel(oModel);
 
@@ -218,15 +245,22 @@ sap.ui.define([
                         text: "{" + sColumnId + "}", 
                         colorScheme: "{= ${" + sColumnId + "} === 'CMP' ? 8 : ${" + sColumnId+ "} === 'CRT' ? 3 : 1}"
                     })
-                }
-                else if(sColumnType === "SEL") {
+                } else if (sColumnType === "SEL") {
                     oColumnTemplate = new sap.m.Button({ 
                         text: "",
                         icon: "sap-icon://detail-view",
                         type: "Ghost",
                         press: this.goToDetail
                     });
-                    oColumnTemplate.data("StyleNo", "{" + sColumnId + "}");
+                    oColumnTemplate.data("StyleNo", "{}");
+                } else if (sColumnType === "COPY") {
+                    oColumnTemplate = new sap.m.Button({ 
+                        text: "",
+                        icon: "sap-icon://copy",
+                        type: "Ghost",
+                        press: this.onCopyStyle
+                    });
+                    oColumnTemplate.data("StyleNo", "{}");
                 } else {
                     oColumnTemplate = new sap.m.Text({ text: "{" + sColumnId + "}" });
                 }
@@ -235,13 +269,13 @@ sap.ui.define([
             },
 
             getColumnSize: function(sColumnId, sColumnType) {
-                var mSize = '120px';
-                if(sColumnType === "SEL") {
-                    mSize = '50px';
+                var mSize = '7rem';
+                if(sColumnType === "SEL" || sColumnType === "COPY") {
+                    mSize = '3.2rem';
                 } else if(sColumnId === "STYLECD") {
-                    mSize = '200px';
-                } else if(sColumnId === "DESC1") {
-                    mSize = '180px';
+                    mSize = '30rem';
+                } else if(sColumnId === "DESC1" || sColumnId === "PRODTYP") {
+                    mSize = '20rem';
                 }
                 
                 return mSize;
@@ -259,28 +293,28 @@ sap.ui.define([
                 } );
             },
 
-            getFiltersData: function (defaultFilters) {
-                var me = this;
-                var oJSONModel = new sap.ui.model.json.JSONModel();
+            // getFiltersData: function (defaultFilters) {
+                // var me = this;
+                // var oJSONModel = new sap.ui.model.json.JSONModel();
 
-                //get SBUs
-                var filterSBU = this.getView().byId("filterSBU");
-                this._Model.setHeaders({
-                    username: this._User
-                });
-                this._Model.read("/SBUSet", {
-                    success: function (oData, oResponse) {
-                        oJSONModel.setData(oData);
-                        filterSBU.setModel(oJSONModel);
-                        filterSBU.setSelectedKey(defaultFilters.sbu);
-                    },
-                    error: function (err) { }
-                });
+                // //get SBUs
+                // // var filterSBU = this.getView().byId("filterSBU");
+                // this._Model.setHeaders({
+                //     username: this._User
+                // });
+                // this._Model.read("/SBUSet", {
+                //     success: function (oData, oResponse) {
+                //         oJSONModel.setData(oData);
+                //         filterSBU.setModel(oJSONModel);
+                //         // filterSBU.setSelectedKey(defaultFilters.sbu);
+                //     },
+                //     error: function (err) { }
+                // });
 
                 //set filter data
-            },
+            // },
 
-            getSelectedStyles: function() {
+            // getSelectedStyles: function() {
                 // var oTable = this.getView().byId("styleDynTable");
                 // var selectedContexts = oTable.getSelectedContextPaths();
                 // var i = 0;
@@ -293,7 +327,7 @@ sap.ui.define([
                 // })
 
                 // return selectedItems;
-            },
+            // },
 
             onSBUChange: function () {
                 var oFilterSBU = this.getView().byId("filterSBU");
@@ -310,46 +344,54 @@ sap.ui.define([
                 this._ConfirmNewDialog.open();
             },
 
-            onConfirmNewStyle: function() {
-                this.navToDetail("NEW");
-            },
+            // onConfirmNewStyle: function() {
+            //     this.navToDetail("NEW");
+            // },
 
-            onCopyStyles: function() {
-                var selectedStyles = this.getSelectedStyles();
+            onCopyStyle: function(oEvent) {
+                var oButton = oEvent.getSource();
+                var styleNo = oButton.data("StyleNo").STYLENO;
 
-                if(selectedStyles.length !== 0) {
+                var oModel = new sap.ui.model.json.JSONModel();
+                oModel.setData({
+                    "STYLENO": styleNo,
+                    "STYLECD": "STYLECODE",
+                    "SEASONCD": "SeasonCd",
+                    "DESC1": "DESC1",
+                    versions: []
+                });
 
-                    if (!this._ConfirmCopyDialog) {
-                        this._ConfirmCopyDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ConfirmCopyStyles", this);
-                        this.getView().addDependent(this._ConfirmCopyDialog);
-                    }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    this._ConfirmCopyDialog.addStyleClass("sapUiSizeCompact");
-                    this._ConfirmCopyDialog.open();
+                var oView = that.getView();
+                oView.setModel(oModel, "CopyModel")
+               
+                // var selectedStyles = this.getSelectedStyles();
 
-                } else {
-                    Common.showMessage("Select items to copy");
+                if (!that._CopyStyleDialog) {
+                    that._CopyStyleDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CopyStyle", that);
+                    that.getView().addDependent(that._CopyStyleDialog);
                 }
-                
+                jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
+                that._CopyStyleDialog.addStyleClass("sapUiSizeCompact");
+                that._CopyStyleDialog.open(); 
             },
 
-            onConfirmCopyStyles: function() {
-                var selectedStyles = this.getSelectedStyles();
+            // onConfirmCopyStyles: function() {
+            //     var selectedStyles = this.getSelectedStyles();
 
-                if(selectedStyles.length !== 0) {
-                    this._ConfirmCopyDialog.close();
+            //     if(selectedStyles.length !== 0) {
+            //         this._ConfirmCopyDialog.close();
 
-                    selectedStyles.forEach((style) => {
-                        if (!this._CopyStyleDialog) {
-                            this._CopyStyleDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CopyStyle", this);
-                            this.getView().addDependent(this._CopyStyleDialog);
-                        }
-                        jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                        this._CopyStyleDialog.addStyleClass("sapUiSizeCompact");
-                        this._CopyStyleDialog.open(); 
-                    })                    
-                }
-            },
+            //         selectedStyles.forEach((style) => {
+            //             if (!this._CopyStyleDialog) {
+            //                 this._CopyStyleDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CopyStyle", this);
+            //                 this.getView().addDependent(this._CopyStyleDialog);
+            //             }
+            //             jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
+            //             this._CopyStyleDialog.addStyleClass("sapUiSizeCompact");
+            //             this._CopyStyleDialog.open(); 
+            //         })                    
+            //     }
+            // },
 
             onSaveCopyStyle: function() {
                 this._CopyStyleDialog.close();
