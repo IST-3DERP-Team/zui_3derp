@@ -10,11 +10,8 @@
                 <ObjectAttribute title="{i18n>UPDATEDBY}" text="{headerData>/Updatedby}"/>
                 <ObjectAttribute title="{i18n>UPDATEDDT}" text="{headerData>/Updateddt}"/>
             </attributes>
-            <!-- <statuses>
-                <ObjectStatus title="Status" text="CRT" state="Error"/>
-            </statuses> -->
         </ObjectHeader>
-         <Panel expandable="true" expanded="false" width="auto" class="sapUiSizeCompact whiteBackground">
+         <Panel expandable="true" expanded="true" width="auto" class="sapUiSizeCompact whiteBackground">
             <headerToolbar>
                 <Toolbar id="TB1" height="3rem" style="Clear">
                     <Title text="Header" />
@@ -176,16 +173,16 @@
             </f:Form>
 
         </Panel>
-        <Panel expandable="true" expanded="true" width="auto" class="sapUiSizeCompact whiteBackground">
+        <Panel expandable="true" expanded="false" width="auto" class="sapUiSizeCompact whiteBackground">
             <headerToolbar>
                 <Toolbar height="3rem" style="Clear">
                     <Title text="Detail" />
                 </Toolbar>
             </headerToolbar>
-            <IconTabBar id="idIconTabBarMulti" expanded="{device>/isNoPhone}" tabDensityMode="Compact" expandable="false">
+            <IconTabBar id="idIconTabBarMulti" expanded="{device>/isNoPhone}" tabDensityMode="Compact" expandable="false" class="sapUiNoContentPadding">
                 <items>
                     <IconTabFilter icon="sap-icon://hint" text="Attributes">
-                        <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                        <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="General Attributes"/>
@@ -196,7 +193,7 @@
                                     <Button icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
-                            <c:DynamicTable id="generalTable" rows="{DataModel>/results}" enableColumnReordering="false" class="sapUiSizeCompact">
+                            <c:DynamicTable id="generalTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="10" visibleRowCountMode="Auto" class="sapUiSizeCompact">
                                 <c:columns>
                                     <t:Column width="11rem" filterProperty="Attribtype">
                                         <Label text="Attribute Type" />
@@ -204,13 +201,13 @@
                                             <Input value="{DataModel>Attribtype}"/>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Attribcd">
                                         <Label text="Attribute Code" />
                                         <t:template>
                                             <Input value="{DataModel>Attribcd}"/>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Desc1">
                                         <Label text="Description" />
                                         <t:template>
                                             <Input value="{DataModel>Desc1}"/>
@@ -219,7 +216,7 @@
                                 </c:columns>
                             </c:DynamicTable>
                         </Panel>
-                        <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                        <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Colors" />
@@ -230,15 +227,15 @@
                                     <Button icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
-                            <c:DynamicTable id="colorsTable" rows="{DataModel>/results}" enableColumnReordering="false" class="sapUiSizeCompact">
+                            <c:DynamicTable id="colorsTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="5" visibleRowCountMode="Auto" class="sapUiSizeCompact">
                                 <c:columns>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Attribcd">
                                         <Label text="Color Code" />
                                         <t:template>
                                             <Input value="{DataModel>Attribcd}"/>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Desc1">
                                         <Label text="Description" />
                                         <t:template>
                                             <Input value="{DataModel>Desc1}"/>
@@ -247,7 +244,7 @@
                                 </c:columns>
                             </c:DynamicTable>
                         </Panel>
-                        <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                        <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Sizes" />
@@ -258,15 +255,15 @@
                                     <Button icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
-                            <c:DynamicTable id="sizesTable" rows="{DataModel>/results}" enableColumnReordering="false" class="sapUiSizeCompact">
+                            <c:DynamicTable id="sizesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact">
                                 <c:columns>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Attribgrp">
                                         <Label text="Size Range" />
                                         <t:template>
                                             <Input value="{DataModel>Attribgrp}"/>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Attribcd">
                                         <Label text="Size Code" />
                                         <t:template>
                                             <Input value="{DataModel>Attribcd}"/>
@@ -281,7 +278,8 @@
                                 </c:columns>
                             </c:DynamicTable>
                         </Panel>
-                        <Panel expandable="true" expanded="false" width="60%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+
+                        <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Processes" />
@@ -292,39 +290,41 @@
                                     <Button icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
-                            <c:DynamicTable id="processesTable" rows="{DataModel>/results}" enableColumnReordering="false" class="sapUiSizeCompact">
+
+                            <!-- PROCESSES -->
+                            <c:DynamicTable id="processesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact">
                                 <c:columns>
-                                    <t:Column width="4rem">
+                                    <t:Column width="4rem" filterProperty="Seqno">
                                         <Label text="Seq." />
                                         <t:template>
                                             <Input value="{DataModel>Seqno}"/>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Processcd">
                                         <Label text="Process" />
                                         <t:template>
                                             <Input value="{DataModel>Processcd}"/>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Vastyp">
                                         <Label text="VAS Type" />
                                         <t:template>
                                             <Input value="{DataModel>Vastyp}"/>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Leadtime">
                                         <Label text="Lead Time" />
                                         <t:template>
                                             <Input value="{DataModel>Leadtime}"/>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Attribtyp">
                                         <Label text="Attr. Group" />
                                         <t:template>
                                             <Input value="{DataModel>Attribtyp}"/>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem">
+                                    <t:Column width="11rem" filterProperty="Attribcd">
                                         <Label text="Attribute" />
                                         <t:template>
                                             <Input value="{DataModel>Attribcd}"/>
@@ -334,79 +334,150 @@
                             </c:DynamicTable>
                         </Panel>
                     </IconTabFilter>
+
+                    <!-- VERSIONS -->
                     <IconTabFilter icon="sap-icon://notes" text="Versions">
-                        <!-- <Text text="Versions ..." /> -->
-                        <!-- <Panel expandable="false" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
-                            <headerToolbar> -->
-                        <Toolbar height="3rem" style="Clear">
-                            <Title text="Versions" />
-                            <ToolbarSpacer />
-                            <Button icon="sap-icon://add"/>
-                            <Button icon="sap-icon://edit" />
-                            <Button icon="sap-icon://save"/>
-                            <Button icon="sap-icon://delete" />
-                        </Toolbar>
-                        <!-- <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" class="sapUiSizeCompact">
-                            <c:columns>
-                                <t:Column width="11rem">
-                                    <Label text="Version" />
-                                    <t:template>
-                                        <Input value="{DataModel>Verno}"/>
-                                    </t:template>
-                                </t:Column>
-                                <t:Column width="11rem">
-                                    <Label text="Current" />
-                                    <t:template>
-                                        <Input value="{DataModel>Currentver}"/>
-                                    </t:template>
-                                </t:Column>
-                                <t:Column width="11rem">
-                                    <Label text="Description" />
-                                    <t:template>
-                                        <Input value="{DataModel>Desc1} {DataModel>Desc2}"/>
-                                    </t:template>
-                                </t:Column>
-                            </c:columns>
-                        </c:DynamicTable> -->
-                        <!-- <HBox class="sapUiSmallMargin">
-                            <HBox width="30%" alignItems="Center" alignContent="Center">
-                                <ComboBox id="versionsCB" items="{ path: '/results', sorter: { path: 'VerNo' } }" selectedKey="{headerData>/Seasoncd}" class="sapUiTinyMargin"> 
-                                    <core:ListItem key="{VerNo}"/>
-                                </ComboBox>
-                                <CheckBox text="Current"/>
-                            </HBox>
-                            <HBox width="25%" alignItems="Center" alignContent="SpaceBetween">
-                                <Label text="Description" class="sapUiTinyMargin"/>
-                                <Input class="sapUiTinyMargin"/>
-                            </HBox>
-                            <HBox width="25%" alignItems="Center" alignContent="SpaceBetween">
-                                <Input class="sapUiTinyMargin"/>
-                            </HBox>
-                        </HBox> -->
-                        <IconTabBar headerMode="Inline" upperCase="true" class="sapUiResponsiveContentPadding">
-                            <items>
-                                <IconTabFilter text="Version Attributes">
-                                    <Text text="Info content goes here ..." />
-                                </IconTabFilter>
-                                <IconTabFilter text="BOM by GMC">
-                                    <Text text="Attachments go here ..." />
-                                </IconTabFilter>
-                                <IconTabFilter text="BOM by UV">
-                                    <Text text="Notes go here ..." />
-                                </IconTabFilter>
-                                <IconTabFilter text="Detailed BOM">
-                                    <Text text="People content goes here ..." />
-                                </IconTabFilter>
-                                <IconTabFilter text="Material List">
-                                    <Text text="People content goes here ..." />
-                                </IconTabFilter>
-                            </items>
-                        </IconTabBar>
+                        <Panel expandable="true" expanded="true" width="80%" class="sapUiNoContentPadding sapUiSizeCompact whiteBackground">
+                            <headerToolbar>
+                                <Toolbar height="3rem" style="Clear">
+                                    <Title text="Versions" />
+                                    <ToolbarSpacer />
+                                    <Button icon="sap-icon://add"/>
+                                    <Button icon="sap-icon://edit" />
+                                    <Button icon="sap-icon://save"/>
+                                    <Button icon="sap-icon://delete" />
+                                </Toolbar>
+                            </headerToolbar>
+                            <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" selectionMode="Single" 
+                                visibleRowCountMode="Auto" minAutoRowCount="3" class="sapUiSizeCompact">
+                                <c:columns>
+                                    <t:Column width="8rem" filterType="" filterProperty="Verno" sortProperty="Verno">
+                                        <Label text=""/>
+                                        <t:template>
+                                            <Button text="Maintain" icon="sap-icon://detail-view">
+
+                                            </Button>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
+                                        <Label text="Version"/>
+                                        <t:template>
+                                            <Text text="{DataModel>Verno}" textAlign="End"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
+                                        <Label text="Status" />
+                                        <t:template>
+                                            <tnt:InfoLabel id="il8" text="{= ${DataModel>Currentver} === '1' ? 'Current' : ' ' }" colorScheme="{= ${DataModel>Currentver} === '1' ? 8 : 7 }" displayOnly= "true"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">
+                                        <Label text="Description" />
+                                        <t:template>
+                                            <Input value="{DataModel>Desc1}"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="15rem" filterProperty="Desc2" sortProperty="Desc2">
+                                        <Label text="Description" />
+                                        <t:template>
+                                            <Input value="{DataModel>Desc2}"/>
+                                        </t:template>
+                                    </t:Column>
+                                </c:columns>
+                            </c:DynamicTable>
+                        </Panel>
+
+                        <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiTinyMarginTop sapUiSizeCompact whiteBackground">
+                            <ObjectHeader title="VERSTY-001 desc" responsive="true" intro="Version 1"/>
+                            <IconTabBar headerMode="Inline" upperCase="true" class="sapUiResponsiveContentPadding">
+                                <items>
+                                    <IconTabFilter text="Version Attributes">
+                                        <Toolbar height="3rem" style="Clear">
+                                            <Label text="Version Attributes"/>
+                                            <ToolbarSpacer />
+                                            <Button icon="sap-icon://add"/>
+                                            <Button icon="sap-icon://edit" />
+                                            <Button icon="sap-icon://save"/>
+                                            <Button icon="sap-icon://delete" />
+                                        </Toolbar>
+                                        <c:DynamicTable id="versionAttrTable" rows="{DataModel>/results}" enableColumnReordering="false"  
+                                            visibleRowCountMode="Auto" minAutoRowCount="5" class="sapUiSizeCompact">
+                                            <c:columns>
+                                                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                    <Label text="Attribute Type"/>
+                                                    <t:template>
+                                                        <Input value="{DataModel>Attribtyp}"/>
+                                                    </t:template>
+                                                </t:Column>
+                                                <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
+                                                    <Label text="Attribute Code" />
+                                                    <t:template>
+                                                        <Input value="{DataModel>Attribcd}"/>
+                                                    </t:template>
+                                                </t:Column>
+                                                <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
+                                                    <Label text="Description" />
+                                                    <t:template>
+                                                        <Input value="{DataModel>Desc1}"/>
+                                                    </t:template>
+                                                </t:Column>
+                                                <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">
+                                                    <Label text="Value" />
+                                                    <t:template>
+                                                        <Input value="{DataModel>Attribval}"/>
+                                                    </t:template>
+                                                </t:Column>
+                                                <t:Column width="11rem" filterProperty="Valunit" sortProperty="Valunit">
+                                                    <Label text="UOM" />
+                                                    <t:template>
+                                                        <Input value="{DataModel>Valunit}"/>
+                                                    </t:template>
+                                                </t:Column>
+                                            </c:columns>
+                                        </c:DynamicTable>
+                                    </IconTabFilter>
+                                    <IconTabFilter text="BOM by GMC" >
+                                        <Toolbar height="3rem" style="Clear">
+                                            <Label text="BOM by GMC"/>
+                                            <ToolbarSpacer />
+                                            <Button text="Get Components"/>
+                                            <Button text="RMC"/>
+                                            <Button icon="sap-icon://add"/>
+                                            <Button icon="sap-icon://edit" />
+                                            <Button icon="sap-icon://save"/>
+                                            <Button icon="sap-icon://delete" />
+                                        </Toolbar>
+                                        <!-- <c:DynamicTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+                                        </c:DynamicTable> -->
+                                        <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+                                        </c:DynamicTreeTable>
+                                    </IconTabFilter>
+                                    <IconTabFilter text="BOM by UV">
+                                        <Toolbar height="3rem" style="Clear">
+                                            <Label text="BOM by UV"/>
+                                            <ToolbarSpacer />
+                                            <Button icon="sap-icon://add"/>
+                                            <Button icon="sap-icon://edit" />
+                                            <Button icon="sap-icon://save"/>
+                                            <Button icon="sap-icon://delete" />
+                                        </Toolbar>
+                                        <c:DynamicTable id="bomUVTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+                                        </c:DynamicTable>
+                                    </IconTabFilter>
+                                    <IconTabFilter text="Detailed BOM">
+                                        <Text text="Detailed BOM ..." />
+                                    </IconTabFilter>
+                                    <IconTabFilter text="Material List">
+                                        <Text text="Material List ..." />
+                                    </IconTabFilter>
+                                </items>
+                            </IconTabBar>
+                        </Panel>
                     </IconTabFilter>
                     <IconTabFilter
                         icon="sap-icon://attachment" text="Attachments">
                         <!-- <Text text="Attachments ..." /> -->
-                        <Panel expandable="true" expanded="false" width="50%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                        <Panel expandable="true" expanded="false" width="100%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Attachments" />
@@ -419,7 +490,6 @@
                             </headerToolbar>
                             <c:DynamicTable id="attachmentsTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
                                 <c:columns>
-                                    
                                 </c:columns>
                             </c:DynamicTable>
                         </Panel>

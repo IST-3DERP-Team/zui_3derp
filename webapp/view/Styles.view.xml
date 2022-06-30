@@ -10,7 +10,7 @@
 
         <!-- >>> Filters <<< -->
         
-        <smartfilterbar:SmartFilterBar id="SmartFilterBar" entitySet="ZVI_3DERP_STYLES_FILTER" search="onSearch" persistencyKey="3DERP_StylesPKey" filterContainerWidth="15rem">
+        <smartfilterbar:SmartFilterBar id="SmartFilterBar" entitySet="ZVI_3DERP_STYLES_FILTER" search="onSearch" persistencyKey="3DERP_StylesPKey" filterContainerWidth="14rem">
             <smartfilterbar:controlConfiguration>
                 <smartfilterbar:ControlConfiguration id="filterSBU" key="SBU" groupId="_BASIC" label="{i18n>SBUFilter}" mandatory="mandatory" controlType="dropDownList" filterType="single">
                     <!-- <smartfilterbar:defaultFilterValues>
@@ -51,11 +51,58 @@
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration key="STYLENO" groupId="_ADVANCED" label="{i18n>STYLENO}">
-                    <!-- <smartfilterbar:defaultFilterValues>
-                        <smartfilterbar:SelectOption operator="EQ" low="1000"></smartfilterbar:SelectOption>
-                    </smartfilterbar:defaultFilterValues> -->
-                </smartfilterbar:ControlConfiguration>
+                <smartfilterbar:ControlConfiguration key="STYLENO" groupId="_ADVANCED" label="{i18n>STYLENO}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="STYLECAT" groupId="_ADVANCED" label="{i18n>STYLECAT}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="STYLECD" groupId="_ADVANCED" label="{i18n>STYLECD}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="FTSTYLE" groupId="_ADVANCED" label="{i18n>FTSTYLE}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="DESC1" groupId="_ADVANCED" label="{i18n>DESC1}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="DESC2" groupId="_ADVANCED" label="{i18n>DESC2}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="STATUSCD" groupId="_ADVANCED" label="{i18n>STATUSCD}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="CUSTPRDTYP" groupId="_ADVANCED" label="{i18n>CUSTPRDTYP}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="PRODGRP" groupId="_ADVANCED" label="{i18n>PRODGRP}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="PRODSIZEGRPGRP" groupId="_ADVANCED" label="{i18n>SIZEGRP}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="UOM" groupId="_ADVANCED" label="{i18n>UOM}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="STYLEGRP" groupId="_ADVANCED" label="{i18n>STYLEGRP}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="FABRCTN" groupId="_ADVANCED" label="{i18n>FABRCTN}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="VERNO" groupId="_ADVANCED" label="{i18n>VERNO}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="CREATEDBY" groupId="_ADVANCED" label="{i18n>CREATEDBY}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="CREATEDDT" groupId="_ADVANCED" label="{i18n>CREATEDDT}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="UPDATEDBY" groupId="_ADVANCED" label="{i18n>UPDATEDBY}"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="UPDATEDDT" groupId="_ADVANCED" label="{i18n>UPDATEDDT}"/>
             </smartfilterbar:controlConfiguration>
         </smartfilterbar:SmartFilterBar>
 

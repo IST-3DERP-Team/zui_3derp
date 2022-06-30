@@ -12,7 +12,7 @@ sap.ui.define([
         return Controller.extend("zui3derp.controller.Main", {
             
         onInit: function(){
-                this.onStyleReader();
+            this.onStyleReader();
         },
 
         goToStyles: function() {
@@ -24,42 +24,56 @@ sap.ui.define([
         },
 
         onStyleReader: function(){
-                var me = this;
                 var oModel = this.getOwnerComponent().getModel();
-                var entitySet = "/StyleStatsSet('')";
-                var oJSONObject = new sap.ui.model.json.JSONModel();
-                var oJSONObject2 = new sap.ui.model.json.JSONModel();
-                var oJSONObject3 = new sap.ui.model.json.JSONModel();
                 var oForecast = this.getView().byId("forecastNumber");
                 var oOrder = this.getView().byId("orderNumber");
                 var oShipped = this.getView().byId("shippedNumber");
-
-                oModel.read(entitySet,{
+                
+                oModel.read("/StyleStatsSet",{
                     success:function(oData){
-                        oJSONObject.setData(oData)
-                        oForecast.setText(String(oData.Forecast));
+                        oForecast.setText(String(oData.results[0].FORECAST));
+                        oOrder.setText(String(oData.results[0].ORDER));
+                        oShipped.setText(String(oData.results[0].SHIPPED));
                     },
-
                     error: function(err){}
                 });
 
-                oModel.read(entitySet,{
-                    success:function(oData){
-                        oJSONObject.setData(oData)
-                        oOrder.setText(String(oData.Order));
-                    },
+                // var me = this;
+                // var oModel = this.getOwnerComponent().getModel();
+                // var entitySet = "/StyleStatsSet('')";
+                // var oJSONObject = new sap.ui.model.json.JSONModel();
+                // var oJSONObject2 = new sap.ui.model.json.JSONModel();
+                // var oJSONObject3 = new sap.ui.model.json.JSONModel();
+                // var oForecast = this.getView().byId("forecastNumber");
+                // var oOrder = this.getView().byId("orderNumber");
+                // var oShipped = this.getView().byId("shippedNumber");
 
-                    error: function(err){}
-                });
+                // oModel.read(entitySet,{
+                //     success:function(oData){
+                //         oJSONObject.setData(oData)
+                //         oForecast.setText(String(oData.Forecast));
+                //     },
 
-                oModel.read(entitySet,{
-                    success:function(oData){
-                        oJSONObject.setData(oData)
-                        oShipped.setText(String(oData.Shipped));
-                    },
+                //     error: function(err){}
+                // });
 
-                    error: function(err){}
-                });
+                // oModel.read(entitySet,{
+                //     success:function(oData){
+                //         oJSONObject.setData(oData)
+                //         oOrder.setText(String(oData.Order));
+                //     },
+
+                //     error: function(err){}
+                // });
+
+                // oModel.read(entitySet,{
+                //     success:function(oData){
+                //         oJSONObject.setData(oData)
+                //         oShipped.setText(String(oData.Shipped));
+                //     },
+
+                //     error: function(err){}
+                // });
             }
         })
     });
