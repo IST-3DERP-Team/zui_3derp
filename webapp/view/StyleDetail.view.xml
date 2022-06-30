@@ -465,10 +465,30 @@
                                         </c:DynamicTable>
                                     </IconTabFilter>
                                     <IconTabFilter text="Detailed BOM">
-                                        <Text text="Detailed BOM ..." />
+                                        <!-- <Text text="Detailed BOM ..." /> -->
+                                        <Toolbar height="3rem" style="Clear">
+                                            <Label text="Detailed BOM"/>
+                                            <ToolbarSpacer />
+                                            <Button icon="sap-icon://add"/>
+                                            <Button icon="sap-icon://edit" />
+                                            <Button icon="sap-icon://save"/>
+                                            <Button icon="sap-icon://delete" />
+                                        </Toolbar>
+                                        <c:DynamicTable id="bomDetailedTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+                                        </c:DynamicTable>
                                     </IconTabFilter>
                                     <IconTabFilter text="Material List">
-                                        <Text text="Material List ..." />
+                                        <!-- <Text text="Material List ..." /> -->
+                                        <Toolbar height="3rem" style="Clear">
+                                            <Label text="Material List"/>
+                                            <ToolbarSpacer />
+                                            <Button icon="sap-icon://add"/>
+                                            <Button icon="sap-icon://edit" />
+                                            <Button icon="sap-icon://save"/>
+                                            <Button icon="sap-icon://delete" />
+                                        </Toolbar>
+                                        <c:DynamicTable id="materialListTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+                                        </c:DynamicTable>
                                     </IconTabFilter>
                                 </items>
                             </IconTabBar>

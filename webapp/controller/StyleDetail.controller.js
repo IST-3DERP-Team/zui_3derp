@@ -467,6 +467,38 @@ sap.ui.define([
                 var oTable = this.getView().byId("attachmentsTable");
             },
 
+            oDetailedBOM:function(){
+                var me = this;
+                var oTable = this.getView().byId("bomDetailedTable");
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var oTable = this.getView().byId("bomDetailedTable");
+                var entitySet = "/StyleDetailedBOMSet"
+                oModel.read(entitySet, {
+                    success: function(oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oTable.setModel(oJSONModel, "DataModel");
+                    },
+                    error: function() { }
+                })
+            },
+
+            oMaterialList:function(){
+                var me = this;
+                var oTable = this.getView().byId("materialListTable");
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var oTable = this.getView().byId("materialListTable");
+                var entitySet = "/StyleMaterialListSet"
+                oModel.read(entitySet, {
+                    success: function(oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oTable.setModel(oJSONModel, "DataModel");
+                    },
+                    error: function() { }
+                })
+            },
+
             addGeneralAttr: function() {
                 var oModel = this.getView().byId("generalTable").getModel("DataModel");
                 var oData = oModel.getProperty('/results');
