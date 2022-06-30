@@ -8,9 +8,12 @@ sap.ui.define([
     function (Controller, JSONModel) {
         "use strict";
 
+        var that;
+
         return Controller.extend("zui3derp.controller.StyleDetail", {
             
             onInit: function() {
+                that = this;  
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteStyleDetail").attachPatternMatched(this._routePatternMatched, this);
@@ -36,10 +39,12 @@ sap.ui.define([
                     this.getHeaderData(styleNo);
                 }
                 this.getComboBoxData();
-                this.oGeneralTable();
-                this.oColorsTable();
-                this.oSizesTable();
-                this.oProcessesTable();
+                this.getGeneralTable();
+                this.getColorsTable();
+                this.getSizesTable();
+                this.getProcessesTable();
+                this.getVersionsTable();
+                
             },
 
             getHeaderData: function(styleNo) {
@@ -122,9 +127,8 @@ sap.ui.define([
                     error: function (err) { }
                 });
             },
-
             
-            oGeneralTable:function(){
+            getGeneralTable:function(){
                 var me = this;
                 var oTable = this.getView().byId("generalTable");
 
@@ -144,7 +148,7 @@ sap.ui.define([
                 })
             },
 
-            oColorsTable:function(){
+            getColorsTable:function(){
                 var me = this;
                 var oTable = this.getView().byId("colorsTable");
 
@@ -164,7 +168,7 @@ sap.ui.define([
                 })
             },
 
-            oSizesTable:function(){
+            getSizesTable:function(){
                 var me = this;
                 var oTable = this.getView().byId("sizesTable");
                 var oModel = this.getOwnerComponent().getModel();
@@ -184,7 +188,7 @@ sap.ui.define([
                 
             },
 
-            oProcessesTable:function(){
+            getProcessesTable:function(){
                 var me = this;
                 var oTable = this.getView().byId("processesTable");
 
@@ -204,9 +208,258 @@ sap.ui.define([
                 })
             },
 
-            oVersionsTable:function(){
-                var me = this;
+            getVersionsTable: function(){
                 var oTable = this.getView().byId("versionsTable");
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var entitySet = "/StyleVersionSet"
+                oModel.setHeaders({
+                    styleno: this._styleNo
+                });
+                oModel.read(entitySet, {
+                    success: function(oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oTable.setModel(oJSONModel, "DataModel");
+                    },
+                    error: function() { }
+                })
+            },
+
+            getVersionsData() {
+                this._version = 1;
+                this.getVersionAttrTable();
+                this.getbomGMCTable();
+                this.getbomUVTable();
+            },
+
+            getVersionAttrTable: function(){
+                var oTable = this.getView().byId("versionAttrTable");
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var entitySet = "/StyleVersionAttributesSet"
+                oModel.setHeaders({
+                    styleno: this._styleNo,
+                    verno: this._version
+                });
+                oModel.read(entitySet, {
+                    success: function(oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oTable.setModel(oJSONModel, "DataModel");
+                    },
+                    error: function() { }
+                })
+            },
+
+            getbomGMCTable: function() {
+                var me = this;
+                var columnData = [];
+
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONColumnsModel = new sap.ui.model.json.JSONModel();
+
+                oModel.setHeaders({
+                    sbu: "VER",
+                    type: 'BOMGMC'
+                });
+
+                oModel.read("/DynamicColumnsSet", {
+                    success: function (oData, oResponse) {
+                        oData.results.forEach((column) => {
+                            columnData.push({
+                                "ColumnName": column.ColumnName,
+                                "ColumnDesc": column.ColumnName,
+                                "ColumnType": column.ColumnType
+                            })
+                        })
+                        me.getGMCColors(columnData);
+                    },
+                    error: function (err) { }
+                });
+            },
+
+            getGMCColors: function(columnData) {
+                var me = this;
+
+                var oModel = this.getOwnerComponent().getModel();
+
+                oModel.setHeaders({
+                    styleno: this._styleNo
+                });
+                oModel.read("/StyleAttributesColorSet", {
+                    success: function (oData, oResponse) {
+                        oData.results.forEach((column) => {
+                            columnData.push({
+                                "ColumnName": column.Attribcd,
+                                "ColumnDesc": column.Desc1,
+                                "ColumnType": "COLOR"
+                            })
+                        })
+                        me.getbomGMCTableData(columnData);
+                    },
+                    error: function (err) { }
+                });
+            },
+
+            getbomGMCTableData: function(columnData) {
+                var oTable = this.getView().byId("bomGMCTable");
+                var oModel = this.getOwnerComponent().getModel();
+                var rowData = [];
+
+                oModel.setHeaders({
+                    styleno: this._styleNo,
+                    verno: 1
+                });
+                oModel.read("/StyleBOMGMCSet", {
+                    success: function (oData, oResponse) {
+                        rowData = oData.results;
+
+                        // rowData = [{
+                        //     PARENT: 1,
+                        //     BOMSEQ: 1,
+                        //     CHILD: [{
+                        //         BOMSEQ: 2
+                        //     }]
+                        // }]
+
+                        var oJSONModel = new sap.ui.model.json.JSONModel();
+                        oJSONModel.setData({
+                            results: rowData,
+                            columns: columnData
+                        });
+
+                        oTable.setModel(oJSONModel, "DataModel");
+
+                        oTable.bindColumns("DataModel>/columns", function(sId, oContext) {
+                            var columnName = oContext.getObject().ColumnName;
+                            var columnDesc = oContext.getObject().ColumnDesc;
+                            var columnType = oContext.getObject().ColumnType;
+                            return new sap.ui.table.Column({
+                                label: that.getColumnDesc(columnName, columnDesc, columnType),
+                                // template: new sap.m.Input({ value: "{DataModel>" + columnName + "}" }),
+                                template: that.columnTemplate(columnName, columnDesc, columnType),
+                                sortProperty: columnName, 
+                                filterProperty: columnName,
+                                width: "8rem"
+                            });
+                        });
+
+                        oTable.bindRows("DataModel>/results");
+                    },
+                    error: function (err) { }
+                });
+            },
+
+            getbomUVTable: function() {
+                var me = this;
+                var columnData = [];
+
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONColumnsModel = new sap.ui.model.json.JSONModel();
+
+                oModel.setHeaders({
+                    sbu: "VER",
+                    type: 'BOMUV'
+                });
+
+                oModel.read("/DynamicColumnsSet", {
+                    success: function (oData, oResponse) {
+                        oData.results.forEach((column) => {
+                            columnData.push({
+                                "ColumnName": column.ColumnName,
+                                "ColumnDesc": column.ColumnName,
+                                "ColumnType": column.ColumnType
+                            })
+                        })
+                        me.getUVColors(columnData);
+                    },
+                    error: function (err) { }
+                });
+            },
+
+            getUVColors: function(columnData) {
+                var me = this;
+
+                var oModel = this.getOwnerComponent().getModel();
+
+                oModel.setHeaders({
+                    styleno: this._styleNo
+                });
+                oModel.read("/StyleAttributesColorSet", {
+                    success: function (oData, oResponse) {
+                        // oData.results.forEach((column) => {
+                        //     columnData.push({
+                        //         "ColumnName": column.Attribcd,
+                        //         "ColumnDesc": column.Desc1,
+                        //         "ColumnType": "COLOR"
+                        //     })
+                        // })
+                        me.getbomUVTableData(columnData);
+                    },
+                    error: function (err) { }
+                });
+            },
+
+            getbomUVTableData: function(columnData) {
+                var oTable = this.getView().byId("bomUVTable");
+                var oModel = this.getOwnerComponent().getModel();
+                var rowData = [];
+
+                oModel.setHeaders({
+                    styleno: this._styleNo,
+                    verno: 1
+                });
+                oModel.read("/StyleBOMUVSet", {
+                    success: function (oData, oResponse) {
+                        rowData = oData.results;
+
+                        var oJSONModel = new sap.ui.model.json.JSONModel();
+                        oJSONModel.setData({
+                            results: rowData,
+                            columns: columnData
+                        });
+
+                        oTable.setModel(oJSONModel, "DataModel");
+
+                        oTable.bindColumns("DataModel>/columns", function(sId, oContext) {
+                            var columnName = oContext.getObject().ColumnName;
+                            var columnDesc = oContext.getObject().ColumnDesc;
+                            var columnType = oContext.getObject().ColumnType;
+                            return new sap.ui.table.Column({
+                                label: that.getColumnDesc(columnName, columnDesc, columnType),
+                                // template: new sap.m.Input({ value: "{DataModel>" + columnName + "}" }),
+                                template: that.columnTemplate(columnName, columnDesc, columnType),
+                                sortProperty: columnName, 
+                                filterProperty: columnName,
+                                width: "8rem"
+                            });
+                        });
+
+                        oTable.bindRows("DataModel>/results");
+                    },
+                    error: function (err) { }
+                });
+            },
+
+            getColumnDesc: function(columnName, columnDesc, columnType) {
+                var desc;
+                if(columnType === "COLOR" || columnType === "SIZE") {
+                    desc = columnDesc;
+                } else {
+                    desc = "{i18n>" + columnName + "}";
+                }
+                return desc;
+            },
+
+            columnTemplate: function(columnName, columnDesc, columnType) {
+                var oColumnTemplate;
+
+                if(columnName === "BOMSEQ" || columnName === "BOMITEM") {
+                    oColumnTemplate = new sap.m.Text({ text: "{DataModel>" + columnName + "}" });
+                } else {
+                    oColumnTemplate = new sap.m.Input({ value: "{DataModel>" + columnName + "}" })
+                }
+
+                return oColumnTemplate;
             },
 
             oAttachmentsTable:function(){

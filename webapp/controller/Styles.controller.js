@@ -28,7 +28,6 @@ sap.ui.define([
             },
 
             _routePatternMatched: function (oEvent) {
-                this.onStyleReader();
                 this.getDefaultFilters();
             },
 
@@ -71,6 +70,7 @@ sap.ui.define([
                             } 
                         };
                         oSmartFilter.setFilterData(oDefaultFilter);
+                        me.onStyleReader();
                     },
                     error: function (err) { }
                 });
@@ -78,8 +78,8 @@ sap.ui.define([
 
             onSearch: function() {
                 this.getDynamicTableColumns();    
-
-                var oSmartFilter = this.getView().byId("SmartFilterBar");
+                this.onStyleReader();
+                // var oSmartFilter = this.getView().byId("SmartFilterBar");
             },
 
             getDynamicTableColumns: function () {
@@ -247,7 +247,7 @@ sap.ui.define([
                     })
                 } else if (sColumnType === "SEL") {
                     oColumnTemplate = new sap.m.Button({ 
-                        text: "",
+                        text: "Manage",
                         icon: "sap-icon://detail-view",
                         type: "Ghost",
                         press: this.goToDetail
@@ -270,14 +270,15 @@ sap.ui.define([
 
             getColumnSize: function(sColumnId, sColumnType) {
                 var mSize = '7rem';
-                if(sColumnType === "SEL" || sColumnType === "COPY") {
+                if(sColumnType === "SEL") {
+                    mSize = '7rem';
+                } else if(sColumnType === "COPY") {
                     mSize = '3.2rem';
                 } else if(sColumnId === "STYLECD") {
                     mSize = '30rem';
                 } else if(sColumnId === "DESC1" || sColumnId === "PRODTYP") {
                     mSize = '20rem';
                 }
-                
                 return mSize;
             },
             
@@ -292,42 +293,6 @@ sap.ui.define([
                     styleno: styleNo
                 } );
             },
-
-            // getFiltersData: function (defaultFilters) {
-                // var me = this;
-                // var oJSONModel = new sap.ui.model.json.JSONModel();
-
-                // //get SBUs
-                // // var filterSBU = this.getView().byId("filterSBU");
-                // this._Model.setHeaders({
-                //     username: this._User
-                // });
-                // this._Model.read("/SBUSet", {
-                //     success: function (oData, oResponse) {
-                //         oJSONModel.setData(oData);
-                //         filterSBU.setModel(oJSONModel);
-                //         // filterSBU.setSelectedKey(defaultFilters.sbu);
-                //     },
-                //     error: function (err) { }
-                // });
-
-                //set filter data
-            // },
-
-            // getSelectedStyles: function() {
-                // var oTable = this.getView().byId("styleDynTable");
-                // var selectedContexts = oTable.getSelectedContextPaths();
-                // var i = 0;
-                // var selectedItems = [];
-
-                // selectedContexts.forEach((selectedItem) => {
-                //     var oItem = oTable.getSelectedContexts()[i].getObject();
-                //     i++;
-                //     selectedItems.push(oItem);
-                // })
-
-                // return selectedItems;
-            // },
 
             onSBUChange: function () {
                 var oFilterSBU = this.getView().byId("filterSBU");
@@ -415,17 +380,18 @@ sap.ui.define([
 
             onStyleReader: function(){
                 var oModel = this.getOwnerComponent().getModel();
-                var oJSONObject = new sap.ui.model.json.JSONModel();
                 var oForecast = this.getView().byId("forecastNumber");
                 var oOrder = this.getView().byId("orderNumber");
                 var oShipped = this.getView().byId("shippedNumber");
 
-                oModel.read("/StyleStatsSet('')",{
+                var aFilters = this.getView().byId("SmartFilterBar").getFilters();
+                
+                oModel.read("/StyleStatsSet",{
+                    filters: aFilters,
                     success:function(oData){
-                        oJSONObject.setData(oData)
-                        oForecast.setNumber(oData.Forecast);
-                        oOrder.setNumber(oData.Order);
-                        oShipped.setNumber(oData.Shipped);
+                        oForecast.setNumber(oData.results[0].FORECAST);
+                        oOrder.setNumber(oData.results[0].ORDER);
+                        oShipped.setNumber(oData.results[0].SHIPPED);
                     },
                     error: function(err){}
                 });

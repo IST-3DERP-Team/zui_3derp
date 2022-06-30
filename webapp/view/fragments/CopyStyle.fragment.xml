@@ -1,6 +1,6 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
-	<Dialog title="Copy Style {CopyModel>/STYLENO}" contentWidth="75%">
-		<Panel>
+	<Dialog title="Copy Style {CopyModel>/STYLENO}" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" xmlns:tnt="sap.tnt" contentWidth="75%">
+		<Panel height="500px">
 			<f:Form id="StyleHeaderForm1" editable="true" class="sapUiNoContentPadding">
                 <f:layout>
                     <f:ResponsiveGridLayout columnsXL="12" columnsL="12" columnsM="12"/>
@@ -61,6 +61,34 @@
                     </f:FormContainer>
                 </f:formContainers>
             </f:Form>
+            <t:Table id="versionsTable" rows="{DataModel>/results}" class="sapUiSizeCompact">
+                <t:columns>
+                    <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
+                        <Label text="Version"/>
+                        <t:template>
+                            <Text text="{DataModel>Verno}" textAlign="End"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
+                        <Label text="Status" />
+                        <t:template>
+                            <tnt:InfoLabel id="il8" text="{= ${DataModel>Currentver} === '1' ? 'Current' : ' ' }" colorScheme="{= ${DataModel>Currentver} === '1' ? 8 : 7 }" displayOnly= "true"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">
+                        <Label text="Description" />
+                        <t:template>
+                            <Text text="{DataModel>Desc1}"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="15rem" filterProperty="Desc2" sortProperty="Desc2">
+                        <Label text="Description" />
+                        <t:template>
+                            <Text text="{DataModel>Desc2}"/>
+                        </t:template>
+                    </t:Column>
+                </t:columns>
+            </t:Table>
 		</Panel>
 		<buttons>
 			<Button text="Save" press="onSaveCopyStyle"/>
