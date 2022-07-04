@@ -1,11 +1,12 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
+    "../js/Common",
     "sap/ui/model/json/JSONModel"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, JSONModel) {
+    function (Controller, Common, JSONModel) {
         "use strict";
 
         var that;
@@ -19,8 +20,6 @@ sap.ui.define([
                 this._router.getRoute("RouteStyleDetail").attachPatternMatched(this._routePatternMatched, this);
 
                 this._User = 'EMALLARI';
-                // this.oVersionsTable();
-                // this.oAttachmentsTable();
             },
 
             _routePatternMatched: function (oEvent) {
@@ -47,7 +46,7 @@ sap.ui.define([
                 this.getSizesTable();
                 this.getProcessesTable();
                 this.getVersionsTable();
-                // this.getVersionsData();
+                this.setEditMode();
             },
 
             getHeaderData: function(styleNo) {
@@ -278,10 +277,14 @@ sap.ui.define([
                 var me = this;
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
                 var version = oData.getProperty('Verno');
+                version = this.pad(version, 3);
                 var oModel = this.getOwnerComponent().getModel();
 
-                var entitySet = "/StyleVersionSet(Styleno='" + this._styleNo +  "',Verno='002')";
-                var oEntry = { };
+                var entitySet = "/StyleVersionSet(Styleno='" + this._styleNo +  "',Verno='" + version + "')";
+                var oEntry = {
+                    Styleno: this._styleNo,
+                    Verno: version
+                };
 
                 oModel.update(entitySet, oEntry, {
                     method: "PUT",
@@ -292,6 +295,16 @@ sap.ui.define([
                         
                     }
                 });
+            },
+
+            onCreateNewVersion: function() {
+                if (!that._NewVerionDialog) {
+                    that._NewVerionDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CreateNewVersion", that);
+                    that.getView().addDependent(that._NewVerionDialog);
+                }
+                jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
+                that._NewVerionDialog.addStyleClass("sapUiSizeCompact");
+                that._NewVerionDialog.open();
             },
 
             getbomGMCTable: function() {
@@ -564,6 +577,42 @@ sap.ui.define([
                 oTable.getBinding("rows").refresh();
             },
 
+            setEditMode: function(oEvent) {
+                if(oEvent !== undefined) {
+                    var oButton = oEvent.getSource();
+                    var section = oButton.data('Section')
+                }
+                
+                var oJSONModel = new JSONModel();
+                var data;
+
+                var currentMode = this.getView().getModel("EditModeModel");
+                if(currentMode !== undefined) {
+                    var currentModeData = currentMode.getData();
+                    if(section === "HeaderForm") 
+                        currentModeData.headerEditMode = !currentModeData.headerEditMode;
+                    if(section === "GeneralAttributes")
+                        currentModeData.genAttrEditMode = !currentModeData.genAttrEditMode;
+                    if(section === "Colors")
+                        currentModeData.colorsEditMode = !currentModeData.colorsEditMode;
+                    if(section === "Sizes")
+                        currentModeData.sizesEditMode = !currentModeData.sizesEditMode;
+                    if(section === "Processes")
+                        currentModeData.processEditMode = !currentModeData.processEditMode;
+                    data = currentModeData;
+                } else {
+                    data = {
+                        headerEditMode: false,
+                        genAttrEditMode: false,
+                        colorsEditMode: false,
+                        sizesEditMode: false,
+                        processEditMode: false
+                    };                         
+                }              
+                oJSONModel.setData(data);
+                this.getView().setModel(oJSONModel, "EditModeModel");
+            },
+
             uploadAttachment: function() {
                 if (!this._UploadFileDialog) {
                     this._UploadFileDialog = sap.ui.xmlfragment("zui3derp.view.fragments.UploadFile", this);
@@ -572,6 +621,14 @@ sap.ui.define([
                 jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
                 this._UploadFileDialog.addStyleClass("sapUiSizeCompact");
                 this._UploadFileDialog.open();
-            }
+            },
+
+            pad: function (num, size) {
+                num = num.toString();
+                while (num.length < size) num = "0" + num;
+                return num;
+            },
+
+            onCancelNewVersion: Common.onCancelNewVersion,
         });
     });

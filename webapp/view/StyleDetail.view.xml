@@ -2,7 +2,10 @@
     xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" >
     <Page showHeader="false">
-        <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>CurrentVersion}: 1" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
+
+
+        <!-- OBJECT HEADER -->
+        <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>CurrentVersion}: {headerData>/Verno}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
 		        title="{headerData>/Styleno}" number="{headerData>/Statuscd}" numberUnit="{i18n>Status}" numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}">
             <attributes>
                 <ObjectAttribute title="{i18n>CREATEDBY}" text="{headerData>/Createdby}"/>
@@ -11,17 +14,24 @@
                 <ObjectAttribute title="{i18n>UPDATEDDT}" text="{headerData>/Updateddt}"/>
             </attributes>
         </ObjectHeader>
+
+        
+        <!-- HEADER -->
          <Panel expandable="true" expanded="true" width="auto" class="sapUiSizeCompact whiteBackground">
             <headerToolbar>
                 <Toolbar id="TB1" height="3rem" style="Clear">
                     <Title text="Header" />
                     <ToolbarSpacer />
                     <Button type="Ghost" text="Save" icon="sap-icon://save" />
-                    <Button type="Ghost" icon="sap-icon://edit" />
+                    <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
+                        <customData>
+                            <core:CustomData key="Section" value="HeaderForm"/>
+                        </customData>
+                    </Button>
                     <Button type="Ghost" icon="sap-icon://delete" />
                 </Toolbar>
             </headerToolbar>
-            <f:Form id="StyleHeaderForm1" editable="true" class="sapUiNoContentPadding">
+            <f:Form id="StyleHeaderForm1" editable="false" class="sapUiNoContentPadding">
                 <f:layout>
                     <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3"/>
                 </f:layout>
@@ -30,13 +40,13 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>STYLECD}" >
                                 <f:fields>
-                                    <Input value="{headerData>/Stylecd}">
+                                    <Input value="{headerData>/Stylecd}" editable="{EditModeModel>/headerEditMode}">
                                     </Input>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>DESC1}">
                                 <f:fields>
-                                    <Input value="{headerData>/Desc1}"/>
+                                    <Input value="{headerData>/Desc1}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -47,14 +57,14 @@
                                 <f:fields>
                                     <!-- <Input value="{headerData>/Seasoncd}"/> -->
                                     <ComboBox id="seasonCB" items="{ path: '/results', sorter: { path: 'Seasoncd' } }" selectedKey="{headerData>/Seasoncd}"
-                                        showSecondaryValues="true" filterSecondaryValues= "true">
+                                        showSecondaryValues="true" filterSecondaryValues= "true" editable="{EditModeModel>/headerEditMode}">
                                         <core:ListItem key="{Seasoncd}" text="{Desc1}" additionalText = "{Yr}"/>
                                     </ComboBox>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>FTYSTYLE}">
                                 <f:fields>
-                                    <Input value="{headerData>/Ftystyle}"/>
+                                    <Input value="{headerData>/Ftystyle}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -71,19 +81,19 @@
                             <f:FormElement label="{i18n>PRODTYP}">
                                 <f:fields>
                                     <ComboBox id="prodTypeCB" items="{ path: '/results', sorter: { path: 'ProdTyp' } }" selectedKey="{headerData>/Prodtyp}" 
-                                        showSecondaryValues="true" filterSecondaryValues= "true">
+                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
                                         <core:ListItem key="{ProdTyp}" text="{Desc1}" additionalText = "{ProdTyp}"/>
                                     </ComboBox>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>STYLECAT}">
                                 <f:fields>
-                                    <Input value="{headerData>/Stylecat}"/>
+                                    <Input value="{headerData>/Stylecat}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>CUSTPRDTYP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Custprdtyp}"/>
+                                    <Input value="{headerData>/Custprdtyp}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -94,19 +104,19 @@
                                 <f:fields>
                                     <!-- <Input value="{headerData>/Salesgrp}"/> -->
                                     <ComboBox id="salesGroupCB" items="{ path: '/results', sorter: { path: 'SalesGrp' } }" selectedKey="{headerData>/Salesgrp}" 
-                                        showSecondaryValues="true" filterSecondaryValues= "true">
+                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
                                         <core:ListItem key="{SalesGrp}" text="{Desc1}" additionalText = "{SalesGrp}"/>
                                     </ComboBox>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>PRODGRP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Prodgrp}"/>
+                                    <Input value="{headerData>/Prodgrp}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>STYLEGRP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Stylegrp}"/>
+                                    <Input value="{headerData>/Stylegrp}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                             
@@ -118,19 +128,19 @@
                                 <f:fields>
                                     <!-- <Input value="{headerData>/Custgrp}"/> -->
                                     <ComboBox id="customerGroupCB" items="{ path: '/results', sorter: { path: 'CustGrp' } }" selectedKey="{headerData>/Custgrp}" 
-                                        showSecondaryValues="true" filterSecondaryValues= "true">
+                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
                                         <core:ListItem key="{CustGrp}" text="{Desc1}" additionalText = "{CustGrp}"/>
                                     </ComboBox>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>SOLDTOCUST}">
                                 <f:fields>
-                                    <Input value="{headerData>/Soldtocust}"/>
+                                    <Input value="{headerData>/Soldtocust}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>SIZEGRP}">
                                 <f:fields>
-                                    <Input value="{headerData>/Sizegrp}"/>
+                                    <Input value="{headerData>/Sizegrp}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                             
@@ -140,12 +150,12 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>UOM}">
                                 <f:fields>
-                                    <Input value="{headerData>/Uom}"/>
+                                    <Input value="{headerData>/Uom}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>FABRICATION}">
                                 <f:fields>
-                                    <Input value="{headerData>/Fabrctn}"/>
+                                    <Input value="{headerData>/Fabrctn}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -161,7 +171,7 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>REMARKS}">
                                 <f:fields>
-                                    <Input value="{headerData>/Remarks}"/>
+                                    <Input value="{headerData>/Remarks}" editable="{EditModeModel>/headerEditMode}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -171,8 +181,10 @@
                     </f:FormContainer>
                 </f:formContainers>
             </f:Form>
-
         </Panel>
+
+        
+        <!-- DETAILS -->
         <Panel expandable="true" expanded="false" width="auto" class="sapUiSizeCompact whiteBackground">
             <headerToolbar>
                 <Toolbar height="3rem" style="Clear">
@@ -187,12 +199,16 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="General Attributes"/>
                                     <ToolbarSpacer />
-                                    <Button type="Ghost" icon="sap-icon://add" press="addLine">
+                                    <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/genAttrEditMode}">
                                         <customData>
                                             <core:CustomData key="TableName" value="generalTable"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://edit" press="saveSettings"/>
+                                    <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
+                                        <customData>
+                                            <core:CustomData key="Section" value="GeneralAttributes"/>
+                                        </customData>
+                                    </Button>
                                     <Button type="Ghost" icon="sap-icon://save"/>
                                     <Button type="Ghost" icon="sap-icon://delete" />
                                 </Toolbar>
@@ -202,19 +218,19 @@
                                     <t:Column width="11rem" filterProperty="Attribtype">
                                         <Label text="Attribute Type" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribtype}"/>
+                                            <Input value="{DataModel>Attribtype}" editable="{EditModeModel>/genAttrEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Attribcd">
                                         <Label text="Attribute Code" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribcd}"/>
+                                            <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/genAttrEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Desc1">
                                         <Label text="Description" />
                                         <t:template>
-                                            <Input value="{DataModel>Desc1}"/>
+                                            <Input value="{DataModel>Desc1}" editable="{EditModeModel>/genAttrEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                 </c:columns>
@@ -225,12 +241,16 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Colors" />
                                     <ToolbarSpacer />
-                                    <Button type="Ghost" icon="sap-icon://add" press="addLine">
+                                    <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/colorsEditMode}">
                                         <customData>
                                             <core:CustomData key="TableName" value="colorsTable"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://edit" />
+                                    <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
+                                        <customData>
+                                            <core:CustomData key="Section" value="Colors"/>
+                                        </customData>
+                                    </Button>
                                     <Button type="Ghost" icon="sap-icon://save"/>
                                     <Button type="Ghost" icon="sap-icon://delete" />
                                 </Toolbar>
@@ -240,13 +260,13 @@
                                     <t:Column width="11rem" filterProperty="Attribcd">
                                         <Label text="Color Code" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribcd}"/>
+                                            <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/colorsEditMode}"/>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem" filterProperty="Desc1">
+                                    <t:Column width="11rem" filterProperty="Desc1" >
                                         <Label text="Description" />
                                         <t:template>
-                                            <Input value="{DataModel>Desc1}"/>
+                                            <Input value="{DataModel>Desc1}" editable="{EditModeModel>/colorsEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                 </c:columns>
@@ -257,12 +277,16 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Sizes" />
                                     <ToolbarSpacer />
-                                    <Button type="Ghost" icon="sap-icon://add" press="addLine">
+                                    <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/sizesEditMode}">
                                         <customData>
                                             <core:CustomData key="TableName" value="sizesTable"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://edit" />
+                                    <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
+                                        <customData>
+                                            <core:CustomData key="Section" value="Sizes"/>
+                                        </customData>
+                                    </Button>
                                     <Button type="Ghost" icon="sap-icon://save"/>
                                     <Button type="Ghost" icon="sap-icon://delete" />
                                 </Toolbar>
@@ -272,19 +296,19 @@
                                     <t:Column width="11rem" filterProperty="Attribgrp">
                                         <Label text="Size Range" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribgrp}"/>
+                                            <Input value="{DataModel>Attribgrp}" editable="{EditModeModel>/sizesEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Attribcd">
                                         <Label text="Size Code" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribcd}"/>
+                                            <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/sizesEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem">
                                         <Label text="Base Ind" />
                                         <t:template>
-                                            <CheckBox/>
+                                            <CheckBox editable="{EditModeModel>/sizesEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                 </c:columns>
@@ -296,12 +320,16 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Processes" />
                                     <ToolbarSpacer />
-                                    <Button type="Ghost" icon="sap-icon://add" press="addLine">
+                                    <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/processEditMode}">
                                         <customData>
                                             <core:CustomData key="TableName" value="processesTable"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://edit" />
+                                    <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
+                                        <customData>
+                                            <core:CustomData key="Section" value="Processes"/>
+                                        </customData>
+                                    </Button>
                                     <Button type="Ghost" icon="sap-icon://save"/>
                                     <Button type="Ghost" icon="sap-icon://delete" />
                                 </Toolbar>
@@ -313,14 +341,14 @@
                                     <t:Column width="4rem" filterProperty="Seqno">
                                         <Label text="Seq." />
                                         <t:template>
-                                            <Input value="{DataModel>Seqno}"/>
+                                            <Input value="{DataModel>Seqno}" editable="{EditModeModel>/processEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Processcd">
                                         <Label text="Process" />
                                         <t:template>
                                             <!-- <Input value="{DataModel>Processcd}"/> -->
-                                            <ComboBox filterSecondaryValues= "true">
+                                            <ComboBox filterSecondaryValues= "true" editable="{EditModeModel>/processEditMode}">
                                                 <items>
                                                     <core:ListItem key="CUT" text="CUT"/>
                                                     <core:ListItem key="SEW" text="SEW"/>
@@ -335,7 +363,7 @@
                                         <Label text="VAS Type" />
                                         <t:template>
                                             <!-- <Input value="{DataModel>Vastyp}"/> -->
-                                            <ComboBox filterSecondaryValues= "true">
+                                            <ComboBox filterSecondaryValues= "true" editable="{EditModeModel>/processEditMode}">
                                                 <items>
                                                     <core:ListItem key="APPLQ" text="APPLQ"/>
                                                 </items>
@@ -345,19 +373,19 @@
                                     <t:Column width="11rem" filterProperty="Leadtime">
                                         <Label text="Lead Time" />
                                         <t:template>
-                                            <Input value="{DataModel>Leadtime}"/>
+                                            <Input value="{DataModel>Leadtime}" editable="{EditModeModel>/processEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Attribtyp">
                                         <Label text="Attr. Group" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribtyp}"/>
+                                            <Input value="{DataModel>Attribtyp}" editable="{EditModeModel>/processEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Attribcd">
                                         <Label text="Attribute" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribcd}"/>
+                                            <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/processEditMode}"/>
                                         </t:template>
                                     </t:Column>
                                 </c:columns>
@@ -372,8 +400,8 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Title text="Versions" />
                                     <ToolbarSpacer />
-                                    <Button type="Ghost" text="Set as Current" press="setVersionCurrent"/>
-                                    <Button type="Ghost" icon="sap-icon://add-document" text="New Version"/>
+                                    <!-- <Button type="Ghost" text="Set as Current" press="setVersionCurrent"/> -->
+                                    <Button type="Ghost" icon="sap-icon://add-document" text="New Version" press="onCreateNewVersion"/>
                                     <Button type="Ghost" icon="sap-icon://edit" />
                                     <Button type="Ghost" icon="sap-icon://save"/>
                                     <Button type="Ghost" icon="sap-icon://delete" />
@@ -408,7 +436,7 @@
                                     <t:Column width="8rem" filterType="" filterProperty="Verno" sortProperty="Verno">
                                         <Label text=""/>
                                         <t:template>
-                                            <Button text="Set Current" icon="sap-icon://detail-view" press="setVersionCurrent">
+                                            <Button text="Set Current" icon="sap-icon://detail-view" press="setVersionCurrent" visible="{= ${DataModel>Currentver} === '1' ? false : true }">
                                             <customData>
                                                 <core:CustomData  key="VerNo" value="{DataModel>Verno}"/>
                                             </customData>
@@ -433,7 +461,7 @@
 
                         <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiTinyMarginTop sapUiSizeCompact whiteBackground">
                             <ObjectHeader id="VersionHeader" responsive="true"/>
-                            <IconTabBar headerMode="Inline" upperCase="true" class="sapUiResponsiveContentPadding">
+                            <IconTabBar expandable="false" headerMode="Inline" upperCase="true" class="sapUiResponsiveContentPadding">
                                 <items>
                                     <IconTabFilter text="Version Attributes">
                                         <Toolbar height="3rem" style="Clear">

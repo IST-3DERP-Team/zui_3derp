@@ -16,6 +16,10 @@ sap.ui.define([
 			this._CopyStyleDialog.close();
 		},
 
+        onCancelNewVersion: function() {
+			this._NewVerionDialog.close();
+		},
+
         showMessage: function(oMessage) {
 			MessageToast.show(oMessage, {
 				duration: 2000,
