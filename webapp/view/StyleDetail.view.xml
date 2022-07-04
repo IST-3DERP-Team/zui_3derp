@@ -1,6 +1,6 @@
 <mvc:View controllerName="zui3derp.controller.StyleDetail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns:u="sap.uxap"
     xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
-    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" >
     <Page showHeader="false">
         <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>CurrentVersion}: 1" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
 		        title="{headerData>/Styleno}" number="{headerData>/Statuscd}" numberUnit="{i18n>Status}" numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}">
@@ -16,9 +16,9 @@
                 <Toolbar id="TB1" height="3rem" style="Clear">
                     <Title text="Header" />
                     <ToolbarSpacer />
-                    <Button icon="sap-icon://save"/>
-                    <Button icon="sap-icon://edit" />
-                    <Button icon="sap-icon://delete" />
+                    <Button type="Ghost" text="Save" icon="sap-icon://save" />
+                    <Button type="Ghost" icon="sap-icon://edit" />
+                    <Button type="Ghost" icon="sap-icon://delete" />
                 </Toolbar>
             </headerToolbar>
             <f:Form id="StyleHeaderForm1" editable="true" class="sapUiNoContentPadding">
@@ -161,7 +161,7 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>REMARKS}">
                                 <f:fields>
-                                    <TextArea placeholder="Enter Text" growing="true" growingMaxLines="7" width="100%"/>
+                                    <Input value="{headerData>/Remarks}"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -187,10 +187,14 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="General Attributes"/>
                                     <ToolbarSpacer />
-                                    <Button icon="sap-icon://add" press="addGeneralAttr"/>
-                                    <Button icon="sap-icon://edit" press="saveSettings"/>
-                                    <Button icon="sap-icon://save"/>
-                                    <Button icon="sap-icon://delete" />
+                                    <Button type="Ghost" icon="sap-icon://add" press="addLine">
+                                        <customData>
+                                            <core:CustomData key="TableName" value="generalTable"/>
+                                        </customData>
+                                    </Button>
+                                    <Button type="Ghost" icon="sap-icon://edit" press="saveSettings"/>
+                                    <Button type="Ghost" icon="sap-icon://save"/>
+                                    <Button type="Ghost" icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="generalTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="10" visibleRowCountMode="Auto" class="sapUiSizeCompact">
@@ -221,10 +225,14 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Colors" />
                                     <ToolbarSpacer />
-                                    <Button icon="sap-icon://add"/>
-                                    <Button icon="sap-icon://edit" />
-                                    <Button icon="sap-icon://save"/>
-                                    <Button icon="sap-icon://delete" />
+                                    <Button type="Ghost" icon="sap-icon://add" press="addLine">
+                                        <customData>
+                                            <core:CustomData key="TableName" value="colorsTable"/>
+                                        </customData>
+                                    </Button>
+                                    <Button type="Ghost" icon="sap-icon://edit" />
+                                    <Button type="Ghost" icon="sap-icon://save"/>
+                                    <Button type="Ghost" icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="colorsTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="5" visibleRowCountMode="Auto" class="sapUiSizeCompact">
@@ -249,10 +257,14 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Sizes" />
                                     <ToolbarSpacer />
-                                    <Button icon="sap-icon://add"/>
-                                    <Button icon="sap-icon://edit" />
-                                    <Button icon="sap-icon://save"/>
-                                    <Button icon="sap-icon://delete" />
+                                    <Button type="Ghost" icon="sap-icon://add" press="addLine">
+                                        <customData>
+                                            <core:CustomData key="TableName" value="sizesTable"/>
+                                        </customData>
+                                    </Button>
+                                    <Button type="Ghost" icon="sap-icon://edit" />
+                                    <Button type="Ghost" icon="sap-icon://save"/>
+                                    <Button type="Ghost" icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="sizesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact">
@@ -284,10 +296,14 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Processes" />
                                     <ToolbarSpacer />
-                                    <Button icon="sap-icon://add"/>
-                                    <Button icon="sap-icon://edit" />
-                                    <Button icon="sap-icon://save"/>
-                                    <Button icon="sap-icon://delete" />
+                                    <Button type="Ghost" icon="sap-icon://add" press="addLine">
+                                        <customData>
+                                            <core:CustomData key="TableName" value="processesTable"/>
+                                        </customData>
+                                    </Button>
+                                    <Button type="Ghost" icon="sap-icon://edit" />
+                                    <Button type="Ghost" icon="sap-icon://save"/>
+                                    <Button type="Ghost" icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
 
@@ -303,13 +319,27 @@
                                     <t:Column width="11rem" filterProperty="Processcd">
                                         <Label text="Process" />
                                         <t:template>
-                                            <Input value="{DataModel>Processcd}"/>
+                                            <!-- <Input value="{DataModel>Processcd}"/> -->
+                                            <ComboBox filterSecondaryValues= "true">
+                                                <items>
+                                                    <core:ListItem key="CUT" text="CUT"/>
+                                                    <core:ListItem key="SEW" text="SEW"/>
+                                                    <core:ListItem key="WASH" text="WASH"/>
+                                                    <core:ListItem key="EMBRO" text="EMRBO"/>
+                                                    <core:ListItem key="FN/PK" text="FN/PK"/>
+                                                </items>
+                                            </ComboBox>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Vastyp">
                                         <Label text="VAS Type" />
                                         <t:template>
-                                            <Input value="{DataModel>Vastyp}"/>
+                                            <!-- <Input value="{DataModel>Vastyp}"/> -->
+                                            <ComboBox filterSecondaryValues= "true">
+                                                <items>
+                                                    <core:ListItem key="APPLQ" text="APPLQ"/>
+                                                </items>
+                                            </ComboBox>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Leadtime">
@@ -342,20 +372,23 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Title text="Versions" />
                                     <ToolbarSpacer />
-                                    <Button icon="sap-icon://add"/>
-                                    <Button icon="sap-icon://edit" />
-                                    <Button icon="sap-icon://save"/>
-                                    <Button icon="sap-icon://delete" />
+                                    <Button type="Ghost" text="Set as Current" press="setVersionCurrent"/>
+                                    <Button type="Ghost" icon="sap-icon://add-document" text="New Version"/>
+                                    <Button type="Ghost" icon="sap-icon://edit" />
+                                    <Button type="Ghost" icon="sap-icon://save"/>
+                                    <Button type="Ghost" icon="sap-icon://delete" />
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" selectionMode="Single" 
-                                visibleRowCountMode="Auto" minAutoRowCount="3" class="sapUiSizeCompact">
+                                visibleRowCountMode="Auto" minAutoRowCount="4" class="sapUiSizeCompact">
                                 <c:columns>
                                     <t:Column width="8rem" filterType="" filterProperty="Verno" sortProperty="Verno">
                                         <Label text=""/>
                                         <t:template>
-                                            <Button text="Maintain" icon="sap-icon://detail-view">
-
+                                            <Button text="Maintain" icon="sap-icon://detail-view" press="onSelectVersion">
+                                            <customData>
+                                                <core:CustomData  key="VerNo" value="{DataModel>Verno}"/>
+                                            </customData>
                                             </Button>
                                         </t:template>
                                     </t:Column>
@@ -368,7 +401,18 @@
                                     <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
                                         <Label text="Status" />
                                         <t:template>
-                                            <tnt:InfoLabel id="il8" text="{= ${DataModel>Currentver} === '1' ? 'Current' : ' ' }" colorScheme="{= ${DataModel>Currentver} === '1' ? 8 : 7 }" displayOnly= "true"/>
+                                            <tnt:InfoLabel id="il8" text="{= ${DataModel>Currentver} === '1' ? 'Current' : ' ' }" colorScheme="{= ${DataModel>Currentver} === '1' ? 8 : 7 }" displayOnly= "true"
+                                                visible="{= ${DataModel>Currentver} === '1' ? true : false }"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="8rem" filterType="" filterProperty="Verno" sortProperty="Verno">
+                                        <Label text=""/>
+                                        <t:template>
+                                            <Button text="Set Current" icon="sap-icon://detail-view" press="setVersionCurrent">
+                                            <customData>
+                                                <core:CustomData  key="VerNo" value="{DataModel>Verno}"/>
+                                            </customData>
+                                            </Button>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">
@@ -388,7 +432,7 @@
                         </Panel>
 
                         <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiTinyMarginTop sapUiSizeCompact whiteBackground">
-                            <ObjectHeader title="VERSTY-001 desc" responsive="true" intro="Version 1"/>
+                            <ObjectHeader id="VersionHeader" responsive="true"/>
                             <IconTabBar headerMode="Inline" upperCase="true" class="sapUiResponsiveContentPadding">
                                 <items>
                                     <IconTabFilter text="Version Attributes">
@@ -474,7 +518,157 @@
                                             <Button icon="sap-icon://save"/>
                                             <Button icon="sap-icon://delete" />
                                         </Toolbar>
-                                        <c:DynamicTable id="bomDetailedTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+                                        <c:DynamicTable id="bomDetailedTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="BOM Item"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="BOM Item Type"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Style"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Style Version"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Style Description"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Part Code"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Part Description"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Part Count"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Usage Class"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Customer Style"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Process"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Color"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Size"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Destination"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Mat. Type"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="GMC"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Material"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="GMC Desc"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Addtl. Desc"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Consump Per"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Per"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="UOM"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Wastage"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Computed Consumption"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Consumption"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
                                         </c:DynamicTable>
                                     </IconTabFilter>
                                     <IconTabFilter text="Material List">
@@ -482,12 +676,97 @@
                                         <Toolbar height="3rem" style="Clear">
                                             <Label text="Material List"/>
                                             <ToolbarSpacer />
-                                            <Button icon="sap-icon://add"/>
+                                            <Button icon="sap-icon://bookmark" text="Assign Material No."/>
                                             <Button icon="sap-icon://edit" />
                                             <Button icon="sap-icon://save"/>
                                             <Button icon="sap-icon://delete" />
                                         </Toolbar>
-                                        <c:DynamicTable id="materialListTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+                                        <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true"
+                                            selectionMode="Single">
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Seq No."/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Mat. Type"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Material No."/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="GMC"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="GMC Description"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Addtl. Description"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Consumption"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="UOM"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Supply Type"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Vendor"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Currency"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Unit Price"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Purch. Group"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
+                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                                <Label text="Purch. Plant"/>
+                                                <t:template>
+                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                </t:template>
+                                            </t:Column>
                                         </c:DynamicTable>
                                     </IconTabFilter>
                                 </items>
@@ -497,22 +776,64 @@
                     <IconTabFilter
                         icon="sap-icon://attachment" text="Attachments">
                         <!-- <Text text="Attachments ..." /> -->
-                        <Panel expandable="true" expanded="false" width="100%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
-                            <headerToolbar>
+                        <!-- <Panel expandable="true" expanded="false" width="100%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                            <headerToolbar> -->
                                 <Toolbar height="3rem" style="Clear">
-                                    <Label text="Attachments" />
+                                    <Label text="Attachments"/>
                                     <ToolbarSpacer />
-                                    <Button icon="sap-icon://add"/>
+                                    <Button text="{i18n>Upload}" icon="sap-icon://upload" press="uploadAttachment"/>
                                     <Button icon="sap-icon://edit" />
                                     <Button icon="sap-icon://save"/>
                                     <Button icon="sap-icon://delete" />
                                 </Toolbar>
-                            </headerToolbar>
+                            <!-- </headerToolbar> -->
                             <c:DynamicTable id="attachmentsTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
                                 <c:columns>
+                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                        <Label text="Attach Type"/>
+                                        <t:template>
+                                            <Input value="{DataModel>Attribtyp}"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                        <Label text="Seq"/>
+                                        <t:template>
+                                            <Input value="{DataModel>Attribtyp}"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                        <Label text="File Type"/>
+                                        <t:template>
+                                            <Input value="{DataModel>Attribtyp}"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                        <Label text="File Name"/>
+                                        <t:template>
+                                            <Input value="{DataModel>Attribtyp}"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                        <Label text="Description (EN)"/>
+                                        <t:template>
+                                            <Input value="{DataModel>Attribtyp}"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                        <Label text="Description (CN)"/>
+                                        <t:template>
+                                            <Input value="{DataModel>Attribtyp}"/>
+                                        </t:template>
+                                    </t:Column>
+                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                        <Label text="Remarks"/>
+                                        <t:template>
+                                            <Input value="{DataModel>Attribtyp}"/>
+                                        </t:template>
+                                    </t:Column>
                                 </c:columns>
                             </c:DynamicTable>
-                        </Panel>
+                        <!-- </Panel> -->
                     </IconTabFilter>
                 </items>
             </IconTabBar>

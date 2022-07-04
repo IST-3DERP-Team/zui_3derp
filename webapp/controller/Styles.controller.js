@@ -3,12 +3,13 @@ sap.ui.define([
     "../js/Common",
     "sap/m/library",
     "sap/ui/model/json/JSONModel",
+    "sap/ui/export/Spreadsheet",
     "../control/DynamicTable"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Common, JSONModel, control) {
+    function (Controller, Common, JSONModel, Spreadsheet, control) {
         "use strict";
 
         var that;
@@ -16,7 +17,7 @@ sap.ui.define([
         return Controller.extend("zui3derp.controller.Styles", {
 
             onInit: function () {
-                that = this;                
+                that = this;
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteStyles").attachPatternMatched(this._routePatternMatched, this);
@@ -31,19 +32,19 @@ sap.ui.define([
                 this.getDefaultFilters();
             },
 
-            setSmartFilterModel: function() {
+            setSmartFilterModel: function () {
                 var oModel = this.getOwnerComponent().getModel("StyleHeaderFilters");
                 var oSmartFilter = this.getView().byId("SmartFilterBar");
                 oSmartFilter.setModel(oModel);
             },
- 
-            getDefaultFilters: function() {
+
+            getDefaultFilters: function () {
                 var me = this;
                 var entitySet = "/DefaultFilterSet('EMALLARI')";
-                
+
                 //Set SmartFilterBar initial values
                 var oSmartFilter = this.getView().byId("SmartFilterBar");
-                
+
                 this._Model.read(entitySet, {
                     success: function (oData, oResponse) {
                         var oDefaultFilter = {
@@ -53,7 +54,7 @@ sap.ui.define([
                                     key: oData.Salesgrp
                                 }]
                             },
-                            CUSTGRP:{
+                            CUSTGRP: {
                                 items: [{
                                     key: oData.Custgrp
                                 }]
@@ -67,7 +68,7 @@ sap.ui.define([
                                 items: [{
                                     key: oData.Prodtyp
                                 }]
-                            } 
+                            }
                         };
                         oSmartFilter.setFilterData(oDefaultFilter);
                         me.onStyleReader();
@@ -76,8 +77,8 @@ sap.ui.define([
                 });
             },
 
-            onSearch: function() {
-                this.getDynamicTableColumns();    
+            onSearch: function () {
+                this.getDynamicTableColumns();
                 this.onStyleReader();
                 // var oSmartFilter = this.getView().byId("SmartFilterBar");
             },
@@ -108,7 +109,7 @@ sap.ui.define([
                 });
             },
 
-            getDynamicTableData: function(columns) {
+            getDynamicTableData: function (columns) {
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
                 // var sbu = this.getView().byId("filterSBU").getSelectedKey();
@@ -125,10 +126,10 @@ sap.ui.define([
                 var oColCount = columns.length;
                 columns.forEach((column) => {
 
-                    if(column.ColumnName === "STATUSCD")
+                    if (column.ColumnName === "STATUSCD")
                         statusColNo = i;
 
-                    if(column.ColumnName === "STYLENO")
+                    if (column.ColumnName === "STYLENO")
                         this._StyleNoColNo = i;
 
                     var lv2 = this.pad(i, 3);
@@ -149,12 +150,13 @@ sap.ui.define([
                 //     prodtyp: '1000',
                 //     type: 'STYLINIT'
                 // });
-
                 var aFilters = this.getView().byId("SmartFilterBar").getFilters();
-                
+                var oText = this.getView().byId("StylesCount");
+
                 oModel.read("/StyleSet", {
                     filters: aFilters,
                     success: function (oData, oResponse) {
+                        oText.setText(oData.results.length + "");
                         oJSONDataModel.setData(oData);
                         me.getView().setModel(oJSONDataModel, "DynData");
                         me.setTableData(statusColNo);
@@ -195,15 +197,15 @@ sap.ui.define([
                 var oData = oDataModel.getProperty('/results');
 
                 oColumnsData.unshift({
-                    "ColumnName":"Copy",
-                    "ColumnType":"COPY"
+                    "ColumnName": "Copy",
+                    "ColumnType": "COPY"
                 });
 
                 oColumnsData.unshift({
-                    "ColumnName":"View",
-                    "ColumnType":"SEL"
+                    "ColumnName": "",
+                    "ColumnType": "SEL"
                 });
-                
+
                 var oModel = new sap.ui.model.json.JSONModel();
                 oModel.setData({
                     columns: oColumnsData,
@@ -211,7 +213,7 @@ sap.ui.define([
                 });
 
                 var dataLength = oData.length;
-                
+
                 var oTable = this.getView().byId("styleDynTable");
 
                 // if (dataLength < 10) {
@@ -220,41 +222,58 @@ sap.ui.define([
 
                 oTable.setModel(oModel);
 
-                oTable.bindColumns("/columns", function(index, context) {
+                oTable.bindColumns("/columns", function (index, context) {
                     var sColumnId = context.getObject().ColumnName;
                     var sColumnType = context.getObject().ColumnType;
                     //alert(sColumnId.);
                     return new sap.ui.table.Column({
-                        id : sColumnId,
-                        label: "{i18n>" + sColumnId + "}", 
+                        id: sColumnId,
+                        label: "{i18n>" + sColumnId + "}",
                         template: me.columnTemplate(sColumnId, sColumnType),
-                        width : me.getColumnSize(sColumnId, sColumnType),
-                        sortProperty: sColumnId, 
+                        width: me.getColumnSize(sColumnId, sColumnType),
+                        sortProperty: sColumnId,
                         filterProperty: sColumnId,
                         autoResizable: true
                     });
                 });
-                oTable.bindRows("/rows");    
+                oTable.bindRows("/rows");
             },
 
-            columnTemplate: function(sColumnId, sColumnType) {
+            getVersionsTable: function (styleNo) {
+                var oView = this.getView();
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var entitySet = "/StyleVersionSet"
+                oModel.setHeaders({
+                    styleno: styleNo
+                });
+                oModel.read(entitySet, {
+                    success: function (oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oView.setModel(oJSONModel, "VersionsDataModel");
+                    },
+                    error: function () { }
+                })
+            },
+
+            columnTemplate: function (sColumnId, sColumnType) {
                 var oColumnTemplate;
 
-                if(sColumnId === "STATUSCD") {
-                    oColumnTemplate = new sap.tnt.InfoLabel({ 
-                        text: "{" + sColumnId + "}", 
-                        colorScheme: "{= ${" + sColumnId + "} === 'CMP' ? 8 : ${" + sColumnId+ "} === 'CRT' ? 3 : 1}"
+                if (sColumnId === "STATUSCD") {
+                    oColumnTemplate = new sap.tnt.InfoLabel({
+                        text: "{" + sColumnId + "}",
+                        colorScheme: "{= ${" + sColumnId + "} === 'CMP' ? 8 : ${" + sColumnId + "} === 'CRT' ? 3 : 1}"
                     })
                 } else if (sColumnType === "SEL") {
-                    oColumnTemplate = new sap.m.Button({ 
-                        text: "Manage",
+                    oColumnTemplate = new sap.m.Button({
+                        text: "{i18n>Maintain}",
                         icon: "sap-icon://detail-view",
                         type: "Ghost",
                         press: this.goToDetail
                     });
                     oColumnTemplate.data("StyleNo", "{}");
                 } else if (sColumnType === "COPY") {
-                    oColumnTemplate = new sap.m.Button({ 
+                    oColumnTemplate = new sap.m.Button({
                         text: "",
                         icon: "sap-icon://copy",
                         type: "Ghost",
@@ -268,30 +287,31 @@ sap.ui.define([
                 return oColumnTemplate;
             },
 
-            getColumnSize: function(sColumnId, sColumnType) {
+            getColumnSize: function (sColumnId, sColumnType) {
                 var mSize = '7rem';
-                if(sColumnType === "SEL") {
+                if (sColumnType === "SEL") {
                     mSize = '7rem';
-                } else if(sColumnType === "COPY") {
-                    mSize = '3.2rem';
-                } else if(sColumnId === "STYLECD") {
-                    mSize = '30rem';
-                } else if(sColumnId === "DESC1" || sColumnId === "PRODTYP") {
-                    mSize = '20rem';
+                } else if (sColumnType === "COPY") {
+                    mSize = '4rem';
+                } else if (sColumnId === "STYLECD") {
+                    mSize = '25rem';
+                } else if (sColumnId === "DESC1" || sColumnId === "PRODTYP") {
+                    mSize = '15rem';
                 }
                 return mSize;
             },
-            
+
             goToDetail: function (oEvent) {
                 var oButton = oEvent.getSource();
                 var styleNo = oButton.data("StyleNo").STYLENO;
                 that.navToDetail(styleNo);
             },
 
-            navToDetail: function(styleNo) {
-			    that._router.navTo("RouteStyleDetail", {
-                    styleno: styleNo
-                } );
+            navToDetail: function (styleNo, sbu) {
+                that._router.navTo("RouteStyleDetail", {
+                    styleno: styleNo,
+                    sbu: "VER"
+                });
             },
 
             onSBUChange: function () {
@@ -299,7 +319,7 @@ sap.ui.define([
                 this.SBU = oFilterSBU.getSelectedKey();
             },
 
-            onCreateNewStyle: function() {
+            onCreateNewStyle: function () {
                 if (!this._ConfirmNewDialog) {
                     this._ConfirmNewDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ConfirmCreateStyle", this);
                     this.getView().addDependent(this._ConfirmNewDialog);
@@ -309,26 +329,35 @@ sap.ui.define([
                 this._ConfirmNewDialog.open();
             },
 
-            // onConfirmNewStyle: function() {
-            //     this.navToDetail("NEW");
-            // },
+            onConfirmNewStyle: function () {
+                this.navToDetail("NEW");
+            },
 
-            onCopyStyle: function(oEvent) {
+            onCopyStyle: function (oEvent) {
                 var oButton = oEvent.getSource();
                 var styleNo = oButton.data("StyleNo").STYLENO;
+
+                var oData = oEvent.getSource().getParent().getBindingContext();
+                var styleCode = oData.getProperty('STYLECD');
+                var seasonCode = oData.getProperty('SEASONCD');
+                var desc1 = oData.getProperty('DESC1');
+                var desc2 = oData.getProperty('DESC2');
 
                 var oModel = new sap.ui.model.json.JSONModel();
                 oModel.setData({
                     "STYLENO": styleNo,
-                    "STYLECD": "STYLECODE",
-                    "SEASONCD": "SeasonCd",
-                    "DESC1": "DESC1",
+                    "STYLECD": styleCode,
+                    "SEASONCD": seasonCode,
+                    "DESC1": desc1,
                     versions: []
                 });
 
+                that.getComboBoxData();
+                that.getVersionsTable(styleNo);
+
                 var oView = that.getView();
                 oView.setModel(oModel, "CopyModel")
-               
+
                 // var selectedStyles = this.getSelectedStyles();
 
                 if (!that._CopyStyleDialog) {
@@ -337,7 +366,26 @@ sap.ui.define([
                 }
                 jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
                 that._CopyStyleDialog.addStyleClass("sapUiSizeCompact");
-                that._CopyStyleDialog.open(); 
+                that._CopyStyleDialog.open();
+            },
+
+            getComboBoxData: function () {
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+
+                //get Seasons
+                var oJSONModel = new sap.ui.model.json.JSONModel();
+                var oView = this.getView();
+                oModel.setHeaders({
+                    sbu: "VER"
+                });
+                oModel.read("/SeasonSet", {
+                    success: function (oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oView.setModel(oJSONModel, "SeasonModel");
+                    },
+                    error: function (err) { }
+                });
             },
 
             // onConfirmCopyStyles: function() {
@@ -358,7 +406,7 @@ sap.ui.define([
             //     }
             // },
 
-            onSaveCopyStyle: function() {
+            onSaveCopyStyle: function () {
                 this._CopyStyleDialog.close();
             },
 
@@ -368,7 +416,7 @@ sap.ui.define([
 
             onCancelCopyStyle: Common.onCancelCopyStyle,
 
-            onSaveLayoutSettings: function() {
+            onSaveLayoutSettings: function () {
 
             },
 
@@ -378,23 +426,98 @@ sap.ui.define([
                 return num;
             },
 
-            onStyleReader: function(){
+            onStyleReader: function () {
                 var oModel = this.getOwnerComponent().getModel();
                 var oForecast = this.getView().byId("forecastNumber");
                 var oOrder = this.getView().byId("orderNumber");
                 var oShipped = this.getView().byId("shippedNumber");
 
                 var aFilters = this.getView().byId("SmartFilterBar").getFilters();
-                
-                oModel.read("/StyleStatsSet",{
+
+                oModel.read("/StyleStatsSet", {
                     filters: aFilters,
-                    success:function(oData){
+                    success: function (oData) {
                         oForecast.setNumber(oData.results[0].FORECAST);
                         oOrder.setNumber(oData.results[0].ORDER);
                         oShipped.setNumber(oData.results[0].SHIPPED);
                     },
-                    error: function(err){}
+                    error: function (err) { }
                 });
+            },
+
+            onExportExcel2: function () {
+                var aCols, oRowBinding, oSettings, oSheet, oTable;
+
+                if (!this._oTable) {
+                    this._oTable = this.byId("styleDynTable");
+                }
+
+                oTable = this._oTable;
+                oRowBinding = oTable.getBinding("rows");
+
+                // aCols = this.createColumnConfig();
+
+                var aCols = [];
+
+                aCols.push({
+                    label: 'Stlye No',
+                    property: 'STYLENO',
+                    type: 'string'
+                });
+
+                var oModel = oRowBinding.getModel();
+                var oModelInterface = oModel.getInterface();
+
+                oSettings = {
+                    workbook: {
+                        columns: aCols,
+                        hierarchyLevel: 'Level'
+                    },
+                    dataSource: {
+                        type: "odata",
+                        dataUrl: oRowBinding.getDownloadUrl ? oRowBinding.getDownloadUrl() : null,
+                        serviceUrl: oModelInterface.sServiceUrl,
+                        headers: oModelInterface.getHeaders ? oModelInterface.getHeaders() : null,
+                        count: oRowBinding.getLength ? oRowBinding.getLength() : null,
+                        useBatch: oModelInterface.bUseBatch,
+                        sizeLimit: oModelInterface.iSizeLimit
+                    },
+                    worker: false // We need to disable worker because we are using a MockServer as OData Service
+                };
+
+                oSheet = new Spreadsheet(oSettings);
+                oSheet.build().finally(function () {
+                    oSheet.destroy();
+                });
+            },
+
+            onExportExcel: function () {
+                // if (!this._oTable) {
+                //     this._oTable = this.getView().byId("styleDynTable");
+                // }
+
+                var oTable = this.getView().byId("styleDynTable");
+                var oExport = oTable.exportData();
+                oExport.mAggregations.columns.shift();
+                // var sModel = oTable.data();
+                // if (sModel) {
+                //     var aExpCol = oExport.getColumns();
+                    // var aCol = oTable.getColumns();
+                    // aCol.forEach(function (oColumn, i) {
+                    //     var oCell = new sap.ui.core.util.ExportCell();
+                    //     console.log(oCell.getMetadata());
+                    //     if (oColumn.data("ctype") === "DatePicker") {
+                    //         oCell.bindProperty("content", { path: sModel + ">" + oColumn.getSortProperty(), formatter: formatter.getDateFormat });
+                    //         aExpCol[i].setTemplate(oCell);
+                    //     } else if (oColumn.data("ctype") === "TimePicker") {
+                    //         oCell.bindProperty("content", { path: sModel + ">" + oColumn.getSortProperty(), formatter: formatter.getTimeFormat });
+                    //         aExpCol[i].setTemplate(oCell);
+                    //     }
+                    // });
+                // }
+                var date = new Date();
+
+                oExport.saveFile("Styles_" + date.toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}));
             }
 
         });

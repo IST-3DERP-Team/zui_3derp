@@ -33,7 +33,10 @@
                             </f:FormElement>
                             <f:FormElement label="New Season">
                                 <f:fields>
-                                    <Input value="{Url}" type="Url"/>
+                                    <ComboBox id="seasonCB" items="{ path: 'SeasonModel>/results', sorter: { path: 'Seasoncd' } }" selectedKey="{SeasonModel>/Seasoncd}"
+                                        showSecondaryValues="true" filterSecondaryValues= "true">
+                                        <core:ListItem key="{SeasonModel>Seasoncd}" text="{SeasonModel>Desc1}" additionalText = "{SeasonModel>Yr}"/>
+                                    </ComboBox>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -61,30 +64,31 @@
                     </f:FormContainer>
                 </f:formContainers>
             </f:Form>
-            <t:Table id="versionsTable" rows="{DataModel>/results}" class="sapUiSizeCompact">
+            <t:Table id="versionsTable" rows="{VersionsDataModel>/results}" class="sapUiSizeCompact">
                 <t:columns>
                     <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
                         <Label text="Version"/>
                         <t:template>
-                            <Text text="{DataModel>Verno}" textAlign="End"/>
+                            <Text text="{VersionsDataModel>Verno}" textAlign="End"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
                         <Label text="Status" />
                         <t:template>
-                            <tnt:InfoLabel id="il8" text="{= ${DataModel>Currentver} === '1' ? 'Current' : ' ' }" colorScheme="{= ${DataModel>Currentver} === '1' ? 8 : 7 }" displayOnly= "true"/>
+                            <tnt:InfoLabel id="il8" text="{= ${VersionsDataModel>Currentver} === '1' ? 'Current' : '' }" colorScheme="{= ${VersionsDataModel>Currentver} === '1' ? 8 : 1 }" displayOnly= "true"
+                                visible="{= ${VersionsDataModel>Currentver} === '1' ? true : false }"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">
                         <Label text="Description" />
                         <t:template>
-                            <Text text="{DataModel>Desc1}"/>
+                            <Text text="{VersionsDataModel>Desc1}"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="15rem" filterProperty="Desc2" sortProperty="Desc2">
                         <Label text="Description" />
                         <t:template>
-                            <Text text="{DataModel>Desc2}"/>
+                            <Text text="{VersionsDataModel>Desc2}"/>
                         </t:template>
                     </t:Column>
                 </t:columns>

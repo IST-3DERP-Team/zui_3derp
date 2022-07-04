@@ -88,8 +88,11 @@
                 </Toolbar>
             </headerToolbar>
             <GenericTile class="sapUiTinyMarginBegin" header="{i18n>ManageStyles}" press="goToStyles">
-                <TileContent footer="{i18n>order}">
-                    <NumericContent value="3" icon="sap-icon://puzzle" valueColor="Neutral" withMargin="false" />
+                <!-- <TileContent footer="{i18n>order}"> -->
+                    <!-- <NumericContent value="856" icon="sap-icon://puzzle" valueColor="Neutral" withMargin="false" /> -->
+                <!-- </TileContent> -->
+                <TileContent>
+                    <ImageContent src="sap-icon://puzzle" />
                 </TileContent>
             </GenericTile>
         </Panel>

@@ -164,7 +164,10 @@
         </layout:HorizontalLayout>
 
         <Toolbar id="tableToolbar" class="sapUiSmallMargin">
-            <Title text="Styles"/>
+            <HBox>
+                <Title id="StylesCount"/>
+                <Title text="{i18n>style}" class="sapUiTinyMarginBegin"/>
+            </HBox>
             <ToolbarSpacer/>
             <SearchField width="30%" placeholder="{i18n>Search}"/>
             <!-- <Button icon="sap-icon://search"/> -->
@@ -173,7 +176,12 @@
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-            <Button text="{i18n>Export}" icon="sap-icon://excel-attachment" press="onExportExcel">
+            <Button text="{i18n>Upload}" icon="sap-icon://upload" press="onUpload">
+              <layoutData>
+                  <ToolbarLayoutData shrinkable="true"/>
+              </layoutData>
+            </Button>
+            <Button icon="sap-icon://excel-attachment" press="onExportExcel">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
@@ -183,7 +191,7 @@
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button> -->
-            <Button icon="sap-icon://grid" text="Save Layout" press="onSaveLayoutSettings">
+            <Button icon="sap-icon://grid" text="{i18n>Save}" press="onSaveLayoutSettings">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
