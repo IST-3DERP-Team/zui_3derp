@@ -1,0 +1,18 @@
+<mvc:View controllerName="zui3derp.controller.AssignMaterial" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns:u="sap.uxap" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+    <Page showHeader="false">
+        <!-- <Text text="Sample Run Goes here"></Text> -->
+        <Toolbar height="3rem" style="Clear">
+            <Label text="Assign Material No."/>
+            <ToolbarSpacer />
+            <!-- <Button icon="sap-icon://bookmark" text="Assign Material No."/> -->
+            <Button icon="sap-icon://edit" />
+            <Button icon="sap-icon://save"/>
+            <Button icon="sap-icon://delete" />
+            </Toolbar>
+            <c:DynamicTable id="assignMaterialTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true"
+            selectionMode="Single">
+            </c:DynamicTable>
+    </Page>
+</mvc:View>
