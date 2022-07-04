@@ -131,6 +131,14 @@
                     "target": [
                         "TargetStyleDetail"
                     ]
+                },
+                {
+                    "name": "AssignMaterial",
+                    "pattern": "AssignMaterial/{styleno}/{sbu}",
+                    "greedy": false,
+                    "target": [
+                        "TargetAssignMaterial"
+                    ]
                 }
             ],
             "targets": {
@@ -154,6 +162,13 @@
                     "clearControlAggregation": false,
                     "viewId": "StyleDetail",
                     "viewName": "StyleDetail"
+                },
+                "TargetAssignMaterial": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "AssignMaterial",
+                    "viewName": "AssignMaterial"
                 }
                 
             }
