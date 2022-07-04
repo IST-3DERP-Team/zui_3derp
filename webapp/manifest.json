@@ -126,7 +126,7 @@
                 },
                 {
                     "name": "RouteStyleDetail",
-                    "pattern": "RouteStyleDetail/{styleno}",
+                    "pattern": "RouteStyleDetail/{styleno}/{sbu}",
                     "greedy": false,
                     "target": [
                         "TargetStyleDetail"

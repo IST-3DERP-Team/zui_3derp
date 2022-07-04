@@ -23,7 +23,8 @@ sap.ui.define(
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
             oRouter.navTo(oRouteName);
             // oRouter.navTo("RouteStyleDetail", {
-            //     styleno: "VERSTY-001"
+            //     styleno: "VERSTY-001",
+            //     sbu: "VER"
             // } );
         },
 

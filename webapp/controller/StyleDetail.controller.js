@@ -25,7 +25,10 @@ sap.ui.define([
 
             _routePatternMatched: function (oEvent) {
                 var styleNo = oEvent.getParameter("arguments").styleno;
+                var sbu = oEvent.getParameter("arguments").sbu;
+
                 this._styleNo = styleNo;
+                this._sbu = sbu;
                 if(styleNo === "NEW") {
                     var oJSONModel = new JSONModel();
                     var data = {
@@ -44,7 +47,7 @@ sap.ui.define([
                 this.getSizesTable();
                 this.getProcessesTable();
                 this.getVersionsTable();
-                
+                // this.getVersionsData();
             },
 
             getHeaderData: function(styleNo) {
@@ -72,7 +75,7 @@ sap.ui.define([
                 var oJSONModel = new sap.ui.model.json.JSONModel();
                 var seasonCB = this.getView().byId("seasonCB");
                 oModel.setHeaders({
-                    sbu: "VER"
+                    sbu: this._sbu
                 });
                 oModel.read("/SeasonSet", {
                     success: function (oData, oResponse) {
@@ -86,7 +89,7 @@ sap.ui.define([
                 var oJSONModel2 = new sap.ui.model.json.JSONModel();
                 var prodTypeCB = this.getView().byId("prodTypeCB");
                 oModel.setHeaders({
-                    sbu: "VER"
+                    sbu: this._sbu
                 });
                 oModel.read("/ProductTypeSet", {
                     success: function (oData, oResponse) {
@@ -225,11 +228,32 @@ sap.ui.define([
                 })
             },
 
+            onSelectVersion: function(oEvent) {
+                // var oButton = oEvent.getSource();
+                var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                var version = oData.getProperty('Verno');
+                var desc;
+                var desc1 = oData.getProperty('Desc1');
+                var desc2 = oData.getProperty('Desc1');
+                if(desc1 !== undefined) {
+                    desc = desc1;
+                } else {
+                    desc = desc2;
+                }
+
+                var oObjHeader = this.getView().byId("VersionHeader");
+                oObjHeader.setTitle(desc);
+                oObjHeader.setIntro('Version ' + version);
+
+                this._version = version;
+                this.getVersionsData();
+            },
+
             getVersionsData() {
-                this._version = 1;
                 this.getVersionAttrTable();
                 this.getbomGMCTable();
                 this.getbomUVTable();
+                this.getMaterialList();
             },
 
             getVersionAttrTable: function(){
@@ -250,6 +274,26 @@ sap.ui.define([
                 })
             },
 
+            setVersionCurrent: function(oEvent) {
+                var me = this;
+                var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                var version = oData.getProperty('Verno');
+                var oModel = this.getOwnerComponent().getModel();
+
+                var entitySet = "/StyleVersionSet(Styleno='" + this._styleNo +  "',Verno='002')";
+                var oEntry = { };
+
+                oModel.update(entitySet, oEntry, {
+                    method: "PUT",
+                    success: function(data, oResponse) {
+                        me.getVersionsTable();
+                    },
+                    error: function() {
+                        
+                    }
+                });
+            },
+
             getbomGMCTable: function() {
                 var me = this;
                 var columnData = [];
@@ -258,7 +302,7 @@ sap.ui.define([
                 var oJSONColumnsModel = new sap.ui.model.json.JSONModel();
 
                 oModel.setHeaders({
-                    sbu: "VER",
+                    sbu: this._sbu,
                     type: 'BOMGMC'
                 });
 
@@ -307,7 +351,7 @@ sap.ui.define([
 
                 oModel.setHeaders({
                     styleno: this._styleNo,
-                    verno: 1
+                    verno: this._version
                 });
                 oModel.read("/StyleBOMGMCSet", {
                     success: function (oData, oResponse) {
@@ -357,7 +401,7 @@ sap.ui.define([
                 var oJSONColumnsModel = new sap.ui.model.json.JSONModel();
 
                 oModel.setHeaders({
-                    sbu: "VER",
+                    sbu: this._sbu,
                     type: 'BOMUV'
                 });
 
@@ -406,7 +450,7 @@ sap.ui.define([
 
                 oModel.setHeaders({
                     styleno: this._styleNo,
-                    verno: 1
+                    verno: this._version
                 });
                 oModel.read("/StyleBOMUVSet", {
                     success: function (oData, oResponse) {
@@ -467,9 +511,8 @@ sap.ui.define([
                 var oTable = this.getView().byId("attachmentsTable");
             },
 
-            oDetailedBOM:function(){
+            getDetailedBOM:function(){
                 var me = this;
-                var oTable = this.getView().byId("bomDetailedTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new sap.ui.model.json.JSONModel();
                 var oTable = this.getView().byId("bomDetailedTable");
@@ -483,13 +526,16 @@ sap.ui.define([
                 })
             },
 
-            oMaterialList:function(){
+            getMaterialList: function(){
                 var me = this;
-                var oTable = this.getView().byId("materialListTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new sap.ui.model.json.JSONModel();
                 var oTable = this.getView().byId("materialListTable");
                 var entitySet = "/StyleMaterialListSet"
+                oModel.setHeaders({
+                    styleno: this._styleNo,
+                    verno: this._version
+                });
                 oModel.read(entitySet, {
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
@@ -499,6 +545,16 @@ sap.ui.define([
                 })
             },
 
+            addLine: function(oEvent) {
+                var oButton = oEvent.getSource();
+                var tabName = oButton.data('TableName')
+                var oTable = this.getView().byId(tabName);
+                var oModel = this.getView().byId(tabName).getModel("DataModel");
+                var oData = oModel.getProperty('/results');
+                oData.push({});
+                oTable.getBinding("rows").refresh();
+            },
+
             addGeneralAttr: function() {
                 var oModel = this.getView().byId("generalTable").getModel("DataModel");
                 var oData = oModel.getProperty('/results');
@@ -506,6 +562,16 @@ sap.ui.define([
 
                 var oTable = this.getView().byId("generalTable");
                 oTable.getBinding("rows").refresh();
+            },
+
+            uploadAttachment: function() {
+                if (!this._UploadFileDialog) {
+                    this._UploadFileDialog = sap.ui.xmlfragment("zui3derp.view.fragments.UploadFile", this);
+                    this.getView().addDependent(this._ConfirmNewDialog);
+                }
+                jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
+                this._UploadFileDialog.addStyleClass("sapUiSizeCompact");
+                this._UploadFileDialog.open();
             }
         });
     });
