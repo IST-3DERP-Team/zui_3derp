@@ -5,7 +5,7 @@
                 <Label text="Select File:" class="sapUiSmallMarginEnd"/>
                 <u:FileUploader name="myFileUpload" uploadUrl="upload/" width="100%" tooltip="Upload your file to the local server" uploadComplete="handleUploadComplete"/>
             </HBox>
-            <f:Form id="StyleHeaderForm1" editable="true" class="sapUiNoContentPadding">
+            <f:Form editable="true" class="sapUiNoContentPadding">
                 <f:layout>
                     <f:ResponsiveGridLayout columnsXL="12" columnsL="12" columnsM="12"/>
                 </f:layout>
@@ -37,7 +37,7 @@
 		</Panel>
 		<buttons>
 			<Button text="Save" press="onSaveCopyStyle"/>
-			<Button text="Cancel" press="onCancelCopyStyle"/>
+			<Button text="Cancel" press="onCancelUploadFile"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

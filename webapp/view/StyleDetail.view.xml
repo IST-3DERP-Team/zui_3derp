@@ -22,13 +22,13 @@
                 <Toolbar id="TB1" height="3rem" style="Clear">
                     <Title text="Header" />
                     <ToolbarSpacer />
-                    <Button type="Ghost" text="Save" icon="sap-icon://save" visible="{EditModeModel>/headerEditMode}"/>
+                    <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/headerEditMode}"/>
+                    <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/headerEditMode}"/>
                     <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
                         <customData>
                             <core:CustomData key="Section" value="HeaderForm"/>
                         </customData>
                     </Button>
-                    <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/headerEditMode}"/>
                 </Toolbar>
             </headerToolbar>
             <f:Form id="StyleHeaderForm1" editable="false" class="sapUiNoContentPadding">
@@ -199,7 +199,13 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="General Attributes"/>
                                     <ToolbarSpacer />
+                                    <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/genAttrEditMode}"/>
                                     <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/genAttrEditMode}">
+                                        <customData>
+                                            <core:CustomData key="TableName" value="generalTable"/>
+                                        </customData>
+                                    </Button>
+                                    <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/genAttrEditMode}">
                                         <customData>
                                             <core:CustomData key="TableName" value="generalTable"/>
                                         </customData>
@@ -207,12 +213,6 @@
                                     <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
                                         <customData>
                                             <core:CustomData key="Section" value="GeneralAttributes"/>
-                                        </customData>
-                                    </Button>
-                                    <Button type="Ghost" icon="sap-icon://save" visible="{EditModeModel>/genAttrEditMode}"/>
-                                    <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/genAttrEditMode}">
-                                        <customData>
-                                            <core:CustomData key="TableName" value="generalTable"/>
                                         </customData>
                                     </Button>
                                 </Toolbar>
@@ -263,7 +263,14 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Colors" />
                                     <ToolbarSpacer />
+                                    <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/colorsEditMode}"/>
                                     <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/colorsEditMode}">
+                                        <customData>
+                                            <core:CustomData key="TableName" value="colorsTable"/>
+                                        </customData>
+                                    </Button>
+                                    <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/colorsEditMode}"/> -->
+                                    <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/colorsEditMode}">
                                         <customData>
                                             <core:CustomData key="TableName" value="colorsTable"/>
                                         </customData>
@@ -273,8 +280,6 @@
                                             <core:CustomData key="Section" value="Colors"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://save" visible="{EditModeModel>/colorsEditMode}"/>
-                                    <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/colorsEditMode}"/>
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="colorsTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="5" visibleRowCountMode="Auto" class="sapUiSizeCompact">
@@ -302,7 +307,14 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Sizes" />
                                     <ToolbarSpacer />
+                                    <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/sizesEditMode}"/>
                                     <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/sizesEditMode}">
+                                        <customData>
+                                            <core:CustomData key="TableName" value="sizesTable"/>
+                                        </customData>
+                                    </Button>
+                                    <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/sizesEditMode}"/> -->
+                                    <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/sizesEditMode}">
                                         <customData>
                                             <core:CustomData key="TableName" value="sizesTable"/>
                                         </customData>
@@ -312,8 +324,6 @@
                                             <core:CustomData key="Section" value="Sizes"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://save" visible="{EditModeModel>/sizesEditMode}"/>
-                                    <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/sizesEditMode}"/>
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="sizesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact">
@@ -342,12 +352,19 @@
 
 
                         <!-- PROCESSES -->
-                        <Panel expandable="true" expanded="true" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+                        <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Processes" />
-                                    <ToolbarSpacer />
+                                    <ToolbarSpacer/>
+                                    <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/processEditMode}"/>
                                     <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/processEditMode}">
+                                        <customData>
+                                            <core:CustomData key="TableName" value="processesTable"/>
+                                        </customData>
+                                    </Button>
+                                    <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/processEditMode}"/> -->
+                                    <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/processEditMode}">
                                         <customData>
                                             <core:CustomData key="TableName" value="processesTable"/>
                                         </customData>
@@ -357,8 +374,6 @@
                                             <core:CustomData key="Section" value="Processes"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://save" visible="{EditModeModel>/processEditMode}"/>
-                                    <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/processEditMode}"/>
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="processesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact">
@@ -433,10 +448,10 @@
                                 <Toolbar height="3rem" style="Clear">
                                     <Title text="Versions" />
                                     <ToolbarSpacer />
-                                    <Button type="Ghost" icon="sap-icon://add-document" text="New Version" press="onCreateNewVersion"/>
-                                    <Button type="Ghost" icon="sap-icon://edit" />
-                                    <Button type="Ghost" icon="sap-icon://save"/>
+                                    <Button type="Ghost" icon="sap-icon://save" text="Save"/>
+                                    <Button type="Ghost" icon="sap-icon://add-document" text="New Version" press="onCreateNewVersion"/>                                    
                                     <Button type="Ghost" icon="sap-icon://delete" />
+                                    <Button type="Ghost" icon="sap-icon://edit" />
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" selectionMode="Single" 
@@ -501,10 +516,10 @@
                                         <Toolbar height="3rem" style="Clear">
                                             <Label text="Version Attributes"/>
                                             <ToolbarSpacer />
+                                            <Button icon="sap-icon://save" text="Save"/>
                                             <Button icon="sap-icon://add"/>
-                                            <Button icon="sap-icon://edit" />
-                                            <Button icon="sap-icon://save"/>
                                             <Button icon="sap-icon://delete" />
+                                            <Button icon="sap-icon://edit" />
                                         </Toolbar>
                                         <c:DynamicTable id="versionAttrTable" rows="{DataModel>/results}" enableColumnReordering="false"  
                                             visibleRowCountMode="Auto" minAutoRowCount="5" class="sapUiSizeCompact">
@@ -550,10 +565,10 @@
                                             <ToolbarSpacer />
                                             <Button text="Get Components"/>
                                             <Button text="RMC"/>
+                                            <Button icon="sap-icon://save" text="Save"/>
                                             <Button icon="sap-icon://add"/>
-                                            <Button icon="sap-icon://edit" />
-                                            <Button icon="sap-icon://save"/>
                                             <Button icon="sap-icon://delete" />
+                                            <Button icon="sap-icon://edit" />
                                         </Toolbar>
                                         <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
                                         </c:DynamicTreeTable>
@@ -571,10 +586,10 @@
                                             </HBox>
                                             <!-- <Label text="BOM by UV"/> -->
                                             <ToolbarSpacer />
+                                            <Button icon="sap-icon://save" text="Save"/>
                                             <Button icon="sap-icon://add"/>
-                                            <Button icon="sap-icon://edit" />
-                                            <Button icon="sap-icon://save"/>
-                                            <Button icon="sap-icon://delete" />
+                                            <Button icon="sap-icon://delete"/>
+                                            <Button icon="sap-icon://edit"/>
                                         </Toolbar>
                                         
                                         <c:DynamicTable id="bomUVTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
@@ -586,10 +601,10 @@
                                         <Toolbar height="3rem" style="Clear">
                                             <Label text="Detailed BOM"/>
                                             <ToolbarSpacer />
+                                            <Button icon="sap-icon://save" text="Save"/>
                                             <Button icon="sap-icon://add"/>
-                                            <Button icon="sap-icon://edit" />
-                                            <Button icon="sap-icon://save"/>
-                                            <Button icon="sap-icon://delete" />
+                                            <Button icon="sap-icon://delete"/>
+                                            <Button icon="sap-icon://edit"/>
                                         </Toolbar>
                                         <c:DynamicTable id="bomDetailedTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
@@ -751,94 +766,94 @@
                                             <Label text="Material List"/>
                                             <ToolbarSpacer />
                                             <Button icon="sap-icon://bookmark" text="Assign Material No." press="onAssignMaterial"/>
-                                            <Button icon="sap-icon://edit" />
-                                            <Button icon="sap-icon://save"/>
-                                            <Button icon="sap-icon://delete" />
+                                            <Button icon="sap-icon://save" text="Save"/>
+                                            <Button icon="sap-icon://delete"/>
+                                            <Button icon="sap-icon://edit"/>
                                         </Toolbar>
                                         <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true"
                                             selectionMode="Single">
-                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                            <t:Column width="5rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Seq No."/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Text text="{DataModel>Seqno}"/>
                                                 </t:template>
                                             </t:Column>
-                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                            <t:Column width="7rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Mat. Type"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Text text="{DataModel>Mattyp}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Material No."/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Text text="{DataModel>Matno}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="GMC"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Text text="{DataModel>Gmc}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="GMC Description"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Text text="{DataModel>Gmc}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Addtl. Description"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Input value="{DataModel>Matdesc1}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Consumption"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Input value="{DataModel>Consump}"/>
                                                 </t:template>
                                             </t:Column>
-                                            <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                            <t:Column width="5rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="UOM"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Text text="{DataModel>Uom}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Supply Type"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Input value="{DataModel>Supplytyp}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Vendor"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Input value="{DataModel>Vendorcd}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Currency"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Input value="{DataModel>Currencycd}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Unit Price"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Input value="{DataModel>Unitprice}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Purch. Group"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Input value="{DataModel>Purgrp}"/>
                                                 </t:template>
                                             </t:Column>
                                             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                                                 <Label text="Purch. Plant"/>
                                                 <t:template>
-                                                    <Input value="{DataModel>Attribtyp}"/>
+                                                    <Input value="{DataModel>Purplant}"/>
                                                 </t:template>
                                             </t:Column>
                                         </c:DynamicTable>
@@ -855,9 +870,9 @@
                             <Label text="Attachments"/>
                             <ToolbarSpacer />
                             <Button text="{i18n>Upload}" icon="sap-icon://upload" press="uploadAttachment"/>
-                            <Button icon="sap-icon://edit" />
-                            <Button icon="sap-icon://save"/>
-                            <Button icon="sap-icon://delete" />
+                            <Button icon="sap-icon://save" text="Save"/>
+                            <Button icon="sap-icon://delete"/>
+                            <Button icon="sap-icon://edit"/>
                         </Toolbar>
                         <c:DynamicTable id="attachmentsTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
                             <c:columns>
