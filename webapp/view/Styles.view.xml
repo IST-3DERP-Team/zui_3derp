@@ -169,7 +169,7 @@
                 <Title text="{i18n>style}" class="sapUiTinyMarginBegin"/>
             </HBox>
             <ToolbarSpacer/>
-            <SearchField width="30%" placeholder="{i18n>Search}"/>
+            <!-- <SearchField width="30%" placeholder="{i18n>Search}"/> -->
             <!-- <Button icon="sap-icon://search"/> -->
 			<Button text="{i18n>New}" icon="sap-icon://add-document" press="onCreateNewStyle" tooltip="Create New Style">
               <layoutData>

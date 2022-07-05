@@ -8,7 +8,27 @@ sap.ui.define(
   
       return BaseController.extend("zui3derp.controller.controller.App", {
         onInit: function () {
-            var oModel = new JSONModel("../model/menuContent.json", false);
+            var oModel = new JSONModel({
+                "selectedKey": "RouteMain",
+                "navigation": [
+                    {
+                        "title": "Home",
+                        "icon": "sap-icon://home",
+                        "key": "RouteMain"
+                    },
+                    {
+                        "title": "Manage Styles",
+                        "icon": "sap-icon://puzzle",
+                        "key": "RouteStyles"
+                    }
+                ],
+                "fixedNavigation": [
+                    {
+                        "title": "Settings",
+                        "icon": "sap-icon://employee"
+                    }
+                ]
+            }, false);
 
             var oView = this.getView();
             oView.setModel(oModel); 

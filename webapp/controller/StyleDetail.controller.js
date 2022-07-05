@@ -46,9 +46,10 @@ sap.ui.define([
                     };                    
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "headerData");
-
+                    this.setEditMode("NEW");
                 } else {
                     this.getHeaderData(this._styleNo);
+                    this.setEditMode();
                 }
                 this.getComboBoxData();
                 this.getGeneralTable();
@@ -56,7 +57,6 @@ sap.ui.define([
                 this.getSizesTable();
                 this.getProcessesTable();
                 this.getVersionsTable();
-                this.setEditMode();
             },
 
             getHeaderData: function(styleNo) {
@@ -634,10 +634,18 @@ sap.ui.define([
                 var oModel = this.getView().byId(tabName).getModel("DataModel");
                 var oData = oModel.getData(); // oModel.getProperty('/results');
                 var selected = oTable.getSelectedIndices();
-                selected.forEach((item) => {
-                    oData.results.splice(item, 1);
-                });
+                // selected.forEach((item) => {
+                //     oData.results.splice(item, 1);
+                // });
+
+                // var valuesArr = ["v1","v2","v3","v4","v5"];
+                // var removeValFrom = [0, 2, 4];
+                oData.results = oData.results.filter(function(value, index) {
+                    return selected.indexOf(index) == -1;
+                })
+
                 oModel.setData(oData);
+                oTable.clearSelection();
                 // oData.push({});
                 // oTable.getBinding("rows").refresh();
             },
@@ -652,37 +660,48 @@ sap.ui.define([
             },
 
             setEditMode: function(oEvent) {
-                if(oEvent !== undefined) {
-                    var oButton = oEvent.getSource();
-                    var section = oButton.data('Section')
-                }
-                
                 var oJSONModel = new JSONModel();
                 var data;
 
-                var currentMode = this.getView().getModel("EditModeModel");
-                if(currentMode !== undefined) {
-                    var currentModeData = currentMode.getData();
-                    if(section === "HeaderForm") 
-                        currentModeData.headerEditMode = !currentModeData.headerEditMode;
-                    if(section === "GeneralAttributes")
-                        currentModeData.genAttrEditMode = !currentModeData.genAttrEditMode;
-                    if(section === "Colors")
-                        currentModeData.colorsEditMode = !currentModeData.colorsEditMode;
-                    if(section === "Sizes")
-                        currentModeData.sizesEditMode = !currentModeData.sizesEditMode;
-                    if(section === "Processes")
-                        currentModeData.processEditMode = !currentModeData.processEditMode;
-                    data = currentModeData;
-                } else {
+                if(oEvent === "NEW") {
                     data = {
-                        headerEditMode: false,
-                        genAttrEditMode: false,
-                        colorsEditMode: false,
-                        sizesEditMode: false,
-                        processEditMode: false
-                    };                         
-                }              
+                        headerEditMode: true,
+                        genAttrEditMode: true,
+                        colorsEditMode: true,
+                        sizesEditMode: true,
+                        processEditMode: true
+                    };
+
+                } else {
+                    if(oEvent !== undefined) {
+                        var oButton = oEvent.getSource();
+                        var section = oButton.data('Section')
+                    
+                        var currentMode = this.getView().getModel("EditModeModel");
+                        if(currentMode !== undefined) {
+                            var currentModeData = currentMode.getData();
+                            if(section === "HeaderForm") 
+                                currentModeData.headerEditMode = !currentModeData.headerEditMode;
+                            if(section === "GeneralAttributes")
+                                currentModeData.genAttrEditMode = !currentModeData.genAttrEditMode;
+                            if(section === "Colors")
+                                currentModeData.colorsEditMode = !currentModeData.colorsEditMode;
+                            if(section === "Sizes")
+                                currentModeData.sizesEditMode = !currentModeData.sizesEditMode;
+                            if(section === "Processes")
+                                currentModeData.processEditMode = !currentModeData.processEditMode;
+                            data = currentModeData; 
+                        }
+                    } else {
+                        data = {
+                            headerEditMode: false,
+                            genAttrEditMode: false,
+                            colorsEditMode: false,
+                            sizesEditMode: false,
+                            processEditMode: false
+                        };           
+                    }
+                }
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "EditModeModel");
             },
@@ -840,5 +859,7 @@ sap.ui.define([
             },
 
             onCancelNewVersion: Common.onCancelNewVersion,
+
+            onCancelUploadFile: Common.onCancelUploadFile
         });
     });

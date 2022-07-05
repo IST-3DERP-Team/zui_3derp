@@ -20,6 +20,14 @@ sap.ui.define([
 			this._NewVerionDialog.close();
 		},
 
+        onCancelUploadStyle: function() {
+            this._UploadStylesDialog.close();
+        },
+
+        onCancelUploadFile: function() {
+            this._UploadFileDialog.close();
+        },
+
         showMessage: function(oMessage) {
 			MessageToast.show(oMessage, {
 				duration: 2000,

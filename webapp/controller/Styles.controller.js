@@ -202,7 +202,7 @@ sap.ui.define([
                 });
 
                 oColumnsData.unshift({
-                    "ColumnName": "",
+                    "ColumnName": "Manage",
                     "ColumnType": "SEL"
                 });
 
@@ -266,7 +266,7 @@ sap.ui.define([
                     })
                 } else if (sColumnType === "SEL") {
                     oColumnTemplate = new sap.m.Button({
-                        text: "{i18n>Maintain}",
+                        text: "{i18n>Manage}",
                         icon: "sap-icon://detail-view",
                         type: "Ghost",
                         press: this.goToDetail
@@ -416,8 +416,32 @@ sap.ui.define([
 
             onCancelCopyStyle: Common.onCancelCopyStyle,
 
-            onSaveLayoutSettings: function () {
+            onCancelUploadStyle: Common.onCancelUploadStyle,
 
+            onSaveLayoutSettings: function () {
+                var oTable = this.getView().byId("styleDynTable");
+                var oColumns = oTable.getColumns();
+                var oEntry = {
+                    "Username": "EMALLARI",
+                    "TableName": "STYLHDR",
+                    "Sbu": "VER",
+                    "Columns": []
+                };
+                var ctr = 1;
+
+                oColumns.forEach((column) => {
+                    if(column.sId !== "Manage" && column.sId !== "Copy") {
+                        oEntry.push({
+                            ColumnName: column.sId,
+                            Order: ctr,
+                            Sorted: column.mProperties.sorted,
+                            SortOrder: column.mProperties.sortOrder
+                        });
+                        ctr++;
+                    }
+                });
+
+                Common.showMessage("Layout saved");
             },
 
             pad: function (num, size) {
@@ -492,13 +516,13 @@ sap.ui.define([
             },
 
             uploadStyles: function() {
-                if (!this._UploadFileDialog) {
-                    this._UploadFileDialog = sap.ui.xmlfragment("zui3derp.view.fragments.UploadStyles", this);
+                if (!this._UploadStylesDialog) {
+                    this._UploadStylesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.UploadStyles", this);
                     this.getView().addDependent(this._ConfirmNewDialog);
                 }
                 jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                this._UploadFileDialog.addStyleClass("sapUiSizeCompact");
-                this._UploadFileDialog.open();
+                this._UploadStylesDialog.addStyleClass("sapUiSizeCompact");
+                this._UploadStylesDialog.open();
             },
 
             onExportExcel: function () {
