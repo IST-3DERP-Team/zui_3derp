@@ -3,16 +3,54 @@
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
     <Page showHeader="false">
         <!-- <Text text="Sample Run Goes here"></Text> -->
-        <Toolbar height="3rem" style="Clear">
-            <Label text="Assign Material No."/>
-            <ToolbarSpacer />
-            <!-- <Button icon="sap-icon://bookmark" text="Assign Material No."/> -->
-            <Button icon="sap-icon://edit" />
-            <Button icon="sap-icon://save"/>
-            <Button icon="sap-icon://delete" />
+        <Panel>
+            <Toolbar height="3rem" style="Clear">
+                <Label text="Assign Material No."/>
+                <ToolbarSpacer />
+                <!-- <Button icon="sap-icon://bookmark" text="Assign Material No."/> -->
+                <Button text="Assign Automatic"/>
+                <Button text="Create Material"/>
+                <Button icon="sap-icon://save"/>
+                <Button icon="sap-icon://delete" />
             </Toolbar>
-            <c:DynamicTable id="assignMaterialTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true"
-            selectionMode="Single">
+            <c:DynamicTable id="GMCTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" height="100%">
+                <t:Column width="7rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <Label text="GMC"/>
+                    <t:template>
+                        <Text text="{DataModel>Gmc}"/>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <Label text="GMC Desc"/>
+                    <t:template>
+                        <Text text="{DataModel>Matdesc1}"/>
+                    </t:template>
+                </t:Column>
+                <t:Column filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <Label text="Additional Description"/>
+                    <t:template>
+                        <Text text="{DataModel>Matdesc2}"/>
+                    </t:template>
+                </t:Column>
+                <t:Column width="5rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <Label text="UOM"/>
+                    <t:template>
+                        <Text text="{DataModel>Uom}"/>
+                    </t:template>
+                </t:Column>
+                <t:Column filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <Label text="Material No."/>
+                    <t:template>
+                        <!-- <Text text="{DataModel>MatNo}"/> -->
+                        <Input id="productInput" type="Text" placeholder="Select Material ..." showSuggestion="true" showValueHelp="true"
+                            valueHelpRequest="handleValueHelp" suggestionItems="{MaterialsModel>/results}" >
+                            <suggestionItems>
+                                <core:Item text="{MaterialsModel>MatNo}" />
+                            </suggestionItems>
+                        </Input>
+                    </t:template>
+                </t:Column>
             </c:DynamicTable>
+        </Panel>
     </Page>
 </mvc:View>

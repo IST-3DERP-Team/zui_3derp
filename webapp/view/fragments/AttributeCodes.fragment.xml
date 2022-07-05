@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="Attribute Types"
+		class="sapUiPopupWithPadding"
+		items="{ValueHelpModel>/attributecodes}"
+		search="_attrCodesValueHelpSearch"
+		confirm="_attrCodesValueHelpClose"
+		cancel="_attrCodesValueHelpClose">
+		<StandardListItem title="{ValueHelpModel>AttribCd}" description="{ValueHelpModel>Desc1}"/>
+	</SelectDialog>
+</core:FragmentDefinition>

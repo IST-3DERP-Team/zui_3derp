@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="VAS Types"
+		class="sapUiPopupWithPadding"
+		items="{ValueHelpModel>/vastypes}"
+		search="_VASTypesValueHelpSearch"
+		confirm="_VASTypesValueHelpClose"
+		cancel="_VASTypesValueHelpClose">
+		<StandardListItem title="{ValueHelpModel>VASTyp}" description="{ValueHelpModel>ProcessCd}"/>
+	</SelectDialog>
+</core:FragmentDefinition>

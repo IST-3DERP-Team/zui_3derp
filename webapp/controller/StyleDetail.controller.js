@@ -1,15 +1,17 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
+    'sap/ui/model/Filter',
     "../js/Common",
     "sap/ui/model/json/JSONModel"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Common, JSONModel) {
+    function (Controller, Filter, Common, JSONModel) {
         "use strict";
 
         var that;
+        this._valueHelpData;
 
         return Controller.extend("zui3derp.controller.StyleDetail", {
             
@@ -20,15 +22,23 @@ sap.ui.define([
                 this._router.getRoute("RouteStyleDetail").attachPatternMatched(this._routePatternMatched, this);
 
                 this._User = 'EMALLARI';
+                this._valueHelpData = {
+                    seasons: [],
+                    salesgroups: [],
+                    customergroups: [],
+                    producttypes: [],
+                    attributes: [],
+                    attributecodes: [],
+                    processes: [],
+                    vastypes: []
+                };
             },
 
             _routePatternMatched: function (oEvent) {
-                var styleNo = oEvent.getParameter("arguments").styleno;
-                var sbu = oEvent.getParameter("arguments").sbu;
+                this._styleNo = oEvent.getParameter("arguments").styleno;
+                this._sbu = oEvent.getParameter("arguments").sbu;
 
-                this._styleNo = styleNo;
-                this._sbu = sbu;
-                if(styleNo === "NEW") {
+                if(this._styleNo === "NEW") {
                     var oJSONModel = new JSONModel();
                     var data = {
                         "Styleno": "New Style",
@@ -38,7 +48,7 @@ sap.ui.define([
                     this.getView().setModel(oJSONModel, "headerData");
 
                 } else {
-                    this.getHeaderData(styleNo);
+                    this.getHeaderData(this._styleNo);
                 }
                 this.getComboBoxData();
                 this.getGeneralTable();
@@ -71,15 +81,43 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
 
                 //get Seasons
-                var oJSONModel = new sap.ui.model.json.JSONModel();
-                var seasonCB = this.getView().byId("seasonCB");
+                var oJSONModel0 = new sap.ui.model.json.JSONModel();
+                var oView = this.getView();
                 oModel.setHeaders({
                     sbu: this._sbu
                 });
                 oModel.read("/SeasonSet", {
                     success: function (oData, oResponse) {
-                        oJSONModel.setData(oData);
-                        seasonCB.setModel(oJSONModel);
+                        me._valueHelpData.seasons = oData.results;
+                        oJSONModel0.setData(me._valueHelpData);
+                        oView.setModel(oJSONModel0, "ValueHelpModel");
+                    },
+                    error: function (err) { }
+                });
+
+                //get Attributes
+                var oJSONModel1 = new sap.ui.model.json.JSONModel();
+                var oView = this.getView();
+                oModel.setHeaders({
+                    dispgrp: "STYINFO"
+                });
+                oModel.read("/AttribTypeSet", {
+                    success: function (oData, oResponse) {
+                        me._valueHelpData.attributes = oData.results;
+                        oJSONModel1.setData(me._valueHelpData);
+                        oView.setModel(oJSONModel1, "ValueHelpModel");
+                    },
+                    error: function (err) { }
+                });
+
+                //get Attribute Codes
+                var oJSONModela = new sap.ui.model.json.JSONModel();
+                var oView = this.getView();
+                oModel.read("/AttribCodeSet", {
+                    success: function (oData, oResponse) {
+                        me._valueHelpData.attributecodes = oData.results;
+                        oJSONModela.setData(me._valueHelpData);
+                        oView.setModel(oJSONModela, "ValueHelpModel");
                     },
                     error: function (err) { }
                 });
@@ -128,10 +166,42 @@ sap.ui.define([
                     },
                     error: function (err) { }
                 });
+
+                //Process Codes
+                var oJSONModel5 = new sap.ui.model.json.JSONModel();
+                oModel.read("/ProcessCodeSet", {
+                    success: function (oData, oResponse) {
+                        me._valueHelpData.processes = oData.results;
+                        oJSONModel5.setData(me._valueHelpData);
+                        oView.setModel(oJSONModel5, "ValueHelpModel");
+                    },
+                    error: function (err) { }
+                });
+
+                //VAS Types
+                var oJSONModel6 = new sap.ui.model.json.JSONModel();
+                oModel.read("/VASTypeSet", {
+                    success: function (oData, oResponse) {
+                        me._valueHelpData.vastypes = oData.results;
+                        oJSONModel6.setData(me._valueHelpData);
+                        oView.setModel(oJSONModel6, "ValueHelpModel");
+                    },
+                    error: function (err) { }
+                });
+
+                //Usage Classes
+                var oJSONModel7 = new sap.ui.model.json.JSONModel();
+                oModel.read("/UsageClassSet", {
+                    success: function (oData, oResponse) {
+                        me._valueHelpData.usageclasses = oData.results;
+                        oJSONModel7.setData(me._valueHelpData);
+                        oView.setModel(oJSONModel7, "ValueHelpModel");
+                    },
+                    error: function (err) { }
+                });
             },
             
             getGeneralTable:function(){
-                var me = this;
                 var oTable = this.getView().byId("generalTable");
 
                 var oModel = this.getOwnerComponent().getModel();
@@ -151,7 +221,6 @@ sap.ui.define([
             },
 
             getColorsTable:function(){
-                var me = this;
                 var oTable = this.getView().byId("colorsTable");
 
                 var oModel = this.getOwnerComponent().getModel();
@@ -171,7 +240,6 @@ sap.ui.define([
             },
 
             getSizesTable:function(){
-                var me = this;
                 var oTable = this.getView().byId("sizesTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new sap.ui.model.json.JSONModel();
@@ -228,7 +296,6 @@ sap.ui.define([
             },
 
             onSelectVersion: function(oEvent) {
-                // var oButton = oEvent.getSource();
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
                 var version = oData.getProperty('Verno');
                 var desc;
@@ -310,9 +377,7 @@ sap.ui.define([
             getbomGMCTable: function() {
                 var me = this;
                 var columnData = [];
-
                 var oModel = this.getOwnerComponent().getModel();
-                var oJSONColumnsModel = new sap.ui.model.json.JSONModel();
 
                 oModel.setHeaders({
                     sbu: this._sbu,
@@ -369,15 +434,6 @@ sap.ui.define([
                 oModel.read("/StyleBOMGMCSet", {
                     success: function (oData, oResponse) {
                         rowData = oData.results;
-
-                        // rowData = [{
-                        //     PARENT: 1,
-                        //     BOMSEQ: 1,
-                        //     CHILD: [{
-                        //         BOMSEQ: 2
-                        //     }]
-                        // }]
-
                         var oJSONModel = new sap.ui.model.json.JSONModel();
                         oJSONModel.setData({
                             results: rowData,
@@ -392,7 +448,6 @@ sap.ui.define([
                             var columnType = oContext.getObject().ColumnType;
                             return new sap.ui.table.Column({
                                 label: that.getColumnDesc(columnName, columnDesc, columnType),
-                                // template: new sap.m.Input({ value: "{DataModel>" + columnName + "}" }),
                                 template: that.columnTemplate(columnName, columnDesc, columnType),
                                 sortProperty: columnName, 
                                 filterProperty: columnName,
@@ -409,7 +464,6 @@ sap.ui.define([
             getbomUVTable: function() {
                 var me = this;
                 var columnData = [];
-
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONColumnsModel = new sap.ui.model.json.JSONModel();
 
@@ -435,7 +489,6 @@ sap.ui.define([
 
             getUVColors: function(columnData) {
                 var me = this;
-
                 var oModel = this.getOwnerComponent().getModel();
 
                 oModel.setHeaders({
@@ -509,13 +562,11 @@ sap.ui.define([
 
             columnTemplate: function(columnName, columnDesc, columnType) {
                 var oColumnTemplate;
-
                 if(columnName === "BOMSEQ" || columnName === "BOMITEM") {
                     oColumnTemplate = new sap.m.Text({ text: "{DataModel>" + columnName + "}" });
                 } else {
                     oColumnTemplate = new sap.m.Input({ value: "{DataModel>" + columnName + "}" })
                 }
-
                 return oColumnTemplate;
             },
 
@@ -558,6 +609,14 @@ sap.ui.define([
                 })
             },
 
+            onAssignMaterial: function() {
+                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                oRouter.navTo("RouteAssignMaterial", {
+                    styleno: this._styleNo,
+                    sbu: this._sbu
+                } );
+            },
+
             addLine: function(oEvent) {
                 var oButton = oEvent.getSource();
                 var tabName = oButton.data('TableName')
@@ -566,6 +625,21 @@ sap.ui.define([
                 var oData = oModel.getProperty('/results');
                 oData.push({});
                 oTable.getBinding("rows").refresh();
+            },
+
+            removeLine: function(oEvent) {
+                var oButton = oEvent.getSource();
+                var tabName = oButton.data('TableName')
+                var oTable = this.getView().byId(tabName);
+                var oModel = this.getView().byId(tabName).getModel("DataModel");
+                var oData = oModel.getData(); // oModel.getProperty('/results');
+                var selected = oTable.getSelectedIndices();
+                selected.forEach((item) => {
+                    oData.results.splice(item, 1);
+                });
+                oModel.setData(oData);
+                // oData.push({});
+                // oTable.getBinding("rows").refresh();
             },
 
             addGeneralAttr: function() {
@@ -611,6 +685,142 @@ sap.ui.define([
                 }              
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "EditModeModel");
+            },
+
+            onAttrTypesValueHelp : function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
+                this.inputId = oEvent.getSource().getId();
+                if (!this._attrTypesValueHelpDialog) {
+                    this._attrTypesValueHelpDialog = sap.ui.xmlfragment(
+                        "zui3derp.view.fragments.AttributeTypes",
+                        this
+                    );
+                    this.getView().addDependent(this._attrTypesValueHelpDialog);
+                }
+                this._attrTypesValueHelpDialog.open(sInputValue);
+            },
+
+            _attrTypesValueHelpSearch : function (evt) {
+                var sValue = evt.getParameter("value");
+                var oFilter = new Filter(
+                    "AttribTyp",
+                    sap.ui.model.FilterOperator.Contains, sValue
+                );
+                evt.getSource().getBinding("items").filter([oFilter]);
+            },
+    
+            _attrTypesValueHelpClose : function (evt) {
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var productInput = this.byId(this.inputId);
+                    productInput.setValue(oSelectedItem.getTitle());
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onAttrCodesValueHelp : function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
+                var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                var attrTyp = oData.getProperty('AttribTyp');
+                this.inputId = oEvent.getSource().getId();
+                this.descId = oEvent.getSource().getParent().mAggregations.cells[2].getId();
+                if (!this._attrCodesValueHelpDialog) {
+                    this._attrCodesValueHelpDialog = sap.ui.xmlfragment(
+                        "zui3derp.view.fragments.AttributeCodes",
+                        this
+                    );
+                    this.getView().addDependent(this._attrCodesValueHelpDialog);
+                }
+                this._attrCodesValueHelpDialog.getBinding("items").filter([new Filter(
+                    "AttribTyp",
+                    sap.ui.model.FilterOperator.EQ, attrTyp
+                )]);
+                this._attrCodesValueHelpDialog.open(sInputValue);
+            },
+
+            _attrCodesValueHelpSearch : function (evt) {
+                var sValue = evt.getParameter("value");
+                var oFilter = new Filter(
+                    "Desc1",
+                    sap.ui.model.FilterOperator.Contains, sValue
+                );
+                evt.getSource().getBinding("items").filter([oFilter]);
+            },
+    
+            _attrCodesValueHelpClose : function (evt) {
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var productInput = this.byId(this.inputId);
+                    productInput.setValue(oSelectedItem.getTitle());
+                    var descText= this.byId(this.descId);
+                    descText.setText(oSelectedItem.getDescription());
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onProcessesValueHelp : function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
+                this.inputId = oEvent.getSource().getId();
+                if (!this._processesValueHelpDialog) {
+                    this._processesValueHelpDialog = sap.ui.xmlfragment(
+                        "zui3derp.view.fragments.Processes",
+                        this
+                    );
+                    this.getView().addDependent(this._processesValueHelpDialog);
+                }
+                this._processesValueHelpDialog.open(sInputValue);
+            },
+
+            _processesValueHelpSearch : function (evt) {
+                var sValue = evt.getParameter("value");
+                var oFilter = new Filter(
+                    "Desc1",
+                    sap.ui.model.FilterOperator.Contains, sValue
+                );
+                evt.getSource().getBinding("items").filter([oFilter]);
+            },
+    
+            _processesValueHelpClose : function (evt) {
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var productInput = this.byId(this.inputId);
+                    productInput.setValue(oSelectedItem.getTitle());
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onVASTypeValueHelp : function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
+                this.inputId = oEvent.getSource().getId();
+                var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                var ProcessCd = oData.getProperty('ProcessCd');
+
+                if (!this._VASTypeValueHelpDialog) {
+                    this._VASTypeValueHelpDialog = sap.ui.xmlfragment(
+                        "zui3derp.view.fragments.VASTypes",
+                        this
+                    );
+                    this.getView().addDependent(this._VASTypeValueHelpDialog);
+                }
+                this._VASTypeValueHelpDialog.open(sInputValue);
+            },
+
+            _VASTypesValueHelpSearch : function (evt) {
+                var sValue = evt.getParameter("value");
+                var oFilter = new Filter(
+                    "VASTyp",
+                    sap.ui.model.FilterOperator.Contains, sValue
+                );
+                evt.getSource().getBinding("items").filter([oFilter]);
+            },
+    
+            _VASTypesValueHelpClose : function (evt) {
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var productInput = this.byId(this.inputId);
+                    productInput.setValue(oSelectedItem.getTitle());
+                }
+                evt.getSource().getBinding("items").filter([]);
             },
 
             uploadAttachment: function() {
