@@ -21,11 +21,12 @@ sap.ui.define(
 
         navigatePage: function(oRouteName) {
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-            // oRouter.navTo(oRouteName);
-            oRouter.navTo("RouteStyleDetail", {
-                styleno: "VERSTY-001",
-                sbu: "VER"
-            } );
+            oRouter.navTo(oRouteName);
+            // oRouter.navTo("RouteStyleDetail", {
+            // oRouter.navTo("RouteAssignMaterial", {
+            //     styleno: "VERSTY-001",
+            //     sbu: "VER"
+            // } );
         },
 
         onItemSelect: function (oEvent) {

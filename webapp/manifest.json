@@ -133,7 +133,7 @@
                     ]
                 },
                 {
-                    "name": "AssignMaterial",
+                    "name": "RouteAssignMaterial",
                     "pattern": "AssignMaterial/{styleno}/{sbu}",
                     "greedy": false,
                     "target": [

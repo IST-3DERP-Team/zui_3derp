@@ -491,6 +491,16 @@ sap.ui.define([
                 });
             },
 
+            uploadStyles: function() {
+                if (!this._UploadFileDialog) {
+                    this._UploadFileDialog = sap.ui.xmlfragment("zui3derp.view.fragments.UploadStyles", this);
+                    this.getView().addDependent(this._ConfirmNewDialog);
+                }
+                jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
+                this._UploadFileDialog.addStyleClass("sapUiSizeCompact");
+                this._UploadFileDialog.open();
+            },
+
             onExportExcel: function () {
                 // if (!this._oTable) {
                 //     this._oTable = this.getView().byId("styleDynTable");

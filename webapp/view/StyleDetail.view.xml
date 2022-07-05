@@ -22,13 +22,13 @@
                 <Toolbar id="TB1" height="3rem" style="Clear">
                     <Title text="Header" />
                     <ToolbarSpacer />
-                    <Button type="Ghost" text="Save" icon="sap-icon://save" />
+                    <Button type="Ghost" text="Save" icon="sap-icon://save" visible="{EditModeModel>/headerEditMode}"/>
                     <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
                         <customData>
                             <core:CustomData key="Section" value="HeaderForm"/>
                         </customData>
                     </Button>
-                    <Button type="Ghost" icon="sap-icon://delete" />
+                    <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/headerEditMode}"/>
                 </Toolbar>
             </headerToolbar>
             <f:Form id="StyleHeaderForm1" editable="false" class="sapUiNoContentPadding">
@@ -55,10 +55,9 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>SEASONCD}">
                                 <f:fields>
-                                    <!-- <Input value="{headerData>/Seasoncd}"/> -->
-                                    <ComboBox id="seasonCB" items="{ path: '/results', sorter: { path: 'Seasoncd' } }" selectedKey="{headerData>/Seasoncd}"
+                                    <ComboBox items="{ path: 'ValueHelpModel>/seasons', sorter: { path: 'Seasoncd' } }" selectedKey="{headerData>/Seasoncd}"
                                         showSecondaryValues="true" filterSecondaryValues= "true" editable="{EditModeModel>/headerEditMode}">
-                                        <core:ListItem key="{Seasoncd}" text="{Desc1}" additionalText = "{Yr}"/>
+                                        <core:ListItem key="{ValueHelpModel>Seasoncd}" text="{ValueHelpModel>Desc1}" additionalText = "{ValueHelpModel>Yr}"/>
                                     </ComboBox>
                                 </f:fields>
                             </f:FormElement>
@@ -102,7 +101,6 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>SALESGRP}">
                                 <f:fields>
-                                    <!-- <Input value="{headerData>/Salesgrp}"/> -->
                                     <ComboBox id="salesGroupCB" items="{ path: '/results', sorter: { path: 'SalesGrp' } }" selectedKey="{headerData>/Salesgrp}" 
                                         showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
                                         <core:ListItem key="{SalesGrp}" text="{Desc1}" additionalText = "{SalesGrp}"/>
@@ -126,7 +124,6 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>CUSTGRP}">
                                 <f:fields>
-                                    <!-- <Input value="{headerData>/Custgrp}"/> -->
                                     <ComboBox id="customerGroupCB" items="{ path: '/results', sorter: { path: 'CustGrp' } }" selectedKey="{headerData>/Custgrp}" 
                                         showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
                                         <core:ListItem key="{CustGrp}" text="{Desc1}" additionalText = "{CustGrp}"/>
@@ -194,6 +191,9 @@
             <IconTabBar id="idIconTabBarMulti" expanded="{device>/isNoPhone}" tabDensityMode="Compact" expandable="false" class="sapUiNoContentPadding">
                 <items>
                     <IconTabFilter icon="sap-icon://hint" text="Attributes">
+
+
+                        <!-- GENERAL ATTRIBUTES -->
                         <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
@@ -209,33 +209,55 @@
                                             <core:CustomData key="Section" value="GeneralAttributes"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://save"/>
-                                    <Button type="Ghost" icon="sap-icon://delete" />
+                                    <Button type="Ghost" icon="sap-icon://save" visible="{EditModeModel>/genAttrEditMode}"/>
+                                    <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/genAttrEditMode}">
+                                        <customData>
+                                            <core:CustomData key="TableName" value="generalTable"/>
+                                        </customData>
+                                    </Button>
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="generalTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="10" visibleRowCountMode="Auto" class="sapUiSizeCompact">
                                 <c:columns>
-                                    <t:Column width="11rem" filterProperty="Attribtype">
+                                    <t:Column width="11rem" filterProperty="AttribTyp">
                                         <Label text="Attribute Type" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribtype}" editable="{EditModeModel>/genAttrEditMode}"/>
+                                            <Input id="AttrTypesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/genAttrEditMode}"
+                                                valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{ValueHelpModel>/attributes}" value="{DataModel>AttribTyp}">
+                                                <suggestionItems>
+                                                    <core:Item text="{ValueHelpModel>AttribTyp}" />
+                                                </suggestionItems>
+                                            </Input>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem" filterProperty="Attribcd">
+                                    <t:Column width="11rem" filterProperty="AttribCd">
                                         <Label text="Attribute Code" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/genAttrEditMode}"/>
+                                            <!-- <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/genAttrEditMode}"/> -->
+                                            <!-- <ComboBox items="{ValueHelpModel>/attributecodes}" selectedKey="{DataModel>Attribcd}"
+                                                showSecondaryValues="true" filterSecondaryValues= "true" editable="{EditModeModel>/genAttrEditMode}">
+                                                <core:ListItem key="{ValueHelpModel>AttribCd}" text="{ValueHelpModel>AttribCd}"/>
+                                            </ComboBox> -->
+                                            <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/genAttrEditMode}"
+                                                valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{ValueHelpModel>/attributecodes}" value="{DataModel>AttribCd}">
+                                                <suggestionItems>
+                                                    <core:Item text="{ValueHelpModel>AttribCd}" />
+                                                </suggestionItems>
+                                            </Input>
                                         </t:template>
                                     </t:Column>
-                                    <t:Column width="11rem" filterProperty="Desc1">
+                                    <t:Column width="15rem" filterProperty="Desc1">
                                         <Label text="Description" />
                                         <t:template>
-                                            <Input value="{DataModel>Desc1}" editable="{EditModeModel>/genAttrEditMode}"/>
+                                            <Text id="AttrCodeDesc" text="{DataModel>Desc1}"/>
                                         </t:template>
                                     </t:Column>
                                 </c:columns>
                             </c:DynamicTable>
                         </Panel>
+
+
+                        <!-- COLORS -->
                         <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
@@ -251,8 +273,8 @@
                                             <core:CustomData key="Section" value="Colors"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://save"/>
-                                    <Button type="Ghost" icon="sap-icon://delete" />
+                                    <Button type="Ghost" icon="sap-icon://save" visible="{EditModeModel>/colorsEditMode}"/>
+                                    <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/colorsEditMode}"/>
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="colorsTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="5" visibleRowCountMode="Auto" class="sapUiSizeCompact">
@@ -272,6 +294,9 @@
                                 </c:columns>
                             </c:DynamicTable>
                         </Panel>
+
+
+                        <!-- SIZES -->
                         <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
@@ -287,8 +312,8 @@
                                             <core:CustomData key="Section" value="Sizes"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://save"/>
-                                    <Button type="Ghost" icon="sap-icon://delete" />
+                                    <Button type="Ghost" icon="sap-icon://save" visible="{EditModeModel>/sizesEditMode}"/>
+                                    <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/sizesEditMode}"/>
                                 </Toolbar>
                             </headerToolbar>
                             <c:DynamicTable id="sizesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact">
@@ -315,7 +340,9 @@
                             </c:DynamicTable>
                         </Panel>
 
-                        <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+
+                        <!-- PROCESSES -->
+                        <Panel expandable="true" expanded="true" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
                                     <Label text="Processes" />
@@ -330,12 +357,10 @@
                                             <core:CustomData key="Section" value="Processes"/>
                                         </customData>
                                     </Button>
-                                    <Button type="Ghost" icon="sap-icon://save"/>
-                                    <Button type="Ghost" icon="sap-icon://delete" />
+                                    <Button type="Ghost" icon="sap-icon://save" visible="{EditModeModel>/processEditMode}"/>
+                                    <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/processEditMode}"/>
                                 </Toolbar>
                             </headerToolbar>
-
-                            <!-- PROCESSES -->
                             <c:DynamicTable id="processesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact">
                                 <c:columns>
                                     <t:Column width="4rem" filterProperty="Seqno">
@@ -347,27 +372,23 @@
                                     <t:Column width="11rem" filterProperty="Processcd">
                                         <Label text="Process" />
                                         <t:template>
-                                            <!-- <Input value="{DataModel>Processcd}"/> -->
-                                            <ComboBox filterSecondaryValues= "true" editable="{EditModeModel>/processEditMode}">
-                                                <items>
-                                                    <core:ListItem key="CUT" text="CUT"/>
-                                                    <core:ListItem key="SEW" text="SEW"/>
-                                                    <core:ListItem key="WASH" text="WASH"/>
-                                                    <core:ListItem key="EMBRO" text="EMRBO"/>
-                                                    <core:ListItem key="FN/PK" text="FN/PK"/>
-                                                </items>
-                                            </ComboBox>
+                                            <Input id="ProcessCdInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
+                                                valueHelpRequest="onProcessesValueHelp" suggestionItems="{ValueHelpModel>/attributes}" value="{DataModel>Processcd}">
+                                                <suggestionItems>
+                                                    <core:Item text="{ValueHelpModel>ProcessCd}" />
+                                                </suggestionItems>
+                                            </Input>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Vastyp">
                                         <Label text="VAS Type" />
                                         <t:template>
-                                            <!-- <Input value="{DataModel>Vastyp}"/> -->
-                                            <ComboBox filterSecondaryValues= "true" editable="{EditModeModel>/processEditMode}">
-                                                <items>
-                                                    <core:ListItem key="APPLQ" text="APPLQ"/>
-                                                </items>
-                                            </ComboBox>
+                                            <Input id="VASTypeInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
+                                                valueHelpRequest="onVASTypeValueHelp" suggestionItems="{ValueHelpModel>/vastypes}" value="{DataModel>Vastyp}">
+                                                <suggestionItems>
+                                                    <core:Item text="{ValueHelpModel>VASTyp}" />
+                                                </suggestionItems>
+                                            </Input>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Leadtime">
@@ -377,15 +398,25 @@
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Attribtyp">
-                                        <Label text="Attr. Group" />
+                                        <Label text="Attribute Type" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribtyp}" editable="{EditModeModel>/processEditMode}"/>
+                                            <Input id="AttrTypesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
+                                                valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{ValueHelpModel>/attributes}" value="{DataModel>AttribTyp}">
+                                                <suggestionItems>
+                                                    <core:Item text="{ValueHelpModel>AttribTyp}" />
+                                                </suggestionItems>
+                                            </Input>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Attribcd">
                                         <Label text="Attribute" />
                                         <t:template>
-                                            <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/processEditMode}"/>
+                                            <Input id="AttrCodesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
+                                                valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{ValueHelpModel>/attributecodes}" value="{DataModel>AttribCd}">
+                                                <suggestionItems>
+                                                    <core:Item text="{ValueHelpModel>AttribCd}" />
+                                                </suggestionItems>
+                                            </Input>
                                         </t:template>
                                     </t:Column>
                                 </c:columns>
@@ -395,12 +426,13 @@
 
                     <!-- VERSIONS -->
                     <IconTabFilter icon="sap-icon://notes" text="Versions">
+
+                        <!-- VERSIONS -->
                         <Panel expandable="true" expanded="true" width="80%" class="sapUiNoContentPadding sapUiSizeCompact whiteBackground">
                             <headerToolbar>
                                 <Toolbar height="3rem" style="Clear">
                                     <Title text="Versions" />
                                     <ToolbarSpacer />
-                                    <!-- <Button type="Ghost" text="Set as Current" press="setVersionCurrent"/> -->
                                     <Button type="Ghost" icon="sap-icon://add-document" text="New Version" press="onCreateNewVersion"/>
                                     <Button type="Ghost" icon="sap-icon://edit" />
                                     <Button type="Ghost" icon="sap-icon://save"/>
@@ -459,10 +491,12 @@
                             </c:DynamicTable>
                         </Panel>
 
-                        <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiTinyMarginTop sapUiSizeCompact whiteBackground">
+                        <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiMediumMarginTop sapUiSizeCompact whiteBackground">
                             <ObjectHeader id="VersionHeader" responsive="true"/>
                             <IconTabBar expandable="false" headerMode="Inline" upperCase="true" class="sapUiResponsiveContentPadding">
                                 <items>
+
+                                    <!-- VERSION ATTRIBUTES -->
                                     <IconTabFilter text="Version Attributes">
                                         <Toolbar height="3rem" style="Clear">
                                             <Label text="Version Attributes"/>
@@ -508,6 +542,8 @@
                                             </c:columns>
                                         </c:DynamicTable>
                                     </IconTabFilter>
+
+                                    <!-- BOM BY GMC -->
                                     <IconTabFilter text="BOM by GMC" >
                                         <Toolbar height="3rem" style="Clear">
                                             <Label text="BOM by GMC"/>
@@ -519,25 +555,34 @@
                                             <Button icon="sap-icon://save"/>
                                             <Button icon="sap-icon://delete" />
                                         </Toolbar>
-                                        <!-- <c:DynamicTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
-                                        </c:DynamicTable> -->
                                         <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
                                         </c:DynamicTreeTable>
                                     </IconTabFilter>
+
+                                    <!-- BOM BY UV -->
                                     <IconTabFilter text="BOM by UV">
                                         <Toolbar height="3rem" style="Clear">
-                                            <Label text="BOM by UV"/>
+                                            <HBox alignContent="Center" alignItems="Center">
+                                                <Label text="Usage Class"/>
+                                                <ComboBox items="{ValueHelpModel>/usageclasses}" class="sapUiMediumMarginBegin" selectedKey="AUV"
+                                                    showSecondaryValues="true" filterSecondaryValues= "true">
+                                                    <core:ListItem key="{ValueHelpModel>Usgcls}" text="{ValueHelpModel>Ucdesc1}" additionalText = "{ValueHelpModel>Usgcls}"/>
+                                                </ComboBox>
+                                            </HBox>
+                                            <!-- <Label text="BOM by UV"/> -->
                                             <ToolbarSpacer />
                                             <Button icon="sap-icon://add"/>
                                             <Button icon="sap-icon://edit" />
                                             <Button icon="sap-icon://save"/>
                                             <Button icon="sap-icon://delete" />
                                         </Toolbar>
+                                        
                                         <c:DynamicTable id="bomUVTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
                                         </c:DynamicTable>
                                     </IconTabFilter>
+
+                                    <!-- DETAILED BOM -->
                                     <IconTabFilter text="Detailed BOM">
-                                        <!-- <Text text="Detailed BOM ..." /> -->
                                         <Toolbar height="3rem" style="Clear">
                                             <Label text="Detailed BOM"/>
                                             <ToolbarSpacer />
@@ -699,12 +744,13 @@
                                             </t:Column>
                                         </c:DynamicTable>
                                     </IconTabFilter>
+
+                                    <!-- MATERIAL LIST -->
                                     <IconTabFilter text="Material List">
-                                        <!-- <Text text="Material List ..." /> -->
                                         <Toolbar height="3rem" style="Clear">
                                             <Label text="Material List"/>
                                             <ToolbarSpacer />
-                                            <Button icon="sap-icon://bookmark" text="Assign Material No."/>
+                                            <Button icon="sap-icon://bookmark" text="Assign Material No." press="onAssignMaterial"/>
                                             <Button icon="sap-icon://edit" />
                                             <Button icon="sap-icon://save"/>
                                             <Button icon="sap-icon://delete" />
@@ -801,67 +847,64 @@
                             </IconTabBar>
                         </Panel>
                     </IconTabFilter>
-                    <IconTabFilter
-                        icon="sap-icon://attachment" text="Attachments">
-                        <!-- <Text text="Attachments ..." /> -->
-                        <!-- <Panel expandable="true" expanded="false" width="100%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
-                            <headerToolbar> -->
-                                <Toolbar height="3rem" style="Clear">
-                                    <Label text="Attachments"/>
-                                    <ToolbarSpacer />
-                                    <Button text="{i18n>Upload}" icon="sap-icon://upload" press="uploadAttachment"/>
-                                    <Button icon="sap-icon://edit" />
-                                    <Button icon="sap-icon://save"/>
-                                    <Button icon="sap-icon://delete" />
-                                </Toolbar>
-                            <!-- </headerToolbar> -->
-                            <c:DynamicTable id="attachmentsTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
-                                <c:columns>
-                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
-                                        <Label text="Attach Type"/>
-                                        <t:template>
-                                            <Input value="{DataModel>Attribtyp}"/>
-                                        </t:template>
-                                    </t:Column>
-                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
-                                        <Label text="Seq"/>
-                                        <t:template>
-                                            <Input value="{DataModel>Attribtyp}"/>
-                                        </t:template>
-                                    </t:Column>
-                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
-                                        <Label text="File Type"/>
-                                        <t:template>
-                                            <Input value="{DataModel>Attribtyp}"/>
-                                        </t:template>
-                                    </t:Column>
-                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
-                                        <Label text="File Name"/>
-                                        <t:template>
-                                            <Input value="{DataModel>Attribtyp}"/>
-                                        </t:template>
-                                    </t:Column>
-                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
-                                        <Label text="Description (EN)"/>
-                                        <t:template>
-                                            <Input value="{DataModel>Attribtyp}"/>
-                                        </t:template>
-                                    </t:Column>
-                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
-                                        <Label text="Description (CN)"/>
-                                        <t:template>
-                                            <Input value="{DataModel>Attribtyp}"/>
-                                        </t:template>
-                                    </t:Column>
-                                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
-                                        <Label text="Remarks"/>
-                                        <t:template>
-                                            <Input value="{DataModel>Attribtyp}"/>
-                                        </t:template>
-                                    </t:Column>
-                                </c:columns>
-                            </c:DynamicTable>
-                        <!-- </Panel> -->
+
+
+                    <!-- ATTACHMENTS -->
+                    <IconTabFilter icon="sap-icon://attachment" text="Attachments">
+                        <Toolbar height="3rem" style="Clear">
+                            <Label text="Attachments"/>
+                            <ToolbarSpacer />
+                            <Button text="{i18n>Upload}" icon="sap-icon://upload" press="uploadAttachment"/>
+                            <Button icon="sap-icon://edit" />
+                            <Button icon="sap-icon://save"/>
+                            <Button icon="sap-icon://delete" />
+                        </Toolbar>
+                        <c:DynamicTable id="attachmentsTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
+                            <c:columns>
+                                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                    <Label text="Attach Type"/>
+                                    <t:template>
+                                        <Input value="{DataModel>Attribtyp}"/>
+                                    </t:template>
+                                </t:Column>
+                                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                    <Label text="Seq"/>
+                                    <t:template>
+                                        <Input value="{DataModel>Attribtyp}"/>
+                                    </t:template>
+                                </t:Column>
+                                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                    <Label text="File Type"/>
+                                    <t:template>
+                                        <Input value="{DataModel>Attribtyp}"/>
+                                    </t:template>
+                                </t:Column>
+                                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                    <Label text="File Name"/>
+                                    <t:template>
+                                        <Input value="{DataModel>Attribtyp}"/>
+                                    </t:template>
+                                </t:Column>
+                                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                    <Label text="Description (EN)"/>
+                                    <t:template>
+                                        <Input value="{DataModel>Attribtyp}"/>
+                                    </t:template>
+                                </t:Column>
+                                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                    <Label text="Description (CN)"/>
+                                    <t:template>
+                                        <Input value="{DataModel>Attribtyp}"/>
+                                    </t:template>
+                                </t:Column>
+                                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                                    <Label text="Remarks"/>
+                                    <t:template>
+                                        <Input value="{DataModel>Attribtyp}"/>
+                                    </t:template>
+                                </t:Column>
+                            </c:columns>
+                        </c:DynamicTable>
                     </IconTabFilter>
                 </items>
             </IconTabBar>

@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:u="sap.ui.unified">
+	<Dialog title="Upload Styles">
+		<Panel>
+            <HBox alignContent="Center" alignItems="Center" class="sapUiMediumMargin">
+                <Label text="Select File:" class="sapUiSmallMarginEnd"/>
+                <u:FileUploader name="myFileUpload" uploadUrl="upload/" width="100%" tooltip="Upload your file to the local server" uploadComplete="handleUploadComplete"/>
+            </HBox>
+		</Panel>
+		<buttons>
+			<Button text="Upload" press="onSaveUploadStyle"/>
+			<Button text="Cancel" press="onCancelUploadStyle"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

@@ -171,17 +171,17 @@
             <ToolbarSpacer/>
             <SearchField width="30%" placeholder="{i18n>Search}"/>
             <!-- <Button icon="sap-icon://search"/> -->
-			<Button text="{i18n>New}" icon="sap-icon://add-document" press="onCreateNewStyle">
+			<Button text="{i18n>New}" icon="sap-icon://add-document" press="onCreateNewStyle" tooltip="Create New Style">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-            <Button text="{i18n>Upload}" icon="sap-icon://upload" press="onUpload">
+            <Button text="{i18n>Upload}" icon="sap-icon://upload" press="uploadStyles"  tooltip="Upload Styles from File">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-            <Button icon="sap-icon://excel-attachment" press="onExportExcel">
+            <Button icon="sap-icon://excel-attachment" press="onExportExcel"  tooltip="Download to Excel">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
@@ -191,7 +191,7 @@
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button> -->
-            <Button icon="sap-icon://grid" text="{i18n>Save}" press="onSaveLayoutSettings">
+            <Button icon="sap-icon://grid" text="{i18n>Save}" press="onSaveLayoutSettings"  tooltip="Save Table Layout">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>

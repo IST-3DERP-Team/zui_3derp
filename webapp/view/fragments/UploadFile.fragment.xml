@@ -3,7 +3,7 @@
 		<Panel>
             <HBox alignContent="Center" alignItems="Center" class="sapUiMediumMargin">
                 <Label text="Select File:" class="sapUiSmallMarginEnd"/>
-                <u:FileUploader id="fileUploader" name="myFileUpload" uploadUrl="upload/" width="100%" tooltip="Upload your file to the local server" uploadComplete="handleUploadComplete"/>
+                <u:FileUploader name="myFileUpload" uploadUrl="upload/" width="100%" tooltip="Upload your file to the local server" uploadComplete="handleUploadComplete"/>
             </HBox>
             <f:Form id="StyleHeaderForm1" editable="true" class="sapUiNoContentPadding">
                 <f:layout>

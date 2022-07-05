@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="Process Codes"
+		class="sapUiPopupWithPadding"
+		items="{ValueHelpModel>/processes}"
+		search="_processesValueHelpSearch"
+		confirm="_processesValueHelpClose"
+		cancel="_processesValueHelpClose">
+		<StandardListItem title="{ValueHelpModel>ProcessCd}" description="{ValueHelpModel>Desc1}"/>
+	</SelectDialog>
+</core:FragmentDefinition>
