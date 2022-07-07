@@ -422,26 +422,36 @@ sap.ui.define([
                 var oTable = this.getView().byId("styleDynTable");
                 var oColumns = oTable.getColumns();
                 var oEntry = {
-                    "Username": "EMALLARI",
+                    "UserName": "BAS_CONN",
                     "TableName": "STYLHDR",
                     "Sbu": "VER",
-                    "Columns": []
+                    "LayoutToItems": []
                 };
                 var ctr = 1;
 
                 oColumns.forEach((column) => {
                     if(column.sId !== "Manage" && column.sId !== "Copy") {
-                        oEntry.push({
+                        oEntry.LayoutToItems.push({
                             ColumnName: column.sId,
-                            Order: ctr,
+                            Order: ctr.toString(),
                             Sorted: column.mProperties.sorted,
-                            SortOrder: column.mProperties.sortOrder
+                            SortOrder: column.mProperties.sortOrder,
+                            SortSeq: "1"
                         });
                         ctr++;
                     }
                 });
 
-                Common.showMessage("Layout saved");
+                var oModel = this.getOwnerComponent().getModel();
+                oModel.create("/LayoutVariantSet", oEntry, {
+                    method: "POST",
+                    success: function(data, oResponse) {
+                        Common.showMessage("Layout saved");
+                    },
+                    error: function() {
+                        alert("Error");
+                    }
+                });                
             },
 
             pad: function (num, size) {
