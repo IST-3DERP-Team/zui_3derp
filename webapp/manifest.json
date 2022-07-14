@@ -139,6 +139,14 @@
                     "target": [
                         "TargetAssignMaterial"
                     ]
+                },
+                {
+                    "name": "SampleTable",
+                    "pattern": "SampleTable",
+                    "greedy": false,
+                    "target": [
+                        "TargetSampleTable"
+                    ]
                 }
             ],
             "targets": {
@@ -169,8 +177,14 @@
                     "clearControlAggregation": false,
                     "viewId": "AssignMaterial",
                     "viewName": "AssignMaterial"
-                }
-                
+                },
+                "TargetSampleTable": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "SampleTable",
+                    "viewName": "SampleTable"
+                }      
             }
         },
         "rootView": {
