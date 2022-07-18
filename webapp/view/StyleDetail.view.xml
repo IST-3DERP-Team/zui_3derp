@@ -409,7 +409,7 @@
                                     <t:Column width="11rem" filterProperty="Leadtime">
                                         <Label text="Lead Time" />
                                         <t:template>
-                                            <Input value="{DataModel>Leadtime}" editable="{EditModeModel>/processEditMode}"/>
+                                            <Input value="{DataModel>Leadtime}" editable="{EditModeModel>/processEditMode}" type="Number" liveChange="onLeadTime"/>
                                         </t:template>
                                     </t:Column>
                                     <t:Column width="11rem" filterProperty="Attribtyp">

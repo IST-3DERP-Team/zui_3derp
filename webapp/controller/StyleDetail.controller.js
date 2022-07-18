@@ -2,6 +2,7 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     'sap/ui/model/Filter',
     "../js/Common",
+    "sap/m/MessageToast",
     "sap/ui/model/json/JSONModel"
 ],
     /**
@@ -856,6 +857,26 @@ sap.ui.define([
                 num = num.toString();
                 while (num.length < size) num = "0" + num;
                 return num;
+            },
+
+            onLeadTimeEx: function(oEvent){
+                var input = oEvent.getSource();
+                var mobNum = input.getValue();
+                mobNum = mobNum.replace(/[^\d]/g, '');
+                input.setValue(mobNum);
+            },
+
+            onLeadTime: function(oEvent){
+                var input = oEvent.getSource();
+                var mobNum = input.getValue();
+                // if(mobNum.indexOf('.')!=-1){
+                //     MessageToast.show("No decimal values please!");
+                //     input.setValue(mobNum.substring(0,mobNum.length-1));
+                // }
+                if(isNaN(mobNum)){
+                    MessageToast.show("Only numbers please!");
+                    input.setValue(mobNum.substring(0,mobNum.length-1));
+                }
             },
 
             onCancelNewVersion: Common.onCancelNewVersion,
