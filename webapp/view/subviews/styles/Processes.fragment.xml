@@ -1,0 +1,89 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+    <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+        <headerToolbar>
+            <Toolbar height="3rem" style="Clear">
+                <Label text="Processes" />
+                <ToolbarSpacer/>
+                <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/processEditMode}" press="onSaveProcessTable"/>
+                <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/processEditMode}">
+                    <customData>
+                        <core:CustomData key="TableName" value="processesTable"/>
+                    </customData>
+                </Button>
+                <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/processEditMode}"/> -->
+                <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/processEditMode}">
+                    <customData>
+                        <core:CustomData key="TableName" value="processesTable"/>
+                    </customData>
+                </Button>
+                <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
+                    <customData>
+                        <core:CustomData key="Section" value="Processes"/>
+                    </customData>
+                </Button>
+            </Toolbar>
+        </headerToolbar>
+        <c:DynamicTable id="processesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact"
+            selectionMode="{= ${EditModeModel>/processEditMode} === true ? 'MultiToggle' : 'None' }">
+            <c:columns>
+                <t:Column width="4rem" filterProperty="Seqno">
+                    <Label text="Seq." />
+                    <t:template>
+                        <Input value="{DataModel>Seqno}" editable="{EditModeModel>/processEditMode}"/>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Processcd">
+                    <Label text="Process" />
+                    <t:template>
+                        <Input id="ProcessCdInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
+                            valueHelpRequest="onProcessesValueHelp" suggestionItems="{ValueHelpModel>/attributes}" value="{DataModel>Processcd}">
+                            <suggestionItems>
+                                <core:Item text="{ValueHelpModel>ProcessCd}" />
+                            </suggestionItems>
+                        </Input>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Vastyp">
+                    <Label text="VAS Type" />
+                    <t:template>
+                        <Input id="VASTypeInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
+                            valueHelpRequest="onVASTypeValueHelp" suggestionItems="{ValueHelpModel>/vastypes}" value="{DataModel>Vastyp}">
+                            <suggestionItems>
+                                <core:Item text="{ValueHelpModel>Vastyp}" />
+                            </suggestionItems>
+                        </Input>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Leadtime">
+                    <Label text="Lead Time" />
+                    <t:template>
+                        <Input value="{DataModel>Leadtime}" editable="{EditModeModel>/processEditMode}"/>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Attribtyp">
+                    <Label text="Attribute Type" />
+                    <t:template>
+                        <Input id="AttrTypesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
+                            valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{ValueHelpModel>/attributes}" value="{DataModel>Attribtyp}">
+                            <suggestionItems>
+                                <core:Item text="{ValueHelpModel>Attribtyp}" />
+                            </suggestionItems>
+                        </Input>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Attribcd">
+                    <Label text="Attribute" />
+                    <t:template>
+                        <Input id="AttrCodesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
+                            valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{ValueHelpModel>/attributecodes}" value="{DataModel>Attribcd}">
+                            <suggestionItems>
+                                <core:Item text="{ValueHelpModel>Attribcd}" />
+                            </suggestionItems>
+                        </Input>
+                    </t:template>
+                </t:Column>
+            </c:columns>
+        </c:DynamicTable>
+    </Panel>
+</core:FragmentDefinition>    

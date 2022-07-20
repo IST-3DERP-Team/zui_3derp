@@ -29,11 +29,29 @@
                 "uri": "/sap/opu/odata/sap/ZVI_3DERP_STYLES_FILTER_CDS/",
                 "type": "OData",
                 "settings": {
-                    "annotations": [],
+                    "annotations": [
+                        "annotations"
+                    ],
                     "localUri": "localService/metadata.xml",
                     "odataVersion": "2.0"
                 }
-            }
+            },
+            "SearchHelps": {
+                "uri": "/sap/opu/odata/sap/ZGW_3DERP_SH_SRV/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [ ],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "2.0"
+                }
+            },
+            "annotations": {
+				"type": "ODataAnnotation",
+				"uri": "annotations/annotations.xml",
+				"settings": {
+					"localUri": "annotations/annotations.xml"
+				}
+			}
         }
     },
     "sap.ui": {
@@ -87,6 +105,11 @@
                 "dataSource": "StyleHeaderFilters",
                 "preload": true,
                 "settings": {}
+            },
+            "SearchHelps": {
+                "dataSource": "SearchHelps",
+                "preload": true,
+                "settings": {}
             }
         },
         "resources": {
@@ -133,6 +156,14 @@
                     ]
                 },
                 {
+                    "name": "RouteVersion",
+                    "pattern": "RouteVersion/{styleno}/{sbu}/{version}",
+                    "greedy": false,
+                    "target": [
+                        "TargetVersion"
+                    ]
+                },
+                {
                     "name": "RouteAssignMaterial",
                     "pattern": "AssignMaterial/{styleno}/{sbu}",
                     "greedy": false,
@@ -162,6 +193,13 @@
                     "clearControlAggregation": false,
                     "viewId": "StyleDetail",
                     "viewName": "StyleDetail"
+                },
+                "TargetVersion": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "Version",
+                    "viewName": "Version"
                 },
                 "TargetAssignMaterial": {
                     "viewType": "XML",

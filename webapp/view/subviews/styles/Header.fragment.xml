@@ -1,0 +1,184 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+        <Panel id="headerPanel" expandable="true" expanded="true" width="auto" class="sapUiSizeCompact whiteBackground">
+            <headerToolbar>
+                <Toolbar id="TB1" height="3rem" style="Clear">
+                    <Title text="Header" />
+                    <ToolbarSpacer />
+                    <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/headerEditMode}" press="onSaveHeader"/>
+                    <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/headerEditMode}"/>
+                    <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
+                        <customData>
+                            <core:CustomData key="Section" value="HeaderForm"/>
+                        </customData>
+                    </Button>
+                </Toolbar>
+            </headerToolbar>
+            <f:Form id="StyleHeaderForm1" editable="false" class="sapUiNoContentPadding">
+                <f:layout>
+                    <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3"/>
+                </f:layout>
+                <f:formContainers>
+                    <f:FormContainer ariaLabelledBy="Grp1" class="sapUiNoContentPadding" >
+                        <f:formElements>
+                            <f:FormElement label="{i18n>STYLECD}" >
+                                <f:fields>
+                                    <Input value="{headerData>/Stylecd}" editable="{EditModeModel>/headerEditMode}">
+                                    </Input>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="{i18n>DESC1}">
+                                <f:fields>
+                                    <Input value="{headerData>/Desc1}" editable="{EditModeModel>/headerEditMode}"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer>
+                    <f:FormContainer ariaLabelledBy="Grp2">
+                        <f:formElements>
+                            <f:FormElement label="{i18n>SEASONCD}">
+                                <f:fields>
+                                    <ComboBox id="seaonsCB" items="{ path: '/results', sorter: { path: 'Seasoncd' } }" selectedKey="{headerData>/Seasoncd}"
+                                        showSecondaryValues="true" filterSecondaryValues= "true" editable="{EditModeModel>/headerEditMode}">
+                                        <core:ListItem key="{Seasoncd}" text="{Desc1}" additionalText = "{Yr}"/>
+                                    </ComboBox>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="{i18n>FTYSTYLE}">
+                                <f:fields>
+                                    <Input value="{headerData>/Ftystyle}" editable="{EditModeModel>/headerEditMode}"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer>
+                </f:formContainers>
+            </f:Form>
+            <f:Form id="StyleHeaderForm2" editable="true">
+                <f:layout>
+                    <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3" singleContainerFullSize="false" />  
+                </f:layout>
+                <f:formContainers>
+                    <f:FormContainer>
+                        <f:formElements>
+                            <f:FormElement label="{i18n>PRODTYP}">
+                                <f:fields>
+                                    <ComboBox id="prodTypeCB" items="{ path: '/results', sorter: { path: 'ProdTyp' } }" selectedKey="{headerData>/Prodtyp}" 
+                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
+                                        <core:ListItem key="{ProdTyp}" text="{Desc1}" additionalText = "{ProdTyp}"/>
+                                    </ComboBox>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="{i18n>STYLECAT}">
+                                <f:fields>
+                                    <!-- <Input value="{headerData>/Stylecat}" editable="{EditModeModel>/headerEditMode}"/> -->
+                                    <ComboBox id="styleCatCB" items="{ path: '/results', sorter: { path: 'Stylcat' } }" selectedKey="{headerData>/Stylecat}" 
+                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
+                                        <core:ListItem key="{Stylcat}" text="{Desc1}" additionalText = "{Stylcat}"/>
+                                    </ComboBox>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="{i18n>CUSTPRDTYP}">
+                                <f:fields>
+                                    <Input value="{headerData>/Custprdtyp}" editable="{EditModeModel>/headerEditMode}"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer>
+                    <f:FormContainer>
+                        <f:formElements>
+                            <f:FormElement label="{i18n>SALESGRP}">
+                                <f:fields>
+                                    <ComboBox id="salesGroupCB" items="{/results}" selectedKey="{headerData>/Salesgrp}" 
+                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
+                                        <core:ListItem key="{SalesGrp}" text="{Desc1}" additionalText = "{SalesGrp}"/>
+                                    </ComboBox>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="{i18n>PRODGRP}">
+                                <f:fields>
+                                    <Input value="{headerData>/Prodgrp}" editable="{EditModeModel>/headerEditMode}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="{i18n>STYLEGRP}">
+                                <f:fields>
+                                    <Input value="{headerData>/Stylegrp}" editable="{EditModeModel>/headerEditMode}"/>
+                                </f:fields>
+                            </f:FormElement>
+                            
+                        </f:formElements>
+                    </f:FormContainer>
+                    <f:FormContainer ariaLabelledBy="Grp3">
+                        <f:formElements>
+                            <f:FormElement label="{i18n>CUSTGRP}">
+                                <f:fields>
+                                    <ComboBox id="customerGroupCB" items="{/results}" selectedKey="{headerData>/Custgrp}" 
+                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
+                                        <core:ListItem key="{CustGrp}" text="{Desc1}" additionalText = "{CustGrp}"/>
+                                    </ComboBox>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="{i18n>SOLDTOCUST}">
+                                <!-- <f:fields>
+                                    <Input value="{headerData>/Soldtocust}" editable="{EditModeModel>/headerEditMode}"/>
+                                </f:fields> -->
+                                <Input id="customerInput" value="{headerData>/Soldtocust}" type="Text" showValueHelp="true" valueHelpRequest="onCustomersValueHelp" valueHelpOnly="true"
+                                    editable="{EditModeModel>/headerEditMode}" textFormatMode="KeyValue"/>
+                            </f:FormElement>
+                            <f:FormElement label="{i18n>SIZEGRP}">
+                                <f:fields>
+                                    <ComboBox id="sizeGroupCB" items="{/results}" selectedKey="{headerData>/Sizegrp}" 
+                                        filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
+                                        <core:ListItem key="{AttribGrp}" text="{AttribGrp}"/>
+                                    </ComboBox>
+                                </f:fields>
+                            </f:FormElement>
+                            
+                        </f:formElements>
+                    </f:FormContainer>
+                    <f:FormContainer ariaLabelledBy="Grp4">
+                        <f:formElements>
+                            <f:FormElement label="{i18n>UOM}">
+                                <f:fields>
+                                    <!-- <Input value="{headerData>/Uom}" editable="{EditModeModel>/headerEditMode}"/> -->
+                                    <!-- <ComboBox id="uomCB" items="{/results}" selectedKey="{headerData>/Uom}" 
+                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/headerEditMode}">
+                                        <core:ListItem key="{UoM}" text="{Desc1}" additionalText = "{UoM}"/>
+                                    </ComboBox>-->
+                                    <Input id="UomInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/headerEditMode}"
+                                        valueHelpRequest="onUomValueHelp" suggestionItems="{ValueHelpModel>/uom}" value="{headerData>/Uom}">
+                                        <suggestionItems>
+                                            <core:Item text="{ValueHelpModel>Valunit}" />
+                                        </suggestionItems>
+                                    </Input>
+                                </f:fields>
+                            </f:FormElement>
+                            <f:FormElement label="{i18n>FABRICATION}">
+                                <f:fields>
+                                    <Input value="{headerData>/Fabrctn}" editable="{EditModeModel>/headerEditMode}"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                    </f:FormContainer>
+                </f:formContainers>
+            </f:Form>
+            <f:Form id="StyleHeaderForm3" editable="true">
+                <f:layout>
+                    <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3" singleContainerFullSize="false" />
+                </f:layout>
+                <f:formContainers>
+                    <f:FormContainer>
+                        <f:formElements>
+                            <f:FormElement label="{i18n>REMARKS}">
+                                <f:fields>
+                                    <Input value="{headerData>/Remarks}" editable="{EditModeModel>/headerEditMode}"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
+                        <f:layoutData>
+                            <l:GridData span="XL8 L8 M8 S3" />
+                        </f:layoutData>
+                    </f:FormContainer>
+                </f:formContainers>
+            </f:Form>
+        </Panel>
+</core:FragmentDefinition>

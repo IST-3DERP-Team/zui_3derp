@@ -1,0 +1,65 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+    <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+        <headerToolbar>
+            <Toolbar height="3rem" style="Clear">
+                <Label text="General Attributes"/>
+                <ToolbarSpacer />
+                <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/genAttrEditMode}" press="onSaveGeneralTable"/>
+                <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/genAttrEditMode}">
+                    <customData>
+                        <core:CustomData key="TableName" value="generalTable"/>
+                    </customData>
+                </Button>
+                <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/genAttrEditMode}">
+                    <customData>
+                        <core:CustomData key="TableName" value="generalTable"/>
+                    </customData>
+                </Button>
+                <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
+                    <customData>
+                        <core:CustomData key="Section" value="GeneralAttributes"/>
+                    </customData>
+                </Button>
+            </Toolbar>
+        </headerToolbar>
+        <c:DynamicTable id="generalTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="10" visibleRowCountMode="Auto" class="sapUiSizeCompact"
+            selectionMode="{= ${EditModeModel>/genAttrEditMode} === true ? 'MultiToggle' : 'None' }">
+            <c:columns>
+                <t:Column width="11rem" filterProperty="Attribtyp">
+                    <Label text="Attribute Type" />
+                    <t:template>
+                        <Input id="AttrTypesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/genAttrEditMode}"
+                            valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{ValueHelpModel>/attributes}" value="{DataModel>Attribtyp}">
+                            <suggestionItems>
+                                <core:Item text="{ValueHelpModel>Attribtyp}" />
+                            </suggestionItems>
+                        </Input>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Attribcd">
+                    <Label text="Attribute Code" />
+                    <t:template>
+                        <!-- <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/genAttrEditMode}"/> -->
+                        <!-- <ComboBox items="{ValueHelpModel>/attributecodes}" selectedKey="{DataModel>Attribcd}"
+                            showSecondaryValues="true" filterSecondaryValues= "true" editable="{EditModeModel>/genAttrEditMode}">
+                            <core:ListItem key="{ValueHelpModel>AttribCd}" text="{ValueHelpModel>AttribCd}"/>
+                        </ComboBox> -->
+                        <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/genAttrEditMode}"
+                            valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{ValueHelpModel>/attributecodes}" value="{DataModel>Attribcd}">
+                            <suggestionItems>
+                                <core:Item text="{ValueHelpModel>Attribcd}" />
+                            </suggestionItems>
+                        </Input>
+                    </t:template>
+                </t:Column>
+                <t:Column width="15rem" filterProperty="Desc1">
+                    <Label text="Description" />
+                    <t:template>
+                        <Text id="AttrCodeDesc" text="{DataModel>Desc1}"/>
+                    </t:template>
+                </t:Column>
+            </c:columns>
+        </c:DynamicTable>
+    </Panel>
+</core:FragmentDefinition>

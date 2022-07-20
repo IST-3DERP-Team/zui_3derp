@@ -1,0 +1,45 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+    <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+        <headerToolbar>
+            <Toolbar height="3rem" style="Clear">
+                <Label text="Colors" />
+                <ToolbarSpacer />
+                <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/colorsEditMode}" press="onSaveColorTable"/>
+                <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/colorsEditMode}">
+                    <customData>
+                        <core:CustomData key="TableName" value="colorsTable"/>
+                    </customData>
+                </Button>
+                <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/colorsEditMode}"/> -->
+                <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/colorsEditMode}">
+                    <customData>
+                        <core:CustomData key="TableName" value="colorsTable"/>
+                    </customData>
+                </Button>
+                <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
+                    <customData>
+                        <core:CustomData key="Section" value="Colors"/>
+                    </customData>
+                </Button>
+            </Toolbar>
+        </headerToolbar>
+        <c:DynamicTable id="colorsTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="5" visibleRowCountMode="Auto" class="sapUiSizeCompact"
+            selectionMode="{= ${EditModeModel>/colorsEditMode} === true ? 'MultiToggle' : 'None' }">
+            <c:columns>
+                <t:Column width="11rem" filterProperty="Attribcd">
+                    <Label text="Color Code" />
+                    <t:template>
+                        <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/colorsEditMode}"/>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Desc1" >
+                    <Label text="Description" />
+                    <t:template>
+                        <Input value="{DataModel>Desc1}" editable="{EditModeModel>/colorsEditMode}"/>
+                    </t:template>
+                </t:Column>
+            </c:columns>
+        </c:DynamicTable>
+    </Panel>
+</core:FragmentDefinition>    

@@ -1,0 +1,80 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+        <Toolbar height="3rem" style="Clear">
+            <Label text="Version Attributes"/>
+            <ToolbarSpacer />
+            <Button icon="sap-icon://save" text="Save" press="onSaveVersionAttrTable" visible="{EditModeModel>/versionAttrEditMode}"/>
+            <Button icon="sap-icon://add" press="addLine" visible="{EditModeModel>/versionAttrEditMode}">
+                <customData>
+                    <core:CustomData key="TableName" value="versionAttrTable"/>
+                </customData>
+            </Button>
+            <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/versionAttrEditMode}">
+                <customData>
+                    <core:CustomData key="TableName" value="versionAttrTable"/>
+                </customData>
+            </Button>
+            <Button icon="sap-icon://edit" press="setEditMode">
+                <customData>
+                    <core:CustomData key="Section" value="VersionAttributes"/>
+                </customData>
+            </Button>
+        </Toolbar>
+        <c:DynamicTable id="versionAttrTable" rows="{DataModel>/results}" enableColumnReordering="false"  
+            visibleRowCountMode="Auto" minAutoRowCount="5" class="sapUiSizeCompact" selectionMode="{= ${EditModeModel>/versionAttrEditMode} === true ? 'MultiToggle' : 'None' }">
+            <c:columns>
+                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <Label text="Attribute Type"/>
+                    <t:template>
+                        <!-- <Input value="{DataModel>Attribtyp}" editable="{EditModeModel>/versionAttrEditMode}"/> -->
+                        <Input id="AttrTypesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/versionAttrEditMode}"
+                            valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{ValueHelpModel>/attributes}" value="{DataModel>Attribtyp}">
+                            <suggestionItems>
+                                <core:Item text="{ValueHelpModel>AttribTyp}" />
+                            </suggestionItems>
+                        </Input>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
+                    <Label text="Attribute Code" />
+                    <t:template>
+                        <!-- <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/versionAttrEditMode}"/> -->
+                        <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/versionAttrEditMode}"
+                            valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{ValueHelpModel>/attributecodes}" value="{DataModel>Attribcd}">
+                            <suggestionItems>
+                                <core:Item text="{ValueHelpModel>Attribcd}" />
+                            </suggestionItems>
+                        </Input>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
+                    <Label text="Description" />
+                    <t:template>
+                        <Input value="{DataModel>Desc1}" editable="{EditModeModel>/versionAttrEditMode}"/>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">
+                    <Label text="Value" />
+                    <t:template>
+                        <Input value="{DataModel>Attribval}" editable="{EditModeModel>/versionAttrEditMode}"/>
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Valunit" sortProperty="Valunit">
+                    <Label text="UOM" />
+                    <t:template>
+                        <!-- <Input value="{DataModel>Valunit}" editable="{EditModeModel>/versionAttrEditMode}"/> -->
+                        <!-- <ComboBox items="{ValueHelpModel>/uom}" selectedKey="{DataModel>/Uom}" 
+                            showSecondaryValues="true" filterSecondaryValues="true" editable="{EditModeModel>/versionAttrEditMode}">
+                            <core:ListItem key="{ValueHelpModel>UoM}" text="{ValueHelpModel>Desc1}" additionalText = "{ValueHelpModel>UoM}"/>
+                        </ComboBox> -->
+                        <Input id="UomInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/versionAttrEditMode}"
+                            valueHelpRequest="onUomValueHelp" suggestionItems="{ValueHelpModel>/uom}" value="{DataModel>Valunit}">
+                            <suggestionItems>
+                                <core:Item text="{ValueHelpModel>Valunit}" />
+                            </suggestionItems>
+                        </Input>
+                    </t:template>
+                </t:Column>
+            </c:columns>
+        </c:DynamicTable>
+</core:FragmentDefinition>        

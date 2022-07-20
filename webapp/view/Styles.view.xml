@@ -35,16 +35,16 @@
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{i18n>SeasonFilter}" controlType="dropDownList" displayBehaviour="descriptionAndId"
-                    mandatory="notMandatory">
+                <!-- <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{i18n>SeasonFilter}" controlType="dropDownList" displayBehaviour="descriptionAndId"
+                    mandatory="notMandatory"> -->
+                <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{i18n>SeasonFilter}" mandatory="notMandatory">
                     <!-- <smartfilterbar:defaultFilterValues>
                         <smartfilterbar:SelectOption operator="EQ" low="SP21"></smartfilterbar:SelectOption>
                     </smartfilterbar:defaultFilterValues> -->
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{i18n>ProductTypeFilter}" controlType="dropDownList" displayBehaviour="descriptionAndId"
-                    mandatory="notMandatory">
+                <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{i18n>ProductTypeFilter}" mandatory="notMandatory">
                     <!-- <smartfilterbar:defaultFilterValues>
                         <smartfilterbar:SelectOption operator="EQ" low="1000"></smartfilterbar:SelectOption>
                     </smartfilterbar:defaultFilterValues> -->
@@ -176,15 +176,23 @@
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
+            <Button text="{i18n>Copy}" icon="sap-icon://copy" press="onCopyMode" tooltip="Create New Style">
+              <layoutData>
+                  <ToolbarLayoutData shrinkable="true"/>
+              </layoutData>
+            </Button>
             <Button text="{i18n>Upload}" icon="sap-icon://upload" press="uploadStyles"  tooltip="Upload Styles from File">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
             <Button icon="sap-icon://excel-attachment" press="onExportExcel"  tooltip="Download to Excel">
-              <layoutData>
+                <customData>
+                <core:CustomData key="TableName" value="styleDynTable"/>
+                </customData>
+                <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
-              </layoutData>
+                </layoutData>
             </Button>
             <!-- <Button icon="sap-icon://upload" >
               <layoutData>

@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="Unit of Measure"
+		class="sapUiPopupWithPadding"
+		items="{ValueHelpModel>/uom}"
+		search="_uomValueHelpSearch"
+		confirm="_uomValueHelpClose"
+		cancel="_uomValueHelpClose">
+		<StandardListItem title="{ValueHelpModel>Valunit}" description="{ValueHelpModel>Desc1}"/>
+	</SelectDialog>
+</core:FragmentDefinition>
