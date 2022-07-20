@@ -1,0 +1,56 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+    <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact whiteBackground">
+        <headerToolbar>
+            <Toolbar height="3rem" style="Clear">
+                <Label text="Sizes" />
+                <ToolbarSpacer />
+                <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/sizesEditMode}" press="onSaveSizeTable"/>
+                <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/sizesEditMode}">
+                    <customData>
+                        <core:CustomData key="TableName" value="sizesTable"/>
+                    </customData>
+                </Button>
+                <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/sizesEditMode}"/> -->
+                <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/sizesEditMode}">
+                    <customData>
+                        <core:CustomData key="TableName" value="sizesTable"/>
+                    </customData>
+                </Button>
+                <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
+                    <customData>
+                        <core:CustomData key="Section" value="Sizes"/>
+                    </customData>
+                </Button>
+            </Toolbar>
+        </headerToolbar>
+        <c:DynamicTable id="sizesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact"
+            selectionMode="None">
+            <c:columns>
+                <t:Column width="11rem" filterProperty="Attribgrp">
+                    <Label text="Size Range"/>
+                    <t:template>
+                        <Input value="{DataModel>Attribgrp}" editable="false"/>
+                        <!-- <Text id="AttribGrpText" text="{DataModel>Attribgrp}"/> -->
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" filterProperty="Attribcd">
+                    <Label text="Size Code"/>
+                    <t:template>
+                        <!-- <Text id="AttribCdText" text="{DataModel>Attribcd}"/> -->
+                        <!-- <Text id="AttribCdText" text="{DataModel>Attribcd}"/> -->
+                        <Input value="{DataModel>Attribcd}" editable="false"/>
+                        <!-- <Text text="{DataModel>Attribcd}"/> -->
+                    </t:template>
+                </t:Column>
+                <t:Column width="11rem" sortProperty="Baseind">
+                    <Label text="Base Ind"/>
+                    <t:template>
+                        <CheckBox selected="{DataModel>Baseind}" editable="{EditModeModel>/sizesEditMode}"/>
+                    </t:template>
+                </t:Column>
+            </c:columns>
+        </c:DynamicTable>
+    </Panel>
+
+</core:FragmentDefinition>

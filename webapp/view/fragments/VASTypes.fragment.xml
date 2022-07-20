@@ -8,6 +8,6 @@
 		search="_VASTypesValueHelpSearch"
 		confirm="_VASTypesValueHelpClose"
 		cancel="_VASTypesValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>VASTyp}" description="{ValueHelpModel>ProcessCd}"/>
+		<StandardListItem title="{ValueHelpModel>Processcd}" description="{ValueHelpModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

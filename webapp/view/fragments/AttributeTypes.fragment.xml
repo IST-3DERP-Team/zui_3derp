@@ -8,6 +8,6 @@
 		search="_attrTypesValueHelpSearch"
 		confirm="_attrTypesValueHelpClose"
 		cancel="_attrTypesValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>AttribTyp}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{ValueHelpModel>Attribtyp}" description="{ValueHelpModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

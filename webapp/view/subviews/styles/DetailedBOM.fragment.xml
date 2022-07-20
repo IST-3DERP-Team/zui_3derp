@@ -1,0 +1,171 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+    <Toolbar height="3rem" style="Clear">
+        <Label text="Detailed BOM"/>
+        <ToolbarSpacer />
+        <Button icon="sap-icon://save" text="Save"/>
+        <Button icon="sap-icon://add"/>
+        <Button icon="sap-icon://delete"/>
+        <Button icon="sap-icon://edit"/>
+        <Button icon="sap-icon://excel-attachment" press="onExportExcel"  tooltip="Download to Excel">
+            <customData>
+            <core:CustomData key="TableName" value="bomDetailedTable"/>
+            </customData>
+            <layoutData>
+                <ToolbarLayoutData shrinkable="true"/>
+            </layoutData>
+        </Button>
+    </Toolbar>
+    <c:DynamicTable id="bomDetailedTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="BOM Item"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="BOM Item Type"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Style"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Style Version"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Style Description"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Part Code"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Part Description"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Part Count"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Usage Class"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Customer Style"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Process"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Color"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Size"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Destination"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Mat. Type"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="GMC"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Material"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="GMC Desc"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Addtl. Desc"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Consump Per"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Per"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="UOM"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Wastage"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Computed Consumption"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <Label text="Consumption"/>
+            <t:template>
+                <Input value="{DataModel>Attribtyp}"/>
+            </t:template>
+        </t:Column>
+    </c:DynamicTable>
+</core:FragmentDefinition>            

@@ -1,0 +1,35 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
+    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+    <Toolbar height="3rem" style="Clear">
+        <Label text="BOM by GMC"/>
+        <ToolbarSpacer />
+        <Button text="Get Components" visible="{EditModeModel>/bomGMCEditMode}"/>
+        <Button text="RMC" visible="{EditModeModel>/bomGMCEditMode}"/>
+        <Button icon="sap-icon://save" text="Save" visible="{EditModeModel>/bomGMCEditMode}"/>
+        <Button icon="sap-icon://add" press="addLine" visible="{EditModeModel>/bomGMCEditMode}">
+            <customData>
+                <core:CustomData key="TableName" value="bomGMCTable"/>
+            </customData>
+        </Button>
+        <Button icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/bomGMCEditMode}">
+            <customData>
+                <core:CustomData key="TableName" value="bomGMCTable"/>
+            </customData>
+        </Button>
+        <Button icon="sap-icon://edit" press="setEditMode">
+            <customData>
+                <core:CustomData key="Section" value="BOMbyGMC"/>
+            </customData>
+        </Button>
+        <Button icon="sap-icon://excel-attachment" press="onExportExcel"  tooltip="Download to Excel">
+            <customData>
+            <core:CustomData key="TableName" value="bomGMCTable"/>
+            </customData>
+            <layoutData>
+                <ToolbarLayoutData shrinkable="true"/>
+            </layoutData>
+        </Button>
+    </Toolbar>
+    <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+    </c:DynamicTreeTable>
+</core:FragmentDefinition>    

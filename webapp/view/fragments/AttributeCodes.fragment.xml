@@ -8,6 +8,6 @@
 		search="_attrCodesValueHelpSearch"
 		confirm="_attrCodesValueHelpClose"
 		cancel="_attrCodesValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>AttribCd}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{ValueHelpModel>Attribcd}" description="{ValueHelpModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>
