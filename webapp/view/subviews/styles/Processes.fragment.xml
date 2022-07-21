@@ -6,7 +6,7 @@
                 <Label text="Processes" />
                 <ToolbarSpacer/>
                 <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/processEditMode}" press="onSaveProcessTable"/>
-                <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/processEditMode}">
+                <Button type="Ghost" icon="sap-icon://add" press="addProcessLine" visible="{EditModeModel>/processEditMode}">
                     <customData>
                         <core:CustomData key="TableName" value="processesTable"/>
                     </customData>
@@ -37,7 +37,7 @@
                     <Label text="Process" />
                     <t:template>
                         <Input id="ProcessCdInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
-                            valueHelpRequest="onProcessesValueHelp" suggestionItems="{ValueHelpModel>/attributes}" value="{DataModel>Processcd}">
+                            valueHelpRequest="onProcessesValueHelp" suggestionItems="{ValueHelpModel>/processes}" value="{DataModel>Processcd}">
                             <suggestionItems>
                                 <core:Item text="{ValueHelpModel>ProcessCd}" />
                             </suggestionItems>

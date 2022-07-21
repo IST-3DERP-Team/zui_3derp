@@ -485,6 +485,7 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oTableModel = this.getView().byId("sizesTable").getModel("DataModel");
                 var path;
+                var lv_baseindctr = 0;
 
                 var oData = oTableModel.getData();
                 var oEntry = {
@@ -495,6 +496,10 @@ sap.ui.define([
 
                 // for (var i = oData.results.length - 1; i >= 0; i--) {
                 for (var i = 0; i < oData.results.length; i++) {
+
+                    if(oData.results[i].Baseind === true) {
+                        lv_baseindctr++;
+                    }
                     
                     var item = {
                         "Styleno": this._styleNo,
@@ -518,17 +523,22 @@ sap.ui.define([
                     oEntry.AttributesToItems.push(item);
                 };
 
-                path = "/AttributesGeneralSet";
+                if(lv_baseindctr > 1) {
+                    Common.showMessage('Select only 1 Base Indicator');
+                } else {
 
-                oModel.create(path, oEntry, {
-                    method: "POST",
-                    success: function(oData, oResponse) {
-                        Common.showMessage("Saved");
-                    },
-                    error: function(err) {
-                        Common.showMessage("Error");
-                    }
-                });
+                    path = "/AttributesGeneralSet";
+
+                    oModel.create(path, oEntry, {
+                        method: "POST",
+                        success: function(oData, oResponse) {
+                            Common.showMessage("Saved");
+                        },
+                        error: function(err) {
+                            Common.showMessage("Error");
+                        }
+                    });
+                }
             },
 
             // onSaveSizeTable: function() {
@@ -1054,6 +1064,23 @@ sap.ui.define([
                 var oModel = this.getView().byId(tabName).getModel("DataModel");
                 var oData = oModel.getProperty('/results');
                 oData.push({});
+                oTable.getBinding("rows").refresh();
+            },
+
+            addProcessLine: function(oEvent) {
+                var oButton = oEvent.getSource();
+                var tabName = oButton.data('TableName')
+                var oTable = this.getView().byId(tabName);
+                var oModel = this.getView().byId(tabName).getModel("DataModel");
+                var oData = oModel.getProperty('/results');
+                var length = oData.length;
+                var lastSeqno = 0;
+                if(length > 0) {
+                    lastSeqno = parseInt(oData[length - 1].Seqno);
+                }
+                oData.push({
+                    "Seqno": lastSeqno + 1
+                });
                 oTable.getBinding("rows").refresh();
             },
 

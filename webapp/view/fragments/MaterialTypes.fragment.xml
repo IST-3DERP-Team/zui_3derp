@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="Material Types"
+		class="sapUiPopupWithPadding"
+		items="{ValueHelpModel>/materialtypes}"
+		search="_matTypeValueHelpSearch"
+		confirm="_matTypeValueHelpClose"
+		cancel="_matTypeValueHelpClose">
+		<StandardListItem title="{ValueHelpModel>Mattype}" description="{ValueHelpModel>Desc1}"/>
+	</SelectDialog>
+</core:FragmentDefinition>
