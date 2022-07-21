@@ -3,15 +3,15 @@
     <Toolbar height="3rem" style="Clear">
         <Label text="BOM by GMC"/>
         <ToolbarSpacer />
-        <Button text="Get Components" visible="{EditModeModel>/bomGMCEditMode}"/>
+        <Button text="Get Components" visible="{EditModeModel>/bomGMCEditMode}" press="onGetComponent"/>
         <Button text="RMC" visible="{EditModeModel>/bomGMCEditMode}"/>
-        <Button icon="sap-icon://save" text="Save" visible="{EditModeModel>/bomGMCEditMode}"/>
-        <Button icon="sap-icon://add" press="addLine" visible="{EditModeModel>/bomGMCEditMode}">
+        <Button icon="sap-icon://save" text="Save" visible="{EditModeModel>/bomGMCEditMode}" press="onSaveBOMbyGMC"/>
+        <Button icon="sap-icon://add" press="addLineBOM" visible="{EditModeModel>/bomGMCEditMode}">
             <customData>
                 <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
         </Button>
-        <Button icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/bomGMCEditMode}">
+        <Button icon="sap-icon://delete" press="removeLineBOM" visible="{EditModeModel>/bomGMCEditMode}">
             <customData>
                 <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
@@ -30,6 +30,6 @@
             </layoutData>
         </Button>
     </Toolbar>
-    <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+    <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}">
     </c:DynamicTreeTable>
 </core:FragmentDefinition>    

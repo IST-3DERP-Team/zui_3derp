@@ -41,19 +41,18 @@ sap.ui.define(
 
         navigatePage: function(oRouteName) {
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-            // oRouter.navTo(oRouteName);
+            oRouter.navTo(oRouteName);
+
             // oRouter.navTo("RouteStyleDetail", {
-            // oRouter.navTo("RouteAssignMaterial", {
-            //     styleno: "VERSTY-001",
+            //     styleno: "1000000031",
             //     sbu: "VER"
             // } );
         
-            oRouter.navTo("RouteVersion", {
-                // styleno: "VERSTY-001",
-                styleno: "1000000030",
-                sbu: "VER",
-                version: 1
-            } );
+            // oRouter.navTo("RouteVersion", {
+            //     styleno: "1000000031",
+            //     sbu: "VER",
+            //     version: 1
+            // } );
         },
 
         onItemSelect: function (oEvent) {

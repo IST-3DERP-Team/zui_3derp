@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="GMC"
+		class="sapUiPopupWithPadding"
+		items="{ValueHelpModel>/gmc}"
+		search="_GMCValueHelpSearch"
+		confirm="_GMCValueHelpClose"
+		cancel="_GMCValueHelpClose">
+		<StandardListItem title="{ValueHelpModel>Gmc}" description="{ValueHelpModel>Desc1}" info="{ValueHelpModel>Mattyp}"/>
+	</SelectDialog>
+</core:FragmentDefinition>
