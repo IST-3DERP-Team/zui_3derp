@@ -165,7 +165,7 @@
                 },
                 {
                     "name": "RouteAssignMaterial",
-                    "pattern": "AssignMaterial/{styleno}/{sbu}",
+                    "pattern": "AssignMaterial/{styleno}/{sbu}/{version}",
                     "greedy": false,
                     "target": [
                         "TargetAssignMaterial"

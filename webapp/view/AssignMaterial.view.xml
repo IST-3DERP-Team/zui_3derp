@@ -8,12 +8,12 @@
                 <Label text="Assign Material No."/>
                 <ToolbarSpacer />
                 <!-- <Button icon="sap-icon://bookmark" text="Assign Material No."/> -->
-                <Button text="Assign Automatic"/>
-                <Button text="Create Material"/>
-                <Button icon="sap-icon://save"/>
-                <Button icon="sap-icon://delete" />
+                <Button text="Assign Automatic" press="onAssignAutomatic"/>
+                <Button text="Create Material" press="onCreateMaterial"/>
+                <Button type="Ghost" icon="sap-icon://save" text="Save" press="onSaveMaterialList"/>
+                <!-- <Button icon="sap-icon://delete" /> -->
             </Toolbar>
-            <c:DynamicTable id="GMCTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" height="100%">
+            <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" height="100%">
                 <t:Column width="7rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="GMC"/>
                     <t:template>
@@ -23,13 +23,13 @@
                 <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="GMC Desc"/>
                     <t:template>
-                        <Text text="{DataModel>Matdesc1}"/>
+                        <Text text="{DataModel>Gmcdesc}"/>
                     </t:template>
                 </t:Column>
                 <t:Column filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="Additional Description"/>
                     <t:template>
-                        <Text text="{DataModel>Matdesc2}"/>
+                        <Text text="{DataModel>Matdesc1}"/>
                     </t:template>
                 </t:Column>
                 <t:Column width="5rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
@@ -43,7 +43,7 @@
                     <t:template>
                         <!-- <Text text="{DataModel>MatNo}"/> -->
                         <Input id="productInput" type="Text" placeholder="Select Material ..." showSuggestion="true" showValueHelp="true"
-                            valueHelpRequest="handleValueHelp" suggestionItems="{MaterialsModel>/results}" >
+                            valueHelpRequest="handleValueHelp" suggestionItems="{MaterialsModel>/results}" value="{DataModel>Matno}">
                             <suggestionItems>
                                 <core:Item text="{MaterialsModel>MatNo}" />
                             </suggestionItems>

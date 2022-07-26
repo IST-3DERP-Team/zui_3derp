@@ -5,7 +5,7 @@
             <Toolbar height="3rem" style="Clear">
                 <Title text="Versions" />
                 <ToolbarSpacer />
-                <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/versionEditMode}"/>
+                <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/versionEditMode}" press="onSaveVersions"/>
                 <Button type="Ghost" icon="sap-icon://add-document" text="New Version" press="onCreateNewVersion" visible="{EditModeModel>/versionEditMode}"/>                                    
                 <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/versionEditMode}"/>
                 <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
