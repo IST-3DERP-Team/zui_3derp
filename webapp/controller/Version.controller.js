@@ -53,6 +53,7 @@ sap.ui.define([
             },
 
             getHeaderData: function (styleNo) {
+                var me = this;
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oView = this.getView();
@@ -60,6 +61,7 @@ sap.ui.define([
 
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
+                        oData.SelectedVersion = me._version;
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "headerData");
                     },
@@ -456,11 +458,10 @@ sap.ui.define([
                                     additionalText: "{ValueHelpModel>Usgcls}"
                                 })
                             },
-                            // editable: "{= ${DataModel>BOMITMTYP} === 'STY' ? false : true }"
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false ),
                             visible: column.Visible
                         });
-                    } else if (columnName === "UOM") {
+                    } else if (columnName === "ENTRYUOM") {
                         oColumnTemplate = new sap.m.ComboBox({
                             value: "{DataModel>" + columnName + "}",
                             showSecondaryValues: true,
@@ -472,7 +473,6 @@ sap.ui.define([
                                     additionalText: "{ValueHelpModel>Desc1}"
                                 })
                             },
-                            // editable: "{= ${DataModel>BOMITMTYP} === 'STY' ? false : true }"
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false ),
                             visible: column.Visible
                         });
@@ -481,7 +481,6 @@ sap.ui.define([
                             value: "{DataModel>" + columnName + "}",
                             showValueHelp: true,
                             valueHelpRequest: that.onGMCValueHelp,
-                            // editable: "{= ${DataModel>BOMITMTYP} === 'STY' ? false : true }"
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false ),
                             visible: column.Visible
                         });
@@ -490,21 +489,19 @@ sap.ui.define([
                             value: "{DataModel>" + columnName + "}",
                             showValueHelp: true,
                             valueHelpRequest: that.onStyleValueHelp,
-                            // editable: "{= ${DataModel>BOMITMTYP} === 'GMC' ? false : true }"
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'GMC' ? false : " + editModeCond + " }" : false ),
                             visible: column.Visible
                         });
                     } else if (columnName === "BOMSTYLVER") {
                         oColumnTemplate = new sap.m.Input({
                             value: "{DataModel>" + columnName + "}",
-                            // editable: "{= ${DataModel>BOMITMTYP} === 'GMC' ? false : true }"
+                            type: "Number",
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'GMC' ? false : " + editModeCond + " }" : false ),
                             visible: column.Visible
                         });
                     } else {
                         oColumnTemplate = new sap.m.Input({
                             value: "{DataModel>" + columnName + "}",
-                            // editable: "{= ${DataModel>BOMITMTYP} === 'STY' ? false : true }"
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false ),
                             visible: column.Visible
                         })
@@ -635,10 +632,10 @@ sap.ui.define([
                     "Mattyp": item.MATTYP,
                     "Gmc": item.GMC,
                     "Matno": item.REFMATNO,
-                    "Entryuom": item.UOM,
+                    "Entryuom": item.ENTRYUOM,
                     "Matconsper": item.CONSUMPPER,
                     "Per": item.PER,
-                    "Issueuom": item.UOM,
+                    "Issueuom": " ",
                     "Matconsump": " ",
                     "Wastage": item.WASTAGE,
                     "Comconsump": item.COMCONSUMP,
@@ -647,7 +644,7 @@ sap.ui.define([
                     "Consump": item.CONSUMP,
                     "Diml": " ",
                     "Dimw": " ",
-                    "Dimuom": item.UOM,
+                    "Dimuom":  " ",
                     "Processcd": item.PROCESSCD,
                     "Remarks": " ",
                     "Refmatno": item.REFMATNO,
@@ -1041,11 +1038,70 @@ sap.ui.define([
                 })
             },
 
+            onSaveMaterialList: function() {
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var oTableModel = this.getView().byId("materialListTable").getModel("DataModel");
+                var path;
+
+                var oData = oTableModel.getData();
+                var oEntry = {
+                    Styleno: this._styleNo,
+                    MatListToItems: [ ]
+                }
+
+                for (var i = 0; i < oData.results.length; i++) {
+
+                    var item = {
+                        "Styleno": this._styleNo,
+                        "Verno": oData.results[i].Verno,
+                        "Seqno": oData.results[i].Seqno,
+                        "Matno": oData.results[i].Matno,
+                        "Mattyp": oData.results[i].Mattyp,
+                        "Gmc": oData.results[i].Gmc,
+                        "Matconsump": oData.results[i].Matconsump,
+                        "Wastage": oData.results[i].Wastage,
+                        "Comconsump": oData.results[i].Comconsump,
+                        "Consump": oData.results[i].Consump,
+                        "Uom": oData.results[i].Uom,
+                        "Supplytyp": oData.results[i].Supplytyp,
+                        "Vendorcd": oData.results[i].Vendorcd,
+                        "Currencycd": oData.results[i].Currencycd,
+                        "Unitprice": oData.results[i].Unitprice,
+                        "Purgrp": oData.results[i].Purgrp,
+                        "Purplant": oData.results[i].Purplant,
+                        "Matdesc1": oData.results[i].Matdesc1,
+                        "Matdesc2": oData.results[i].Matdesc2,
+                        "Deleted": " ",
+                        "Createdby": " ",
+                        "Createddt": " ",
+                        "Updatedby": " ",
+                        "Updateddt": " "
+                    }
+    
+                    oEntry.MatListToItems.push(item);
+                };
+
+                path = "/MaterialListSet";
+
+                oModel.create(path, oEntry, {
+                    method: "POST",
+                    success: function(oData, oResponse) {
+                        me.getMaterialList();
+                        Common.showMessage("Saved");
+                    },
+                    error: function(err) {
+                        Common.showMessage("Error");
+                    }
+                });
+            },
+
             onAssignMaterial: function () {
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                 oRouter.navTo("RouteAssignMaterial", {
                     styleno: this._styleNo,
-                    sbu: this._sbu
+                    sbu: this._sbu,
+                    version: this._version
                 });
             },
 

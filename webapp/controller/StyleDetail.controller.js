@@ -665,6 +665,57 @@ sap.ui.define([
                 });
             },
 
+            onSaveVersions: function() {
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var oTableModel = this.getView().byId("versionsTable").getModel("DataModel");
+                var path;
+
+                var oData = oTableModel.getData();
+                var oEntry = {
+                    Styleno: this._styleNo,
+                    VerToItems: [ ]
+                }
+
+                for (var i = 0; i < oData.results.length; i++) {
+
+                    var item = {
+                        "Styleno": this._styleNo,
+                        "Verno": oData.results[i].Verno,
+                        "Remarks": " ",
+                        "Completed": " ",
+                        "Desc1": oData.results[i].Desc1,
+                        "Matno": " ",
+                        "Desc2": oData.results[i].Desc2,
+                        "Seasoncd": " ",
+                        "Salesgrp": " ",
+                        "Srcstyl": " ",
+                        "Srcstylver": " ",
+                        "Rmcdttm": " ",
+                        "Deleted": " ",
+                        "Createdby": " ",
+                        "Createddt": " ",
+                        "Updatedby": " ",
+                        "Updateddt": " "
+                    }
+    
+                    oEntry.VerToItems.push(item);
+                };
+
+                path = "/VersionSet";
+
+                oModel.create(path, oEntry, {
+                    method: "POST",
+                    success: function(oData, oResponse) {
+                        me.getVersionsTable();
+                        Common.showMessage("Saved");
+                    },
+                    error: function(err) {
+                        Common.showMessage("Error");
+                    }
+                });
+            },
+
             onCreateNewVersion: function() {
                 if (!that._NewVerionDialog) {
                     that._NewVerionDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CreateNewVersion", that);

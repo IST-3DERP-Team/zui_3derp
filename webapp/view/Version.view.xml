@@ -4,10 +4,10 @@
     <Page showHeader="false">
 
         <!-- OBJECT HEADER -->
-        <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>Version}: {headerData>/Verno}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
+        <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>Version}: {headerData>/SelectedVersion}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
 		        title="{headerData>/Stylecd}">
             <attributes>
-                <ObjectAttribute title="{i18n>SEASONCD}" text="{headerData>/Seasoncd}"/>
+                <!-- <ObjectAttribute title="{i18n>SEASONCD}" text="{headerData>/Seasoncd}"/> -->
                 <!-- <ObjectAttribute title="{i18n>CREATEDDT}" text="{headerData>/Createddt}"/>
                 <ObjectAttribute title="{i18n>UPDATEDBY}" text="{headerData>/Updatedby}"/>
                 <ObjectAttribute title="{i18n>UPDATEDDT}" text="{headerData>/Updateddt}"/> -->
