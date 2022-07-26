@@ -8,7 +8,7 @@
         <Button icon="sap-icon://delete"/>
         <Button icon="sap-icon://edit"/>
     </Toolbar>
-    <c:DynamicTable id="attachmentsTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
+    <!-- <c:DynamicTable id="attachmentsTable" rows="{DataModel>/results}"  class="sapUiSizeCompact">
         <c:columns>
             <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                 <Label text="Attach Type"/>
@@ -53,5 +53,5 @@
                 </t:template>
             </t:Column>
         </c:columns>
-    </c:DynamicTable>
+    </c:DynamicTable> -->
 </core:FragmentDefinition>        

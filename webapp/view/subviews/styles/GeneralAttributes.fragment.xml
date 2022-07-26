@@ -40,11 +40,6 @@
                 <t:Column width="11rem" filterProperty="Attribcd">
                     <Label text="Attribute Code" />
                     <t:template>
-                        <!-- <Input value="{DataModel>Attribcd}" editable="{EditModeModel>/genAttrEditMode}"/> -->
-                        <!-- <ComboBox items="{ValueHelpModel>/attributecodes}" selectedKey="{DataModel>Attribcd}"
-                            showSecondaryValues="true" filterSecondaryValues= "true" editable="{EditModeModel>/genAttrEditMode}">
-                            <core:ListItem key="{ValueHelpModel>AttribCd}" text="{ValueHelpModel>AttribCd}"/>
-                        </ComboBox> -->
                         <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/genAttrEditMode}"
                             valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{ValueHelpModel>/attributecodes}" value="{DataModel>Attribcd}">
                             <suggestionItems>

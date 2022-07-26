@@ -98,26 +98,28 @@ sap.ui.define([
 
 				that.insertRows(text, this, undefined);
 			});
-			this.getAggregation('rows').forEach(function(row) {
-				row.getCells().forEach(function(cell) {
-					cell.attachBrowserEvent('paste', function(e) {
-						e.stopPropagation();
+            try {
+                this.getAggregation('rows').forEach(function(row) {
+                    row.getCells().forEach(function(cell) {
+                        cell.attachBrowserEvent('paste', function(e) {
+                            e.stopPropagation();
 
-						e.preventDefault();
-						var text = (e.originalEvent || e).clipboardData.getData('text/plain');
-						var domCell = jQuery.sap.domById(e.currentTarget.id);
-						var insertCell = jQuery('#' + domCell.id).control()[0];
-						var itemsPath = that.getBindingPath('rows');
-						var pathRow = insertCell.getBindingContext('DataModel').sPath;
+                            e.preventDefault();
+                            var text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                            var domCell = jQuery.sap.domById(e.currentTarget.id);
+                            var insertCell = jQuery('#' + domCell.id).control()[0];
+                            var itemsPath = that.getBindingPath('rows');
+                            var pathRow = insertCell.getBindingContext('DataModel').sPath;
 
-						currentRowIndex = parseInt(pathRow.substring(pathRow.lastIndexOf('/') + 1)); //Selected row index
+                            currentRowIndex = parseInt(pathRow.substring(pathRow.lastIndexOf('/') + 1)); //Selected row index
 
-						var startRowIndex = pathRow.split(itemsPath + "/")[1];
-						var startProperty = insertCell.getBindingPath('value');
-						that.insertRows(text, that, 'DataModel', startRowIndex, startProperty);
-					});
-				});
-			});
+                            var startRowIndex = pathRow.split(itemsPath + "/")[1];
+                            var startProperty = insertCell.getBindingPath('value');
+                            that.insertRows(text, that, 'DataModel', startRowIndex, startProperty);
+                        });
+                    });
+                }); 
+            } catch(err) { }
 
 		},
 		// renderer: sap.m.Table.prototype.getRenderer()
