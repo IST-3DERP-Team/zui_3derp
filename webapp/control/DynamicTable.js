@@ -25,7 +25,7 @@ sap.ui.define([
 			var itemsArray = table.getModel(model).getProperty(itemsPath);
 			var startPropertyIndex = 0;
 			var model = table.getModel(model);
-			var fData = model.oData.Data;
+			var fData = model.oData.results;
 
 			if (startPropertyIndex === 2) {
 
@@ -63,7 +63,8 @@ sap.ui.define([
 
 			}
 
-			for (var int = 0; int < sNewCopiedData.length - 1; int++) {
+			for (var int = 0; int < sNewCopiedData.length; int++) {
+            // for (var int = 0; int < sNewCopiedData.length -1; int++) {
 				var rows_element = sNewCopiedData[int];
 				var cells = rows_element.split(/\t/);
 

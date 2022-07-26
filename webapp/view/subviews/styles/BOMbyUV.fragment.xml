@@ -8,13 +8,14 @@
                 <core:ListItem key="{ValueHelpModel>Usgcls}" text="{ValueHelpModel>Ucdesc1}" additionalText = "{ValueHelpModel>Usgcls}"/>
             </ComboBox>
         </HBox>
-        <!-- <Label text="BOM by UV"/> -->
         <ToolbarSpacer />
-        <Button icon="sap-icon://save" text="Save"/>
-        <!-- <Button icon="sap-icon://add"/> -->
-        <!-- <Button icon="sap-icon://delete"/> -->
-        <Button icon="sap-icon://edit"/>
-        <Button text="Refresh" press="getbomUVTable"/>
+        <Button icon="sap-icon://save" text="Save" press="onSaveBOMbyUV" visible="{EditModeModel>/bomUVEditMode}"/>
+        <Button icon="sap-icon://edit" press="setEditMode">
+            <customData>
+                <core:CustomData key="Section" value="BOMbyUV"/>
+            </customData>
+        </Button>
+        <!-- <Button text="Refresh" press="getbomUVTable"/> -->
         <Button icon="sap-icon://excel-attachment" press="onExportExcel"  tooltip="Download to Excel">
             <customData>
             <core:CustomData key="TableName" value="bomUVTable"/>
