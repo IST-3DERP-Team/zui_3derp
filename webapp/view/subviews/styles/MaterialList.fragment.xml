@@ -4,9 +4,12 @@
         <Label text="Material List"/>
         <ToolbarSpacer />
         <Button icon="sap-icon://bookmark" text="Assign Material No." press="onAssignMaterial"/>
-        <Button icon="sap-icon://save" text="Save"/>
-        <Button icon="sap-icon://delete"/>
-        <Button icon="sap-icon://edit"/>
+        <Button icon="sap-icon://save" text="Save" visible="{EditModeModel>/materialListEditMode}"/>
+        <Button icon="sap-icon://edit" press="setEditMode">
+            <customData>
+                <core:CustomData key="Section" value="MaterialList"/>
+            </customData>
+        </Button>
         <Button icon="sap-icon://excel-attachment" press="onExportExcel"  tooltip="Download to Excel">
             <customData>
             <core:CustomData key="TableName" value="materialListTable"/>
@@ -51,13 +54,13 @@
         <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Addtl. Description"/>
             <t:template>
-                <Input value="{DataModel>Matdesc1}"/>
+                <Input value="{DataModel>Matdesc1}" editable="{EditModeModel>/materialListEditMode}"/>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Consumption"/>
             <t:template>
-                <Input value="{DataModel>Consump}"/>
+                <Input value="{DataModel>Consump}" editable="{EditModeModel>/materialListEditMode}"/>
             </t:template>
         </t:Column>
         <t:Column width="5rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
@@ -69,37 +72,37 @@
         <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Supply Type"/>
             <t:template>
-                <Input value="{DataModel>Supplytyp}"/>
+                <Input value="{DataModel>Supplytyp}" editable="{EditModeModel>/materialListEditMode}"/>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Vendor"/>
             <t:template>
-                <Input value="{DataModel>Vendorcd}"/>
+                <Input value="{DataModel>Vendorcd}" editable="{EditModeModel>/materialListEditMode}"/>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Currency"/>
             <t:template>
-                <Input value="{DataModel>Currencycd}"/>
+                <Input value="{DataModel>Currencycd}" editable="{EditModeModel>/materialListEditMode}"/>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Unit Price"/>
             <t:template>
-                <Input value="{DataModel>Unitprice}"/>
+                <Input value="{DataModel>Unitprice}" editable="{EditModeModel>/materialListEditMode}"/>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Purch. Group"/>
             <t:template>
-                <Input value="{DataModel>Purgrp}"/>
+                <Input value="{DataModel>Purgrp}" editable="{EditModeModel>/materialListEditMode}"/>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Purch. Plant"/>
             <t:template>
-                <Input value="{DataModel>Purplant}"/>
+                <Input value="{DataModel>Purplant}" editable="{EditModeModel>/materialListEditMode}"/>
             </t:template>
         </t:Column>
     </c:DynamicTable>

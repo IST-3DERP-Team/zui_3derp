@@ -37,18 +37,8 @@ sap.ui.define([
                 this._sbu = oEvent.getParameter("arguments").sbu;
 
                 if(this._styleNo === "NEW") {
-                    // var oJSONModel = new JSONModel();
-                    // var data = {
-                    //     "Styleno": "New Style",
-                    //     "Statuscd": "CRT"
-                    // };                    
-                    // oJSONModel.setData(data);
-                    // this.getView().setModel(oJSONModel, "headerData");
                     this.setEditMode("NEW");
-                    // var detailPanel = this.getView().byId("detailPanel");
-                    // detailPanel.setExpanded(false);
                 } else {
-                //     this.getHeaderData(this._styleNo);
                     this.setEditMode();
                 }
                 this.getHeaderData();
@@ -82,15 +72,10 @@ sap.ui.define([
             onSaveHeader: function() {
                 var oModel = this.getOwnerComponent().getModel();
                 var me = this;
-                var path;
-
-                // oModel.setHeaders({
-                //     sbu: this._sbu,
-                //     userid: this._User
-                // });
-                
+                var path;               
                 var oHeaderModel = this.getView().getModel("headerData");
                 var oEntry = oHeaderModel.getData();
+
                 oEntry.Styleno = this._styleNo;
                 oEntry.Createdby = "BAS_CONN";
                 oEntry.Sbu = this._sbu;
@@ -105,10 +90,6 @@ sap.ui.define([
                             Common.showMessage("Saved");
                             var oJSONModel = new JSONModel();
                             me._styleNo = oData.Styleno;
-                            // var data = {
-                            //     "Styleno": oData.Styleno,
-                            //     "Statuscd": "CRT"
-                            // };                    
                             oJSONModel.setData(oData);
                             me.getView().setModel(oJSONModel, "headerData");
                             me.getSizesTable();
@@ -243,9 +224,6 @@ sap.ui.define([
                         me._attrValueHelpData.uom = oData.results;
                         oJSONModel7.setData(me._attrValueHelpData);
                         oView.setModel(oJSONModel7, "ValueHelpModel");
-                        // oJSONModel7.setData(oData);
-                        // oJSONModel7.setSizeLimit(1000);
-                        // uomCB.setModel(oJSONModel7);
                     },
                     error: function (err) { }
                 });
@@ -285,8 +263,6 @@ sap.ui.define([
                     error: function (err) { }
                 });
 
-
-
                 //Process Codes
                 var oJSONModel5 = new JSONModel();
                 oModel.read("/ProcessCodeSet", {
@@ -323,11 +299,11 @@ sap.ui.define([
             
             getGeneralTable:function(){
                 var oTable = this.getView().byId("generalTable");
-
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oTable = this.getView().byId("generalTable");
-                var entitySet = "/StyleAttributesGeneralSet"
+                var entitySet = "/StyleAttributesGeneralSet";
+
                 oModel.setHeaders({
                     styleno: this._styleNo
                 });
@@ -352,7 +328,6 @@ sap.ui.define([
                     AttributesToItems: [ ]
                 }
 
-                // for (var i = oData.results.length - 1; i >= 0; i--) {
                 for (var i = 0; i < oData.results.length; i++) {
                     
                     var item = {
@@ -413,7 +388,6 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oTableModel = this.getView().byId("colorsTable").getModel("DataModel");
                 var path;
-
                 var oData = oTableModel.getData();
                 var oEntry = {
                     Styleno: this._styleNo,
@@ -421,7 +395,6 @@ sap.ui.define([
                     AttributesToItems: [ ]                    
                 }
 
-                // for (var i = oData.results.length - 1; i >= 0; i--) {
                 for (var i = 0; i < oData.results.length; i++) {
                     
                     var item = {
@@ -442,7 +415,6 @@ sap.ui.define([
                         "Updatedby": " ",
                         "Updateddt": " "
                     };
-    
                     oEntry.AttributesToItems.push(item);
                 };
 
@@ -478,7 +450,6 @@ sap.ui.define([
                     },
                     error: function() { }
                 })
-                
             },
 
             onSaveSizeTable: function() {
@@ -494,7 +465,6 @@ sap.ui.define([
                     AttributesToItems: [ ]                    
                 }
 
-                // for (var i = oData.results.length - 1; i >= 0; i--) {
                 for (var i = 0; i < oData.results.length; i++) {
 
                     if(oData.results[i].Baseind === true) {
@@ -541,38 +511,6 @@ sap.ui.define([
                 }
             },
 
-            // onSaveSizeTable: function() {
-            //     var me = this;
-            //     var oModel = this.getOwnerComponent().getModel();
-            //     var oTableModel = this.getView().byId("sizesTable").getModel("DataModel");
-            //     var oTableData = oTableModel.getData();
-            //     var attribcd;
-
-            //     oTableData.results.forEach((item) => {
-            //         if(item.Baseind === true) {
-            //             attribcd = item.Attribcd;
-            //         }
-            //     })
-
-            //     var entitySet = "/StyleAttributesSizeSet(Styleno='" + this._styleNo +  "')";
-
-            //     oModel.setHeaders({
-            //         attribcd: attribcd
-            //     });
-
-            //     var oEntry = oTableData.results[0];
-
-            //     oModel.update(entitySet, oEntry, {
-            //         method: "PUT",
-            //         success: function(data, oResponse) {
-            //             Common.showMessage("Saved");
-            //         },
-            //         error: function() {
-            //             Common.showMessage("Error");
-            //         }
-            //     });
-            // },
-
             getProcessesTable:function(){
                 var me = this;
                 var oTable = this.getView().byId("processesTable");
@@ -606,26 +544,6 @@ sap.ui.define([
                 }
 
                 for (var i = 0; i < oData.results.length; i++) {
-                // for (var i = oData.results.length - 1; i >= 0; i--) {
-                    
-                    // var item = {
-                    //     "Styleno": this._styleNo,
-                    //     "AttribTyp": "SIZE",
-                    //     "AttribCd": oData.results[i].Attribcd,
-                    //     "Attribgrp": "",
-                    //     "Attribseq": " ",
-                    //     "Baseind": " ",
-                    //     "Deleted": " ",
-                    //     "Desc1": oData.results[i].Desc1,
-                    //     "Desc2": " ",
-                    //     "Valuetyp": "STRVAL",
-                    //     "Attribval": " ",
-                    //     "Valunit": " ",
-                    //     "Createdby": " ",
-                    //     "Createddt": " ",
-                    //     "Updatedby": " ",
-                    //     "Updateddt": " "
-                    // };
 
                     var item = {
                         "Styleno": this._styleNo,
@@ -683,27 +601,9 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var me = this;
                 var path;
-
-                // oModel.setHeaders({
-                //     sbu: this._sbu,
-                //     userid: this._User
-                // });
-                var current;
-
                 var oDesc1 = Core.byId("newVersionDesc1").getValue();
                 var oDesc2 = Core.byId("newVersionDesc2").getValue();
                 var oCurrent = Core.byId("newVersionCurrent").getSelected();
-                // if(oCurrent === true) {
-                //     current = "1";
-                // } else {
-                //     current = "0";
-                // }
-
-                // var oHeaderModel = this.getView().getModel("headerData");
-                // var oEntry = oHeaderModel.getData();
-                // oEntry.Styleno = this._styleNo;
-                // oEntry.Createdby = "BAS_CONN";
-                // oEntry.Sbu = this._sbu;
                 
                 path = "/StyleVersionSet";
 
@@ -731,52 +631,12 @@ sap.ui.define([
             onSelectVersion: function(oEvent) {
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
                 var version = oData.getProperty('Verno');
-                // var desc;
-                // var desc1 = oData.getProperty('Desc1');
-                // var desc2 = oData.getProperty('Desc1');
-                // if(desc1 !== undefined) {
-                //     desc = desc1;
-                // } else {
-                //     desc = desc2;
-                // }
 
                 that._router.navTo("RouteVersion", {
                     styleno: that._styleNo,
                     sbu: that._sbu,
                     version: version
                 });
-
-                // var oObjHeader = this.getView().byId("VersionHeader");
-                // oObjHeader.setTitle(desc);
-                // oObjHeader.setIntro('Version ' + version);
-
-                // this._version = version;
-                // this.getVersionsData();
-            },
-
-            getVersionsData() {
-                this.getVersionAttrTable();
-                this.getbomGMCTable();
-                this.getbomUVTable();
-                this.getMaterialList();
-            },
-
-            getVersionAttrTable: function(){
-                var oTable = this.getView().byId("versionAttrTable");
-                var oModel = this.getOwnerComponent().getModel();
-                var oJSONModel = new JSONModel();
-                var entitySet = "/StyleVersionAttributesSet"
-                oModel.setHeaders({
-                    styleno: this._styleNo,
-                    verno: this._version
-                });
-                oModel.read(entitySet, {
-                    success: function(oData, oResponse) {
-                        oJSONModel.setData(oData);
-                        oTable.setModel(oJSONModel, "DataModel");
-                    },
-                    error: function() { }
-                })
             },
 
             setVersionCurrent: function(oEvent) {
@@ -815,246 +675,9 @@ sap.ui.define([
                 that._NewVerionDialog.open();
             },
 
-            getbomGMCTable: function() {
-                var me = this;
-                var columnData = [];
-                var oModel = this.getOwnerComponent().getModel();
-
-                oModel.setHeaders({
-                    sbu: this._sbu,
-                    type: 'BOMGMC'
-                });
-
-                oModel.read("/DynamicColumnsSet", {
-                    success: function (oData, oResponse) {
-                        oData.results.forEach((column) => {
-                            columnData.push({
-                                "ColumnName": column.ColumnName,
-                                "ColumnDesc": column.ColumnName,
-                                "ColumnType": column.ColumnType
-                            })
-                        })
-                        me.getGMCColors(columnData);
-                    },
-                    error: function (err) { }
-                });
-            },
-
-            getGMCColors: function(columnData) {
-                var me = this;
-
-                var oModel = this.getOwnerComponent().getModel();
-
-                oModel.setHeaders({
-                    styleno: this._styleNo
-                });
-                oModel.read("/StyleAttributesColorSet", {
-                    success: function (oData, oResponse) {
-                        oData.results.forEach((column) => {
-                            columnData.push({
-                                "ColumnName": column.Attribcd,
-                                "ColumnDesc": column.Desc1,
-                                "ColumnType": "COLOR"
-                            })
-                        })
-                        me.getbomGMCTableData(columnData);
-                    },
-                    error: function (err) { }
-                });
-            },
-
-            getbomGMCTableData: function(columnData) {
-                var oTable = this.getView().byId("bomGMCTable");
-                var oModel = this.getOwnerComponent().getModel();
-                var rowData = [];
-
-                oModel.setHeaders({
-                    styleno: this._styleNo,
-                    verno: this._version
-                });
-                oModel.read("/StyleBOMGMCSet", {
-                    success: function (oData, oResponse) {
-                        rowData = oData.results;
-                        var oJSONModel = new JSONModel();
-                        oJSONModel.setData({
-                            results: rowData,
-                            columns: columnData
-                        });
-
-                        oTable.setModel(oJSONModel, "DataModel");
-
-                        oTable.bindColumns("DataModel>/columns", function(sId, oContext) {
-                            var columnName = oContext.getObject().ColumnName;
-                            var columnDesc = oContext.getObject().ColumnDesc;
-                            var columnType = oContext.getObject().ColumnType;
-                            return new sap.ui.table.Column({
-                                label: that.getColumnDesc(columnName, columnDesc, columnType),
-                                template: that.columnTemplate(columnName, columnDesc, columnType),
-                                sortProperty: columnName, 
-                                filterProperty: columnName,
-                                width: "8rem"
-                            });
-                        });
-
-                        oTable.bindRows("DataModel>/results");
-                    },
-                    error: function (err) { }
-                });
-            },
-
-            getbomUVTable: function() {
-                var me = this;
-                var columnData = [];
-                var oModel = this.getOwnerComponent().getModel();
-
-                oModel.setHeaders({
-                    sbu: this._sbu,
-                    type: 'BOMUV'
-                });
-
-                oModel.read("/DynamicColumnsSet", {
-                    success: function (oData, oResponse) {
-                        oData.results.forEach((column) => {
-                            columnData.push({
-                                "ColumnName": column.ColumnName,
-                                "ColumnDesc": column.ColumnName,
-                                "ColumnType": column.ColumnType
-                            })
-                        })
-                        me.getUVColors(columnData);
-                    },
-                    error: function (err) { }
-                });
-            },
-
-            getUVColors: function(columnData) {
-                var me = this;
-                var oModel = this.getOwnerComponent().getModel();
-
-                oModel.setHeaders({
-                    styleno: this._styleNo
-                });
-                oModel.read("/StyleAttributesColorSet", {
-                    success: function (oData, oResponse) {
-                        // oData.results.forEach((column) => {
-                        //     columnData.push({
-                        //         "ColumnName": column.Attribcd,
-                        //         "ColumnDesc": column.Desc1,
-                        //         "ColumnType": "COLOR"
-                        //     })
-                        // })
-                        me.getbomUVTableData(columnData);
-                    },
-                    error: function (err) { }
-                });
-            },
-
-            getbomUVTableData: function(columnData) {
-                var oTable = this.getView().byId("bomUVTable");
-                var oModel = this.getOwnerComponent().getModel();
-                var rowData = [];
-
-                oModel.setHeaders({
-                    styleno: this._styleNo,
-                    verno: this._version
-                });
-                oModel.read("/StyleBOMUVSet", {
-                    success: function (oData, oResponse) {
-                        rowData = oData.results;
-
-                        var oJSONModel = new JSONModel();
-                        oJSONModel.setData({
-                            results: rowData,
-                            columns: columnData
-                        });
-
-                        oTable.setModel(oJSONModel, "DataModel");
-
-                        oTable.bindColumns("DataModel>/columns", function(sId, oContext) {
-                            var columnName = oContext.getObject().ColumnName;
-                            var columnDesc = oContext.getObject().ColumnDesc;
-                            var columnType = oContext.getObject().ColumnType;
-                            return new sap.ui.table.Column({
-                                label: that.getColumnDesc(columnName, columnDesc, columnType),
-                                // template: new sap.m.Input({ value: "{DataModel>" + columnName + "}" }),
-                                template: that.columnTemplate(columnName, columnDesc, columnType),
-                                sortProperty: columnName, 
-                                filterProperty: columnName,
-                                width: "8rem"
-                            });
-                        });
-
-                        oTable.bindRows("DataModel>/results");
-                    },
-                    error: function (err) { }
-                });
-            },
-
-            getColumnDesc: function(columnName, columnDesc, columnType) {
-                var desc;
-                if(columnType === "COLOR" || columnType === "SIZE") {
-                    desc = columnDesc;
-                } else {
-                    desc = "{i18n>" + columnName + "}";
-                }
-                return desc;
-            },
-
-            columnTemplate: function(columnName, columnDesc, columnType) {
-                var oColumnTemplate;
-                if(columnName === "BOMSEQ" || columnName === "BOMITEM") {
-                    oColumnTemplate = new sap.m.Text({ text: "{DataModel>" + columnName + "}" });
-                } else {
-                    oColumnTemplate = new sap.m.Input({ value: "{DataModel>" + columnName + "}" })
-                }
-                return oColumnTemplate;
-            },
-
             oAttachmentsTable:function(){
                 var me = this;
                 var oTable = this.getView().byId("attachmentsTable");
-            },
-
-            getDetailedBOM:function(){
-                var me = this;
-                var oModel = this.getOwnerComponent().getModel();
-                var oJSONModel = new JSONModel();
-                var oTable = this.getView().byId("bomDetailedTable");
-                var entitySet = "/StyleDetailedBOMSet"
-                oModel.read(entitySet, {
-                    success: function(oData, oResponse) {
-                        oJSONModel.setData(oData);
-                        oTable.setModel(oJSONModel, "DataModel");
-                    },
-                    error: function() { }
-                })
-            },
-
-            getMaterialList: function(){
-                var me = this;
-                var oModel = this.getOwnerComponent().getModel();
-                var oJSONModel = new JSONModel();
-                var oTable = this.getView().byId("materialListTable");
-                var entitySet = "/StyleMaterialListSet"
-                oModel.setHeaders({
-                    styleno: this._styleNo,
-                    verno: this._version
-                });
-                oModel.read(entitySet, {
-                    success: function(oData, oResponse) {
-                        oJSONModel.setData(oData);
-                        oTable.setModel(oJSONModel, "DataModel");
-                    },
-                    error: function() { }
-                })
-            },
-
-            onAssignMaterial: function() {
-                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-                oRouter.navTo("RouteAssignMaterial", {
-                    styleno: this._styleNo,
-                    sbu: this._sbu
-                } );
             },
 
             addLine: function(oEvent) {
@@ -1078,8 +701,10 @@ sap.ui.define([
                 if(length > 0) {
                     lastSeqno = parseInt(oData[length - 1].Seqno);
                 }
+                lastSeqno++;
+                var seqno = lastSeqno.toString();
                 oData.push({
-                    "Seqno": lastSeqno + 1
+                    "Seqno": seqno
                 });
                 oTable.getBinding("rows").refresh();
             },
@@ -1089,22 +714,15 @@ sap.ui.define([
                 var tabName = oButton.data('TableName')
                 var oTable = this.getView().byId(tabName);
                 var oModel = this.getView().byId(tabName).getModel("DataModel");
-                var oData = oModel.getData(); // oModel.getProperty('/results');
+                var oData = oModel.getData();
                 var selected = oTable.getSelectedIndices();
-                // selected.forEach((item) => {
-                //     oData.results.splice(item, 1);
-                // });
-
-                // var valuesArr = ["v1","v2","v3","v4","v5"];
-                // var removeValFrom = [0, 2, 4];
+                
                 oData.results = oData.results.filter(function(value, index) {
                     return selected.indexOf(index) == -1;
                 })
 
                 oModel.setData(oData);
                 oTable.clearSelection();
-                // oData.push({});
-                // oTable.getBinding("rows").refresh();
             },
 
             addGeneralAttr: function() {
@@ -1312,9 +930,7 @@ sap.ui.define([
             onCustomersValueHelp : function (oEvent) {
                 var sInputValue = oEvent.getSource().getValue();
                 var custGrp = this.getView().byId("customerGroupCB").getSelectedKey();
-    
                 this.inputId = oEvent.getSource().getId();
-                // create value help dialog
                 if (!this._customersHelpDialog) {
                     this._customersHelpDialog = sap.ui.xmlfragment(
                         "zui3derp.view.fragments.Customers",
@@ -1327,8 +943,6 @@ sap.ui.define([
                     "Custgrp",
                     sap.ui.model.FilterOperator.EQ, custGrp
                 )]);
-        
-                // open value help dialog filtered by the input value
                 this._customersHelpDialog.open(sInputValue);
             },
 
@@ -1351,11 +965,6 @@ sap.ui.define([
             },
 
             onUomValueHelp : function () {
-                // var sInputValue = "";// oEvent.getSource().getValue();
-                // var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
-                // var attrTyp = oData.getProperty('Valunit');
-                // this.inputId = oEvent.getSource().getId();
-                // this.descId = oEvent.getSource().getParent().mAggregations.cells[2].getId();
                 if (!this._uomValueHelpDialog) {
                     this._uomValueHelpDialog = sap.ui.xmlfragment(
                         "zui3derp.view.fragments.UoM",
@@ -1363,10 +972,6 @@ sap.ui.define([
                     );
                     this.getView().addDependent(this._uomValueHelpDialog);
                 }
-                // this._attrCodesValueHelpDialog.getBinding("items").filter([new Filter(
-                //     "AttribTyp",
-                //     sap.ui.model.FilterOperator.EQ, attrTyp
-                // )]);
                 this._uomValueHelpDialog.open();
             },
 
