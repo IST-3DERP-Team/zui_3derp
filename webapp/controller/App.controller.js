@@ -51,7 +51,7 @@ sap.ui.define(
             // oRouter.navTo("RouteVersion", {
             //     styleno: "1000000035",
             //     sbu: "VER",
-            //     version: 1
+            //     version: 5
             // } );
         },
 

@@ -45,6 +45,14 @@
                     "odataVersion": "2.0"
                 }
             },
+            "ZGW_3DERP_FILES_SRV": {
+				"uri": "/sap/opu/odata/sap/ZGW_3DERP_FILES_SRV/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/metadata.xml"
+				}
+			},
             "annotations": {
 				"type": "ODataAnnotation",
 				"uri": "annotations/annotations.xml",
@@ -110,7 +118,17 @@
                 "dataSource": "SearchHelps",
                 "preload": true,
                 "settings": {}
-            }
+            },
+            "FileModel": {
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Server",
+					"defaultBindingMode": "Default",
+					"defaultCountMode": "Request"
+				},
+				"dataSource": "ZGW_3DERP_FILES_SRV",
+				"preload": true
+			}
         },
         "resources": {
             "css": [

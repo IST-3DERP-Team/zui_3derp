@@ -72,19 +72,37 @@
         <t:Column width="7rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Supply Type"/>
             <t:template>
-                <Input value="{DataModel>Supplytyp}" editable="{EditModeModel>/materialListEditMode}"/>
+                <!-- <Input value="{DataModel>}" editable="{EditModeModel>/materialListEditMode}"/> -->
+                <Input id="SupplyTypeInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/materialListEditMode}"
+                    valueHelpRequest="onSupplyTypeValueHelp" suggestionItems="{ValueHelpModel>/supplytypes}" value="{DataModel>Supplytyp}">
+                    <suggestionItems>
+                        <core:Item text="{ValueHelpModel>Supplytyp}" />
+                    </suggestionItems>
+                </Input>
             </t:template>
         </t:Column>
         <t:Column width="7rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Vendor"/>
             <t:template>
-                <Input value="{DataModel>Vendorcd}" editable="{EditModeModel>/materialListEditMode}"/>
+                <!-- <Input value="{DataModel>Vendorcd}" editable="{EditModeModel>/materialListEditMode}"/> -->
+                <Input id="VendorInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/materialListEditMode}"
+                    valueHelpRequest="onVendorValueHelp" suggestionItems="{ValueHelpModel>/vendors}" value="{DataModel>Vendorcd}">
+                    <suggestionItems>
+                        <core:Item text="{ValueHelpModel>Lifnr}" />
+                    </suggestionItems>
+                </Input>
             </t:template>
         </t:Column>
         <t:Column width="5rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Currency"/>
             <t:template>
-                <Input value="{DataModel>Currencycd}" editable="{EditModeModel>/materialListEditMode}"/>
+                <!-- <Input value="{DataModel>Currencycd}" editable="{EditModeModel>/materialListEditMode}"/> -->
+                <Input id="CurrencyInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/materialListEditMode}"
+                    valueHelpRequest="onCurrencyValueHelp" suggestionItems="{ValueHelpModel>/currencies}" value="{DataModel>Currencycd}">
+                    <suggestionItems>
+                        <core:Item text="{ValueHelpModel>Waers}" />
+                    </suggestionItems>
+                </Input>
             </t:template>
         </t:Column>
         <t:Column width="7rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
@@ -96,13 +114,25 @@
         <t:Column width="7rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Purch. Group"/>
             <t:template>
-                <Input value="{DataModel>Purgrp}" editable="{EditModeModel>/materialListEditMode}"/>
+                <!-- <Input value="{DataModel>Purgrp}" editable="{EditModeModel>/materialListEditMode}"/> -->
+                <Input id="PurGroupInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/materialListEditMode}"
+                    valueHelpRequest="onPurGroupValueHelp" suggestionItems="{ValueHelpModel>/purgroups}" value="{DataModel>Purgrp}">
+                    <suggestionItems>
+                        <core:Item text="{ValueHelpModel>Purgrp}" />
+                    </suggestionItems>
+                </Input>
             </t:template>
         </t:Column>
         <t:Column width="7rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="Purch. Plant"/>
             <t:template>
-                <Input value="{DataModel>Purplant}" editable="{EditModeModel>/materialListEditMode}"/>
+                <!-- <Input value="{DataModel>Purplant}" editable="{EditModeModel>/materialListEditMode}"/> -->
+                <Input id="PurPlantInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/materialListEditMode}"
+                    valueHelpRequest="onPurPlantValueHelp" suggestionItems="{ValueHelpModel>/purplants}" value="{DataModel>Purplant}">
+                    <suggestionItems>
+                        <core:Item text="{ValueHelpModel>Plant}" />
+                    </suggestionItems>
+                </Input>
             </t:template>
         </t:Column>
     </c:DynamicTable>

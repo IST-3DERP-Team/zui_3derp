@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="Select Vendor"
+		class="sapUiPopupWithPadding"
+		items="{ValueHelpModel>/vendors}"
+		search="_vendorValueHelpSearch"
+		confirm="_vendorValueHelpClose"
+		cancel="_vendorValueHelpClose">
+		<StandardListItem title="{ValueHelpModel>Lifnr}" description="{ValueHelpModel>Desc1}"/>
+	</SelectDialog>
+</core:FragmentDefinition>
