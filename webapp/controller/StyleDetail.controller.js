@@ -30,6 +30,13 @@ sap.ui.define([
                     VASTypes: [],
                     uom: []
                 };
+
+                //Attachments
+                var oUploadCollection = this.getView().byId('UploadCollection');
+                oUploadCollection.setUploadUrl("/sap/opu/odata/sap/ZGW_3DERP_FILES_SRV/FileSet");
+                // var oModel = new sap.ui.model.odata.ODataModel("/sap/opu/odata/sap/ZFILE_EX_SRV", false);
+                var oModel = this.getOwnerComponent().getModel("FileModel");
+                this.getView().setModel(oModel, "FileModel");
             },
 
             _routePatternMatched: function (oEvent) {
@@ -1046,14 +1053,53 @@ sap.ui.define([
                 evt.getSource().getBinding("items").filter([]);
             },
 
-            uploadAttachment: function() {
-                if (!this._UploadFileDialog) {
-                    this._UploadFileDialog = sap.ui.xmlfragment("zui3derp.view.fragments.UploadFile", this);
-                    this.getView().addDependent(this._ConfirmNewDialog);
-                }
-                jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                this._UploadFileDialog.addStyleClass("sapUiSizeCompact");
-                this._UploadFileDialog.open();
+            // uploadAttachment: function() {
+            //     if (!this._UploadFileDialog) {
+            //         this._UploadFileDialog = sap.ui.xmlfragment("zui3derp.view.fragments.UploadFile", this);
+            //         this.getView().addDependent(this._ConfirmNewDialog);
+            //     }
+            //     jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
+            //     this._UploadFileDialog.addStyleClass("sapUiSizeCompact");
+            //     this._UploadFileDialog.open();
+            // },
+
+            onBeforeUploadStarts: function (oEvent) {
+			
+                var oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
+                    name: "slug",
+                    value: oEvent.getParameter("fileName")
+                });
+                oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
+    
+                var oModel = this.getView().getModel("FileModel");
+                oModel.refreshSecurityToken();
+    
+                var oHeaders = oModel.oHeaders;
+                var sToken = oHeaders['x-csrf-token'];
+    
+                var oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
+                     name: "x-csrf-token",
+                     value: sToken
+                 });
+                oEvent.getParameters().addHeaderParameter(oCustomerHeaderToken);
+                
+            },
+            
+            onUploadComplete: function(oEvent){
+                this.getView().getModel("FileModel").refresh();
+            },
+            
+            onFileDeleted: function(oEvent) {
+                var me = this;
+                var sPath = oEvent.getParameter("item").getBindingContext("FileModel").getPath();
+                var oModel = this.getView().getModel("FileModel");
+                oModel.remove(sPath, {
+                    success: function(oData, oResponse) {
+                        me.getView().getModel("FileModel").refresh();
+                    },
+                    error: function(err) {
+                    }
+                });
             },
 
             onExportExcel: Common.onExportExcel,

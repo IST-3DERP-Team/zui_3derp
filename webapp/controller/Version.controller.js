@@ -180,6 +180,63 @@ sap.ui.define([
                     error: function (err) { }
                 });
 
+                //get Supply Types
+                var oJSONModel9 = new JSONModel();
+                oSHModel.read("/SupplyTypeSet", {
+                    success: function (oData, oResponse) {
+                        me._attrValueHelpData.supplytypes = oData.results;
+                        oJSONModel9.setData(me._attrValueHelpData);
+                        oView.setModel(oJSONModel9, "ValueHelpModel");
+                    },
+                    error: function (err) { }
+                });
+
+                //get Vendors
+                var oJSONModel10 = new JSONModel();
+                oSHModel.read("/VendorSet", {
+                    success: function (oData, oResponse) {
+                        me._attrValueHelpData.vendors = oData.results;
+                        oJSONModel10.setData(me._attrValueHelpData);
+                        oView.setModel(oJSONModel10, "ValueHelpModel");
+                    },
+                    error: function (err) { }
+                });
+
+                //get Currencies
+                var oJSONModel11 = new JSONModel();
+                oSHModel.read("/CurrencySet", {
+                    success: function (oData, oResponse) {
+                        me._attrValueHelpData.currencies = oData.results;
+                        oJSONModel11.setData(me._attrValueHelpData);
+                        oView.setModel(oJSONModel11, "ValueHelpModel");
+                    },
+                    error: function (err) { }
+                });
+
+                //get Purchasing Groups
+                var oJSONModel12 = new JSONModel();
+                oSHModel.read("/PurGrpSet", {
+                    success: function (oData, oResponse) {
+                        me._attrValueHelpData.purgroups = oData.results;
+                        oJSONModel12.setData(me._attrValueHelpData);
+                        oView.setModel(oJSONModel12, "ValueHelpModel");
+                    },
+                    error: function (err) { }
+                });
+
+                //get Purchasing Plants
+                var oJSONModel13 = new JSONModel();
+                oSHModel.setHeaders({
+                    sbu: this._sbu
+                });
+                oSHModel.read("/PurPlantSet", {
+                    success: function (oData, oResponse) {
+                        me._attrValueHelpData.purplants = oData.results;
+                        oJSONModel13.setData(me._attrValueHelpData);
+                        oView.setModel(oJSONModel13, "ValueHelpModel");
+                    },
+                    error: function (err) { }
+                });
             },
 
             getVersionAttrTable: function () {
@@ -808,6 +865,8 @@ sap.ui.define([
                                 }
                             }
                         }
+
+                        oTableGMC.getBinding("rows").refresh();
                     },
                     error: function (err) { }
                 });
@@ -858,10 +917,10 @@ sap.ui.define([
                                 "Dest": " ",
                                 "Mattyp": oData.results[i].MATTYP,
                                 "Mattypcls": oData.results[i].MATTYPCLS,
-                                "Attribcd": " ",
+                                "Attribcd": oData.results[i].ATTRIBCD,
                                 "Desc1": oData.results[i][color.Attribcd],
-                                "Consump": " ",
-                                "Wastage": " ",
+                                "Consump": oData.results[i].CONSUMP,
+                                "Wastage": oData.results[i].WASTAGE,
                                 "Createdby": " ",
                                 "Createddt": " ",
                                 "Updatedby": " ",
@@ -886,10 +945,10 @@ sap.ui.define([
                                 "Dest": " ",
                                 "Mattyp": oData.results[i].MATTYP,
                                 "Mattypcls": oData.results[i].MATTYPCLS,
-                                "Attribcd": " ",
+                                "Attribcd": oData.results[i].ATTRIBCD,
                                 "Desc1": oData.results[i][size.Attribcd],
-                                "Consump": " ",
-                                "Wastage": " ",
+                                "Consump": oData.results[i].CONSUMP,
+                                "Wastage": oData.results[i].WASTAGE,
                                 "Createdby": " ",
                                 "Createddt": " ",
                                 "Updatedby": " ",
@@ -1437,7 +1496,179 @@ sap.ui.define([
                     matTypeInput.setValue(oSelectedItem.getInfo());
                 }
                 evt.getSource().getBinding("items").filter([]);
-            }
+            },
+
+            onSupplyTypeValueHelp: function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
+                // var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                that.inputId = oEvent.getSource().getId();
+                // that.matType = oEvent.getSource().getParent().mAggregations.cells[12].getId();
+                if (!that._supplyTypeValueHelpDialog) {
+                    that._supplyTypeValueHelpDialog = sap.ui.xmlfragment(
+                        "zui3derp.view.fragments.SupplyTypes",
+                        that
+                    );
+                    that.getView().addDependent(that._supplyTypeValueHelpDialog);
+                }
+
+                that._supplyTypeValueHelpDialog.open(sInputValue);
+            },
+
+            _supplyTypeValueHelpSearch: function (evt) {
+                var sValue = evt.getParameter("value");
+                var oFilter = new Filter(
+                    "Supplytype",
+                    sap.ui.model.FilterOperator.Contains, sValue
+                );
+                evt.getSource().getBinding("items").filter([oFilter]);
+            },
+
+            _supplyTypeValueHelpClose: function (evt) {
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var productInput = sap.ui.getCore().byId(that.inputId);
+                    productInput.setValue(oSelectedItem.getTitle());
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onVendorValueHelp: function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
+                // var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                that.inputId = oEvent.getSource().getId();
+                // that.matType = oEvent.getSource().getParent().mAggregations.cells[12].getId();
+                if (!that._vendorValueHelpDialog) {
+                    that._vendorValueHelpDialog = sap.ui.xmlfragment(
+                        "zui3derp.view.fragments.Vendors",
+                        that
+                    );
+                    that.getView().addDependent(that._vendorValueHelpDialog);
+                }
+
+                that._vendorValueHelpDialog.open(sInputValue);
+            },
+
+            _vendorValueHelpSearch: function (evt) {
+                var sValue = evt.getParameter("value");
+                var oFilter = new Filter(
+                    "Desc1",
+                    sap.ui.model.FilterOperator.Contains, sValue
+                );
+                evt.getSource().getBinding("items").filter([oFilter]);
+            },
+
+            _vendorValueHelpClose: function (evt) {
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var productInput = sap.ui.getCore().byId(that.inputId);
+                    productInput.setValue(oSelectedItem.getTitle());
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onCurrencyValueHelp: function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
+                // var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                that.inputId = oEvent.getSource().getId();
+                // that.matType = oEvent.getSource().getParent().mAggregations.cells[12].getId();
+                if (!that._currencyValueHelpDialog) {
+                    that._currencyValueHelpDialog = sap.ui.xmlfragment(
+                        "zui3derp.view.fragments.Currencies",
+                        that
+                    );
+                    that.getView().addDependent(that._currencyValueHelpDialog);
+                }
+
+                that._currencyValueHelpDialog.open(sInputValue);
+            },
+
+            _currencyValueHelpSearch: function (evt) {
+                var sValue = evt.getParameter("value");
+                var oFilter = new Filter(
+                    "Waers",
+                    sap.ui.model.FilterOperator.Contains, sValue
+                );
+                evt.getSource().getBinding("items").filter([oFilter]);
+            },
+
+            _currencyValueHelpClose: function (evt) {
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var productInput = sap.ui.getCore().byId(that.inputId);
+                    productInput.setValue(oSelectedItem.getTitle());
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onPurGroupValueHelp: function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
+                // var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                that.inputId = oEvent.getSource().getId();
+                // that.matType = oEvent.getSource().getParent().mAggregations.cells[12].getId();
+                if (!that._purGroupValueHelpDialog) {
+                    that._purGroupValueHelpDialog = sap.ui.xmlfragment(
+                        "zui3derp.view.fragments.PurchasingGroups",
+                        that
+                    );
+                    that.getView().addDependent(that._purGroupValueHelpDialog);
+                }
+
+                that._purGroupValueHelpDialog.open(sInputValue);
+            },
+
+            _purGroupValueHelpSearch: function (evt) {
+                var sValue = evt.getParameter("value");
+                var oFilter = new Filter(
+                    "Purgrp",
+                    sap.ui.model.FilterOperator.Contains, sValue
+                );
+                evt.getSource().getBinding("items").filter([oFilter]);
+            },
+
+            _purGroupValueHelpClose: function (evt) {
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var productInput = sap.ui.getCore().byId(that.inputId);
+                    productInput.setValue(oSelectedItem.getTitle());
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onPurPlantValueHelp: function (oEvent) {
+                var sInputValue = oEvent.getSource().getValue();
+                // var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                that.inputId = oEvent.getSource().getId();
+                // that.matType = oEvent.getSource().getParent().mAggregations.cells[12].getId();
+                if (!that._purPlantValueHelpDialog) {
+                    that._purPlantValueHelpDialog = sap.ui.xmlfragment(
+                        "zui3derp.view.fragments.PurchasingPlants",
+                        that
+                    );
+                    that.getView().addDependent(that._purPlantValueHelpDialog);
+                }
+
+                that._purPlantValueHelpDialog.open(sInputValue);
+            },
+
+            _purPlantValueHelpSearch: function (evt) {
+                var sValue = evt.getParameter("value");
+                var oFilter = new Filter(
+                    "Plant",
+                    sap.ui.model.FilterOperator.Contains, sValue
+                );
+                evt.getSource().getBinding("items").filter([oFilter]);
+            },
+
+            _purPlantValueHelpClose: function (evt) {
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var productInput = sap.ui.getCore().byId(that.inputId);
+                    productInput.setValue(oSelectedItem.getTitle());
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onExportExcel: Common.onExportExcel
         });
     });
 

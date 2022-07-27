@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="Select Supply Type"
+		class="sapUiPopupWithPadding"
+		items="{ValueHelpModel>/supplytypes}"
+		search="_supplyTypeValueHelpSearch"
+		confirm="_supplyTypeValueHelpClose"
+		cancel="_supplyTypeValueHelpClose">
+		<StandardListItem title="{ValueHelpModel>Supplytype}" description="{ValueHelpModel>Desc1}"/>
+	</SelectDialog>
+</core:FragmentDefinition>
