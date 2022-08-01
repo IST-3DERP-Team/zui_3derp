@@ -28,7 +28,7 @@
                         <f:formElements>
                             <f:FormElement label="New Style Code">
                                 <f:fields>
-                                    <Input value="{Twitter}"/>
+                                    <Input id="newStyleCode"/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="New Season">
@@ -49,12 +49,12 @@
                         <f:formElements>
                             <f:FormElement>
                                 <f:fields>
-                                    <CheckBox text="Color" selected="true" />
+                                    <CheckBox id="ColorCB" text="Color" selected="true" />
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement>
                                 <f:fields>
-                                    <CheckBox text="BOM" selected="true" />
+                                    <CheckBox id="bomCB" text="BOM" selected="true" />
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -64,7 +64,7 @@
                     </f:FormContainer>
                 </f:formContainers>
             </f:Form>
-            <t:Table id="versionsTable" rows="{VersionsDataModel>/results}" class="sapUiSizeCompact">
+            <t:Table id="versionsTableMain" rows="{VersionsDataModel>/results}" class="sapUiSizeCompact">
                 <t:columns>
                     <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
                         <Label text="Version"/>
@@ -75,8 +75,8 @@
                     <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
                         <Label text="Status" />
                         <t:template>
-                            <tnt:InfoLabel id="il8" text="{= ${VersionsDataModel>Currentver} === '1' ? 'Current' : '' }" colorScheme="{= ${VersionsDataModel>Currentver} === '1' ? 8 : 1 }" displayOnly= "true"
-                                visible="{= ${VersionsDataModel>Currentver} === '1' ? true : false }"/>
+                            <tnt:InfoLabel id="il8" text="{= ${VersionsDataModel>Currentver} === true ? 'Current' : ' ' }" colorScheme="{= ${VersionsDataModel>Currentver} === true ? 8 : 7 }" displayOnly= "true"
+                                visible="{VersionsDataModel>Currentver}"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">

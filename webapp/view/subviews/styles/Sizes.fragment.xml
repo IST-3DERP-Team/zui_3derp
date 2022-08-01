@@ -6,17 +6,17 @@
                 <Label text="Sizes" />
                 <ToolbarSpacer />
                 <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/sizesEditMode}" press="onSaveSizeTable"/>
-                <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/sizesEditMode}">
+                <!-- <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/sizesEditMode}">
                     <customData>
                         <core:CustomData key="TableName" value="sizesTable"/>
                     </customData>
-                </Button>
+                </Button> -->
                 <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/sizesEditMode}"/> -->
-                <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/sizesEditMode}">
+                <!-- <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/sizesEditMode}">
                     <customData>
                         <core:CustomData key="TableName" value="sizesTable"/>
                     </customData>
-                </Button>
+                </Button> -->
                 <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
                     <customData>
                         <core:CustomData key="Section" value="Sizes"/>

@@ -45,10 +45,10 @@
                 <Text text="{DataModel>Gmc}"/>
             </t:template>
         </t:Column>
-        <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+        <t:Column width="18rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
             <Label text="GMC Description"/>
             <t:template>
-                <Text text="{DataModel>Gmc}"/>
+                <Text text="{DataModel>Gmcdesc}"/>
             </t:template>
         </t:Column>
         <t:Column width="15rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">

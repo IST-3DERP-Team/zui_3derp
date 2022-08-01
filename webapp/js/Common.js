@@ -28,6 +28,19 @@ sap.ui.define([
             this._UploadFileDialog.close();
         },
 
+        openLoadingDialog: function(doc) {
+			if (!doc._LoadingDialog) {
+				doc._LoadingDialog = sap.ui.xmlfragment("zui3derp.view.fragments.LoadingDialog", doc);
+				doc.getView().addDependent(doc._LoadingDialog);
+			}
+			jQuery.sap.syncStyleClass("sapUiSizeCompact", doc.getView(), doc._LoadingDialog);
+			doc._LoadingDialog.open();
+		},
+
+		closeLoadingDialog: function(doc) {
+			doc._LoadingDialog.close();
+		},
+
         onExportExcel: function (oEvent) {
             var oButton = oEvent.getSource();
             var tabName = oButton.data('TableName')
