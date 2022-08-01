@@ -15,6 +15,7 @@
                 <core:CustomData key="Section" value="BOMbyUV"/>
             </customData>
         </Button>
+        <Button icon="sap-icon://save" text="Refresh" press="onRefresh"/>
         <!-- <Button text="Refresh" press="getbomUVTable"/> -->
         <Button icon="sap-icon://excel-attachment" press="onExportExcel"  tooltip="Download to Excel">
             <customData>

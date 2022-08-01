@@ -14,13 +14,13 @@
                 <!-- <Button icon="sap-icon://delete" /> -->
             </Toolbar>
             <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" height="100%">
-                <t:Column width="7rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="GMC"/>
                     <t:template>
                         <Text text="{DataModel>Gmc}"/>
                     </t:template>
                 </t:Column>
-                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                <t:Column filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="GMC Desc"/>
                     <t:template>
                         <Text text="{DataModel>Gmcdesc}"/>

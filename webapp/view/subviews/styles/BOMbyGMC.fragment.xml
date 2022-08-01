@@ -5,7 +5,6 @@
         <ToolbarSpacer />
         <Button text="Get Components" visible="{EditModeModel>/bomGMCEditMode}" press="onGetComponent"/>
         <Button text="RMC" visible="{EditModeModel>/bomGMCEditMode}" press="onRMC"/>
-        <Button icon="sap-icon://save" text="Refresh" press="onRefresh"/>
         <Button icon="sap-icon://save" text="Save" visible="{EditModeModel>/bomGMCEditMode}" press="onSaveBOMbyGMC"/>
         <Button icon="sap-icon://add" press="addLineBOM" visible="{EditModeModel>/bomGMCEditMode}">
             <customData>

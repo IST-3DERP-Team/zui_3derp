@@ -64,14 +64,20 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oView = this.getView();
+
+                Common.openLoadingDialog(that);
+
                 var entitySet = "/StyleDetailSet('" + styleNo + "')"
 
                 oModel.read(entitySet, {
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "headerData");
+                        Common.closeLoadingDialog(that);
                     },
-                    error: function() { }
+                    error: function() { 
+                        Common.closeLoadingDialog(that);
+                    }
                 })
 
             },
@@ -309,6 +315,9 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oTable = this.getView().byId("generalTable");
+
+                Common.openLoadingDialog(that);
+
                 var entitySet = "/StyleAttributesGeneralSet";
 
                 oModel.setHeaders({
@@ -318,8 +327,11 @@ sap.ui.define([
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        Common.closeLoadingDialog(that);
                     },
-                    error: function() { }
+                    error: function() { 
+                        Common.closeLoadingDialog(that);
+                    }
                 })
             },
 
@@ -329,6 +341,7 @@ sap.ui.define([
                 var path;
 
                 var oData = oTableModel.getData();
+
                 var oEntry = {
                     Styleno: this._styleNo,
                     Type: "GENERAL",
@@ -359,14 +372,18 @@ sap.ui.define([
                     oEntry.AttributesToItems.push(item);
                 };
 
+                Common.openLoadingDialog(that);
+
                 path = "/AttributesGeneralSet";
 
                 oModel.create(path, oEntry, {
                     method: "POST",
                     success: function(oData, oResponse) {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Saved");
                     },
                     error: function(err) {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Error");
                     }
                 });
@@ -378,7 +395,11 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oTable = this.getView().byId("colorsTable");
+
+                Common.openLoadingDialog(that);
+
                 var entitySet = "/StyleAttributesColorSet"
+                
                 oModel.setHeaders({
                     styleno: this._styleNo
                 });
@@ -386,8 +407,11 @@ sap.ui.define([
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        Common.closeLoadingDialog(that);
                     },
-                    error: function() { }
+                    error: function() { 
+                        Common.closeLoadingDialog(that);
+                    }
                 })
             },
 
@@ -396,6 +420,7 @@ sap.ui.define([
                 var oTableModel = this.getView().byId("colorsTable").getModel("DataModel");
                 var path;
                 var oData = oTableModel.getData();
+
                 var oEntry = {
                     Styleno: this._styleNo,
                     Type: "COLOR",
@@ -424,15 +449,18 @@ sap.ui.define([
                     };
                     oEntry.AttributesToItems.push(item);
                 };
+                Common.openLoadingDialog(that);
 
                 path = "/AttributesGeneralSet";
 
                 oModel.create(path, oEntry, {
                     method: "POST",
                     success: function(oData, oResponse) {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Saved");
                     },
                     error: function(err) {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Error");
                     }
                 });
@@ -443,9 +471,12 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oTable = this.getView().byId("sizesTable");
-                var entitySet = "/StyleAttributesSizeSet"
-                // var oSizeGrp = this.getView().byId("sizeGroupCB").getSelectedKey();
                 var oSizeGrp = "G235";
+                
+                Common.openLoadingDialog(that);
+                
+                var entitySet = "/StyleAttributesSizeSet"
+                
                 oModel.setHeaders({
                     styleno: this._styleNo,
                     attribgrp: oSizeGrp
@@ -454,8 +485,11 @@ sap.ui.define([
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        Common.closeLoadingDialog(that);
                     },
-                    error: function() { }
+                    error: function() { 
+                        Common.closeLoadingDialog(that);
+                    }
                 })
             },
 
@@ -503,15 +537,18 @@ sap.ui.define([
                 if(lv_baseindctr > 1) {
                     Common.showMessage('Select only 1 Base Indicator');
                 } else {
+                    Common.openLoadingDialog(that);
 
                     path = "/AttributesGeneralSet";
 
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function(oData, oResponse) {
+                            Common.closeLoadingDialog(that);
                             Common.showMessage("Saved");
                         },
                         error: function(err) {
+                            Common.closeLoadingDialog(that);
                             Common.showMessage("Error");
                         }
                     });
@@ -525,7 +562,11 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oTable = this.getView().byId("processesTable");
+
+                Common.openLoadingDialog(that);
+
                 var entitySet = "/StyleAttributesProcessSet"
+
                 oModel.setHeaders({
                     styleno: this._styleNo,
                     sbu: this._sbu
@@ -534,8 +575,11 @@ sap.ui.define([
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        Common.closeLoadingDialog(that);
                     },
-                    error: function() { }
+                    error: function() { 
+                        Common.closeLoadingDialog(that);
+                    }
                 })
             },
 
@@ -572,15 +616,18 @@ sap.ui.define([
     
                     oEntry.ProcessToItems.push(item);
                 };
+                Common.openLoadingDialog(that);
 
                 path = "/AttributesProcessSet";
 
                 oModel.create(path, oEntry, {
                     method: "POST",
                     success: function(oData, oResponse) {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Saved");
                     },
                     error: function(err) {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Error");
                     }
                 });
@@ -591,7 +638,11 @@ sap.ui.define([
                 var oTable = this.getView().byId("versionsTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
+                
+                Common.openLoadingDialog(that);
+
                 var entitySet = "/StyleVersionSet"
+
                 oModel.setHeaders({
                     styleno: this._styleNo
                 });
@@ -599,8 +650,11 @@ sap.ui.define([
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        Common.closeLoadingDialog(that);
                     },
-                    error: function() { }
+                    error: function() { 
+                        Common.closeLoadingDialog(that);
+                    }
                 })
             },
 
@@ -611,8 +665,6 @@ sap.ui.define([
                 var oDesc1 = Core.byId("newVersionDesc1").getValue();
                 var oDesc2 = Core.byId("newVersionDesc2").getValue();
                 var oCurrent = Core.byId("newVersionCurrent").getSelected();
-                
-                path = "/StyleVersionSet";
 
                 var oEntry = {
                     "Styleno": this._styleNo,
@@ -621,15 +673,20 @@ sap.ui.define([
                     "Desc2": oDesc2,
                     "Currentver": oCurrent
                 };
-               
+                Common.openLoadingDialog(that);
+                                
+                path = "/StyleVersionSet";
+                
                 oModel.create(path, oEntry, {
                     method: "POST",
                     success: function(oData, oResponse) {
-                        Common.showMessage("Saved");
                         me.getVersionsTable();
                         me._NewVerionDialog.close();
+                        Common.closeLoadingDialog(that);
+                        Common.showMessage("Saved");
                     },
                     error: function(err) {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Error");
                     }
                 });
@@ -653,7 +710,10 @@ sap.ui.define([
                 version = this.pad(version, 3);
                 var oModel = this.getOwnerComponent().getModel();
 
+                Common.openLoadingDialog(that);
+
                 var entitySet = "/StyleVersionSet(Styleno='" + this._styleNo +  "',Verno='" + version + "')";
+
                 var oEntry = {
                     Styleno: this._styleNo,
                     Verno: version
@@ -664,9 +724,11 @@ sap.ui.define([
                     success: function(data, oResponse) {
                         me.getHeaderData();
                         me.getVersionsTable();
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Saved");
                     },
                     error: function() {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Error");
                     }
                 });
@@ -708,6 +770,7 @@ sap.ui.define([
     
                     oEntry.VerToItems.push(item);
                 };
+                Common.openLoadingDialog(that);
 
                 path = "/VersionSet";
 
@@ -715,9 +778,11 @@ sap.ui.define([
                     method: "POST",
                     success: function(oData, oResponse) {
                         me.getVersionsTable();
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Saved");
                     },
                     error: function(err) {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Error");
                     }
                 });
@@ -731,11 +796,6 @@ sap.ui.define([
                 jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
                 that._NewVerionDialog.addStyleClass("sapUiSizeCompact");
                 that._NewVerionDialog.open();
-            },
-
-            oAttachmentsTable:function(){
-                var me = this;
-                var oTable = this.getView().byId("attachmentsTable");
             },
 
             addLine: function(oEvent) {

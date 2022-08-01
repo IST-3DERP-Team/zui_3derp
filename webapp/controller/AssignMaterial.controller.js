@@ -37,7 +37,11 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new sap.ui.model.json.JSONModel();
                 var oTable = this.getView().byId("materialListTable");
+
+                Common.openLoadingDialog(that);
+
                 var entitySet = "/StyleMaterialListSet"
+                
                 oModel.setHeaders({
                     styleno: this._styleNo,
                     verno: this._version,
@@ -47,8 +51,11 @@ sap.ui.define([
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        Common.closeLoadingDialog(that);
                     },
-                    error: function() { }
+                    error: function() { 
+                        Common.closeLoadingDialog(that);
+                    }
                 })
             },
 
@@ -56,13 +63,20 @@ sap.ui.define([
                 var oView = this.getView();
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new sap.ui.model.json.JSONModel();
+
+                Common.openLoadingDialog(that);
+
                 var entitySet = "/MaterialNoSet"
+                
                 oModel.read(entitySet, {
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "MaterialsModel");
+                        Common.closeLoadingDialog(that);
                     },
-                    error: function() { }
+                    error: function() { 
+                        Common.closeLoadingDialog(that);
+                    }
                 })
             },
 
@@ -76,8 +90,13 @@ sap.ui.define([
                 var oData = oTableModel.getData();
                 var oSelected = this.getView().byId("materialListTable").getSelectedIndices();
 
+                // var selectedData = oData.results.filter(function (value, index) {
+                //     return selected.indexOf(index);
+                // })
+
                 var oEntry = {
                     Styleno: this._styleNo,
+                    Sbu: this._sbu,
                     CreateMat: "Y",
                     MatListToItems: [ ]
                 }
@@ -115,6 +134,7 @@ sap.ui.define([
     
                     oEntry.MatListToItems.push(item);
                 };
+                Common.openLoadingDialog(that);
 
                 var path = "/MaterialListSet";
 
@@ -122,9 +142,11 @@ sap.ui.define([
                     method: "POST",
                     success: function(oData, oResponse) {
                         me.getMaterialList("Y");
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Saved");
                     },
                     error: function(err) {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Error");
                     }
                 });
@@ -140,6 +162,7 @@ sap.ui.define([
 
                 var oEntry = {
                     Styleno: this._styleNo,
+                    Sbu: this._sbu,
                     CreateMat: "N",
                     MatListToItems: [ ]
                 }
@@ -175,6 +198,7 @@ sap.ui.define([
     
                     oEntry.MatListToItems.push(item);
                 };
+                Common.openLoadingDialog(that);
 
                 path = "/MaterialListSet";
 
@@ -182,9 +206,11 @@ sap.ui.define([
                     method: "POST",
                     success: function(oData, oResponse) {
                         me.getMaterialList("N");
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Saved");
                     },
                     error: function(err) {
+                        Common.closeLoadingDialog(that);
                         Common.showMessage("Error");
                     }
                 });
@@ -202,21 +228,13 @@ sap.ui.define([
                     );
                     this.getView().addDependent(this._valueHelpDialog);
                 }
-    
-                // create a filter for the binding
-                // this._valueHelpDialog.getBinding("items").filter([new Filter(
-                //     "MatNo",
-                //     sap.ui.model.FilterOperator.Contains, sInputValue
-                // )]);
-    
-                // open value help dialog filtered by the input value
                 this._valueHelpDialog.open(sInputValue);
             },
 
             _handleValueHelpSearch : function (evt) {
                 var sValue = evt.getParameter("value");
                 var oFilter = new Filter(
-                    "MatNo",
+                    "DescEn",
                     sap.ui.model.FilterOperator.Contains, sValue
                 );
                 evt.getSource().getBinding("items").filter([oFilter]);

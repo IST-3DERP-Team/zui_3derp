@@ -44,12 +44,12 @@ sap.ui.define(
             oRouter.navTo(oRouteName);
 
             // oRouter.navTo("RouteStyleDetail", {
-            //     styleno: "1000000035",
+            //     styleno: "1000000038",
             //     sbu: "VER"
             // } );
         
             // oRouter.navTo("RouteVersion", {
-            //     styleno: "1000000035",
+            //     styleno: "1000000038",
             //     sbu: "VER",
             //     version: 5
             // } );

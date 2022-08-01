@@ -24,7 +24,6 @@ sap.ui.define([
 
                 this._Model = this.getOwnerComponent().getModel();
                 // this._User = sap.ushell.Container.getService("UserInfo").getId();
-                this._User = 'EMALLARI';
                 this.setSmartFilterModel();
             },
 
@@ -38,49 +37,9 @@ sap.ui.define([
                 oSmartFilter.setModel(oModel);
             },
 
-            // getDefaultFilters: function () {
-            //     var me = this;
-            //     var entitySet = "/DefaultFilterSet('EMALLARI')";
-
-            //     //Set SmartFilterBar initial values
-            //     var oSmartFilter = this.getView().byId("SmartFilterBar");
-
-            //     this._Model.read(entitySet, {
-            //         success: function (oData, oResponse) {
-            //             var oDefaultFilter = {
-            //                 SBU: oData.Sbu,
-            //                 SALESGRP: {
-            //                     items: [{
-            //                         key: oData.Salesgrp
-            //                     }]
-            //                 },
-            //                 CUSTGRP: {
-            //                     items: [{
-            //                         key: oData.Custgrp
-            //                     }]
-            //                 },
-            //                 SEASONCD: {
-            //                     items: [{
-            //                         key: oData.Seasoncd
-            //                     }]
-            //                 },
-            //                 PRODTYP: {
-            //                     items: [{
-            //                         key: oData.Prodtyp
-            //                     }]
-            //                 }
-            //             };
-            //             oSmartFilter.setFilterData(oDefaultFilter);
-            //             me.onStyleReader();
-            //         },
-            //         error: function (err) { }
-            //     });
-            // },
-
             onSearch: function () {
                 this.getDynamicTableColumns();
                 this.onStyleReader();
-                // var oSmartFilter = this.getView().byId("SmartFilterBar");
             },
 
             getDynamicTableColumns: function () {
@@ -317,7 +276,7 @@ sap.ui.define([
             navToDetail: function (styleNo, sbu) {
                 that._router.navTo("RouteStyleDetail", {
                     styleno: styleNo,
-                    sbu: "VER"
+                    sbu: that._SBU
                 });
             },
 
@@ -351,6 +310,7 @@ sap.ui.define([
             onCopyStyle: function (oEvent) {
                 var oButton = oEvent.getSource();
                 var styleNo = oButton.data("StyleNo").STYLENO;
+                that._styleNo = styleNo;
 
                 var oData = oEvent.getSource().getParent().getBindingContext();
                 var styleCode = oData.getProperty('STYLECD');
@@ -372,8 +332,6 @@ sap.ui.define([
                 var oView = that.getView();
                 oView.setModel(oModel, "CopyModel")
 
-                // var selectedStyles = this.getSelectedStyles();
-
                 if (!that._CopyStyleDialog) {
                     that._CopyStyleDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CopyStyle", that);
                     that.getView().addDependent(that._CopyStyleDialog);
@@ -381,6 +339,57 @@ sap.ui.define([
                 jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
                 that._CopyStyleDialog.addStyleClass("sapUiSizeCompact");
                 that._CopyStyleDialog.open();
+            },
+
+            onSaveCopyStyle: function () {
+                var oModel = this.getOwnerComponent().getModel();
+
+                var oTable = sap.ui.getCore().byId("versionsTableMain");
+                var oTablbleModel = oTable.getModel("VersionsDataModel");
+                var oData = oTablbleModel.getData(); 
+                var selected = oTable.getSelectedIndices();
+
+                var newStyleCode = sap.ui.getCore().byId("newStyleCode").getValue();
+                var newSeason = sap.ui.getCore().byId("seasonCB").getSelectedKey();
+                var colorCheck = sap.ui.getCore().byId("ColorCB").getSelected();
+                var bomCheck = sap.ui.getCore().byId("bomCB").getSelected();
+
+                var versions = [];
+
+                for (var i = 0; i < selected.length; i++) {
+                    versions.push(oData.results[i].Verno);
+                }
+
+                var entitySet = "/StyleSet(STYLENO='" + that._styleNo +  "')";
+
+                var versionStr = versions.join();
+
+                oModel.setHeaders({
+                    styleno: that._styleNo,
+                    sbu: that._SBU,
+                    stylecd: newStyleCode,
+                    season: newSeason,
+                    color: colorCheck,
+                    bom: bomCheck,
+                    versions: versionStr
+                });
+
+                var oEntry = { 
+                    STYLENO: that._styleNo
+                };
+
+                oModel.update(entitySet, oEntry, {
+                    method: "PUT",
+                    success: function(data, oResponse) {
+                        Common.showMessage("Saved");
+                        that._CopyStyleDialog.close();
+                        that.onSearch();
+                    },
+                    error: function() {
+                        Common.showMessage("Error");
+                        that._CopyStyleDialog.close();
+                    }
+                });
             },
 
             getFiltersData: function () {
@@ -391,7 +400,7 @@ sap.ui.define([
                 var oJSONModel = new sap.ui.model.json.JSONModel();
                 var oView = this.getView();
                 oModel.setHeaders({
-                    sbu: "VER"
+                    sbu: that._SBU
                 });
                 oModel.read("/SeasonSet", {
                     success: function (oData, oResponse) {
@@ -400,10 +409,6 @@ sap.ui.define([
                     },
                     error: function (err) { }
                 });
-            },
-
-            onSaveCopyStyle: function () {
-                this._CopyStyleDialog.close();
             },
 
             onCancelNewStyle: Common.onCancelNewStyle,
@@ -420,7 +425,7 @@ sap.ui.define([
                 var oEntry = {
                     "UserName": "BAS_CONN",
                     "TableName": "STYLINIT",
-                    "Sbu": "VER",
+                    "Sbu": that._SBU,
                     "LayoutToItems": []
                 };
                 var ctr = 1;
