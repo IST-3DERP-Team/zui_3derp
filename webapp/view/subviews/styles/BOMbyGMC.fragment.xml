@@ -2,26 +2,24 @@
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
     <Toolbar height="3rem" style="Clear">
         <Label text="BOM by GMC"/>
+        <Button icon="sap-icon://synchronize" press="onRefresh"/>
         <ToolbarSpacer />
-        <Button text="Get Components" visible="{EditModeModel>/bomGMCEditMode}" press="onGetComponent"/>
-        <Button text="RMC" visible="{EditModeModel>/bomGMCEditMode}" press="onRMC"/>
-        <Button icon="sap-icon://save" text="Save" visible="{EditModeModel>/bomGMCEditMode}" press="onSaveBOMbyGMC"/>
-        <Button icon="sap-icon://add" press="addLineBOM" visible="{EditModeModel>/bomGMCEditMode}">
+        <Button text="Get Components" visible="{BOMbyGMCEditModeModel>/editMode}" press="onGetComponent"/>
+        <Button text="RMC" visible="{BOMbyGMCEditModeModel>/editMode}" press="onRMC"/>
+        <Button icon="sap-icon://save" text="Save" visible="{BOMbyGMCEditModeModel>/editMode}" press="onSaveBOMbyGMC"/>
+        <Button icon="sap-icon://add" press="addLineBOM" visible="{BOMbyGMCEditModeModel>/editMode}">
             <customData>
                 <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
         </Button>
-        <Button icon="sap-icon://delete" press="removeLineBOM" visible="{EditModeModel>/bomGMCEditMode}">
+        <Button icon="sap-icon://delete" press="onDeleteBOMItems" visible="{BOMbyGMCEditModeModel>/editMode}">
             <customData>
                 <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
         </Button>
-        <Button icon="sap-icon://edit" press="setEditMode">
-            <customData>
-                <core:CustomData key="Section" value="BOMbyGMC"/>
-            </customData>
-        </Button>
-        <Button icon="sap-icon://excel-attachment" press="onExportExcel"  tooltip="Download to Excel">
+        <Button type="Ghost" icon="sap-icon://edit" text="Edit" press="setBOMbyGMCEditMode" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? false : true }"/>
+        <Button type="Ghost" icon="sap-icon://decline" text="Cancel" press="cancelBOMbyGMCEdit" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? true : false }"/>
+        <Button icon="sap-icon://excel-attachment" press="onExport"  tooltip="Download to Excel">
             <customData>
             <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
@@ -30,6 +28,10 @@
             </layoutData>
         </Button>
     </Toolbar>
-    <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}">
+
+    <MessageStrip id="BOMbyGMCMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
+
+    <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}"
+        selectionMode="{= ${BOMbyGMCEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
     </c:DynamicTreeTable>
 </core:FragmentDefinition>    

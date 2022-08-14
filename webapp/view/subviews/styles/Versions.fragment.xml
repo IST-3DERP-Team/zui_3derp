@@ -4,19 +4,22 @@
         <headerToolbar>
             <Toolbar height="3rem" style="Clear">
                 <Title text="Versions" />
-                <ToolbarSpacer />
-                <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/versionEditMode}" press="onSaveVersions"/>
-                <Button type="Ghost" icon="sap-icon://add-document" text="New Version" press="onCreateNewVersion" visible="{EditModeModel>/versionEditMode}"/>                                    
-                <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/versionEditMode}"/>
-                <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
-                    <customData>
-                        <core:CustomData key="Section" value="Versions"/>
-                    </customData>
-                </Button>
             </Toolbar>
         </headerToolbar>
-        <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" selectionMode="Single" 
-            visibleRowCountMode="Auto" minAutoRowCount="4" class="sapUiSizeCompact">
+
+        <Toolbar height="3rem" style="Clear">
+            <ToolbarSpacer />
+            <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{VersionEditModeModel>/editMode}" press="onSaveVersions"/>
+            <Button type="Ghost" icon="sap-icon://add-document" text="New Version" press="onCreateNewVersion" visible="{VersionEditModeModel>/editMode}"/>                                    
+            <Button type="Ghost" icon="sap-icon://delete" visible="{VersionEditModeModel>/editMode}" press="onDeleteVersion"/>
+            <Button type="Ghost" icon="sap-icon://edit" text="Edit" press="setVersionEditMode" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }"/>
+            <Button type="Ghost" icon="sap-icon://decline" text="Cancel" press="cancelVersionEdit" visible="{= ${VersionEditModeModel>/editMode} === true ? true : false }"/>
+        </Toolbar>
+
+        <MessageStrip id="VersionsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
+
+        <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" 
+            selectionMode="{= ${VersionEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }" visibleRowCountMode="Auto" minAutoRowCount="4" class="sapUiSizeCompact">
             <c:columns>
                 <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
                     <Label text="Manage"/>
@@ -41,7 +44,7 @@
                             visible="{DataModel>Currentver}"/>
                     </t:template>
                 </t:Column>
-                <t:Column width="8rem" filterType="" filterProperty="Verno" sortProperty="Verno"  visible="{EditModeModel>/versionEditMode}">
+                <t:Column width="8rem" filterType="" filterProperty="Verno" sortProperty="Verno"  visible="{VersionEditModeModel>/editMode}">
                     <Label text=""/>
                     <t:template>
                         <Button text="Set Current" icon="sap-icon://detail-view" press="setVersionCurrent" visible="{= ${DataModel>Currentver} === true ? false : true }">
@@ -54,13 +57,13 @@
                 <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">
                     <Label text="Description" />
                     <t:template>
-                        <Input value="{DataModel>Desc1}" editable="{EditModeModel>/versionEditMode}"/>
+                        <Input value="{DataModel>Desc1}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange"/>
                     </t:template>
                 </t:Column>
                 <t:Column width="15rem" filterProperty="Desc2" sortProperty="Desc2">
                     <Label text="Description" />
                     <t:template>
-                        <Input value="{DataModel>Desc2}" editable="{EditModeModel>/versionEditMode}"/>
+                        <Input value="{DataModel>Desc2}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange"/>
                     </t:template>
                 </t:Column>
             </c:columns>

@@ -4,10 +4,14 @@
 	<SelectDialog
 		title="GMC"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/gmc}"
+		items="{GMCModel>/results}"
 		search="_GMCValueHelpSearch"
 		confirm="_GMCValueHelpClose"
 		cancel="_GMCValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>Gmc}" description="{ValueHelpModel>Desc1}" info="{ValueHelpModel>Mattyp}"/>
+		<StandardListItem title="{GMCModel>Gmc}" description="{GMCModel>Desc1}" info="{GMCModel>Mattyp}">
+            <customData>
+				<core:CustomData key="Baseuom" value="{GMCModel>Baseuom}"/>
+            </customData>
+        </StandardListItem>
 	</SelectDialog>
 </core:FragmentDefinition>

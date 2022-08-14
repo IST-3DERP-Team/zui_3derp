@@ -1,0 +1,11 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Dialog title="Delete Style">
+		<Panel>
+			<Text text="Are you sure you want delete this Style?"/>
+		</Panel>
+		<buttons>
+			<Button text="Yes" press="onConfirmDeleteStyle"/>
+			<Button text="Cancel" press="onCancelDeleteStyle"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

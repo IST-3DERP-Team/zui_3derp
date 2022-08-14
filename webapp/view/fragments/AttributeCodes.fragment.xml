@@ -2,12 +2,16 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Attribute Types"
+		title="Attribute Codes"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/attributecodes}"
+		items="{AttribCdModel>/results}"
 		search="_attrCodesValueHelpSearch"
 		confirm="_attrCodesValueHelpClose"
 		cancel="_attrCodesValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>Attribcd}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{AttribCdModel>Attribcd}" description="{AttribCdModel>Desc1}">
+            <customData>
+				<core:CustomData key="Uom" value="{AttribCdModel>Valunit}"/>
+            </customData>
+        </StandardListItem>
 	</SelectDialog>
 </core:FragmentDefinition>

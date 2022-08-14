@@ -4,10 +4,10 @@
 	<SelectDialog
 		title="Unit of Measure"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/uom}"
+		items="{UOMModel>/results}"
 		search="_uomValueHelpSearch"
 		confirm="_uomValueHelpClose"
 		cancel="_uomValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>Valunit}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{UOMModel>Valunit}" description="{UOMModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

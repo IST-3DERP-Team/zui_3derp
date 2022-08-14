@@ -36,7 +36,7 @@ sap.ui.define(
 
         onAfterRendering: function() {
             this.onSideNavButtonPress();
-            this.navigatePage('RouteMain');
+        //     this.navigatePage('RouteMain');
         },
 
         navigatePage: function(oRouteName) {
@@ -44,14 +44,14 @@ sap.ui.define(
             oRouter.navTo(oRouteName);
 
             // oRouter.navTo("RouteStyleDetail", {
-            //     styleno: "1000000038",
+            //     styleno: "1000000039",
             //     sbu: "VER"
             // } );
         
             // oRouter.navTo("RouteVersion", {
-            //     styleno: "1000000038",
+            //     styleno: "1000000039",
             //     sbu: "VER",
-            //     version: 5
+            //     version: 3
             // } );
         },
 

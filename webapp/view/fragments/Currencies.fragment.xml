@@ -4,10 +4,10 @@
 	<SelectDialog
 		title="Select Currency"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/currencies}"
+		items="{CurrencyModel>/results}"
 		search="_currencyValueHelpSearch"
 		confirm="_currencyValueHelpClose"
 		cancel="_currencyValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>Waers}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{CurrencyModel>Waers}" description="{CurrencyModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

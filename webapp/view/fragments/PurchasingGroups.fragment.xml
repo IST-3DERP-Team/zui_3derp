@@ -4,10 +4,10 @@
 	<SelectDialog
 		title="Select Purchasing Groups"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/purgroups}"
+		items="{PurchGroupModel>/results}"
 		search="_purGroupValueHelpSearch"
 		confirm="_purGroupValueHelpClose"
 		cancel="_purGroupValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>Purgrp}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{PurchGroupModel>Purgrp}" description="{PurchGroupModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

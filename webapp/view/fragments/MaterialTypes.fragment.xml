@@ -4,10 +4,10 @@
 	<SelectDialog
 		title="Material Types"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/materialtypes}"
+		items="{MatTypeModel>/results}"
 		search="_matTypeValueHelpSearch"
 		confirm="_matTypeValueHelpClose"
 		cancel="_matTypeValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>Mattype}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{MatTypeModel>Mattype}" description="{MatTypeModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

@@ -4,10 +4,10 @@
 	<SelectDialog
 		title="VAS Types"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/vastypes}"
+		items="{VASTypeModel>/results}"
 		search="_VASTypesValueHelpSearch"
 		confirm="_VASTypesValueHelpClose"
 		cancel="_VASTypesValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>Processcd}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{VASTypeModel>Processcd}" description="{VASTypeModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

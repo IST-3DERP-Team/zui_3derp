@@ -4,10 +4,10 @@
 	<SelectDialog
 		title="Select Purchasing Plant"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/purplants}"
+		items="{PurPlantModel>/results}"
 		search="_purPlantValueHelpSearch"
 		confirm="_purPlantValueHelpClose"
 		cancel="_purPlantValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>Plant}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{PurPlantModel>Plant}" description="{PurPlantModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

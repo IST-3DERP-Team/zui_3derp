@@ -151,7 +151,7 @@
             "routes": [
                 {
                     "name": "RouteMain",
-                    "pattern": "RouteMain",
+                    "pattern": "",
                     "greedy": false,
                     "target": [
                         "TargetMain"
@@ -187,6 +187,14 @@
                     "greedy": false,
                     "target": [
                         "TargetAssignMaterial"
+                    ]
+                },
+                {
+                    "name": "RouteUploadStyle",
+                    "pattern": "RouteUploadStyle/{sbu}",
+                    "greedy": false,
+                    "target": [
+                        "TargetUploadStyle"
                     ]
                 }
             ],
@@ -225,6 +233,13 @@
                     "clearControlAggregation": false,
                     "viewId": "AssignMaterial",
                     "viewName": "AssignMaterial"
+                },
+                "TargetUploadStyle": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "UploadStyle",
+                    "viewName": "UploadStyle"
                 }
                 
             }

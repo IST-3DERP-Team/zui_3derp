@@ -1,7 +1,7 @@
 <mvc:View controllerName="zui3derp.controller.AssignMaterial" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns:u="sap.uxap" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-    <Page showHeader="false">
+    <Page showHeader="false" title="Assign Materials" showNavButton="true" navButtonPress="onNavBack">
         <!-- <Text text="Sample Run Goes here"></Text> -->
         <Panel>
             <Toolbar height="3rem" style="Clear">
@@ -35,7 +35,7 @@
                 <t:Column width="5rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="UOM"/>
                     <t:template>
-                        <Text text="{DataModel>Uom}"/>
+                        <Text text="{DataModel>Entryuom}"/>
                     </t:template>
                 </t:Column>
                 <t:Column filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
@@ -43,7 +43,7 @@
                     <t:template>
                         <!-- <Text text="{DataModel>MatNo}"/> -->
                         <Input id="productInput" type="Text" placeholder="Select Material ..." showSuggestion="true" showValueHelp="true"
-                            valueHelpRequest="handleValueHelp" suggestionItems="{MaterialsModel>/results}" value="{DataModel>Matno}">
+                            valueHelpRequest="onMaterialValueHelp" suggestionItems="{MaterialsModel>/results}" value="{DataModel>Matno}" change="onMaterialListChange">
                             <suggestionItems>
                                 <core:Item text="{MaterialsModel>MatNo}" />
                             </suggestionItems>

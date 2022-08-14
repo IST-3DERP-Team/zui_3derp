@@ -4,10 +4,10 @@
 	<SelectDialog
 		title="Styles"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/styles}"
+		items="{StylesModel>/results}"
 		search="_styleValueHelpSearch"
 		confirm="_styleValueHelpClose"
 		cancel="_styleValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>STYLENO}" description="{ValueHelpModel>DESC1}"/>
+		<StandardListItem title="{StylesModel>STYLENO}" description="{StylesModel>DESC1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

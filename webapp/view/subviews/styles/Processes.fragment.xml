@@ -4,42 +4,47 @@
         <headerToolbar>
             <Toolbar height="3rem" style="Clear">
                 <Label text="Processes" />
-                <ToolbarSpacer/>
-                <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/processEditMode}" press="onSaveProcessTable"/>
-                <Button type="Ghost" icon="sap-icon://add" press="addProcessLine" visible="{EditModeModel>/processEditMode}">
-                    <customData>
-                        <core:CustomData key="TableName" value="processesTable"/>
-                    </customData>
-                </Button>
-                <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/processEditMode}"/> -->
-                <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/processEditMode}">
-                    <customData>
-                        <core:CustomData key="TableName" value="processesTable"/>
-                    </customData>
-                </Button>
-                <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
-                    <customData>
-                        <core:CustomData key="Section" value="Processes"/>
-                    </customData>
-                </Button>
             </Toolbar>
         </headerToolbar>
+
+        <Toolbar height="3rem" style="Clear">
+            <ToolbarSpacer/>
+            <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{ProcessEditModeModel>/editMode}" press="onSaveProcessTable"/>
+            <Button type="Ghost" icon="sap-icon://add" press="addProcessLine" visible="{ProcessEditModeModel>/editMode}">
+                <customData>
+                    <core:CustomData key="TableName" value="processesTable"/>
+                </customData>
+            </Button>
+            <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{ProcessEditModeModel>/editMode}"/> -->
+            <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{ProcessEditModeModel>/editMode}">
+                <customData>
+                    <core:CustomData key="TableName" value="processesTable"/>
+                </customData>
+            </Button>
+            <Button type="Ghost" icon="sap-icon://edit" text="Edit" press="setProcessEditMode" visible="{= ${ProcessEditModeModel>/editMode} === true ? false : true }"/>
+            <Button type="Ghost" icon="sap-icon://decline" text="Cancel" press="cancelProcessEdit" visible="{= ${ProcessEditModeModel>/editMode} === true ? true : false }"/>
+        </Toolbar>
+
+        <MessageStrip id="ProcessesMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
+        
         <c:DynamicTable id="processesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact"
-            selectionMode="{= ${EditModeModel>/processEditMode} === true ? 'MultiToggle' : 'None' }">
+            selectionMode="{= ${ProcessEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
             <c:columns>
                 <t:Column width="4rem" filterProperty="Seqno">
                     <Label text="Seq." />
                     <t:template>
-                        <Input value="{DataModel>Seqno}" editable="{EditModeModel>/processEditMode}"/>
+                        <Input value="{DataModel>Seqno}" editable="{ProcessEditModeModel>/editMode}" change="onProcessChange"/>
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Processcd">
                     <Label text="Process" />
                     <t:template>
-                        <Input id="ProcessCdInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
-                            valueHelpRequest="onProcessesValueHelp" suggestionItems="{ValueHelpModel>/processes}" value="{DataModel>Processcd}">
+                        <Input id="ProcessCdInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
+                            change="onProcessChange" liveChange="onProcessChange"
+                            valueHelpRequest="onProcessesValueHelp" suggestionItems="{ProcessCodeModel>/results}" value="{DataModel>Processcd}">
                             <suggestionItems>
-                                <core:Item text="{ValueHelpModel>ProcessCd}" />
+                                <core:ListItem text="{ProcessCodeModel>ProcessCd}" additionalText="{ProcessCodeModel>Desc1}"/>
+                                <!-- <core:Item text="{ValueHelpModel>ProcessCd}" /> -->
                             </suggestionItems>
                         </Input>
                     </t:template>
@@ -47,10 +52,12 @@
                 <t:Column width="11rem" filterProperty="Vastyp">
                     <Label text="VAS Type" />
                     <t:template>
-                        <Input id="VASTypeInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
-                            valueHelpRequest="onVASTypeValueHelp" suggestionItems="{ValueHelpModel>/vastypes}" value="{DataModel>Vastyp}">
+                        <Input id="VASTypeInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
+                            change="onProcessChange" liveChange="onProcessChange"
+                            valueHelpRequest="onVASTypeValueHelp" suggestionItems="{VASTypeModel>/results}" value="{DataModel>Vastyp}">
                             <suggestionItems>
-                                <core:Item text="{ValueHelpModel>Vastyp}" />
+                                <core:ListItem text="{VASTypeModel>Processcd}" additionalText="{VASTypeModel>Desc1}"/>
+                                <!-- <core:Item text="{ValueHelpModel>Vastyp}" /> -->
                             </suggestionItems>
                         </Input>
                     </t:template>
@@ -58,16 +65,18 @@
                 <t:Column width="11rem" filterProperty="Leadtime">
                     <Label text="Lead Time" />
                     <t:template>
-                        <Input value="{DataModel>Leadtime}" type="Number" editable="{EditModeModel>/processEditMode}"/>
+                        <Input value="{DataModel>Leadtime}" type="Number" editable="{ProcessEditModeModel>/editMode}" 
+                            change="onProcessChange" liveChange="onProcessChange"/>
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Attribtyp">
                     <Label text="Attribute Type" />
                     <t:template>
-                        <Input id="AttrTypesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
-                            valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{ValueHelpModel>/attributes}" value="{DataModel>Attribtyp}">
+                        <Input id="AttrTypesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
+                            change="onProcessChange" liveChange="onProcessChange"
+                            valueHelpRequest="onProcessAttrTypesValueHelp" suggestionItems="{ProcessAttribTypeModel>/results}" value="{DataModel>Attribtyp}">
                             <suggestionItems>
-                                <core:Item text="{ValueHelpModel>Attribtyp}" />
+                                <core:ListItem text="{ProcessAttribTypeModel>Attribtyp}" additionalText="{ProcessAttribTypeModel>Desc1}"/>
                             </suggestionItems>
                         </Input>
                     </t:template>
@@ -75,10 +84,12 @@
                 <t:Column width="11rem" filterProperty="Attribcd">
                     <Label text="Attribute" />
                     <t:template>
-                        <Input id="AttrCodesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{EditModeModel>/processEditMode}"
-                            valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{ValueHelpModel>/attributecodes}" value="{DataModel>Attribcd}">
+                        <Input id="AttrCodesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
+                            change="onProcessChange" liveChange="onProcessChange"
+                            valueHelpRequest="onProcessAttrCodesValueHelp" suggestionItems="{ProcessAttribCodeModel>/results}" value="{DataModel>Attribcd}">
                             <suggestionItems>
-                                <core:Item text="{ValueHelpModel>Attribcd}" />
+                                <core:ListItem text="{ProcessAttribCodeModel>Attribcd}" additionalText="{ProcessAttribCodeModel>Desc2}"/>
+                                <!-- <core:Item text="{ValueHelpModel>Attribcd}" /> -->
                             </suggestionItems>
                         </Input>
                     </t:template>

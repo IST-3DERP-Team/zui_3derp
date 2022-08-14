@@ -4,10 +4,10 @@
 	<SelectDialog
 		title="Select Supply Type"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/supplytypes}"
+		items="{SupplyTypeModel>/results}"
 		search="_supplyTypeValueHelpSearch"
 		confirm="_supplyTypeValueHelpClose"
 		cancel="_supplyTypeValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>Supplytype}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{SupplyTypeModel>Supplytype}" description="{SupplyTypeModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

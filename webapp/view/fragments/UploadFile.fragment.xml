@@ -1,10 +1,10 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:u="sap.ui.unified">
 	<Dialog title="Upload New Attachment" contentWidth="60%">
 		<Panel>
-            <HBox alignContent="Center" alignItems="Center" class="sapUiMediumMargin">
+            <!-- <HBox alignContent="Center" alignItems="Center" class="sapUiMediumMargin">
                 <Label text="Select File:" class="sapUiSmallMarginEnd"/>
                 <u:FileUploader name="myFileUpload" uploadUrl="upload/" width="100%" tooltip="Upload your file to the local server" uploadComplete="handleUploadComplete"/>
-            </HBox>
+            </HBox> -->
             <f:Form editable="true" class="sapUiNoContentPadding">
                 <f:layout>
                     <f:ResponsiveGridLayout columnsXL="12" columnsL="12" columnsM="12"/>
@@ -14,29 +14,26 @@
                         <f:formElements>
                             <f:FormElement label="Description (EN)">
                                 <f:fields>
-                                    <Input value=""/>
+                                    <Input id="FileDesc1" value=""/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="Description (CN)">
                                 <f:fields>
-                                    <Input value=""/>
+                                    <Input id="FileDesc2" value=""/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="Remarks">
                                 <f:fields>
-                                    <Input value=""/>
+                                    <Input id="FileRemarks" value=""/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
-                        <!-- <f:layoutData>
-                            <l:GridData span="XL5 L5 M5 S5" />
-                        </f:layoutData> -->
                     </f:FormContainer>
                 </f:formContainers>
             </f:Form>
 		</Panel>
 		<buttons>
-			<Button text="Save" press="onSaveCopyStyle"/>
+			<Button text="Save" press="onStartUploadFile"/>
 			<Button text="Cancel" press="onCancelUploadFile"/>
 		</buttons>
 	</Dialog>

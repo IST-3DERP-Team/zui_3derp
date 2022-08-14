@@ -2,56 +2,40 @@
     xmlns="sap.m" xmlns:c="zui3derp.control" xmlns:core="sap.ui.core" xmlns:t="sap.ui.table" xmlns:plugins="sap.ui.table.plugins" xmlns:fb="sap.ui.comp.filterbar" 
     xmlns:smartfilterbar="sap.ui.comp.smartfilterbar">
     <Page showHeader="false">
-        <Bar>
+        <!-- <Bar>
             <contentLeft>
                 <Label text="{i18n>ManageStyles}" class="sapUiSmallMarginBegin"/>
             </contentLeft>
-        </Bar>
+        </Bar> -->
 
         <!-- >>> Filters <<< -->
-        
-        <smartfilterbar:SmartFilterBar id="SmartFilterBar" entitySet="ZVI_3DERP_STYLES_FILTER" search="onSearch" persistencyKey="3DERP_StylesPKey" filterContainerWidth="14rem">
+        <smartfilterbar:SmartFilterBar id="SmartFilterBar" entitySet="ZVI_3DERP_STYLES_FILTER" search="onSearch" persistencyKey="3DERP_StylesPKey" filterContainerWidth="15rem">
             <smartfilterbar:controlConfiguration>
                 <smartfilterbar:ControlConfiguration id="filterSBU" key="SBU" groupId="_BASIC" label="{i18n>SBUFilter}" mandatory="mandatory" controlType="dropDownList" filterType="single">
-                    <!-- <smartfilterbar:defaultFilterValues>
-                        <smartfilterbar:SelectOption operator="EQ" low="VER"></smartfilterbar:SelectOption>
-                    </smartfilterbar:defaultFilterValues> -->
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterSalesGroup" key="SALESGRP" groupId="_BASIC" label="{i18n>SalesGroupFilter}" controlType="dropDownList" displayBehaviour="descriptionAndId"
-                    mandatory="notMandatory">
-                    <!-- <smartfilterbar:defaultFilterValues>
-                        <smartfilterbar:SelectOption operator="EQ" low="POL"></smartfilterbar:SelectOption>
-                    </smartfilterbar:defaultFilterValues> -->
+                <smartfilterbar:ControlConfiguration id="filterSalesGroup" key="SALESGRP" groupId="_BASIC" label="{i18n>SalesGroupFilter}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
+                    preventInitialDataFetchInValueHelpDialog="false">
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterCustomerGroup" key="CUSTGRP" groupId="_BASIC" label="{i18n>CustomerGroupFilter}" controlType="dropDownList" displayBehaviour="idAndDescription"
-                    mandatory="notMandatory">
-                    <!-- <smartfilterbar:defaultFilterValues>
-                        <smartfilterbar:SelectOption operator="EQ" low="6A"></smartfilterbar:SelectOption>
-                    </smartfilterbar:defaultFilterValues> -->
+                <smartfilterbar:ControlConfiguration id="filterCustomerGroup" key="CUSTGRP" groupId="_BASIC" label="{i18n>CustomerGroupFilter}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
+                    preventInitialDataFetchInValueHelpDialog="false">
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <!-- <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{i18n>SeasonFilter}" controlType="dropDownList" displayBehaviour="descriptionAndId"
-                    mandatory="notMandatory"> -->
-                <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{i18n>SeasonFilter}" mandatory="notMandatory">
-                    <!-- <smartfilterbar:defaultFilterValues>
-                        <smartfilterbar:SelectOption operator="EQ" low="SP21"></smartfilterbar:SelectOption>
-                    </smartfilterbar:defaultFilterValues> -->
+                <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{i18n>SeasonFilter}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
+                    preventInitialDataFetchInValueHelpDialog="false">
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{i18n>ProductTypeFilter}" mandatory="notMandatory">
-                    <!-- <smartfilterbar:defaultFilterValues>
-                        <smartfilterbar:SelectOption operator="EQ" low="1000"></smartfilterbar:SelectOption>
-                    </smartfilterbar:defaultFilterValues> -->
+                <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{i18n>ProductTypeFilter}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
+                    preventInitialDataFetchInValueHelpDialog="false">
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration key="STYLENO" groupId="_ADVANCED" label="{i18n>STYLENO}"/>
+                <smartfilterbar:ControlConfiguration key="STYLENO" groupId="_ADVANCED" label="{i18n>STYLENO}" preventInitialDataFetchInValueHelpDialog="false"/>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
                 <smartfilterbar:ControlConfiguration key="STYLECAT" groupId="_ADVANCED" label="{i18n>STYLECAT}"/>
@@ -105,50 +89,6 @@
                 <smartfilterbar:ControlConfiguration key="UPDATEDDT" groupId="_ADVANCED" label="{i18n>UPDATEDDT}"/>
             </smartfilterbar:controlConfiguration>
         </smartfilterbar:SmartFilterBar>
-
-        <!-- <fb:FilterBar reset="onReset" search="onSearch" useToolbar="false" showFilterConfiguration="true">
-          <fb:filterGroupItems>
-            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F1" label="{i18n>SBUFilter}" visibleInFilterBar="true">
-              <fb:control>
-                    <ComboBox id="filterSBU" items="{ path: '/results', sorter: { path: 'Sbu' } }">
-                        <core:Item key="{Sbu}" text="{Sbu}" />
-                    </ComboBox>
-              </fb:control>				
-            </fb:FilterGroupItem>
-
-            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F2" label="{i18n>SalesGroupFilter}" visibleInFilterBar="true">
-              <fb:control>
-                <ComboBox id="filterSalesGroup" items="{ path: '/results', sorter: { path: 'SalesGrp' } }">
-                    <core:ListItem key="{SalesGrp}" text="{SalesGrp}"/>
-                </ComboBox>
-              </fb:control>				
-            </fb:FilterGroupItem>				
-
-            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F3" label="{i18n>CustomerGroupFilter}" visibleInFilterBar="true">
-              <fb:control>
-                <ComboBox id="filterCustomerGroup" items="{ path: '/results', sorter: { path: 'CustGrp' } }">
-                    <core:ListItem key="{CustGrp}" text="{CustGrp}"/>
-                </ComboBox>
-              </fb:control>				
-            </fb:FilterGroupItem>
-
-            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F4" label="{i18n>SeasonFilter}" visibleInFilterBar="true">
-              <fb:control>
-                <ComboBox id="filterSeason" items="{ path: '/results', sorter: { path: 'Seasoncd' } }" showSecondaryValues= "true">
-                    <core:ListItem key="{Seasoncd}" text="{Desc1}" additionalText = "{Yr}"/>
-                </ComboBox>
-              </fb:control>				
-            </fb:FilterGroupItem>			
-
-            <fb:FilterGroupItem groupName="G1" groupTitle="Filter" name="F5" label="{i18n>ProductTypeFilter}" visibleInFilterBar="true">
-              <fb:control>
-                <ComboBox id="filterProductType" items="{ path: '/results', sorter: { path: 'ProdTyp' } }" showSecondaryValues= "true">
-                    <core:ListItem key="{ProdTyp}" text="{Desc1}" additionalText = "{ProdTyp}"/>
-                </ComboBox>
-              </fb:control>				
-            </fb:FilterGroupItem>					 
-          </fb:filterGroupItems>				
-	    </fb:FilterBar> -->
 	    
         <!-- >>> Statistics <<< -->
         <layout:HorizontalLayout class="sapUiResponsiveContentPadding">
@@ -169,24 +109,22 @@
                 <Title text="{i18n>style}" class="sapUiTinyMarginBegin"/>
             </HBox>
             <ToolbarSpacer/>
-            <!-- <SearchField width="30%" placeholder="{i18n>Search}"/> -->
-            <!-- <Button icon="sap-icon://search"/> -->
 			<Button text="{i18n>New}" icon="sap-icon://add-document" press="onCreateNewStyle" tooltip="Create New Style">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-            <Button text="{i18n>Copy}" icon="sap-icon://copy" press="onCopyMode" tooltip="Create New Style">
+            <Button text="{i18n>Copy}" icon="sap-icon://copy" press="onCopyMode" tooltip="Copy Style Mode">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-            <Button text="{i18n>Upload}" icon="sap-icon://upload" press="uploadStyles"  tooltip="Upload Styles from File">
+            <Button text="{i18n>Upload}" icon="sap-icon://upload" press="onUploadStyle"  tooltip="Upload Styles from File">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
               </layoutData>
             </Button>
-            <Button icon="sap-icon://excel-attachment" press="onExportExcel"  tooltip="Download to Excel">
+            <Button icon="sap-icon://excel-attachment" press="onExport"  tooltip="Download to Excel">
                 <customData>
                 <core:CustomData key="TableName" value="styleDynTable"/>
                 </customData>
@@ -194,11 +132,6 @@
                   <ToolbarLayoutData shrinkable="true"/>
                 </layoutData>
             </Button>
-            <!-- <Button icon="sap-icon://upload" >
-              <layoutData>
-                  <ToolbarLayoutData shrinkable="true"/>
-              </layoutData>
-            </Button> -->
             <Button icon="sap-icon://grid" text="{i18n>Save}" press="onSaveLayoutSettings"  tooltip="Save Table Layout">
               <layoutData>
                   <ToolbarLayoutData shrinkable="true"/>
