@@ -13,7 +13,14 @@ sap.ui.define([
             
         onInit: function(){
             this.onStyleReader();
+            // var oComponent = this.getOwnerComponent();
+            // this._router = oComponent.getRouter();
+            // this._router.getRoute("RouteMain").attachPatternMatched(this._routePatternMatched, this);
         },
+
+        // _routePatternMatched: function (oEvent) {
+        //     sap.ushell.Container.setDirtyFlag(false);
+        // },
 
         goToStyles: function() {
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);

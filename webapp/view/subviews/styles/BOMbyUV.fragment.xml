@@ -3,21 +3,18 @@
     <Toolbar height="3rem" style="Clear">
         <HBox alignContent="Center" alignItems="Center">
             <Label text="Usage Class"/>
-            <ComboBox id="UsageClassCB" items="{ValueHelpModel>/usageclasses}" class="sapUiMediumMarginBegin" selectedKey="AUV"
+            <ComboBox id="UsageClassCB" items="{UsageClassModel>/results}" class="sapUiMediumMarginBegin" selectedKey="AUV"
                 showSecondaryValues="true" filterSecondaryValues= "true" change="getbomUVTable">
-                <core:ListItem key="{ValueHelpModel>Usgcls}" text="{ValueHelpModel>Ucdesc1}" additionalText = "{ValueHelpModel>Usgcls}"/>
+                <core:ListItem key="{UsageClassModel>Usgcls}" text="{UsageClassModel>Ucdesc1}" additionalText = "{UsageClassModel>Usgcls}"/>
             </ComboBox>
         </HBox>
+        <Button icon="sap-icon://synchronize" press="onRefresh"/>
         <ToolbarSpacer />
-        <Button icon="sap-icon://save" text="Save" press="onSaveBOMbyUV" visible="{EditModeModel>/bomUVEditMode}"/>
-        <Button icon="sap-icon://edit" press="setEditMode">
-            <customData>
-                <core:CustomData key="Section" value="BOMbyUV"/>
-            </customData>
-        </Button>
-        <Button icon="sap-icon://save" text="Refresh" press="onRefresh"/>
-        <!-- <Button text="Refresh" press="getbomUVTable"/> -->
-        <Button icon="sap-icon://excel-attachment" press="onExportExcel"  tooltip="Download to Excel">
+        <Button icon="sap-icon://save" text="Save" press="onSaveBOMbyUV" visible="{BOMbyUVEditModeModel>/editMode}"/>
+        <Button type="Ghost" icon="sap-icon://edit" text="Edit" press="setBOMbyUVEditMode" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? false : true }"/>
+        <Button type="Ghost" icon="sap-icon://decline" text="Cancel" press="cancelBOMbyUVEdit" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? true : false }"/>
+        
+        <Button icon="sap-icon://excel-attachment" press="onExport"  tooltip="Download to Excel">
             <customData>
             <core:CustomData key="TableName" value="bomUVTable"/>
             </customData>
@@ -26,7 +23,9 @@
             </layoutData>
         </Button>
     </Toolbar>
+
+    <MessageStrip id="BOMbyUVMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
     
-    <c:DynamicTable id="bomUVTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true">
+    <c:DynamicTable id="bomUVTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" selectionMode="Single">
     </c:DynamicTable>
 </core:FragmentDefinition>    

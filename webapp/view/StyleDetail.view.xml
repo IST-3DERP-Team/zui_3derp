@@ -1,7 +1,7 @@
 <mvc:View controllerName="zui3derp.controller.StyleDetail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns:u="sap.uxap"
     xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" >
-    <Page showHeader="false">
+    <Page showHeader="false" title="Manage Style" showNavButton="true" navButtonPress="onNavBack">
 
         <!-- OBJECT HEADER -->
         <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>CurrentVersion}: {headerData>/Verno}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
@@ -46,15 +46,12 @@
                     <IconTabFilter icon="sap-icon://notes" text="Versions">
 
                         <!-- VERSIONS -->
-                        <core:Fragment fragmentName="zui3derp.view.subviews.styles.Versions" type="XML"/>
-
-                        
+                        <core:Fragment fragmentName="zui3derp.view.subviews.styles.Versions" type="XML"/>                        
                     </IconTabFilter>
-
 
                     <!-- ATTACHMENTS -->
                     <IconTabFilter icon="sap-icon://attachment" text="Attachments">
-                        <core:Fragment fragmentName="zui3derp.view.subviews.styles.Attachments" type="XML"/>
+                        <core:Fragment fragmentName="zui3derp.view.subviews.styles.Attachments" type="XML"/>  
                     </IconTabFilter>
                 </items>
             </IconTabBar>

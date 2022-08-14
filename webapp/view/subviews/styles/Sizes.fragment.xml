@@ -4,26 +4,18 @@
         <headerToolbar>
             <Toolbar height="3rem" style="Clear">
                 <Label text="Sizes" />
-                <ToolbarSpacer />
-                <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{EditModeModel>/sizesEditMode}" press="onSaveSizeTable"/>
-                <!-- <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{EditModeModel>/sizesEditMode}">
-                    <customData>
-                        <core:CustomData key="TableName" value="sizesTable"/>
-                    </customData>
-                </Button> -->
-                <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{EditModeModel>/sizesEditMode}"/> -->
-                <!-- <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{EditModeModel>/sizesEditMode}">
-                    <customData>
-                        <core:CustomData key="TableName" value="sizesTable"/>
-                    </customData>
-                </Button> -->
-                <Button type="Ghost" icon="sap-icon://edit" press="setEditMode">
-                    <customData>
-                        <core:CustomData key="Section" value="Sizes"/>
-                    </customData>
-                </Button>
             </Toolbar>
         </headerToolbar>
+
+        <Toolbar height="3rem" style="Clear">
+            <ToolbarSpacer />
+            <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{SizeEditModeModel>/editMode}" press="onSaveSizeTable"/>
+            <Button type="Ghost" icon="sap-icon://edit" text="Edit" press="setSizeEditMode" visible="{= ${SizeEditModeModel>/editMode} === true ? false : true }"/>
+            <Button type="Ghost" icon="sap-icon://decline" text="Cancel" press="cancelSizeEdit" visible="{= ${SizeEditModeModel>/editMode} === true ? true : false }"/>
+        </Toolbar>
+
+        <MessageStrip id="SizesMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
+
         <c:DynamicTable id="sizesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact"
             selectionMode="None">
             <c:columns>
@@ -46,7 +38,7 @@
                 <t:Column width="11rem" sortProperty="Baseind">
                     <Label text="Base Ind"/>
                     <t:template>
-                        <CheckBox selected="{DataModel>Baseind}" editable="{EditModeModel>/sizesEditMode}"/>
+                        <CheckBox selected="{DataModel>Baseind}" editable="{SizeEditModeModel>/editMode}" select="onSizeChange"/>
                     </t:template>
                 </t:Column>
             </c:columns>

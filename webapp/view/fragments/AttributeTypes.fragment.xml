@@ -4,10 +4,10 @@
 	<SelectDialog
 		title="Attribute Types"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/attributes}"
+		items="{AttribTypeModel>/results}"
 		search="_attrTypesValueHelpSearch"
 		confirm="_attrTypesValueHelpClose"
 		cancel="_attrTypesValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>Attribtyp}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{AttribTypeModel>Attribtyp}" description="{AttribTypeModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

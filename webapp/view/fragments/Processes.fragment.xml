@@ -4,10 +4,10 @@
 	<SelectDialog
 		title="Process Codes"
 		class="sapUiPopupWithPadding"
-		items="{ValueHelpModel>/processes}"
+		items="{ProcessCodeModel>/results}"
 		search="_processesValueHelpSearch"
 		confirm="_processesValueHelpClose"
 		cancel="_processesValueHelpClose">
-		<StandardListItem title="{ValueHelpModel>ProcessCd}" description="{ValueHelpModel>Desc1}"/>
+		<StandardListItem title="{ProcessCodeModel>ProcessCd}" description="{ProcessCodeModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>
