@@ -313,44 +313,52 @@ sap.ui.define([
                 var bomCheck = sap.ui.getCore().byId("bomCB").getSelected();
                 var versions = [];
 
-                if(bomCheck === true && colorCheck === false) {
-                    Common.showMessage("Color is required when copying BOM");
+                if(newStyleCode === "") {
+                    Common.showMessage('Please enter new style code')
+                } else if(newSeason === "") {
+                    Common.showMessage('Please enter new season')
                 } else {
 
-                    for (var i = 0; i < selected.length; i++) {
-                        versions.push(oData.results[selected[i]].Verno);
+                    if(bomCheck === true && colorCheck === false) {
+                        Common.showMessage("Color is required when copying BOM");
+                    } else {
+
+                        for (var i = 0; i < selected.length; i++) {
+                            versions.push(oData.results[selected[i]].Verno);
+                        }
+
+                        var entitySet = "/StyleSet(STYLENO='" + that._styleNo +  "')";
+
+                        var versionStr = versions.join();
+
+                        oModel.setHeaders({
+                            styleno: that._styleNo,
+                            sbu: that._sbu,
+                            stylecd: newStyleCode,
+                            season: newSeason,
+                            color: colorCheck,
+                            bom: bomCheck,
+                            versions: versionStr
+                        });
+
+                        var oEntry = { 
+                            STYLENO: that._styleNo
+                        };
+
+                        oModel.update(entitySet, oEntry, {
+                            method: "PUT",
+                            success: function(data, oResponse) {
+                                Common.showMessage("Saved");
+                                that._CopyStyleDialog.close();
+                                that.onSearch();
+                            },
+                            error: function() {
+                                Common.showMessage("Error");
+                                that._CopyStyleDialog.close();
+                            }
+                        });
                     }
 
-                    var entitySet = "/StyleSet(STYLENO='" + that._styleNo +  "')";
-
-                    var versionStr = versions.join();
-
-                    oModel.setHeaders({
-                        styleno: that._styleNo,
-                        sbu: that._sbu,
-                        stylecd: newStyleCode,
-                        season: newSeason,
-                        color: colorCheck,
-                        bom: bomCheck,
-                        versions: versionStr
-                    });
-
-                    var oEntry = { 
-                        STYLENO: that._styleNo
-                    };
-
-                    oModel.update(entitySet, oEntry, {
-                        method: "PUT",
-                        success: function(data, oResponse) {
-                            Common.showMessage("Saved");
-                            that._CopyStyleDialog.close();
-                            that.onSearch();
-                        },
-                        error: function() {
-                            Common.showMessage("Error");
-                            that._CopyStyleDialog.close();
-                        }
-                    });
                 }
             },
 

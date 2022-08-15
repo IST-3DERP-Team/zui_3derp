@@ -38,12 +38,28 @@ sap.ui.define([
             this._ConfirmDeleteDialog.close();
         },        
 
+        onCancelDeleteGeneralAttr: function() {
+        	this._ConfirmDeleteGeneralAttr.close();
+        },
+        
+        onCancelDeleteColor: function() {
+        	this._ConfirmDeleteColor.close();
+        },
+        
+        onCancelDeleteProcess: function() {
+        	this._ConfirmDeleteProcess.close();
+        },
+
         onCancelDeleteVersion: function() {
             this._ConfirmDeleteVersionDialog.close();
         },        
 
         onCancelDiscardChanges: function() {
             this._ConfirmDiscardChangesDialog.close();
+        },
+
+        onCancelDeleteVersionAttr: function() {
+            this._ConfirmDeleteVersionAttr.close();            
         },
 
         onCancelDeleteBOMItems: function() {

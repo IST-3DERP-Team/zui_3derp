@@ -9,7 +9,7 @@
                     <core:CustomData key="TableName" value="versionAttrTable"/>
                 </customData>
             </Button>
-            <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{VersionAttrEditModeModel>/editMode}">
+            <Button type="Ghost" icon="sap-icon://delete" press="onDeleteVersionAttr" visible="{VersionAttrEditModeModel>/editMode}">
                 <customData>
                     <core:CustomData key="TableName" value="versionAttrTable"/>
                 </customData>
