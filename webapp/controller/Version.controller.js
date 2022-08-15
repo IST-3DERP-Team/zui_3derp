@@ -236,6 +236,72 @@ sap.ui.define([
                 }
             },
 
+            onDeleteVersionAttr: function () {
+                var oTable = this.getView().byId('versionAttrTable');
+                var selected = oTable.getSelectedIndices();
+                if(selected.length > 0) {
+                    if (!this._ConfirmDeleteVersionAttr) {
+                        this._ConfirmDeleteVersionAttr = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmDeleteVersionAttr", this);
+                        this.getView().addDependent(this._ConfirmDeleteVersionAttr);
+                    }
+                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
+                    this._ConfirmDeleteVersionAttr.addStyleClass("sapUiSizeCompact");
+                    this._ConfirmDeleteVersionAttr.open();
+                } else {
+                    Common.showMessage('Select items to delete')
+                }
+            },
+            
+            onConfirmDeleteVersionAttr: function() {
+            	var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+
+                var oTable = this.getView().byId("versionAttrTable");
+                var oTableModel = oTable.getModel("DataModel");
+                var oData = oTableModel.getData();
+                var selected = oTable.getSelectedIndices();
+                
+                oModel.setUseBatch(true);
+                oModel.setDeferredGroups(["group1"]);
+                
+				this._ConfirmDeleteVersionAttr.close();
+                
+                if(selected.length > 0) {
+	                for (var i = 0; i < selected.length; i++) {
+	                	
+	                	var verno = oData.results[selected[i]].Verno;
+	                	var attrtype = oData.results[selected[i]].Attribtyp;
+	                	var attrcd = oData.results[selected[i]].Attribcd;
+	                	
+	                	verno = this.pad(verno, 3);
+	
+		                var entitySet = "/StyleVersionAttributesSet(Styleno='" + that._styleNo + "',Verno='" + verno + "',Attribtyp='" + attrtype + "',Attribcd='" + attrcd + "')";
+		
+		                oModel.remove(entitySet, {
+		                	groupId: "group1", 
+    						changeSetId: "changeSetId1",
+		                    method: "DELETE",
+		                    success: function (data, oResponse) {
+		                    },
+		                    error: function () {
+		                    }
+		                });
+		                
+		                oModel.submitChanges({
+						    groupId: "group1"
+						});
+						oModel.setRefreshAfterChange(true);
+	                }
+	                
+	                oData.results = oData.results.filter(function (value, index) {
+                    	return selected.indexOf(index) == -1;
+	                })
+	
+	                oTableModel.setData(oData);
+	                oTable.clearSelection();
+                }
+            },
+
             getColors: function () {
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
@@ -1353,7 +1419,8 @@ sap.ui.define([
                                 template: new sap.ui.core.ListItem({
                                     text: "{ProcessCodeModel>ProcessCd}",
                                     additionalText: "{ProcessCodeModel>Desc1}"
-                                })
+                                }),
+                                templateShareable:true
                             },
                             change: changeFunction,
                             liveChange: changeFunction,
@@ -1386,8 +1453,7 @@ sap.ui.define([
                                 path: "UsageClassModel>/results",
                                 template: new sap.ui.core.Item({
                                     key: "{UsageClassModel>Usgcls}",
-                                    text: "{UsageClassModel>Usgcls}",
-                                    additionalText: "{UsageClassModel>Usgcls}"
+                                    text: "{UsageClassModel>Usgcls}"
                                 })
                             },
                             change: changeFunction,
@@ -1560,10 +1626,8 @@ sap.ui.define([
             },
 
             onDeleteBOMItems: function () {
-
                 var oTable = this.getView().byId('bomGMCTable');
                 var selected = oTable.getSelectedIndices();
-
                 if(selected.length > 0) {
                     if (!this._ConfirmDeleteBOMDialog) {
                         this._ConfirmDeleteBOMDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmDeleteBOMItems", this);
@@ -1575,96 +1639,63 @@ sap.ui.define([
                 } else {
                     Common.showMessage('Select items to delete')
                 }
-                
-                // var oButton = oEvent.getSource();
-                // var tabName = oButton.data('TableName')
-                // var oTable = this.getView().byId(tabName);
-                // var oModel = this.getView().byId(tabName).getModel("DataModel");
-                // var oData = oModel.getData();
-                // var selected = oTable.getSelectedIndices();
-                // oData.results.items = oData.results.items.filter(function (value, index) {
-                //     return selected.indexOf(index) == -1;
-                // })
-
-                // oModel.setData(oData);
-                // oTable.clearSelection();
             },
+           
+            onConfirmDeleteBOMItems: function() {
+            	var me = this;
+                var oModel = this.getOwnerComponent().getModel();
 
-            confirmDeleteBOMItems: function() {
-                var oTable = this.getView().byId('bomGMCTable');
-                var oModel = oTable.getModel("DataModel");
-                var oData = oModel.getData();
+                var oTable = this.getView().byId("bomGMCTable");
+                var oTableModel = oTable.getModel("DataModel");
+                var oData = oTableModel.getData();
                 var selected = oTable.getSelectedIndices();
-
-                //delete from backend
-                var me = this;
-                var oDataModel = this.getOwnerComponent().getModel();
-                var seqnos = [];
-                var sPath;
-                var rowData;
-
-                for (var i = 0; i < selected.length; i++) {
-
-                    sPath = oTable.getContextByIndex(selected[i]).sPath;
-                    rowData = oModel.getProperty(sPath);
-
-                    if(rowData.BOMSEQ !== undefined && 
-                        rowData.BOMSEQ !== '') {
-                        seqnos.push(rowData.BOMSEQ);
-                    }
-                }
-
-                if(seqnos.length > 0) {
-                    var seqnosStr = seqnos.join();
-                    var entitySet = "/StyleBOMGMCSet(STYLENO='" + this._styleNo + "',VERNO='" + this._version + "')";
-
-                    oDataModel.setHeaders({
-                        styleno: this._styleNo,
-                        verno: this._version,
-                        bomseq: seqnosStr
-                    });
-
-                    Common.openLoadingDialog(that);
-
-                    oDataModel.remove(entitySet, {
-                        method: "DELETE",
-                        success: function (data, oResponse) {
-                            Common.closeLoadingDialog(that);
-                            me.onRefresh();
-                            // Common.showMessage("Style version deleted");
-                            // me.getVersionsTable();
-                        },
-                        error: function () {
-                            Common.closeLoadingDialog(that);
-                            Common.showMessage("Error");
-                        }
-                    });
-
-                }
-
+                
+                oModel.setUseBatch(true);
+                oModel.setDeferredGroups(["group1"]);
+                
                 this._ConfirmDeleteBOMDialog.close();
+                
+                if(selected.length > 0) {
+	                for (var i = 0; i < selected.length; i++) {
 
-                //filter out from the table
-                // oData.results.items = oData.results.items.filter(function (value, index) {
-                //     return selected.indexOf(index) == -1;
-                // })
+                        var sPath = oTable.getContextByIndex(selected[i]).sPath;
+                        var rowData = oTableModel.getProperty(sPath);
+	                	
+	                	var verno = this._version;
+	                	// var bomseq = oData.results.items[selected[i]].BOMSEQ;
+                        var bomseq = rowData.BOMSEQ;
 
-                // for (var i = 0; i < oData.results.items.length; i++) {
+                        if(bomseq !== "0") {	                	
+                            verno = this.pad(verno, 3);
+                            bomseq = this.pad(bomseq, 3);
+        
+                            var entitySet = "/StyleBOMGMCSet(STYLENO='" + this._styleNo + "',VERNO='" + verno + "',BOMSEQ='" + bomseq + "')";
+            
+                            oModel.remove(entitySet, {
+                                groupId: "group1", 
+                                changeSetId: "changeSetId1",
+                                method: "DELETE",
+                                success: function (data, oResponse) {
+                                },
+                                error: function () {
+                                }
+                            });
+                            
+                            oModel.submitChanges({
+                                groupId: "group1"
+                            });
+                            oModel.setRefreshAfterChange(true);
 
-                //     try {
-                //         for (var j = 0; j < oData.results.items[i].items.length; j++) {
-                //             if(seqnos.includes(oData.results.items[i].items[j].BOMSEQ)) {
-                //                 oData.results.items[i].items.splice(i, 1); 
-                //             }
-                //         }
-                //     } catch {}
-
-                // }
-
-                // oModel.setData(oData);
-                // oTable.refresh();
-                // oTable.getBinding("rows").refresh();
-                // oTable.clearSelection();
+                        }
+	                }
+	                
+	                oData.results.items = oData.results.items.filter(function (value, index) {
+                    	return selected.indexOf(index) == -1;
+	                })
+	
+	                oTableModel.setData(oData);
+	                oTable.clearSelection();
+                }
             },
 
             onNavBack: function () {
@@ -1678,8 +1709,6 @@ sap.ui.define([
                     oRouter.navTo("RouteStyles");
                 }
             },
-
-            onCancelDeleteBOMItems: Common.onCancelDeleteBOMItems,
 
             /****************************************************/
             // Start of Value Helps logic
@@ -2102,9 +2131,15 @@ sap.ui.define([
                 evt.getSource().getBinding("items").filter([]);
             },
 
+            pad: Common.pad,
+
             onExportExcel: Utils.onExportExcel,
 
             onExport: Utils.onExport,
+
+            onCancelDeleteVersionAttr: Common.onCancelDeleteVersionAttr,
+
+            onCancelDeleteBOMItems: Common.onCancelDeleteBOMItems,
 
             onCancelDiscardChanges: Common.onCancelDiscardChanges
         });

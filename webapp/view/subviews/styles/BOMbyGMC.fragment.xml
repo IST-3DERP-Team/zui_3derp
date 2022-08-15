@@ -34,4 +34,5 @@
     <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}"
         selectionMode="{= ${BOMbyGMCEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
     </c:DynamicTreeTable>
+    
 </core:FragmentDefinition>    

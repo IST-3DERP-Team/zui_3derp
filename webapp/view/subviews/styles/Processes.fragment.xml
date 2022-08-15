@@ -16,7 +16,7 @@
                 </customData>
             </Button>
             <!-- <Button type="Ghost" icon="sap-icon://delete" visible="{ProcessEditModeModel>/editMode}"/> -->
-            <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{ProcessEditModeModel>/editMode}">
+            <Button type="Ghost" icon="sap-icon://delete" press="onDeleteProcess" visible="{ProcessEditModeModel>/editMode}">
                 <customData>
                     <core:CustomData key="TableName" value="processesTable"/>
                 </customData>

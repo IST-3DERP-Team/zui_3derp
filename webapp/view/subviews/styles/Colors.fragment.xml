@@ -16,7 +16,7 @@
                     <core:CustomData key="TableName" value="colorsTable"/>
                 </customData>
             </Button>
-            <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{ColorEditModeModel>/editMode}">
+            <Button type="Ghost" icon="sap-icon://delete" press="onDeleteColor" visible="{ColorEditModeModel>/editMode}">
                 <customData>
                     <core:CustomData key="TableName" value="colorsTable"/>
                 </customData>

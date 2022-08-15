@@ -15,7 +15,7 @@
                     <core:CustomData key="TableName" value="generalTable"/>
                 </customData>
             </Button>
-            <Button type="Ghost" icon="sap-icon://delete" press="removeLine" visible="{GenAttrEditModeModel>/editMode}">
+            <Button type="Ghost" icon="sap-icon://delete" press="onDeleteGeneralAttr" visible="{GenAttrEditModeModel>/editMode}">
                 <customData>
                     <core:CustomData key="TableName" value="generalTable"/>
                 </customData>
