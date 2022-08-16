@@ -27,7 +27,8 @@
                     <Label text="Attribute Type"/>
                     <t:template>
                         <!-- <Input value="{DataModel>Attribtyp}" editable="{VersionAttrEditModeModel>/editMode}"/> -->
-                        <Input id="AttrTypesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange"
+                        <Input id="AttrTypesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
+                            change="onVersionAttrChange" liveChange="onVersionAttrChange"
                             valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{AttribTypeModel>/results}" value="{DataModel>Attribtyp}">
                             <suggestionItems>
                                 <core:ListItem text="{AttribTypeModel>Attribtyp}" additionalText="{AttribTypeModel>Desc1}"/>
@@ -39,7 +40,8 @@
                     <Label text="Attribute Code" />
                     <t:template>
                         <!-- <Input value="{DataModel>Attribcd}" editable="{VersionAttrEditModeModel>/editMode}"/> -->
-                        <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange"
+                        <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
+                            change="onVersionAttrChange" liveChange="onVersionAttrChange"
                             valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{AttribCdModel>/results}" value="{DataModel>Attribcd}">
                             <suggestionItems>
                                 <core:ListItem text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}"/>
@@ -50,13 +52,15 @@
                 <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
                     <Label text="Description" />
                     <t:template>
-                        <Input value="{DataModel>Desc1}" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange"/>
+                        <Input value="{DataModel>Desc1}" editable="{VersionAttrEditModeModel>/editMode}" 
+                            change="onVersionAttrChange" liveChange="onVersionAttrChange"/>
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">
                     <Label text="Value" />
                     <t:template>
-                        <Input value="{DataModel>Attribval}" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange"/>
+                        <Input value="{DataModel>Attribval}" editable="{VersionAttrEditModeModel>/editMode}" 
+                            change="onVersionAttrChange" liveChange="onVersionAttrChange"/>
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Valunit" sortProperty="Valunit">
@@ -67,7 +71,8 @@
                             showSecondaryValues="true" filterSecondaryValues="true" editable="{VersionAttrEditModeModel>/editMode}">
                             <core:ListItem key="{ValueHelpModel>UoM}" text="{ValueHelpModel>Desc1}" additionalText = "{ValueHelpModel>UoM}"/>
                         </ComboBox> -->
-                        <Input id="UomInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange"
+                        <Input id="UomInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
+                            change="onVersionAttrChange" liveChange="onVersionAttrChange"
                             valueHelpRequest="onUomValueHelp" suggestionItems="{UOMModel>/results}" value="{DataModel>Valunit}">
                             <suggestionItems>
                                 <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}"/>

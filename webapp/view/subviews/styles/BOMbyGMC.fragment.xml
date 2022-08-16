@@ -31,8 +31,10 @@
 
     <MessageStrip id="BOMbyGMCMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
 
-    <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}"
+    <!-- <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['BOMSTYLE']}}"
         selectionMode="{= ${BOMbyGMCEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
-    </c:DynamicTreeTable>
-    
+    </c:DynamicTreeTable> -->
+    <c:DynamicTable id="bomGMCTable" class="sapUiSizeCompact" rows="{path:'DataModel>/results'}"
+        selectionMode="{= ${BOMbyGMCEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
+    </c:DynamicTable>
 </core:FragmentDefinition>    

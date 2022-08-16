@@ -43,7 +43,8 @@
                     <t:template>
                         <!-- <Text text="{DataModel>MatNo}"/> -->
                         <Input id="productInput" type="Text" placeholder="Select Material ..." showSuggestion="true" showValueHelp="true"
-                            valueHelpRequest="onMaterialValueHelp" suggestionItems="{MaterialsModel>/results}" value="{DataModel>Matno}" change="onMaterialListChange">
+                            valueHelpRequest="onMaterialValueHelp" suggestionItems="{MaterialsModel>/results}" value="{DataModel>Matno}" 
+                            change="onMaterialListChange" liveChange="onMaterialListChange">
                             <suggestionItems>
                                 <core:Item text="{MaterialsModel>MatNo}" />
                             </suggestionItems>

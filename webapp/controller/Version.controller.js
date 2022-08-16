@@ -54,7 +54,7 @@ sap.ui.define([
             },
 
             setChangeStatus: function(changed) {
-                // sap.ushell.Container.setDirtyFlag(changed);
+                sap.ushell.Container.setDirtyFlag(changed);
             },
 
             onRefresh: function() { 
@@ -79,6 +79,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "headerData");
                         Common.closeLoadingDialog(that);
+                        me.setChangeStatus(false);
                     },
                     error: function () { 
                         Common.closeLoadingDialog(that);
@@ -215,6 +216,10 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     path = "/VersionAttributesSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
 
                     oModel.create(path, oEntry, {
                         method: "POST",
@@ -404,24 +409,26 @@ sap.ui.define([
                         var item = {};
                         var items = [];
 
-                        for (var i = 0; i < oData.results.length; i++) {
-                            items = [];
-                            if (oData.results[i].BOMITMTYP === 'STY') {
+                        // for (var i = 0; i < oData.results.length; i++) {
+                        //     items = [];
+                        //     if (oData.results[i].BOMITMTYP === 'STY') {
 
-                                style = oData.results[i].BOMSTYLE;
-                                for (var j = 0; j < oData.results.length; j++) {
-                                    if (oData.results[j].BOMITMTYP === 'GMC' && oData.results[j].BOMSTYLE === style) {
-                                        items.push(oData.results[j]);
-                                    }
-                                }
+                        //         style = oData.results[i].BOMSTYLE;
+                        //         for (var j = 0; j < oData.results.length; j++) {
+                        //             if (oData.results[j].BOMITMTYP === 'GMC' && oData.results[j].BOMSTYLE === style) {
+                        //                 items.push(oData.results[j]);
+                        //             }
+                        //         }
 
-                                item = oData.results[i];
-                                item.items = items;
-                                rowData.items.push(item);
-                            } else if (oData.results[i].BOMITMTYP === 'GMC' && oData.results[i].BOMSTYLE === '') {
-                                rowData.items.push(oData.results[i]);
-                            }
-                        }
+                        //         item = oData.results[i];
+                        //         item.items = items;
+                        //         rowData.items.push(item);
+                        //     } else if (oData.results[i].BOMITMTYP === 'GMC' && oData.results[i].BOMSTYLE === '') {
+                        //         rowData.items.push(oData.results[i]);
+                        //     }
+                        // }
+
+                        rowData = oData.results;
 
                         var oJSONModel = new JSONModel();
                         oJSONModel.setData({
@@ -517,23 +524,27 @@ sap.ui.define([
                         GMCToItems: []
                     }
 
-                    for (var i = 0; i < oData.results.items.length; i++) {
-                        item = that.addBOMItem(oData.results.items[i]);
+                    for (var i = 0; i < oData.results.length; i++) {
+                        item = that.addBOMItem(oData.results[i]);
                         oEntry.GMCToItems.push(item);
 
-                        if (oData.results.items[i].BOMITMTYP === 'STY') {
-                            if (oData.results.items[i].items !== undefined) {
-                                for (var j = 0; j < oData.results.items[i].items.length; j++) {
-                                    item = that.addBOMItem(oData.results.items[i].items[j]);
-                                    oEntry.GMCToItems.push(item);
-                                }
-                            }
-                        }
+                        // if (oData.results[i].BOMITMTYP === 'STY') {
+                        //     if (oData.results.items[i].items !== undefined) {
+                        //         for (var j = 0; j < oData.results.items[i].items.length; j++) {
+                        //             item = that.addBOMItem(oData.results.items[i].items[j]);
+                        //             oEntry.GMCToItems.push(item);
+                        //         }
+                        //     }
+                        // }
                     };
 
                     Common.openLoadingDialog(that);
 
                     path = "/BOMGMCSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
 
                     oModel.create(path, oEntry, {
                         method: "POST",
@@ -556,29 +567,29 @@ sap.ui.define([
                                 UVToItems: []
                             }
 
-                            for (var i = 0; i < oData.results.items.length; i++) {
+                            for (var i = 0; i < oData.results.length; i++) {
 
-                                if (oData.results.items[i].USGCLS === "AUV" || oData.results.items[i].USGCLS === "ASUV") {
+                                if (oData.results[i].USGCLS === "AUV" || oData.results[i].USGCLS === "ASUV") {
                                     for (var j = 0; j < me._colors.length; j++) {
 
                                         var color = me._colors[j];
                                         item = {
                                             "Styleno": me._styleNo,
                                             "Verno": me._version,
-                                            "Gmc": oData.results.items[i].GMC,
-                                            "Partcd": oData.results.items[i].PARTCD,
-                                            "Usgcls": oData.results.items[i].USGCLS,
+                                            "Gmc": oData.results[i].GMC,
+                                            "Partcd": oData.results[i].PARTCD,
+                                            "Usgcls": oData.results[i].USGCLS,
                                             "Seqno": " ",
                                             "Bomitem": " ",
                                             "Color": color.Attribcd,
                                             "Sze": " ",
                                             "Dest": " ",
-                                            "Mattyp": oData.results.items[i].MATTYP,
+                                            "Mattyp": oData.results[i].MATTYP,
                                             "Mattypcls": "ZCOLR",
                                             "Attribcd": " ",
-                                            "Desc1": oData.results.items[i][color.Attribcd],
-                                            "Consump": oData.results.items[i].CONSUMP,
-                                            "Wastage": oData.results.items[i].WASTAGE,
+                                            "Desc1": oData.results[i][color.Attribcd],
+                                            "Consump": oData.results[i].CONSUMP,
+                                            "Wastage": oData.results[i].WASTAGE,
                                             "Createdby": " ",
                                             "Createddt": " ",
                                             "Updatedby": " ",
@@ -590,7 +601,12 @@ sap.ui.define([
                             };                           
 
                             if (oEntry.UVToItems.length > 0) {
+                                
                                 path = "/BOMUVSet";
+
+                                oModel.setHeaders({
+                                    sbu: me._sbu
+                                });
 
                                 oModel.create(path, oEntry, {
                                     method: "POST",
@@ -852,13 +868,13 @@ sap.ui.define([
                         var oTableGMC = that.getView().byId("bomGMCTable");
                         var oGMCTableData = oTableGMC.getModel('DataModel').getData();
 
-                        for (var i = 0; i < oGMCTableData.results.items.length; i++) {
+                        for (var i = 0; i < oGMCTableData.results.length; i++) {
                             for (var k = 0; k < pivot.length; k++) {
                                 var colorName = pivot[k].Attribcd;
                                 for (var j = 0; j < rowData.length; j++) {
                                     if (rowData[j].MATTYPCLS === 'ZCOLR' && rowData[j].COLOR === colorName) {
-                                        if (oGMCTableData.results.items[i].GMC === rowData[j].GMC && oGMCTableData.results.items[i].PARTCD === rowData[j].PARTCD && oGMCTableData.results.items[i].MATTYP === rowData[j].MATTYP) {
-                                            oGMCTableData.results.items[i][colorName] = rowData[j].DESC1;
+                                        if (oGMCTableData.results[i].GMC === rowData[j].GMC && oGMCTableData.results[i].PARTCD === rowData[j].PARTCD && oGMCTableData.results[i].MATTYP === rowData[j].MATTYP) {
+                                            oGMCTableData.results[i][colorName] = rowData[j].DESC1;
                                         }
                                     }
                                 }
@@ -1078,6 +1094,10 @@ sap.ui.define([
 
                     path = "/BOMUVSet";
 
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
+
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oData, oResponse) {
@@ -1111,6 +1131,10 @@ sap.ui.define([
                     STYLENO: this._styleNo,
                     VERNO: this._version
                 };
+
+                oModel.setHeaders({
+                    sbu: this._sbu
+                });
 
                 oModel.update(entitySet, oEntry, {
                     method: "PUT",
@@ -1337,6 +1361,10 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     path = "/MaterialListSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
 
                     oModel.create(path, oEntry, {
                         method: "POST",
@@ -1606,7 +1634,7 @@ sap.ui.define([
                 var oTable = this.getView().byId(tabName);
                 var oModel = this.getView().byId(tabName).getModel("DataModel");
                 var oData = oModel.getProperty('/results');
-                oData.items.push({});
+                oData.push({});
                 oTable.getBinding("rows").refresh();
             },
 
@@ -1658,12 +1686,12 @@ sap.ui.define([
                 if(selected.length > 0) {
 	                for (var i = 0; i < selected.length; i++) {
 
-                        var sPath = oTable.getContextByIndex(selected[i]).sPath;
-                        var rowData = oTableModel.getProperty(sPath);
+                        // var sPath = oTable.getContextByIndex(selected[i]).sPath;
+                        // var rowData = oTableModel.getProperty(sPath);
 	                	
 	                	var verno = this._version;
-	                	// var bomseq = oData.results.items[selected[i]].BOMSEQ;
-                        var bomseq = rowData.BOMSEQ;
+	                	var bomseq = oData.results[selected[i]].BOMSEQ;
+                        // var bomseq = rowData.BOMSEQ;
 
                         if(bomseq !== "0") {	                	
                             verno = this.pad(verno, 3);
@@ -1689,7 +1717,7 @@ sap.ui.define([
                         }
 	                }
 	                
-	                oData.results.items = oData.results.items.filter(function (value, index) {
+	                oData.results = oData.results.filter(function (value, index) {
                     	return selected.indexOf(index) == -1;
 	                })
 	

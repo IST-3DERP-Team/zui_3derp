@@ -35,7 +35,7 @@ sap.ui.define([
             },
 
             setChangeStatus: function(changed) {
-                // sap.ushell.Container.setDirtyFlag(changed);
+                sap.ushell.Container.setDirtyFlag(changed);
             },
 
             getMaterialList:function(){
@@ -59,6 +59,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         Common.closeLoadingDialog(that);
+                        me.setChangeStatus(false);
                     },
                     error: function() { 
                         Common.closeLoadingDialog(that);
@@ -141,6 +142,10 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     var path = "/MaterialListSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
 
                     oModel.create(path, oEntry, {
                         method: "POST",
@@ -230,6 +235,10 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     var path = "/MaterialListSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
 
                     oModel.create(path, oEntry, {
                         method: "POST",
@@ -326,6 +335,10 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     path = "/MaterialListSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
 
                     oModel.create(path, oEntry, {
                         method: "POST",

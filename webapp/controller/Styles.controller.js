@@ -31,6 +31,10 @@ sap.ui.define([
                 // sap.ushell.Container.setDirtyFlag(false);
             },
 
+            setChangeStatus: function(changed) {
+                sap.ushell.Container.setDirtyFlag(changed);
+            },
+
             setSmartFilterModel: function () {
                 var oModel = this.getOwnerComponent().getModel("StyleHeaderFilters");
                 var oSmartFilter = this.getView().byId("SmartFilterBar");
@@ -108,6 +112,7 @@ sap.ui.define([
                         oJSONDataModel.setData(oData);
                         me.getView().setModel(oJSONDataModel, "DataModel");
                         me.setTableData(statusColNo);
+                        me.setChangeStatus(false);
                     },
                     error: function (err) { }
                 });
@@ -231,6 +236,7 @@ sap.ui.define([
             goToDetail: function (oEvent) {
                 var oButton = oEvent.getSource();
                 var styleNo = oButton.data("StyleNo").STYLENO;
+                that.setChangeStatus(false);
                 that.navToDetail(styleNo);
             },
 
@@ -243,6 +249,7 @@ sap.ui.define([
 
             onCreateNewStyle: function () {
                 this._sbu = this.getView().byId("SmartFilterBar").getFilterData().SBU;
+                this.setChangeStatus(false);
 
                 if (!this._ConfirmNewDialog) {
                     this._ConfirmNewDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmCreateStyle", this);

@@ -431,7 +431,7 @@ sap.ui.define([
 
             var property;
 
-            if (tabName === 'bomGMCTable' || tabName === 'bomDetailedTable') {
+            if (tabName === 'bomDetailedTable') {
                 property = '/results/items';
                 aParent = oTable.getModel('DataModel').getProperty(property);
 

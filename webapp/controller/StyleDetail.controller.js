@@ -121,11 +121,12 @@ sap.ui.define([
             // },
 
             setChangeStatus: function(changed) {
-                // sap.ushell.Container.setDirtyFlag(changed);
+                sap.ushell.Container.setDirtyFlag(changed);
                 // console.log('set status ' + sap.ushell.Container.getDirtyFlag());
             },
 
             getHeaderData: function () {
+                var me = this;
                 var styleNo = this._styleNo;
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
@@ -140,6 +141,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "headerData");
                         Common.closeLoadingDialog(that);
+                        me.setChangeStatus(false);
                     },
                     error: function () {
                         Common.closeLoadingDialog(that);
@@ -234,34 +236,20 @@ sap.ui.define([
                 var oMsgStrip = this.getView().byId('HeaderMessageStrip');
                 oMsgStrip.setVisible(false);
 
-                var that = this;
-                var oView = this.getView();
-                var aInputs = [];
-
                 if (!this._headerChanged) {
                     Common.showMessage('No changes made');
                 } else {
 
-                    // for (var i = 0; i < me._requiredFields.length; i++) {
-                    //     aInputs.push(oView.byId(me._requiredFields[i]));
-                    // }
-
-                    // var bValidationError = false;
-
-                    // jQuery.each(aInputs, function (i, oInput) {
-                    //     if(oInput !== undefined)
-                    //     bValidationError = that._validateInput(oInput) || bValidationError;
-                    // });
-
-                    // if (!bValidationError) {
-
                     oEntry.Styleno = this._styleNo;
-                    // oEntry.Createdby = "BAS_CONN";
                     oEntry.Sbu = this._sbu;
 
-                    path = "/StyleDetailSet";
-
                     if (this._styleNo === "NEW") {
+
+                        path = "/StyleDetailSet";
+
+                        oModel.setHeaders({
+                            sbu: this._sbu
+                        });
 
                         oModel.create(path, oEntry, {
                             method: "POST",
@@ -294,6 +282,10 @@ sap.ui.define([
                     } else {
                         path = "/StyleDetailSet('" + this._styleNo + "')";
 
+                        oModel.setHeaders({
+                            sbu: this._sbu
+                        });
+
                         oModel.update(path, oEntry, {
                             method: "PUT",
                             success: function (data, oResponse) {
@@ -316,11 +308,6 @@ sap.ui.define([
                             }
                         });
                     }
-
-                    // } else {
-                    //     Common.showMessage("Fill-in all required fields");
-                    // }
-
                 }
             },
 
@@ -488,6 +475,10 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     path = "/AttributesGeneralSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
 
                     oModel.create(path, oEntry, {
                         method: "POST",
@@ -696,6 +687,10 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     path = "/AttributesGeneralSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
 
                     oModel.create(path, oEntry, {
                         method: "POST",
@@ -915,6 +910,10 @@ sap.ui.define([
 
                         path = "/AttributesGeneralSet";
 
+                        oModel.setHeaders({
+                            sbu: this._sbu
+                        });
+
                         oModel.create(path, oEntry, {
                             method: "POST",
                             success: function (oData, oResponse) {
@@ -1061,6 +1060,10 @@ sap.ui.define([
 
                     path = "/AttributesProcessSet";
 
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
+
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oData, oResponse) {
@@ -1187,6 +1190,10 @@ sap.ui.define([
 
                 path = "/StyleVersionSet";
 
+                oModel.setHeaders({
+                    sbu: this._sbu
+                });
+
                 oModel.create(path, oEntry, {
                     method: "POST",
                     success: function (oData, oResponse) {
@@ -1232,6 +1239,10 @@ sap.ui.define([
                     Styleno: this._styleNo,
                     Verno: version
                 };
+
+                oModel.setHeaders({
+                    sbu: this._sbu
+                });
 
                 oModel.update(entitySet, oEntry, {
                     method: "PUT",
@@ -1344,8 +1355,12 @@ sap.ui.define([
                         oEntry.VerToItems.push(item);
                     };
                     Common.openLoadingDialog(that);
-
+                    
                     path = "/VersionSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
 
                     oModel.create(path, oEntry, {
                         method: "POST",
