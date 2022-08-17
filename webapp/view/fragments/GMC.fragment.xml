@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="GMC"
+		title="{i18n>SelectGMC}"
 		class="sapUiPopupWithPadding"
 		items="{GMCModel>/results}"
 		search="_GMCValueHelpSearch"

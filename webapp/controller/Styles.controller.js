@@ -23,12 +23,7 @@ sap.ui.define([
                 this._router.getRoute("RouteStyles").attachPatternMatched(this._routePatternMatched, this);
 
                 this._Model = this.getOwnerComponent().getModel();
-                // this._User = sap.ushell.Container.getService("UserInfo").getId();
                 this.setSmartFilterModel();
-            },
-
-            _routePatternMatched: function (oEvent) {
-                // sap.ushell.Container.setDirtyFlag(false);
             },
 
             setChangeStatus: function(changed) {
@@ -154,6 +149,7 @@ sap.ui.define([
                     var sColumnVisible = context.getObject().Visible;
                     var sColumnSorted = context.getObject().Sorted;
                     var sColumnSortOrder = context.getObject().SortOrder;
+                    var sColumnToolTip = context.getObject().Tooltip;
                     //alert(sColumnId.);
                     return new sap.ui.table.Column({
                         id: sColumnId,
@@ -201,7 +197,8 @@ sap.ui.define([
                         text: "",
                         icon: "sap-icon://detail-view",
                         type: "Ghost",
-                        press: this.goToDetail
+                        press: this.goToDetail,
+                        tooltip: "Manage this style"
                     });
                     oColumnTemplate.data("StyleNo", "{}");
                 } else if (sColumnType === "COPY") {
@@ -209,7 +206,8 @@ sap.ui.define([
                         text: "",
                         icon: "sap-icon://copy",
                         type: "Ghost",
-                        press: this.onCopyStyle
+                        press: this.onCopyStyle,
+                        tooltip: "Copy this style"
                     });
                     oColumnTemplate.data("StyleNo", "{}");
                 } else {

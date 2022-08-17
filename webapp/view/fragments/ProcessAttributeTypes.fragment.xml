@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Attribute Types"
+		title="{i18n>SelectAttributeType}"
 		class="sapUiPopupWithPadding"
 		items="{ProcessAttribTypeModel>/results}"
 		search="_processAttrTypesValueHelpSearch"

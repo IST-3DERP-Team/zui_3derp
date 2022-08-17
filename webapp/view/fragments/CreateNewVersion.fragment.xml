@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
-	<Dialog title="Create new version" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" xmlns:tnt="sap.tnt">
+	<Dialog title="{i18n>Createnewversion}" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" xmlns:tnt="sap.tnt">
 		<Panel>
 			<f:Form editable="true" class="sapUiNoContentPadding">
                 <f:layout>
@@ -8,19 +8,19 @@
                 <f:formContainers>
                     <f:FormContainer ariaLabelledBy="Grp3">
                         <f:formElements>
-                            <f:FormElement label="Description (en)">
+                            <f:FormElement label="{i18n>DescriptionEN}">
                                 <f:fields>
                                     <Input id="newVersionDesc1"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Description (cn)">
+                            <f:FormElement label="{i18n>DescriptionCN}">
                                 <f:fields>
                                     <Input id="newVersionDesc2"/>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement>
                                 <f:fields>
-                                    <CheckBox id="newVersionCurrent" text="Set as Current" selected="true" />
+                                    <CheckBox id="newVersionCurrent" text="{i18n>SetCurrent}" selected="true" />
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>

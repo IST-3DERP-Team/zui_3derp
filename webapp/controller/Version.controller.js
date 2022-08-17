@@ -499,7 +499,45 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
             },
 
-            onBOMbyGMCChange: function () {
+            onBOMbyGMCChange: function (oEvent) {
+                that._BOMbyGMCChanged = true;
+                that.setChangeStatus(true);
+
+                try {
+                        var oTable = that.getView().byId("bomGMCTable");
+                        var oColumns = oTable.getColumns();
+
+                        for(var i = 0; i < oColumns.length; i++) {
+                            var name = oColumns[i].getName();
+                            if(name === 'ENTRYUOM') {
+                                var uomValue = oEvent.getSource().getParent().mAggregations.cells[i].getValue()
+                                var oBaseUomInput = oEvent.getSource().getParent().mAggregations.cells[i].getId();
+                            }
+                            if(name === 'GMC') {
+                                var sInputValue = oEvent.getSource().getParent().mAggregations.cells[i].getValue()
+                            }
+                        }
+
+                        if(uomValue === '') {
+                            var gmc =  that.getView().getModel('GMCModel').getData().results;
+                            var gmcUom = gmc.find((item) => item.Gmc === sInputValue)
+
+                            var oBaseUomInput2 = sap.ui.getCore().byId(oBaseUomInput);
+
+                            if(gmcUom !== undefined) {
+                                var baseUom = gmcUom.Baseuom;
+                                if(baseUom !== undefined) {    
+                                    oBaseUomInput2.setValue(baseUom);
+                                } 
+                            } else {
+                                oBaseUomInput2.setValue('');
+                            }
+                        }
+
+                } catch(err) {}
+            },
+
+            onBOMbyGMCLiveChange: function () {
                 that._BOMbyGMCChanged = true;
                 that.setChangeStatus(true);
             },
@@ -1121,7 +1159,7 @@ sap.ui.define([
             onRMC: function() {
                 var oModel = this.getOwnerComponent().getModel();
 
-                var entitySet = "/StyleBOMGMCSet(STYLENO='" + this._styleNo +  "',VERNO='" + this._version + "')";
+                var entitySet = "/StyleBOMGMCSet(STYLENO='" + this._styleNo +  "',VERNO='" + this._version + "',BOMSEQ='')";
 
                 Common.openLoadingDialog(that);
 
@@ -1401,12 +1439,15 @@ sap.ui.define([
                 var columnType = column.ColumnType;
                 var editModeCond;
                 var changeFunction;
+                var liveChangeFunction;
 
                 if(type === "GMC") {
                     changeFunction = that.onBOMbyGMCChange;
+                    liveChangeFunction = that.onBOMbyGMCLiveChange;
                     editModeCond = '${BOMbyGMCEditModeModel>/editMode} ? true : false';
                 } else {
                     changeFunction = that.onBOMbyUVChange;
+                    liveChangeFunction = that.onBOMbyUVChange;
                     editModeCond = '${BOMbyUVEditModeModel>/editMode} ? true : false';
                 }
 
@@ -1512,7 +1553,7 @@ sap.ui.define([
                             showValueHelp: true,
                             valueHelpRequest: that.onGMCValueHelp,
                             change: changeFunction,
-                            liveChange: changeFunction,
+                            liveChange: liveChangeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false ),
                             visible: column.Visible
                         });
@@ -1552,7 +1593,7 @@ sap.ui.define([
                 return {
                     "Styleno": this._styleNo,
                     "Verno": this._version,
-                    "Bomseq": " ",
+                    "Bomseq": item.BOMSEQ,
                     "Bomitem": " ",
                     "Compseq": " ",
                     "Sortseq": " ",
@@ -1992,8 +2033,8 @@ sap.ui.define([
             _styleValueHelpSearch: function (evt) {
                 var sValue = evt.getParameter("value");
                 var andFilter = [], orFilter = [];
-                orFilter.push(new sap.ui.model.Filter("STYLENO", sap.ui.model.FilterOperator.Contains, sValue));
-                orFilter.push(new sap.ui.model.Filter("DESC1", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Styleno", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
                 andFilter.push(new sap.ui.model.Filter(orFilter, false));
                 evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
             },

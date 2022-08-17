@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Customer Groups"
+		title="{i18n>SelectCustomerGroup}"
 		class="sapUiPopupWithPadding"
 		items="{CustGroupModel>/results}"
 		search="_custGroupValueHelpSearch"

@@ -1,21 +1,18 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+
         <Toolbar height="3rem" style="Clear">
-            <Label text="Version Attributes"/>
+            <Label text="{i18n>VersionAttributes}"/>
             <ToolbarSpacer />
-            <Button icon="sap-icon://save" text="Save" press="onSaveVersionAttrTable" visible="{VersionAttrEditModeModel>/editMode}"/>
-            <Button icon="sap-icon://add" press="addLine" visible="{VersionAttrEditModeModel>/editMode}">
+            <Button icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveversionattributes}" press="onSaveVersionAttrTable" visible="{VersionAttrEditModeModel>/editMode}"/>
+            <Button icon="sap-icon://add" press="addLine" tooltip="{i18n>Addnewline}" visible="{VersionAttrEditModeModel>/editMode}">
                 <customData>
                     <core:CustomData key="TableName" value="versionAttrTable"/>
                 </customData>
             </Button>
-            <Button type="Ghost" icon="sap-icon://delete" press="onDeleteVersionAttr" visible="{VersionAttrEditModeModel>/editMode}">
-                <customData>
-                    <core:CustomData key="TableName" value="versionAttrTable"/>
-                </customData>
-            </Button>
-            <Button type="Ghost" icon="sap-icon://edit" text="Edit" press="setVersionAttrEditMode" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? false : true }"/>
-            <Button type="Ghost" icon="sap-icon://decline" text="Cancel" press="cancelVersionAttrEdit" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? true : false }"/>
+            <Button type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteVersionAttr" visible="{VersionAttrEditModeModel>/editMode}"/>
+            <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editversionattributes}" press="setVersionAttrEditMode" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? false : true }"/>
+            <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelVersionAttrEdit" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? true : false }"/>
         </Toolbar>
 
         <MessageStrip id="VersionAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
@@ -24,9 +21,8 @@
             visibleRowCountMode="Auto" minAutoRowCount="5" class="sapUiSizeCompact" selectionMode="{= ${VersionAttrEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
             <c:columns>
                 <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
-                    <Label text="Attribute Type"/>
+                    <Label text="{i18n>AttributeType}"/>
                     <t:template>
-                        <!-- <Input value="{DataModel>Attribtyp}" editable="{VersionAttrEditModeModel>/editMode}"/> -->
                         <Input id="AttrTypesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
                             change="onVersionAttrChange" liveChange="onVersionAttrChange"
                             valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{AttribTypeModel>/results}" value="{DataModel>Attribtyp}">
@@ -37,9 +33,8 @@
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
-                    <Label text="Attribute Code" />
+                    <Label text="{i18n>AttributeCode}"/>
                     <t:template>
-                        <!-- <Input value="{DataModel>Attribcd}" editable="{VersionAttrEditModeModel>/editMode}"/> -->
                         <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
                             change="onVersionAttrChange" liveChange="onVersionAttrChange"
                             valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{AttribCdModel>/results}" value="{DataModel>Attribcd}">
@@ -50,37 +45,32 @@
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
-                    <Label text="Description" />
+                    <Label text="{i18n>Description}" />
                     <t:template>
                         <Input value="{DataModel>Desc1}" editable="{VersionAttrEditModeModel>/editMode}" 
                             change="onVersionAttrChange" liveChange="onVersionAttrChange"/>
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">
-                    <Label text="Value" />
+                    <Label text="{i18n>Value}" />
                     <t:template>
                         <Input value="{DataModel>Attribval}" editable="{VersionAttrEditModeModel>/editMode}" 
                             change="onVersionAttrChange" liveChange="onVersionAttrChange"/>
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Valunit" sortProperty="Valunit">
-                    <Label text="UOM" />
+                    <Label text="{i18n>UOM}" />
                     <t:template>
-                        <!-- <Input value="{DataModel>Valunit}" editable="{VersionAttrEditModeModel>/editMode}"/> -->
-                        <!-- <ComboBox items="{ValueHelpModel>/uom}" selectedKey="{DataModel>/Uom}" 
-                            showSecondaryValues="true" filterSecondaryValues="true" editable="{VersionAttrEditModeModel>/editMode}">
-                            <core:ListItem key="{ValueHelpModel>UoM}" text="{ValueHelpModel>Desc1}" additionalText = "{ValueHelpModel>UoM}"/>
-                        </ComboBox> -->
                         <Input id="UomInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
                             change="onVersionAttrChange" liveChange="onVersionAttrChange"
                             valueHelpRequest="onUomValueHelp" suggestionItems="{UOMModel>/results}" value="{DataModel>Valunit}">
                             <suggestionItems>
                                 <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}"/>
-                                <!-- <core:Item text="{UOMModel>Valunit}" /> -->
                             </suggestionItems>
                         </Input>
                     </t:template>
                 </t:Column>
             </c:columns>
         </c:DynamicTable>
+        
 </core:FragmentDefinition>        

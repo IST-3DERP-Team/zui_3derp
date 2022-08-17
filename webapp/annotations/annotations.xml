@@ -22,16 +22,18 @@
 	</edmx:Reference>
 	<edmx:DataServices>
 		<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm">
-			<!-- <Annotations Target="ZVI_3DERP_STYLES_FILTER_CDS.ZVI_3DERP_STYLES_FILTERType"> -->
-				<!-- <Annotation Term="UI.SelectionFields">
+			<!-- <Annotations Target="ZVI_3DERP_STYLES_FILTER_CDS.ZVI_3DERP_STYLES_FILTERType">
+				<Annotation Term="UI.SelectionFields">
 					<Collection>
-						<PropertyPath>SBU</PropertyPath>
+						<PropertyPath>SBU<Annotation Term="Common.QuickInfo" String="{@i18n&gt;appTitle}"/></PropertyPath>
 						<PropertyPath>SEASONCD</PropertyPath>
 						<PropertyPath >PRODTYP</PropertyPath>
 					</Collection>
-				</Annotation> -->
-			<!-- </Annotations> -->
+				</Annotation>
+			</Annotations> -->
 			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZVI_3DERP_STYLES_FILTER_CDS.ZVI_3DERP_STYLES_FILTERType/SEASONCD">
+                <Annotation Term="com.sap.vocabularies.Common.v1.QuickInfo" String="{i18n>SeasonFilter}"/>
+                <!-- <Annotation Term="Common.QuickInfo" String="Season"/> -->
 				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
 					<Record Type="com.sap.vocabularies.Common.v1.ValueListType">
 						<PropertyValue Property="CollectionPath" String="ZVB_SEASON_SH"/>
@@ -54,6 +56,7 @@
 				</Annotation>
 			</Annotations>
 			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZVI_3DERP_STYLES_FILTER_CDS.ZVI_3DERP_STYLES_FILTERType/PRODTYP">
+                <Annotation Term="com.sap.vocabularies.Common.v1.QuickInfo" String="{@i18n&gt;SeasonFilter}"/>
 				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
 					<Record Type="com.sap.vocabularies.Common.v1.ValueListType">
 						<PropertyValue Property="CollectionPath" String="ZVB_PRODTYP_SH"/>

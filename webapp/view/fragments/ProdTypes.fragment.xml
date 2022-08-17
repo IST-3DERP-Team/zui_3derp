@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Product Types"
+		title="{i18n>SelectProductType}"
 		class="sapUiPopupWithPadding"
 		items="{ProdTypeModel>/results}"
 		search="_prodTypeValueHelpSearch"

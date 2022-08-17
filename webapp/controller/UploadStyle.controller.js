@@ -99,7 +99,9 @@ sap.ui.define([
                         // workbook.SheetNames.forEach(function(sheetName) {
                             // Here is your object for every sheet in workbook
                             // excelData = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], {range:2});
-                            excelData = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], {range:1});
+                            excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {range:1});
+                        
+                            var excelJson = XLSX.utils.make_json(workbook.Sheets[sheetName], {header:1});
                         // });
                         
                         var sheet = workbook.Sheets[sheetName];
@@ -122,7 +124,7 @@ sap.ui.define([
                         
                         var headers = [];
                         var range = XLSX.utils.decode_range(sheet['!ref']);
-                        var C, R = 1;
+                        var C, R = 0;
                         // for(C = range.s.c; C <= range.e.c; ++C) {
                         //     var hdr = "COLUMN" + ( C + 1 ); 
                         //     headers.push(hdr);
@@ -131,10 +133,27 @@ sap.ui.define([
                         for(C = range.s.c; C <= range.e.c; ++C) {
                             var cell = sheet[XLSX.utils.encode_cell({c:C, r:R})];
                     
-                            var hdr = "UNKNOWN " + C; // <-- replace with your desired default 
+                            var hdr = "UNKNOWN"; // <-- replace with your desired default 
                             if(cell && cell.t) hdr = XLSX.utils.format_cell(cell);
                     
                             headers.push(hdr);
+                        }
+
+                        R = 1;
+                        var headers2 = [];
+                        for(C = range.s.c; C <= range.e.c; ++C) {
+                            var cell = sheet[XLSX.utils.encode_cell({c:C, r:R})];
+                    
+                            var hdr = "UNKNOWN"; // <-- replace with your desired default 
+                            if(cell && cell.t) hdr = XLSX.utils.format_cell(cell);
+                    
+                            headers2.push(hdr);
+                        }
+
+                        for(var i = 0; i < headers2.length; i++) {
+                            if(headers2[i] === "UNKNOWN") {
+                                headers2[i] = headers[i];
+                            }
                         }
 
                         oModel.setHeaders({
@@ -155,22 +174,37 @@ sap.ui.define([
                                     })
                                 })
 
-                                var idx;
+                                // var idx;
                                 
-                                var items = [];
+                                // var items = [];
                                 var rowData = [];
-                                var seqno;
+                                // var seqno;
                                 
-                                for (var i = 0; i < excelData.length; i++) {
-                                    var data = { };
-                                    for (var j = 0; j < headers.length; j++) {
-                                        idx = j + 1;
-                                        seqno = me.pad(idx, 3);
+                                // for (var i = 0; i < excelData.length; i++) {
+                                //     var data = { };
+                                //     for (var j = 0; j < headers2.length; j++) {
+                                //         idx = j + 1;
+                                //         seqno = me.pad(idx, 3);
                                         
-                                        var item = oData.results.find((result) => result.Seqno === seqno);
-                                        if(item !== undefined) {
-                                            data[item.Columnname] = excelData[i][headers[j]];
-                                        }
+                                //         var item = oData.results.find((result) => result.Seqno === seqno);
+                                //         if(item !== undefined) {
+                                //             data[item.Columnname] = excelData[i][headers2[j]];
+                                //         }
+                                //     }
+                                //     rowData.push(data);
+                                // }
+
+                                for (var i = 3; i < excelJson.length; i++) {
+                                    var data = { };
+                                    for (var j = 0; j < columnData.length; j++) {
+                                        // idx = j + 1;
+                                        var seqno = columnData[j].Seqno;
+                                        var idx = Number(seqno) - 1;
+                                        
+                                        // var item = oData.results.find((result) => result.Seqno === seqno);
+                                        // if(item !== undefined) {
+                                            data[columnData[j].Columnname] = excelJson[i][idx];
+                                        // }
                                     }
                                     rowData.push(data);
                                 }
@@ -186,7 +220,7 @@ sap.ui.define([
                                 oTable.bindColumns("DataModel>/columns", function (sId, oContext) {
                                     var column = oContext.getObject();
                                     return new sap.ui.table.Column({
-                                        label: column.Columnname,
+                                        label: "{i18n>" + column.Columnname + "}",
                                         template: new sap.m.Text({ text: "{DataModel>" + column.Columnname + "}" }),
                                         sortProperty: column.Columnname,
                                         filterProperty: column.Columnname,

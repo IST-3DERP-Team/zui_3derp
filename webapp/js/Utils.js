@@ -190,13 +190,17 @@ sap.ui.define([
         },
 
         getVersionSearchHelps: function (that) {
-            var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
             var me = that;
 
             var oView = that.getView();
 
             var oModel = that.getOwnerComponent().getModel();
             oModel.setHeaders({
+                sbu: that._sbu
+            });
+
+            var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
+            oSHModel.setHeaders({
                 sbu: that._sbu
             });
 
@@ -283,7 +287,7 @@ sap.ui.define([
 
             //get Styles
             var oJSONModel8 = new JSONModel();
-            oModel.read("/StyleSet", {
+            oSHModel.read("/StylesSet", {
                 success: function (oData, oResponse) {
                     oJSONModel8.setData(oData);
                     oJSONModel8.setSizeLimit(9999);
@@ -338,9 +342,6 @@ sap.ui.define([
 
             //get Purchasing Plants
             var oJSONModel13 = new JSONModel();
-            oSHModel.setHeaders({
-                sbu: that._sbu
-            });
             oSHModel.read("/PurPlantSet", {
                 success: function (oData, oResponse) {
                     oJSONModel13.setData(oData);

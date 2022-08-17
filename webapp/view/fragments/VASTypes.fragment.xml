@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="VAS Types"
+		title="{i18n>SelectVASType}"
 		class="sapUiPopupWithPadding"
 		items="{VASTypeModel>/results}"
 		search="_VASTypesValueHelpSearch"

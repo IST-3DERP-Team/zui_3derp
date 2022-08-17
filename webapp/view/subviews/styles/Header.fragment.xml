@@ -1,14 +1,15 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
         <Panel id="headerPanel" expandable="true" expanded="true" width="auto" class="sapUiSizeCompact whiteBackground">
+
             <headerToolbar>
                 <Toolbar id="TB1" height="3rem" style="Clear">
-                    <Title text="Header" />
+                    <Title text="{i18n>Header}" />
                     <ToolbarSpacer />
-                    <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{HeaderEditModeModel>/editMode}" press="onSaveHeader"/>
-                    <Button type="Ghost" icon="sap-icon://delete" text="Delete Style" visible="{HeaderEditModeModel>/editMode}" press="onDeleteStyle"/>
-                    <Button type="Ghost" icon="sap-icon://edit" text="Edit" press="setHeaderEditMode" visible="{= ${HeaderEditModeModel>/editMode} === true ? false : true }"/>
-                    <Button type="Ghost" icon="sap-icon://decline" text="Cancel" press="cancelHeaderEdit" visible="{= ${HeaderEditModeModel>/editMode} === true ? true : false }"/>
+                    <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Savestyleheader}" press="onSaveHeader" visible="{HeaderEditModeModel>/editMode}"/>
+                    <Button type="Ghost" icon="sap-icon://delete" text="{i18n>Deletestyle}" tooltip="{i18n>Deletestyleheader}" press="onDeleteStyle" visible="{HeaderEditModeModel>/editMode}"/>
+                    <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editstyleheader}" press="setHeaderEditMode" visible="{= ${HeaderEditModeModel>/editMode} === true ? false : true }"/>
+                    <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelHeaderEdit" visible="{= ${HeaderEditModeModel>/editMode} === true ? true : false }"/>
                 </Toolbar>
             </headerToolbar>
 
@@ -40,16 +41,11 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>SEASONCD}" visible="{= ${VisibleFieldsData>/SEASONCD} === true ? true : false }">
                                 <f:fields>
-                                    <!-- <ComboBox id="seaonsCB" items="{ path: '/results', sorter: { path: 'Seasoncd' } }" selectedKey="{headerData>/Seasoncd}"
-                                        showSecondaryValues="true" filterSecondaryValues= "true" editable="{HeaderEditModeModel>/headerEditMode}">
-                                        <core:ListItem key="{Seasoncd}" text="{Desc1}" additionalText = "{Yr}"/>
-                                    </ComboBox> -->
                                     <Input id="SEASONCD" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
                                         valueHelpRequest="onSeasonsValueHelp" suggestionItems="{SeasonsModel>/results}" value="{headerData>/Seasoncd}" 
                                         change="onHeaderChange" liveChange="onHeaderChange">
                                         <suggestionItems>
                                             <core:ListItem text="{SeasonsModel>Seasoncd}" additionalText="{SeasonsModel>Desc1}"/>
-                                            <!-- <core:Item key="{ValueHelpModel>Valunit}" text="{ValueHelpModel>Valunit}" /> -->
                                         </suggestionItems>
                                     </Input>
                                 </f:fields>
@@ -73,33 +69,22 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>PRODTYP}" visible="{= ${VisibleFieldsData>/PRODTYP} === true ? true : false }">
                                 <f:fields>
-                                    <!-- <ComboBox id="prodTypeCB" items="{ path: '/results', sorter: { path: 'ProdTyp' } }" selectedKey="{headerData>/Prodtyp}" 
-                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{HeaderEditModeModel>/headerEditMode}">
-                                        <core:ListItem key="{ProdTyp}" text="{Desc1}" additionalText = "{ProdTyp}"/>
-                                    </ComboBox> -->
                                     <Input id="PRODTYP" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
                                         valueHelpRequest="onProdTypeValueHelp" suggestionItems="{ProdTypeModel>/results}" value="{headerData>/Prodtyp}" 
                                         change="onHeaderChange" liveChange="onHeaderChange">
                                         <suggestionItems>
                                             <core:ListItem text="{ProdTypeModel>ProdTyp}" additionalText="{ProdTypeModel>Desc1}"/>
-                                            <!-- <core:Item key="{ValueHelpModel>Valunit}" text="{ValueHelpModel>Valunit}" /> -->
                                         </suggestionItems>
                                     </Input>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>STYLECAT}" visible="{= ${VisibleFieldsData>/STYLECAT} === true ? true : false }">
                                 <f:fields>
-                                    <!-- <Input value="{headerData>/Stylecat}" editable="{HeaderEditModeModel>/headerEditMode}"/> -->
-                                    <!-- <ComboBox id="styleCatCB" items="{ path: '/results', sorter: { path: 'Stylcat' } }" selectedKey="{headerData>/Stylecat}" 
-                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{HeaderEditModeModel>/headerEditMode}">
-                                        <core:ListItem key="{Stylcat}" text="{Desc1}" additionalText = "{Stylcat}"/>
-                                    </ComboBox> -->
                                     <Input id="STYLECAT" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
                                         valueHelpRequest="onStyleCatValueHelp" suggestionItems="{StyleCatModel>/results}" value="{headerData>/Stylecat}" 
                                         change="onHeaderChange" liveChange="onHeaderChange">
                                         <suggestionItems>
                                             <core:ListItem text="{StyleCatModel>Stylcat}" additionalText="{StyleCatModel>Desc1}"/>
-                                            <!-- <core:Item key="{ValueHelpModel>Valunit}" text="{ValueHelpModel>Valunit}" /> -->
                                         </suggestionItems>
                                     </Input>
                                 </f:fields>
@@ -116,17 +101,11 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>SALESGRP}" visible="{= ${VisibleFieldsData>/SALESGRP} === true ? true : false }">
                                 <f:fields>
-                                    <!-- <ComboBox id="salesGroupCB" items="{/results}" selectedKey="{headerData>/Salesgrp}" 
-                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{HeaderEditModeModel>/headerEditMode}">
-                                        <core:ListItem key="{SalesGrp}" text="{Desc1}" additionalText = "{SalesGrp}"/>
-                                    </ComboBox> -->
                                     <Input id="SALESGRP" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
                                         valueHelpRequest="onSalesGroupValueHelp" suggestionItems="{SalesGroupModel>/results}" value="{headerData>/Salesgrp}" 
                                         change="onHeaderChange" liveChange="onHeaderChange">
                                         <suggestionItems>
-                                            <core:ListItem text="{SalesGroupModel>SalesGrp}" additionalText="{SalesGroupModel>Desc1}"/>
-                                            <!-- <core:Item key="{ValueHelpModel>Valunit}" text="{ValueHelpModel>Valunit}" /> -->
-                                        </suggestionItems>
+                                            <core:ListItem text="{SalesGroupModel>SalesGrp}" additionalText="{SalesGroupModel>Desc1}"/>                                  </suggestionItems>
                                     </Input>
                                 </f:fields>
                             </f:FormElement>
@@ -149,47 +128,31 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>CUSTGRP}" visible="{= ${VisibleFieldsData>/CUSTGRP} === true ? true : false }">
                                 <f:fields>
-                                    <!-- <ComboBox id="customerGroupCB" items="{/results}" selectedKey="{headerData>/Custgrp}" 
-                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{HeaderEditModeModel>/headerEditMode}">
-                                        <core:ListItem key="{CustGrp}" text="{Desc1}" additionalText = "{CustGrp}"/>
-                                    </ComboBox> -->
                                     <Input id="CUSTGRP" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
                                         valueHelpRequest="onCustGroupValueHelp" suggestionItems="{CustGroupModel>/results}" value="{headerData>/Custgrp}" 
                                         change="onHeaderChange" liveChange="onHeaderChange">
                                         <suggestionItems>
                                             <core:ListItem text="{CustGroupModel>CustGrp}" additionalText="{CustGroupModel>Desc1}"/>
-                                            <!-- <core:Item key="{ValueHelpModel>Valunit}" text="{ValueHelpModel>Valunit}" /> -->
                                         </suggestionItems>
                                     </Input>
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>SOLDTOCUST}" visible="{= ${VisibleFieldsData>/SOLDTOCUST} === true ? true : false }">
-                                <!-- <f:fields>
-                                    <Input value="{headerData>/Soldtocust}" editable="{HeaderEditModeModel>/headerEditMode}"/>
-                                </f:fields> -->
-                                <!-- <Input id="customerInput" value="{headerData>/Soldtocust}" type="Text" showValueHelp="true" valueHelpRequest="onCustomersValueHelp"
-                                    editable="{HeaderEditModeModel>/headerEditMode}" textFormatMode="KeyValue"/> -->
                                 <Input id="SOLDTOCUST" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
                                     valueHelpRequest="onCustomersValueHelp" suggestionItems="{CustomersModel>/results}" value="{headerData>/Soldtocust}" 
                                     change="onHeaderChange" liveChange="onHeaderChange">
                                     <suggestionItems>
                                         <core:ListItem text="{CustomersModel>Custno}" additionalText="{CustomersModel>Desc1}"/>
-                                        <!-- <core:Item key="{ValueHelpModel>Valunit}" text="{ValueHelpModel>Valunit}" /> -->
                                     </suggestionItems>
                                 </Input>
                             </f:FormElement>
                             <f:FormElement label="{i18n>SIZEGRP}" visible="{= ${VisibleFieldsData>/SIZEGRP} === true ? true : false }">
                                 <f:fields>
-                                    <!-- <ComboBox id="sizeGroupCB" items="{/results}" selectedKey="{headerData>/Sizegrp}" 
-                                        filterSecondaryValues="true" editable="{HeaderEditModeModel>/headerEditMode}">
-                                        <core:ListItem key="{AttribGrp}" text="{AttribGrp}"/>
-                                    </ComboBox> -->
                                     <Input id="SIZEGRP" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
                                         valueHelpRequest="onSizeGroupValueHelp" suggestionItems="{SizeGroupModel>/results}" value="{headerData>/Sizegrp}" 
                                         change="onHeaderChange" liveChange="onHeaderChange">
                                         <suggestionItems>
                                             <core:ListItem text="{SizeGroupModel>AttribGrp}"/>
-                                            <!-- <core:Item key="{ValueHelpModel>Valunit}" text="{ValueHelpModel>Valunit}" /> -->
                                         </suggestionItems>
                                     </Input>
                                 </f:fields>
@@ -201,17 +164,11 @@
                         <f:formElements>
                             <f:FormElement label="{i18n>UOM}" visible="{= ${VisibleFieldsData>/UOM} === true ? true : false }">
                                 <f:fields>
-                                    <!-- <Input value="{headerData>/Uom}" editable="{HeaderEditModeModel>/headerEditMode}"/> -->
-                                    <!-- <ComboBox id="uomCB" items="{/results}" selectedKey="{headerData>/Uom}" 
-                                        showSecondaryValues="true" filterSecondaryValues="true" editable="{HeaderEditModeModel>/headerEditMode}">
-                                        <core:ListItem key="{UoM}" text="{Desc1}" additionalText = "{UoM}"/>
-                                    </ComboBox>-->
                                     <Input id="UOM" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
                                         valueHelpRequest="onUomValueHelp" suggestionItems="{UOMModel>/results}" value="{headerData>/Uom}" 
                                         change="onHeaderChange" liveChange="onHeaderChange">
                                         <suggestionItems>
                                             <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}"/>
-                                            <!-- <core:Item key="{ValueHelpModel>Valunit}" text="{ValueHelpModel>Valunit}" /> -->
                                         </suggestionItems>
                                     </Input>
                                 </f:fields>

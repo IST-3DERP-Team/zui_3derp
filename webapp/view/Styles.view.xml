@@ -2,35 +2,30 @@
     xmlns="sap.m" xmlns:c="zui3derp.control" xmlns:core="sap.ui.core" xmlns:t="sap.ui.table" xmlns:plugins="sap.ui.table.plugins" xmlns:fb="sap.ui.comp.filterbar" 
     xmlns:smartfilterbar="sap.ui.comp.smartfilterbar">
     <Page showHeader="false">
-        <!-- <Bar>
-            <contentLeft>
-                <Label text="{i18n>ManageStyles}" class="sapUiSmallMarginBegin"/>
-            </contentLeft>
-        </Bar> -->
 
         <!-- >>> Filters <<< -->
         <smartfilterbar:SmartFilterBar id="SmartFilterBar" entitySet="ZVI_3DERP_STYLES_FILTER" search="onSearch" persistencyKey="3DERP_StylesPKey" filterContainerWidth="15rem">
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterSBU" key="SBU" groupId="_BASIC" label="{i18n>SBUFilter}" mandatory="mandatory" controlType="dropDownList" filterType="single">
+                <smartfilterbar:ControlConfiguration id="filterSBU" key="SBU" groupId="_BASIC" label="{i18n>SBUFilter}" tooltip="{i18n>SBUFilter}" mandatory="mandatory" controlType="dropDownList" filterType="single">
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterSalesGroup" key="SALESGRP" groupId="_BASIC" label="{i18n>SalesGroupFilter}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
+                <smartfilterbar:ControlConfiguration id="filterSalesGroup" key="SALESGRP" groupId="_BASIC" label="{i18n>SALESGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
                     preventInitialDataFetchInValueHelpDialog="false">
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterCustomerGroup" key="CUSTGRP" groupId="_BASIC" label="{i18n>CustomerGroupFilter}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
+                <smartfilterbar:ControlConfiguration id="filterCustomerGroup" key="CUSTGRP" groupId="_BASIC" label="{i18n>CUSTGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
                     preventInitialDataFetchInValueHelpDialog="false">
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{i18n>SeasonFilter}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
+                <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{i18n>SEASONCD}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
                     preventInitialDataFetchInValueHelpDialog="false">
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{i18n>ProductTypeFilter}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
+                <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{i18n>PRODTYP}" mandatory="notMandatory" displayBehaviour="descriptionAndId"
                     preventInitialDataFetchInValueHelpDialog="false">
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
@@ -62,7 +57,7 @@
                 <smartfilterbar:ControlConfiguration key="PRODGRP" groupId="_ADVANCED" label="{i18n>PRODGRP}"/>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration key="PRODSIZEGRPGRP" groupId="_ADVANCED" label="{i18n>SIZEGRP}"/>
+                <smartfilterbar:ControlConfiguration key="SIZEGRP" groupId="_ADVANCED" label="{i18n>SIZEGRP}"/>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
                 <smartfilterbar:ControlConfiguration key="UOM" groupId="_ADVANCED" label="{i18n>UOM}"/>
@@ -109,40 +104,20 @@
                 <Title text="{i18n>style}" class="sapUiTinyMarginBegin"/>
             </HBox>
             <ToolbarSpacer/>
-			<Button text="{i18n>New}" icon="sap-icon://add-document" press="onCreateNewStyle" tooltip="Create New Style">
-              <layoutData>
-                  <ToolbarLayoutData shrinkable="true"/>
-              </layoutData>
-            </Button>
-            <Button text="{i18n>Copy}" icon="sap-icon://copy" press="onCopyMode" tooltip="Copy Style Mode">
-              <layoutData>
-                  <ToolbarLayoutData shrinkable="true"/>
-              </layoutData>
-            </Button>
-            <Button text="{i18n>Upload}" icon="sap-icon://upload" press="onUploadStyle"  tooltip="Upload Styles from File">
-              <layoutData>
-                  <ToolbarLayoutData shrinkable="true"/>
-              </layoutData>
-            </Button>
-            <Button icon="sap-icon://excel-attachment" press="onExport"  tooltip="Download to Excel">
+			<Button text="{i18n>New}" icon="sap-icon://add-document" tooltip="{i18n>Createnewstyle}" press="onCreateNewStyle"/>
+            <Button text="{i18n>Copy}" icon="sap-icon://copy" tooltip="{i18n>Copystylemode}" press="onCopyMode"/>
+            <Button text="{i18n>Upload}" icon="sap-icon://upload" tooltip="{i18n>Uploadstylesfromfile}" press="onUploadStyle"/>
+            <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">
                 <customData>
-                <core:CustomData key="TableName" value="styleDynTable"/>
+                    <core:CustomData key="TableName" value="styleDynTable"/>
                 </customData>
-                <layoutData>
-                  <ToolbarLayoutData shrinkable="true"/>
-                </layoutData>
             </Button>
-            <Button icon="sap-icon://grid" text="{i18n>Save}" press="onSaveLayoutSettings"  tooltip="Save Table Layout">
-              <layoutData>
-                  <ToolbarLayoutData shrinkable="true"/>
-              </layoutData>
-            </Button>
+            <Button icon="sap-icon://grid" text="{i18n>Save}" tooltip="{i18n>Savetablelayout}" press="onSaveLayoutSettings"/>
         </Toolbar>
        
         <Panel class="sapUiTinyMarginTop">
             <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
-                <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact" selectionMode="None" 
-                    showColumnVisibilityMenu="true">
+                <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact" selectionMode="None" showColumnVisibilityMenu="true">
                 </c:DynamicTable>
             </ScrollContainer>
         </Panel>

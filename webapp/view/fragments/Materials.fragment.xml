@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Material Nos."
+		title="{i18n>SelectMaterial}"
 		class="sapUiPopupWithPadding"
 		items="{MaterialsModel>/results}"
 		search="_handleValueHelpSearch"

@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Attribute Codes"
+		title="{i18n>SelectAttributeCode}"
 		class="sapUiPopupWithPadding"
 		items="{ProcessAttribCodeModel>/results}"
 		search="_processAttrCodesValueHelpSearch"

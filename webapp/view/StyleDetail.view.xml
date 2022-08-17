@@ -21,12 +21,12 @@
         <Panel id="detailPanel" expandable="true" expanded="false" width="auto" class="sapUiSizeCompact whiteBackground">
             <headerToolbar>
                 <Toolbar height="3rem" style="Clear">
-                    <Title text="Detail" />
+                    <Title text="{i18n>Detail}" />
                 </Toolbar>
             </headerToolbar>
-            <IconTabBar id="idIconTabBarMulti" expanded="{device>/isNoPhone}" tabDensityMode="Compact" expandable="false" class="sapUiNoContentPadding">
+            <IconTabBar tabDensityMode="Compact" expandable="false" class="sapUiNoContentPadding">
                 <items>
-                    <IconTabFilter icon="sap-icon://hint" text="Attributes">
+                    <IconTabFilter icon="sap-icon://hint" text="{i18n>Attributes}" tooltip="{i18n>Styleattributes}">
 
                         <!-- GENERAL ATTRIBUTES -->
                         <core:Fragment fragmentName="zui3derp.view.subviews.styles.GeneralAttributes" type="XML"/>
@@ -43,19 +43,20 @@
                     </IconTabFilter>
 
                     <!-- VERSIONS -->
-                    <IconTabFilter icon="sap-icon://notes" text="Versions">
+                    <IconTabFilter icon="sap-icon://notes" text="{i18n>Versions}" tooltip="{i18n>Manageversions}">
 
                         <!-- VERSIONS -->
                         <core:Fragment fragmentName="zui3derp.view.subviews.styles.Versions" type="XML"/>                        
                     </IconTabFilter>
 
                     <!-- ATTACHMENTS -->
-                    <IconTabFilter icon="sap-icon://attachment" text="Attachments">
+                    <IconTabFilter icon="sap-icon://attachment" text="{i18n>Attachments}" tooltip="{i18n>Manageattachments}">
                         <core:Fragment fragmentName="zui3derp.view.subviews.styles.Attachments" type="XML"/>  
                     </IconTabFilter>
                 </items>
             </IconTabBar>
         </Panel>
+        
         <VBox height="200px"/>
     </Page>
 </mvc:View>

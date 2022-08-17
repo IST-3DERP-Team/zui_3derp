@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Unit of Measure"
+		title="{i18n>SelectUOM}"
 		class="sapUiPopupWithPadding"
 		items="{UOMModel>/results}"
 		search="_uomValueHelpSearch"

@@ -5,13 +5,13 @@ sap.ui.define([
     "../js/Utils",
     "sap/ui/model/json/JSONModel",
     'jquery.sap.global',
-    // 'sap/ui/core/routing/HashChanger',
+    'sap/ui/core/routing/HashChanger',
     'sap/m/MessageStrip'
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, Utils, JSONModel, jQuery, MessageStrip) {
+    function (Controller, Filter, Common, Utils, JSONModel, jQuery, HashChanger, MessageStrip) {
         "use strict";
 
         var that;
@@ -77,9 +77,10 @@ sap.ui.define([
                 
                 if (this._styleNo === "NEW") {
                     this.setHeaderEditMode();
+                    this.setDetailVisible(false);
                 } else {
                     this.cancelHeaderEdit();
-
+                    this.setDetailVisible(true);
                     this.getGeneralTable();
                     this.getSizesTable();
                     this.getProcessesTable();
@@ -123,6 +124,11 @@ sap.ui.define([
             setChangeStatus: function(changed) {
                 sap.ushell.Container.setDirtyFlag(changed);
                 // console.log('set status ' + sap.ushell.Container.getDirtyFlag());
+            },
+
+            setDetailVisible: function(bool) {
+                var detailPanel = this.getView().byId('detailPanel');
+                detailPanel.setVisible(bool);
             },
 
             getHeaderData: function () {
@@ -245,6 +251,11 @@ sap.ui.define([
 
                     if (this._styleNo === "NEW") {
 
+                        oEntry.Statuscd = 'CRT';
+                        oEntry.Createdby = "$";
+                        oEntry.Createddt = "$";
+                        oEntry.Verno = "1";
+
                         path = "/StyleDetailSet";
 
                         oModel.setHeaders({
@@ -266,6 +277,12 @@ sap.ui.define([
                                 me.getProcessesTable();
                                 me._headerChanged = false;
                                 me.setChangeStatus(false);
+                                me.setDetailVisible(true);
+
+                                var oHashChanger = HashChanger.getInstance();
+                                var currHash = oHashChanger.getHash();
+                                var newHash = currHash.replace("NEW", me._styleNo);
+                                oHashChanger.replaceHash(newHash);
                             },
                             error: function (err) {
                                 var errorMsg;
@@ -748,7 +765,7 @@ sap.ui.define([
 	                	var attrtype = "COLOR";
 	                	var attrcd = oData.results[selected[i]].Attribcd;
 	
-		                var entitySet = "/StyleAttributesGeneralSet(Styleno='" + that._styleNo + "',Attribtyp='" + attrtype + "',Attribcd='" + attrcd + "')";
+		                var entitySet = "/StyleAttributesColorSet(Styleno='" + that._styleNo + "',Attribtype='" + attrtype + "',Attribcd='" + attrcd + "')";
 		
 		                oModel.remove(entitySet, {
 		                	groupId: "group1", 

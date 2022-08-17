@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Select Vendor"
+		title="{i18n>SelectVendor}"
 		class="sapUiPopupWithPadding"
 		items="{VendorModel>/results}"
 		search="_vendorValueHelpSearch"
