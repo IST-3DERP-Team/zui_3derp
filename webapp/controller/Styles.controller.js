@@ -24,6 +24,8 @@ sap.ui.define([
 
                 this._Model = this.getOwnerComponent().getModel();
                 this.setSmartFilterModel();
+
+                this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             },
 
             setChangeStatus: function(changed) {
@@ -55,14 +57,9 @@ sap.ui.define([
                 });
                 this._Model.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
-                        
-                        
                         oJSONColumnsModel.setData(oData);
                         me.oJSONModel.setData(oData);
-                        // alert(oData.results.length);
-                        // var colNo = oData.results.length;
                         me.getView().setModel(oJSONColumnsModel, "DynColumns");
-                        // me.setTableColumns();
                         me.getDynamicTableData(oData.results);
                     },
                     error: function (err) { }
@@ -76,6 +73,8 @@ sap.ui.define([
                 var lv1 = "Col";
                 var i = 1;
                 var statusColNo;
+
+                // var datePickerValue = this.getView().byId("CreatedDatePicker").getValue();
 
                 //build select columns
                 var oColCount = columns.length;
@@ -99,6 +98,17 @@ sap.ui.define([
                 var oJSONDataModel = new JSONModel();
                 var aFilters = this.getView().byId("SmartFilterBar").getFilters();
                 var oText = this.getView().byId("StylesCount");
+
+                // var la_filters = new Array(); // Don't normally do this but just for the example.
+                // var ld_date = new Date("2015-08-20"); // Javascript Date object
+                // var lv_pickedDateFilter = new sap.ui.model.Filter({
+                //                     path: "CREATEDDT",
+                //                     operator: sap.ui.model.FilterOperator.EQ,
+                //                     value1: datePickerValue
+                //             });
+                // aFilters.push(lv_pickedDateFilter);
+                // var filterData = aFilters.getFilterData();
+                // aFilters.push(new sap.ui.model.Filter("CREATEDDT", FilterOperators.EQ, datePickerValue));
 
                 oModel.read("/StyleSet", {
                     filters: aFilters,
@@ -305,6 +315,7 @@ sap.ui.define([
             },
 
             onSaveCopyStyle: function () {
+                var me = this;
                 var oModel = this.getOwnerComponent().getModel();
 
                 var oTable = sap.ui.getCore().byId("versionsTableMain");
@@ -319,13 +330,13 @@ sap.ui.define([
                 var versions = [];
 
                 if(newStyleCode === "") {
-                    Common.showMessage('Please enter new style code')
+                    Common.showMessage(this._i18n.getText('t1'));
                 } else if(newSeason === "") {
-                    Common.showMessage('Please enter new season')
+                    Common.showMessage(this._i18n.getText('t2'))
                 } else {
 
                     if(bomCheck === true && colorCheck === false) {
-                        Common.showMessage("Color is required when copying BOM");
+                        Common.showMessage(this._i18n.getText('t3'));
                     } else {
 
                         for (var i = 0; i < selected.length; i++) {
@@ -353,13 +364,13 @@ sap.ui.define([
                         oModel.update(entitySet, oEntry, {
                             method: "PUT",
                             success: function(data, oResponse) {
-                                Common.showMessage("Saved");
-                                that._CopyStyleDialog.close();
-                                that.onSearch();
+                                me._CopyStyleDialog.close();
+                                me.onSearch();
+                                Common.showMessage(me._i18n.getText('t4'));
                             },
                             error: function() {
-                                Common.showMessage("Error");
-                                that._CopyStyleDialog.close();
+                                me._CopyStyleDialog.close();
+                                Common.showMessage(me._i18n.getText('t5'));
                             }
                         });
                     }
@@ -387,6 +398,7 @@ sap.ui.define([
             },
 
             onSaveLayoutSettings: function () {
+                var me = this;
                 var oTable = this.getView().byId("styleDynTable");
                 var oColumns = oTable.getColumns();
                 var oEntry = {
@@ -414,7 +426,7 @@ sap.ui.define([
                 oModel.create("/LayoutVariantSet", oEntry, {
                     method: "POST",
                     success: function(data, oResponse) {
-                        Common.showMessage("Layout saved");
+                        Common.showMessage(me._i18n.getText('t6'));
                     },
                     error: function() {
                         alert("Error");

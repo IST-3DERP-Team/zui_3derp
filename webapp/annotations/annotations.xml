@@ -22,17 +22,7 @@
 	</edmx:Reference>
 	<edmx:DataServices>
 		<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm">
-			<!-- <Annotations Target="ZVI_3DERP_STYLES_FILTER_CDS.ZVI_3DERP_STYLES_FILTERType">
-				<Annotation Term="UI.SelectionFields">
-					<Collection>
-						<PropertyPath>SBU<Annotation Term="Common.QuickInfo" String="{@i18n&gt;appTitle}"/></PropertyPath>
-						<PropertyPath>SEASONCD</PropertyPath>
-						<PropertyPath >PRODTYP</PropertyPath>
-					</Collection>
-				</Annotation>
-			</Annotations> -->
 			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZVI_3DERP_STYLES_FILTER_CDS.ZVI_3DERP_STYLES_FILTERType/SEASONCD">
-                <Annotation Term="com.sap.vocabularies.Common.v1.QuickInfo" String="{i18n>SeasonFilter}"/>
                 <!-- <Annotation Term="Common.QuickInfo" String="Season"/> -->
 				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
 					<Record Type="com.sap.vocabularies.Common.v1.ValueListType">
@@ -48,7 +38,7 @@
 									<PropertyValue Property="ValueListProperty" String="SEASONCD"/>
 								</Record>
 								<Record Type="Common.ValueListParameterDisplayOnly">
-									<PropertyValue Property="ValueListProperty" String="Text1"/>
+									<PropertyValue Property="ValueListProperty" String="Description"/>
 								</Record>
 							</Collection>
 						</PropertyValue>
@@ -56,7 +46,7 @@
 				</Annotation>
 			</Annotations>
 			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZVI_3DERP_STYLES_FILTER_CDS.ZVI_3DERP_STYLES_FILTERType/PRODTYP">
-                <Annotation Term="com.sap.vocabularies.Common.v1.QuickInfo" String="{@i18n&gt;SeasonFilter}"/>
+                <!-- <Annotation Term="com.sap.vocabularies.Common.v1.QuickInfo" String="{@i18n&gt;SeasonFilter}"/> -->
 				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
 					<Record Type="com.sap.vocabularies.Common.v1.ValueListType">
 						<PropertyValue Property="CollectionPath" String="ZVB_PRODTYP_SH"/>
@@ -71,10 +61,30 @@
 									<PropertyValue Property="ValueListProperty" String="PRODTYP"/>
 								</Record>
 								<Record Type="Common.ValueListParameterDisplayOnly">
-									<PropertyValue Property="ValueListProperty" String="Text1"/>
+									<PropertyValue Property="ValueListProperty" String="Description"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZVI_3DERP_STYLES_FILTER_CDS.ZVI_3DERP_STYLES_FILTERType/STYLECAT">
+                <!-- <Annotation Term="com.sap.vocabularies.Common.v1.QuickInfo" String="{@i18n&gt;SeasonFilter}"/> -->
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record Type="com.sap.vocabularies.Common.v1.ValueListType">
+						<PropertyValue Property="CollectionPath" String="ZVB_STYLECAT_SH"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterIn">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="SBU"/>
+									<PropertyValue Property="ValueListProperty" String="SBU"/>
+								</Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="STYLECAT"/>
+									<PropertyValue Property="ValueListProperty" String="STYLECAT"/>
 								</Record>
 								<Record Type="Common.ValueListParameterDisplayOnly">
-									<PropertyValue Property="ValueListProperty" String="Text2"/>
+									<PropertyValue Property="ValueListProperty" String="Description"/>
 								</Record>
 							</Collection>
 						</PropertyValue>

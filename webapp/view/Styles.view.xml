@@ -75,13 +75,18 @@
                 <smartfilterbar:ControlConfiguration key="CREATEDBY" groupId="_ADVANCED" label="{i18n>CREATEDBY}"/>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration key="CREATEDDT" groupId="_ADVANCED" label="{i18n>CREATEDDT}"/>
+                <smartfilterbar:ControlConfiguration key="CREATEDDT" conditionType="sap.ui.comp.config.condition.DateRangeType" groupId="_ADVANCED" label="{i18n>CREATEDDT}">
+                </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
                 <smartfilterbar:ControlConfiguration key="UPDATEDBY" groupId="_ADVANCED" label="{i18n>UPDATEDBY}"/>
             </smartfilterbar:controlConfiguration>
-            <smartfilterbar:controlConfiguration>
+            <!-- <smartfilterbar:controlConfiguration>
                 <smartfilterbar:ControlConfiguration key="UPDATEDDT" groupId="_ADVANCED" label="{i18n>UPDATEDDT}"/>
+            </smartfilterbar:controlConfiguration> -->
+            <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="UPDATEDDT" conditionType="sap.ui.comp.config.condition.DateRangeType" groupId="_ADVANCED" label="{i18n>UPDATEDDT}">
+                </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
         </smartfilterbar:SmartFilterBar>
 	    

@@ -25,6 +25,8 @@ sap.ui.define([
 
                 this._colors;
                 this._sizes;
+
+                this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             },
 
             _routePatternMatched: function (oEvent) {
@@ -178,7 +180,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._versionAttrChanged) {
-                    Common.showMessage('No changes made');
+                    Common.showMessage(this._i18n.getText('t7'));
                 } else {
 
                     var oData = oTableModel.getData();
@@ -224,17 +226,17 @@ sap.ui.define([
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oData, oResponse) {
-                            Common.showMessage("Saved");
-                            Common.closeLoadingDialog(that);
                             me._versionAttrChanged = false;
                             me.setChangeStatus(false);
+                            Common.closeLoadingDialog(me);
+                            Common.showMessage(me._i18n.getText('t4'));
                         },
                         error: function (err) {
-                            Common.showMessage("Error");
-                            Common.closeLoadingDialog(that);
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
                             oMsgStrip.setVisible(true);
                             oMsgStrip.setText(errorMsg);
+                            Common.closeLoadingDialog(me);
+                            Common.showMessage(me._i18n.getText('t5'));
                         }
                     });
 
@@ -253,7 +255,7 @@ sap.ui.define([
                     this._ConfirmDeleteVersionAttr.addStyleClass("sapUiSizeCompact");
                     this._ConfirmDeleteVersionAttr.open();
                 } else {
-                    Common.showMessage('Select items to delete')
+                    Common.showMessage(this._i18n.getText('t8'));
                 }
             },
             
@@ -448,9 +450,9 @@ sap.ui.define([
 
             setBOMbyGMCEditMode: function() {
                 if(this._colors.length <= 0) {
-                    Common.showMessage('No maintained color attributes');
+                    Common.showMessage(this._i18n.getText('t11'));
                 } else if(this._sizes <= 0)
-                    Common.showMessage('No maintained size attributes');
+                    Common.showMessage(this._i18n.getText('t12'));
                 else {
                     var oJSONModel = new JSONModel();
                     var data = {};
@@ -553,7 +555,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._BOMbyGMCChanged) {
-                    Common.showMessage('No changes made');
+                    Common.showMessage(this._i18n.getText('t7'));
                 } else {
 
                     var oData = oTableModel.getData();
@@ -587,8 +589,6 @@ sap.ui.define([
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oDataRes, oResponse) {
-                            Common.showMessage("Saved");
-
                             me._BOMbyGMCChanged = false;
 
                             if(oGetComponentInd === true) {
@@ -597,6 +597,8 @@ sap.ui.define([
                             } else {
                                 me.getbomGMCTable();
                             }
+
+                            Common.showMessage(me._i18n.getText('t4'));
 
                             var oEntry = {
                                 Styleno: me._styleNo,
@@ -649,24 +651,24 @@ sap.ui.define([
                                 oModel.create(path, oEntry, {
                                     method: "POST",
                                     success: function (oData, oResponse) {
-                                        Common.showMessage("Saved");
                                         me.getbomGMCTable();
                                         me._BOMbyGMCChanged = false;
                                         me.setChangeStatus(false);
+                                        Common.showMessage(me._i18n.getText('t4'));
                                     },
                                     error: function (err) {
-                                        Common.showMessage("Error");
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         oMsgStrip.setVisible(true);
                                         oMsgStrip.setText(errorMsg);
+                                        Common.showMessage(me._i18n.getText('t5'));
                                     }
                                 });
                             }
                             Common.closeLoadingDialog(that);
                         },
                         error: function (err) {
-                            Common.showMessage("Error");
                             Common.closeLoadingDialog(that);
+                            Common.showMessage(me._i18n.getText('t5'));
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
                             oMsgStrip.setVisible(true);
                             oMsgStrip.setText(errorMsg);
@@ -1013,7 +1015,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._BOMbyUVChanged) {
-                    Common.showMessage('No changes made');
+                    Common.showMessage(this._i18n.getText('t7'));
                 } else {
 
                     var oData = oTableModel.getData();
@@ -1139,15 +1141,15 @@ sap.ui.define([
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oData, oResponse) {
-                            Common.showMessage("Saved");
                             me.getbomGMCTable();
                             me._BOMbyUVChanged = false;
                             me.setChangeStatus(false);
                             Common.closeLoadingDialog(that);
+                            Common.showMessage(me._i18n.getText('t4'));
                         },
                         error: function (err) {
-                            Common.showMessage("Error");
                             Common.closeLoadingDialog(that);
+                            Common.showMessage(me._i18n.getText('t5'));
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
                             oMsgStrip.setVisible(true);
                             oMsgStrip.setText(errorMsg);
@@ -1157,11 +1159,12 @@ sap.ui.define([
             },
 
             onRMC: function() {
+                var me = this;
                 var oModel = this.getOwnerComponent().getModel();
 
                 var entitySet = "/StyleBOMGMCSet(STYLENO='" + this._styleNo +  "',VERNO='" + this._version + "',BOMSEQ='')";
 
-                Common.openLoadingDialog(that);
+                Common.openLoadingDialog(this);
 
                 oModel.setHeaders({sbu: this._sbu});
 
@@ -1177,13 +1180,13 @@ sap.ui.define([
                 oModel.update(entitySet, oEntry, {
                     method: "PUT",
                     success: function(data, oResponse) {
-                        Common.showMessage("Saved");
-                        that.onRefresh();
-                        Common.closeLoadingDialog(that);
+                        me.onRefresh();
+                        Common.closeLoadingDialog(me);
+                        Common.showMessage(me._i18n.getText('t4'));
                     },
                     error: function() {
-                        Common.showMessage("Error");
-                        Common.closeLoadingDialog(that);
+                        Common.closeLoadingDialog(me);
+                        Common.showMessage(me._i18n.getText('t5'));
                     }
                 });
             },
@@ -1354,7 +1357,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._materialListChanged) {
-                    Common.showMessage('No changes made');
+                    Common.showMessage(this._i18n.getText('t7'));
                 } else {
 
                     var oData = oTableModel.getData();
@@ -1368,6 +1371,7 @@ sap.ui.define([
 
                         var item = {
                             "Styleno": this._styleNo,
+                            "Bommatid": oData.results[i].Bommatid,
                             "Verno": oData.results[i].Verno,
                             "Seqno": oData.results[i].Seqno,
                             "Matno": oData.results[i].Matno,
@@ -1408,14 +1412,14 @@ sap.ui.define([
                         method: "POST",
                         success: function(oData, oResponse) {
                             me.getMaterialList();
-                            Common.closeLoadingDialog(that);
-                            Common.showMessage("Saved");
                             me._materialListChanged = false;
                             me.setChangeStatus(false);
+                            Common.closeLoadingDialog(me);
+                            Common.showMessage(me._i18n.getText('t4'));
                         },
                         error: function(err) {
-                            Common.closeLoadingDialog(that);
-                            Common.showMessage("Error");
+                            Common.closeLoadingDialog(me);
+                            Common.showMessage(me._i18n.getText('t5'));
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
                             oMsgStrip.setVisible(true);
                             oMsgStrip.setText(errorMsg);
@@ -1520,9 +1524,9 @@ sap.ui.define([
                             showSecondaryValues: true,
                             items: {
                                 path: "UsageClassModel>/results",
-                                template: new sap.ui.core.Item({
-                                    key: "{UsageClassModel>Usgcls}",
-                                    text: "{UsageClassModel>Usgcls}"
+                                template: new sap.ui.core.ListItem({
+                                    text: "{UsageClassModel>Usgcls}",
+                                    additionalText: "{UsageClassModel>Ucdesc1}"
                                 })
                             },
                             change: changeFunction,
@@ -1706,7 +1710,7 @@ sap.ui.define([
                     this._ConfirmDeleteBOMDialog.addStyleClass("sapUiSizeCompact");
                     this._ConfirmDeleteBOMDialog.open();
                 } else {
-                    Common.showMessage('Select items to delete')
+                    Common.showMessage(this._i18n.getText('t8'))
                 }
             },
            

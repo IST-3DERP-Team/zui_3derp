@@ -16,9 +16,13 @@ sap.ui.define([
                 sbu: that._sbu
             });
 
+            oSHModel.setHeaders({
+                sbu: that._sbu
+            });
+
             //get Seasons
             var oJSONModel0 = new JSONModel();
-            oModel.read("/SeasonSet", {
+            oSHModel.read("/SeasonSet", {
                 success: function (oData, oResponse) {
                     oJSONModel0.setData(oData);
                     oJSONModel0.setSizeLimit(9999);
@@ -29,7 +33,7 @@ sap.ui.define([
 
             //get Product Types
             var oJSONModel1 = new JSONModel();
-            oModel.read("/ProductTypeSet", {
+            oSHModel.read("/ProductTypeSet", {
                 success: function (oData, oResponse) {
                     oJSONModel1.setData(oData);
                     oJSONModel1.setSizeLimit(9999);
@@ -40,7 +44,7 @@ sap.ui.define([
 
             //get Style Cat
             var oJSONModel2 = new JSONModel();
-            oModel.read("/StyleCatSet", {
+            oSHModel.read("/StyleCatSet", {
                 success: function (oData, oResponse) {
                     oJSONModel2.setData(oData);
                     oJSONModel2.setSizeLimit(9999);
@@ -51,7 +55,7 @@ sap.ui.define([
 
             //get Sales Groups
             var oJSONModel3 = new JSONModel();
-            oModel.read("/SalesGroupSet", {
+            oSHModel.read("/SalesGroupSet", {
                 success: function (oData, oResponse) {
                     oJSONModel3.setData(oData);
                     oJSONModel3.setSizeLimit(9999);
@@ -62,7 +66,7 @@ sap.ui.define([
 
             //get Customer Groups
             var oJSONModel4 = new JSONModel();
-            oModel.read("/CustomerGroupSet", {
+            oSHModel.read("/CustomerGroupSet", {
                 success: function (oData, oResponse) {
                     oJSONModel4.setData(oData);
                     oJSONModel4.setSizeLimit(9999);
@@ -103,18 +107,7 @@ sap.ui.define([
                 },
                 error: function (err) { }
             });
-
-            //VAS Types
-            var oJSONModel6 = new JSONModel();
-            oModel.read("/VASTypeSet", {
-                success: function (oData, oResponse) {
-                    oJSONModel6.setData(oData);
-                    oJSONModel6.setSizeLimit(9999);
-                    oView.setModel(oJSONModel6, "VASTypeModel");
-                },
-                error: function (err) { }
-            });
-
+            
         },
 
         getAttributesSearchHelps: function (that) {
@@ -127,12 +120,16 @@ sap.ui.define([
                 sbu: that._sbu
             });
 
+            oSHModel.setHeaders({
+                sbu: that._sbu
+            });
+
             //get Attributes
             var oJSONModel1 = new JSONModel();
-            oModel.setHeaders({
+            oSHModel.setHeaders({
                 dispgrp: "STYINFO"
             });
-            oModel.read("/AttribTypeSet", {
+            oSHModel.read("/AttribTypeSet", {
                 success: function (oData, oResponse) {
                     oJSONModel1.setData(oData);
                     oJSONModel1.setSizeLimit(9999);
@@ -143,7 +140,7 @@ sap.ui.define([
 
             //get Attribute Codes
             var oJSONModel2 = new JSONModel();
-            oModel.read("/AttribCodeSet", {
+            oSHModel.read("/AttribCodeSet", {
                 success: function (oData, oResponse) {
                     oJSONModel2.setData(oData);
                     oJSONModel2.setSizeLimit(9999);
@@ -154,7 +151,7 @@ sap.ui.define([
 
             //Process Codes
             var oJSONModel3 = new JSONModel();
-            oModel.read("/ProcessCodeSet", {
+            oSHModel.read("/ProcessCodeSet", {
                 success: function (oData, oResponse) {
                     oJSONModel3.setData(oData);
                     oJSONModel3.setSizeLimit(9999);
@@ -163,27 +160,44 @@ sap.ui.define([
                 error: function (err) { }
             });
 
+            //VAS Types
+            var oJSONModel6 = new JSONModel();
+            oSHModel.read("/VASTypeSet", {
+                success: function (oData, oResponse) {
+                    oJSONModel6.setData(oData);
+                    oJSONModel6.setSizeLimit(9999);
+                    oView.setModel(oJSONModel6, "VASTypeModel");
+                },
+                error: function (err) { }
+            });
+
+        },
+
+        getProcessAttributes: function(that) {
+            var oView = that.getView();
+            var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
+
             //get Process Attribute Types
-            var oJSONModel4 = new JSONModel();
+            var oJSONModel1 = new JSONModel();
             oSHModel.setHeaders({
                 styleno: that._styleNo
             });
             oSHModel.read("/ProcessAttribTypeSet", {
                 success: function (oData, oResponse) {
-                    oJSONModel4.setData(oData);
-                    oJSONModel4.setSizeLimit(9999);
-                    oView.setModel(oJSONModel4, "ProcessAttribTypeModel");
+                    oJSONModel1.setData(oData);
+                    oJSONModel1.setSizeLimit(9999);
+                    oView.setModel(oJSONModel1, "ProcessAttribTypeModel");
                 },
                 error: function (err) { }
             });
 
             //get Process Attribute Codes
-            var oJSONModel5 = new JSONModel();
+            var oJSONModel2 = new JSONModel();
             oSHModel.read("/ProcessAttribCodeSet", {
                 success: function (oData, oResponse) {
-                    oJSONModel5.setData(oData);
-                    oJSONModel5.setSizeLimit(9999);
-                    oView.setModel(oJSONModel5, "ProcessAttribCodeModel");
+                    oJSONModel2.setData(oData);
+                    oJSONModel2.setSizeLimit(9999);
+                    oView.setModel(oJSONModel2, "ProcessAttribCodeModel");
                 },
                 error: function (err) { }
             });
@@ -201,15 +215,13 @@ sap.ui.define([
 
             var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
             oSHModel.setHeaders({
-                sbu: that._sbu
+                sbu: that._sbu,
+                dispgrp: "STYINFO"
             });
 
             //get Attribute Types
             var oJSONModel1 = new JSONModel();
-            oModel.setHeaders({
-                dispgrp: "STYINFO"
-            });
-            oModel.read("/AttribTypeSet", {
+            oSHModel.read("/AttribTypeSet", {
                 success: function (oData, oResponse) {
                     oJSONModel1.setData(oData);
                     oJSONModel1.setSizeLimit(9999);
@@ -220,8 +232,7 @@ sap.ui.define([
 
             //get Attribute Codes
             var oJSONModel2 = new JSONModel();
-
-            oModel.read("/AttribCodeSet", {
+            oSHModel.read("/AttribCodeSet", {
                 success: function (oData, oResponse) {
                     oJSONModel2.setData(oData);
                     oJSONModel2.setSizeLimit(9999);
@@ -232,7 +243,7 @@ sap.ui.define([
 
             //Usage Classes
             var oJSONModel3 = new JSONModel();
-            oModel.read("/UsageClassSet", {
+            oSHModel.read("/UsageClassSet", {
                 success: function (oData, oResponse) {
                     oJSONModel3.setData(oData);
                     oView.setModel(oJSONModel3, "UsageClassModel");
@@ -254,7 +265,7 @@ sap.ui.define([
 
             //Process Codes
             var oJSONModel5 = new JSONModel();
-            oModel.read("/ProcessCodeSet", {
+            oSHModel.read("/ProcessCodeSet", {
                 success: function (oData, oResponse) {
                     oJSONModel5.setData(oData);
                     oJSONModel5.setSizeLimit(9999);
@@ -352,33 +363,6 @@ sap.ui.define([
             });
         },
 
-        // onExportExcel: function (oEvent) {
-        //     var oButton = oEvent.getSource();
-        //     var tabName = oButton.data('TableName')
-        //     var oTable = this.getView().byId(tabName);
-        //     var oExport = oTable.exportData();
-        //     oExport.mAggregations.columns.shift();
-        //     // var sModel = oTable.data();
-        //     // if (sModel) {
-        //     //     var aExpCol = oExport.getColumns();
-        //     // var aCol = oTable.getColumns();
-        //     // aCol.forEach(function (oColumn, i) {
-        //     //     var oCell = new sap.ui.core.util.ExportCell();
-        //     //     console.log(oCell.getMetadata());
-        //     //     if (oColumn.data("ctype") === "DatePicker") {
-        //     //         oCell.bindProperty("content", { path: sModel + ">" + oColumn.getSortProperty(), formatter: formatter.getDateFormat });
-        //     //         aExpCol[i].setTemplate(oCell);
-        //     //     } else if (oColumn.data("ctype") === "TimePicker") {
-        //     //         oCell.bindProperty("content", { path: sModel + ">" + oColumn.getSortProperty(), formatter: formatter.getTimeFormat });
-        //     //         aExpCol[i].setTemplate(oCell);
-        //     //     }
-        //     // });
-        //     // }
-        //     var date = new Date();
-
-        //     oExport.saveFile(tabName + " " + date.toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" }));
-        // },
-
         onExport: function (oEvent) {
             var oButton = oEvent.getSource();
             var tabName = oButton.data('TableName')
@@ -389,37 +373,6 @@ sap.ui.define([
             var aParent, aChild;
             var fileName;
 
-            // aCols = [
-            // 	{
-            // 		label: 'User ID',
-            // 		property: 'STYLENO',
-            // 		type: 'number',
-            // 		scale: 0
-            // 	},
-            // 	{
-            // 		label: 'Firstname',
-            // 		property: 'Firstname',
-            // 		width: '25'
-            // 	},
-            // 	{
-            // 		label: 'Lastname',
-            // 		property: 'Lastname',
-            // 		width: '25'
-            // 	},
-            // 	{
-            // 		label: 'Salary',
-            // 		property: 'Salary',
-            // 		type: 'currency',
-            // 		unitProperty: 'Currency',
-            // 		width: '18'
-            // 	},
-            // 	{
-            // 		label: 'Active',
-            // 		property: 'Active',
-            // 		type: 'string'
-            // 	}];
-            // aCols = this.createColumnConfig();
-            // aProducts = this.getView().getModel().getProperty('/');
             var columns = oTable.getColumns();
 
             for (var i = 0; i < columns.length; i++) {

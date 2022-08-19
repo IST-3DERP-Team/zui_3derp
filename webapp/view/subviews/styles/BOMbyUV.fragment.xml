@@ -6,7 +6,7 @@
             <Label text="{i18n>UsageClass}"/>
             <ComboBox id="UsageClassCB" items="{UsageClassModel>/results}" class="sapUiMediumMarginBegin" selectedKey="AUV"
                 showSecondaryValues="true" filterSecondaryValues= "true" change="getbomUVTable">
-                <core:ListItem key="{UsageClassModel>Usgcls}" text="{UsageClassModel>Ucdesc1}"/>
+                <core:ListItem key="{UsageClassModel>Usgcls}" text="{UsageClassModel>Ucdesc1}" additionalText="{UsageClassModel>Usgcls}"/>
             </ComboBox>
         </HBox>
         <Button icon="sap-icon://synchronize" tooltip="Refresh data" press="onRefresh"/>

@@ -12,6 +12,8 @@
                 <Button type="Ghost" icon="sap-icon://save" text="Save" tooltip="Save material list" press="onSaveMaterialList"/>
             </Toolbar>
 
+            <MessageStrip id="AssignMaterialMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
+
             <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" height="100%">
                 <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="GMC"/>

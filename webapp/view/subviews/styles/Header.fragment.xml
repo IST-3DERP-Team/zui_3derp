@@ -42,8 +42,8 @@
                             <f:FormElement label="{i18n>SEASONCD}" visible="{= ${VisibleFieldsData>/SEASONCD} === true ? true : false }">
                                 <f:fields>
                                     <Input id="SEASONCD" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
-                                        valueHelpRequest="onSeasonsValueHelp" suggestionItems="{SeasonsModel>/results}" value="{headerData>/Seasoncd}" 
-                                        change="onHeaderChange" liveChange="onHeaderChange">
+                                        valueHelpRequest="onSeasonsValueHelp" suggestionItems="{SeasonsModel>/results}" value="{headerData>/Seasoncd}"
+                                        change="onHeaderChange" liveChange="onHeaderChange" textFormatMode="KeyValue">
                                         <suggestionItems>
                                             <core:ListItem text="{SeasonsModel>Seasoncd}" additionalText="{SeasonsModel>Desc1}"/>
                                         </suggestionItems>
