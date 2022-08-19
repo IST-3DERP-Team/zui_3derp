@@ -19,6 +19,8 @@ sap.ui.define([
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteAssignMaterial").attachPatternMatched(this._routePatternMatched, this);
+
+                this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             },
 
             _routePatternMatched: function (oEvent) {
@@ -35,7 +37,7 @@ sap.ui.define([
             },
 
             setChangeStatus: function(changed) {
-                // sap.ushell.Container.setDirtyFlag(changed);
+                sap.ushell.Container.setDirtyFlag(changed);
             },
 
             getMaterialList:function(){
@@ -59,6 +61,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         Common.closeLoadingDialog(that);
+                        me.setChangeStatus(false);
                     },
                     error: function() { 
                         Common.closeLoadingDialog(that);
@@ -142,6 +145,10 @@ sap.ui.define([
 
                     var path = "/MaterialListSet";
 
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
+
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function(oDataReturn, oResponse) {
@@ -159,19 +166,20 @@ sap.ui.define([
                                 // var itemReturn = oReturnItems.find((item) => oReturnItems.Seqno === seqno);
                                 // console.log(itemsReturn);
                             }
-                            // me.getMaterialList();
+                            // me.getMaterialList();`
                             oJSONModel.setData(oData);
                             oTable.setModel(oJSONModel, "DataModel");
-                            Common.closeLoadingDialog(that);
+                            Common.closeLoadingDialog(me);
                             me.onMaterialListChange();
+                            Common.showMessage(me._i18n.getText('t4'));
                         },
                         error: function(err) {
                             Common.closeLoadingDialog(that);
-                            Common.showMessage("Error");
+                            Common.showMessage(me._i18n.getText('t5'));
                         }
                     });
                 } else {
-                    Common.showMessage('No selected items');
+                    Common.showMessage(this._i18n.getText('t10'));
                 }
             },
 
@@ -183,6 +191,9 @@ sap.ui.define([
                 var oData = oTableModel.getData();
                 var oSelected = this.getView().byId("materialListTable").getSelectedIndices();
                 var oJSONModel = new JSONModel();
+
+                var oMsgStrip = this.getView().byId('AssignMaterialMessageStrip');
+                oMsgStrip.setVisible(false);
 
                 if(oSelected.length > 0) {
 
@@ -231,6 +242,10 @@ sap.ui.define([
 
                     var path = "/MaterialListSet";
 
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
+
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function(oDataReturn, oResponse) {
@@ -258,12 +273,15 @@ sap.ui.define([
                         },
                         error: function(err) {
                             Common.closeLoadingDialog(that);
-                            Common.showMessage("Error");
+                            var errorMsg = JSON.parse(err.responseText).error.message.value;
+                            oMsgStrip.setVisible(true);
+                            oMsgStrip.setText(errorMsg);
+                            Common.showMessage(me._i18n.getText('t5'));
                         }
                     });
 
                 } else {
-                    Common.showMessage('No items selected');
+                    Common.showMessage(this._i18n.getText('t10'));
                 }
             },
 
@@ -279,7 +297,7 @@ sap.ui.define([
                 var path;
 
                 if (!this._materialListChanged) {
-                    Common.showMessage('No changes made');
+                    Common.showMessage(this._i18n.getText('t7'));
                 } else {
 
                     var oData = oTableModel.getData();
@@ -327,34 +345,26 @@ sap.ui.define([
 
                     path = "/MaterialListSet";
 
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
+
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function(oData, oResponse) {
                             me.getMaterialList();
                             Common.closeLoadingDialog(that);
-                            Common.showMessage("Saved");
+                            Common.showMessage(me._i18n.getText('t4'));
                             // me.onMaterialListChange();
                             me._materialListChanged = false;
-                            this.setChangeStatus(false);
+                            me.setChangeStatus(false);
                         },
                         error: function(err) {
                             Common.closeLoadingDialog(that);
-                            Common.showMessage("Error");
+                            Common.showMessage(me._i18n.getText('t5'));
                         }
                     });
 
-                }
-            },
-
-            onNavBack: function () {
-                var oHistory = History.getInstance();
-                var sPreviousHash = oHistory.getPreviousHash();
-    
-                if (sPreviousHash !== undefined) {
-                    window.history.go(-1);
-                } else {
-                    // var oRouter = this.getOwnerComponent().getRouter();
-                    // oRouter.navTo("RouteStyles");
                 }
             },
 

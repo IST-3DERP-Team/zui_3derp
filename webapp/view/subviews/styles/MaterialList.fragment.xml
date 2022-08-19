@@ -1,19 +1,17 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+
     <Toolbar height="3rem" style="Clear">
-        <Label text="Material List"/>
+        <Label text="{i18n>MaterialList}"/>
         <ToolbarSpacer />
-        <Button icon="sap-icon://bookmark" text="Assign Material No." press="onAssignMaterial"/>
-        <Button icon="sap-icon://save" text="Save" press="onSaveMaterialList" visible="{MaterialListEditModeModel>/editMode}"/>
-        <Button type="Ghost" icon="sap-icon://edit" press="setMaterialListEditMode" visible="{= ${MaterialListEditModeModel>/editMode} === true ? false : true }"/>
-        <Button type="Ghost" icon="sap-icon://decline" press="cancelMaterialListEdit" visible="{= ${MaterialListEditModeModel>/editMode} === true ? true : false }"/>
-        <Button icon="sap-icon://excel-attachment" press="onExport"  tooltip="Download to Excel">
+        <Button icon="sap-icon://bookmark" text="{i18n>AssignMaterialNo}" tooltip="{i18n>Assignmaterialnumbers}" press="onAssignMaterial"/>
+        <Button icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Savemateriallist}" press="onSaveMaterialList" visible="{MaterialListEditModeModel>/editMode}"/>
+        <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editmateriallist}" press="setMaterialListEditMode" visible="{= ${MaterialListEditModeModel>/editMode} === true ? false : true }"/>
+        <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelMaterialListEdit" visible="{= ${MaterialListEditModeModel>/editMode} === true ? true : false }"/>
+        <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">
             <customData>
-            <core:CustomData key="TableName" value="materialListTable"/>
+                <core:CustomData key="TableName" value="materialListTable"/>
             </customData>
-            <layoutData>
-                <ToolbarLayoutData shrinkable="true"/>
-            </layoutData>
         </Button>
     </Toolbar>
 
@@ -22,129 +20,120 @@
     <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true"
         selectionMode="Single">
         <t:Column width="5rem" filterType="" filterProperty="Seqno" sortProperty="Seqno">
-            <Label text="Seq No."/>
+            <Label text="{i18n>SEQNO}"/>
             <t:template>
                 <Text text="{DataModel>Seqno}"/>
             </t:template>
         </t:Column>
         <t:Column width="7rem" filterType="" filterProperty="Mattyp" sortProperty="Mattyp">
-            <Label text="Mat. Type"/>
+            <Label text="{i18n>MATTYP}"/>
             <t:template>
                 <Text text="{DataModel>Mattyp}"/>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Matno" sortProperty="Matno">
-            <Label text="Material No."/>
+            <Label text="{i18n>MATNO}"/>
             <t:template>
                 <Text text="{DataModel>Matno}"/>
             </t:template>
         </t:Column>
         <t:Column width="7rem" filterType="" filterProperty="Gmc" sortProperty="Gmc">
-            <Label text="GMC"/>
+            <Label text="{i18n>GMC}"/>
             <t:template>
                 <Text text="{DataModel>Gmc}"/>
             </t:template>
         </t:Column>
         <t:Column width="18rem" filterType="" filterProperty="Gmcdesc" sortProperty="Gmcdesc">
-            <Label text="GMC Description"/>
+            <Label text="{i18n>GMCDESC}"/>
             <t:template>
                 <Text text="{DataModel>Gmcdesc}"/>
             </t:template>
         </t:Column>
         <t:Column width="15rem" filterType="" filterProperty="Matdesc1" sortProperty="Matdesc1">
-            <Label text="Addtl. Description"/>
+            <Label text="{i18n>MATDESC1}"/>
             <t:template>
                 <Input value="{DataModel>Matdesc1}" change="onMaterialListChange"
                     editable="{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>Matno} === '' ? true : false : false }"/>
             </t:template>
         </t:Column>
         <t:Column width="7rem" filterType="" filterProperty="Consump" sortProperty="Consump">
-            <Label text="Consumption"/>
+            <Label text="{i18n>CONSUMP}"/>
             <t:template>
                 <Input value="{DataModel>Consump}" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange"/>
             </t:template>
         </t:Column>
         <t:Column width="8rem" filterType="" filterProperty="Uom" sortProperty="Uom">
-            <Label text="UOM"/>
+            <Label text="{i18n>UOM}"/>
             <t:template>
                 <Text text="{DataModel>Uom}"/>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Supplytyp" sortProperty="Supplytyp">
-            <Label text="Supply Type"/>
+            <Label text="{i18n>SUPPLYTYP}"/>
             <t:template>
-                <!-- <Input value="{DataModel>}" editable="{MaterialListEditModeModel>/editMode}"/> -->
                 <Input id="SupplyTypeInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{MaterialListEditModeModel>/editMode}"
                     valueHelpRequest="onSupplyTypeValueHelp" suggestionItems="{SupplyTypeModel>/results}" value="{DataModel>Supplytyp}" 
                     change="onMaterialListChange">
                     <suggestionItems>
-                        <!-- <core:Item text="{ValueHelpModel>Supplytyp}" /> -->
                         <core:ListItem text="{SupplyTypeModel>Supplytype}" additionalText="{SupplyTypeModel>Desc1}"/>
                     </suggestionItems>
                 </Input>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Vendorcd" sortProperty="Vendorcd">
-            <Label text="Vendor"/>
+            <Label text="{i18n>VENDORCD}"/>
             <t:template>
-                <!-- <Input value="{DataModel>Vendorcd}" editable="{MaterialListEditModeModel>/editMode}"/> -->
                 <Input id="VendorInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{MaterialListEditModeModel>/editMode}"
                     valueHelpRequest="onVendorValueHelp" suggestionItems="{VendorModel>/results}" value="{DataModel>Vendorcd}"
                     change="onMaterialListChange">
                     <suggestionItems>
-                        <!-- <core:Item text="{ValueHelpModel>Lifnr}" /> -->
                         <core:ListItem text="{VendorModel>Lifnr}" additionalText="{VendorModel>Desc1}"/>
                     </suggestionItems>
                 </Input>
             </t:template>
         </t:Column>
         <t:Column width="8rem" filterType="" filterProperty="Currencycd" sortProperty="Currencycd">
-            <Label text="Currency"/>
+            <Label text="{i18n>CURRENCYCD}"/>
             <t:template>
-                <!-- <Input value="{DataModel>Currencycd}" editable="{MaterialListEditModeModel>/editMode}"/> -->
                 <Input id="CurrencyInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{MaterialListEditModeModel>/editMode}"
                     valueHelpRequest="onCurrencyValueHelp" suggestionItems="{CurrencyModel>/results}" value="{DataModel>Currencycd}"
                     change="onMaterialListChange">
                     <suggestionItems>
-                        <!-- <core:Item text="{ValueHelpModel>Waers}" /> -->
                         <core:ListItem text="{CurrencyModel>Waers}" additionalText="{CurrencyModel>Desc1}"/>
                     </suggestionItems>
                 </Input>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Unitprice" sortProperty="Unitprice">
-            <Label text="Unit Price"/>
+            <Label text="{i18n>UnitPrice}"/>
             <t:template>
                 <Input value="{DataModel>Unitprice}" type="Number" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange"/>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Purgrp" sortProperty="Purgrp">
-            <Label text="Purch. Group"/>
+            <Label text="{i18n>PURGRP}"/>
             <t:template>
-                <!-- <Input value="{DataModel>Purgrp}" editable="{MaterialListEditModeModel>/editMode}"/> -->
                 <Input id="PurGroupInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{MaterialListEditModeModel>/editMode}"
                     valueHelpRequest="onPurGroupValueHelp" suggestionItems="{PurchGroupModel>/results}" value="{DataModel>Purgrp}" 
                     change="onMaterialListChange">
                     <suggestionItems>
-                        <!-- <core:Item text="{ValueHelpModel>Purgrp}" /> -->
                         <core:ListItem text="{PurchGroupModel>Purgrp}" additionalText="{PurchGroupModel>Desc1}"/>
                     </suggestionItems>
                 </Input>
             </t:template>
         </t:Column>
         <t:Column width="11rem" filterType="" filterProperty="Purplant" sortProperty="Purplant">
-            <Label text="Purch. Plant"/>
+            <Label text="{i18n>PURPLANT}"/>
             <t:template>
-                <!-- <Input value="{DataModel>Purplant}" editable="{MaterialListEditModeModel>/editMode}"/> -->
                 <Input id="PurPlantInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{MaterialListEditModeModel>/editMode}"
                     valueHelpRequest="onPurPlantValueHelp" suggestionItems="{PurPlantModel>/results}" value="{DataModel>Purplant}"
                     change="onMaterialListChange">
                     <suggestionItems>
-                        <!-- <core:Item text="{ValueHelpModel>Plant}" /> -->
                         <core:ListItem text="{PurPlantModel>Plant}" additionalText="{PurPlantModel>Desc1}"/>
                     </suggestionItems>
                 </Input>
             </t:template>
         </t:Column>
     </c:DynamicTable>
+    
 </core:FragmentDefinition>    

@@ -102,7 +102,8 @@
                 "type": "sap.ui.model.resource.ResourceModel",
                 "settings": {
                     "bundleName": "zui3derp.i18n.i18n"
-                }
+                },
+                "preload": true
             },
             "": {
                 "dataSource": "mainService",

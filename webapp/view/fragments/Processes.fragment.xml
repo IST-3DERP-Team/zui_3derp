@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Process Codes"
+		title="{i18n>SelectProcessCode}"
 		class="sapUiPopupWithPadding"
 		items="{ProcessCodeModel>/results}"
 		search="_processesValueHelpSearch"

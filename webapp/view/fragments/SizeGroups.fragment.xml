@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Size Groups"
+		title="{i18n>SelectSizeGroup}"
 		class="sapUiPopupWithPadding"
 		items="{SizeGroupModel>/results}"
 		search="_sizeGroupValueHelpSearch"

@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Select Currency"
+		title="{i18n>SelectCurrency}"
 		class="sapUiPopupWithPadding"
 		items="{CurrencyModel>/results}"
 		search="_currencyValueHelpSearch"

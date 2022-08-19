@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Select Purchasing Groups"
+		title="{i18n>SelectPurchasingGroup}"
 		class="sapUiPopupWithPadding"
 		items="{PurchGroupModel>/results}"
 		search="_purGroupValueHelpSearch"

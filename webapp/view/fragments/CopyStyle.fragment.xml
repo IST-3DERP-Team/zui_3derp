@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
-	<Dialog title="Copy Style {CopyModel>/STYLENO}" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" xmlns:tnt="sap.tnt" contentWidth="75%">
+	<Dialog title="{i18n>CopyStyle} {CopyModel>/STYLENO}" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" xmlns:tnt="sap.tnt" contentWidth="75%">
 		<Panel height="500px">
 			<f:Form id="StyleHeaderForm1" editable="true" class="sapUiNoContentPadding">
                 <f:layout>
@@ -8,12 +8,12 @@
                 <f:formContainers>
                     <f:FormContainer ariaLabelledBy="Grp1">
                         <f:formElements>
-                            <f:FormElement label="Source Style Code">
+                            <f:FormElement label="{i18n>SourceStyleCode}">
                                 <f:fields>
                                     <Text text="{CopyModel>/STYLECD}"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="Source Season">
+                            <f:FormElement label="{i18n>SourceSeason}">
                                 <f:fields>
                                     <Text text="{CopyModel>/SEASONCD}"/>
                                 </f:fields>
@@ -26,12 +26,12 @@
                     
                     <f:FormContainer ariaLabelledBy="Grp3">
                         <f:formElements>
-                            <f:FormElement label="New Style Code">
+                            <f:FormElement label="{i18n>NewStyleCode}">
                                 <f:fields>
                                     <Input id="newStyleCode"/>
                                 </f:fields>
                             </f:FormElement>
-                            <f:FormElement label="New Season">
+                            <f:FormElement label="{i18n>NewSeason}">
                                 <f:fields>
                                     <ComboBox id="seasonCB" items="{ path: 'SeasonModel>/results', sorter: { path: 'Seasoncd' } }" selectedKey="{SeasonModel>/Seasoncd}"
                                         showSecondaryValues="true" filterSecondaryValues= "true">
@@ -49,12 +49,12 @@
                         <f:formElements>
                             <f:FormElement>
                                 <f:fields>
-                                    <CheckBox id="ColorCB" text="Color" selected="true" />
+                                    <CheckBox id="ColorCB" text="{i18n>Color}" selected="true" />
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement>
                                 <f:fields>
-                                    <CheckBox id="bomCB" text="BOM" selected="true" />
+                                    <CheckBox id="bomCB" text="{i18n>BOM}" selected="true" />
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
@@ -67,26 +67,26 @@
             <t:Table id="versionsTableMain" rows="{VersionsDataModel>/results}" class="sapUiSizeCompact">
                 <t:columns>
                     <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
-                        <Label text="Version"/>
+                        <Label text="{i18n>Version}"/>
                         <t:template>
                             <Text text="{VersionsDataModel>Verno}" textAlign="End"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
-                        <Label text="Status" />
+                        <Label text="{i18n>VerStatus}" />
                         <t:template>
                             <tnt:InfoLabel id="il8" text="{= ${VersionsDataModel>Currentver} === true ? 'Current' : ' ' }" colorScheme="{= ${VersionsDataModel>Currentver} === true ? 8 : 7 }" displayOnly= "true"
                                 visible="{VersionsDataModel>Currentver}"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">
-                        <Label text="Description" />
+                        <Label text="{i18n>Description}" />
                         <t:template>
                             <Text text="{VersionsDataModel>Desc1}"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="15rem" filterProperty="Desc2" sortProperty="Desc2">
-                        <Label text="Description" />
+                        <Label text="{i18n>Description}" />
                         <t:template>
                             <Text text="{VersionsDataModel>Desc2}"/>
                         </t:template>
@@ -95,8 +95,8 @@
             </t:Table>
 		</Panel>
 		<buttons>
-			<Button text="Save" press="onSaveCopyStyle"/>
-			<Button text="Cancel" press="onCancelCopyStyle"/>
+			<Button text="{i18n>Save}" press="onSaveCopyStyle"/>
+			<Button text="{i18n>Cancel}" press="onCancelCopyStyle"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

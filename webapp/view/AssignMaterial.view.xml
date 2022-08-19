@@ -2,17 +2,18 @@
     xmlns:u="sap.uxap" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
     <Page showHeader="false" title="Assign Materials" showNavButton="true" navButtonPress="onNavBack">
-        <!-- <Text text="Sample Run Goes here"></Text> -->
         <Panel>
+
             <Toolbar height="3rem" style="Clear">
                 <Label text="Assign Material No."/>
                 <ToolbarSpacer />
-                <!-- <Button icon="sap-icon://bookmark" text="Assign Material No."/> -->
-                <Button text="Assign Automatic" press="onAssignAutomatic"/>
-                <Button text="Create Material" press="onCreateMaterial"/>
-                <Button type="Ghost" icon="sap-icon://save" text="Save" press="onSaveMaterialList"/>
-                <!-- <Button icon="sap-icon://delete" /> -->
+                <Button text="Assign Automatic" tooltip="Automatically assign material nos." press="onAssignAutomatic"/>
+                <Button text="Create Material" tooltip="Create material for selected items" press="onCreateMaterial"/>
+                <Button type="Ghost" icon="sap-icon://save" text="Save" tooltip="Save material list" press="onSaveMaterialList"/>
             </Toolbar>
+
+            <MessageStrip id="AssignMaterialMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
+
             <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" height="100%">
                 <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="GMC"/>
@@ -41,9 +42,9 @@
                 <t:Column filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="Material No."/>
                     <t:template>
-                        <!-- <Text text="{DataModel>MatNo}"/> -->
                         <Input id="productInput" type="Text" placeholder="Select Material ..." showSuggestion="true" showValueHelp="true"
-                            valueHelpRequest="onMaterialValueHelp" suggestionItems="{MaterialsModel>/results}" value="{DataModel>Matno}" change="onMaterialListChange">
+                            valueHelpRequest="onMaterialValueHelp" suggestionItems="{MaterialsModel>/results}" value="{DataModel>Matno}" 
+                            change="onMaterialListChange" liveChange="onMaterialListChange">
                             <suggestionItems>
                                 <core:Item text="{MaterialsModel>MatNo}" />
                             </suggestionItems>
@@ -51,6 +52,7 @@
                     </t:template>
                 </t:Column>
             </c:DynamicTable>
+            
         </Panel>
     </Page>
 </mvc:View>

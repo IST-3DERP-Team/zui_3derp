@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core">
 	<SelectDialog
-		title="Seasons"
+		title="{i18n>SelectStyleCategory}"
 		class="sapUiPopupWithPadding"
 		items="{StyleCatModel>/results}"
 		search="_styleCatValueHelpSearch"

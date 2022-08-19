@@ -71,6 +71,7 @@ sap.ui.define([
     
             onUpload: function(e) {
                 this._import(e.getParameter("files") && e.getParameter("files")[0]);
+                this._fileName = e.getParameter('files')[0].name;
             },
     
             _import: function(file) {
@@ -87,7 +88,7 @@ sap.ui.define([
                     items: []
                 };
 
-                var excelData = {};
+                // var excelData = {};
                 if (file && window.FileReader) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
@@ -96,55 +97,46 @@ sap.ui.define([
                             type: 'binary'
                         });
                         var sheetName = workbook.SheetNames[0];
-                        // workbook.SheetNames.forEach(function(sheetName) {
-                            // Here is your object for every sheet in workbook
-                            // excelData = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], {range:2});
-                            excelData = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], {range:1});
-                        // });
+                        // excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {range:1});                        
+                        var excelJson = XLSX.utils.make_json(workbook.Sheets[sheetName], {header:1});                        
+                        // var sheet = workbook.Sheets[sheetName];
                         
-                        var sheet = workbook.Sheets[sheetName];
+                        // var headers = [];
+                        // var range = XLSX.utils.decode_range(sheet['!ref']);
+                        // var C, R = 0;
                         
-                        // var eData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { blankRows: false });
-                        // var SheetNames = workbook.SheetNames;
-                        
-                        // var d = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]], {raw: true})
-                        
-                        // var columnHeaders = [];
-                        // // for (var sheetIndex = 0; sheetIndex < SheetNames.length; sheetIndex++) {
-                        //     var worksheet = workbook.Sheets[sheetName];
-                        //     for (var key in worksheet) {
-                        //         var regEx = new RegExp("^\(\\w\)\(1\){1}$");
-                        //         if (regEx.test(key) === true) {
-                        //             columnHeaders.push(worksheet[key].v);
-                        //         }
-                        //     }
-                        // // }
-                        
-                        var headers = [];
-                        var range = XLSX.utils.decode_range(sheet['!ref']);
-                        var C, R = 1;
                         // for(C = range.s.c; C <= range.e.c; ++C) {
-                        //     var hdr = "COLUMN" + ( C + 1 ); 
+                        //     var cell = sheet[XLSX.utils.encode_cell({c:C, r:R})];
+                    
+                        //     var hdr = "UNKNOWN";
+                        //     if(cell && cell.t) hdr = XLSX.utils.format_cell(cell);
+                    
                         //     headers.push(hdr);
                         // }
-                        
-                        for(C = range.s.c; C <= range.e.c; ++C) {
-                            var cell = sheet[XLSX.utils.encode_cell({c:C, r:R})];
+
+                        // R = 1;
+                        // var headers2 = [];
+                        // for(C = range.s.c; C <= range.e.c; ++C) {
+                        //     var cell = sheet[XLSX.utils.encode_cell({c:C, r:R})];
                     
-                            var hdr = "UNKNOWN " + C; // <-- replace with your desired default 
-                            if(cell && cell.t) hdr = XLSX.utils.format_cell(cell);
+                        //     var hdr = "UNKNOWN"; 
+                        //     if(cell && cell.t) hdr = XLSX.utils.format_cell(cell);
                     
-                            headers.push(hdr);
-                        }
+                        //     headers2.push(hdr);
+                        // }
+
+                        // for(var i = 0; i < headers2.length; i++) {
+                        //     if(headers2[i] === "UNKNOWN") {
+                        //         headers2[i] = headers[i];
+                        //     }
+                        // }
 
                         oModel.setHeaders({
                             sbu: that._sbu,
                             mapid: template,
                             module: 'STYLEBOM'
                         });
-        
-                        // Common.openLoadingDialog(that);
-        
+                
                         oModel.read("/UploadTemplateSet", {
                             success: function (oData, oResponse) {
                                 oData.results.forEach((column) => {
@@ -155,22 +147,15 @@ sap.ui.define([
                                     })
                                 })
 
-                                var idx;
-                                
-                                var items = [];
                                 var rowData = [];
-                                var seqno;
-                                
-                                for (var i = 0; i < excelData.length; i++) {
+
+                                for (var i = 3; i < excelJson.length; i++) {
                                     var data = { };
-                                    for (var j = 0; j < headers.length; j++) {
-                                        idx = j + 1;
-                                        seqno = me.pad(idx, 3);
+                                    for (var j = 0; j < columnData.length; j++) {
+                                        var seqno = columnData[j].Seqno;
+                                        var idx = Number(seqno) - 1;
                                         
-                                        var item = oData.results.find((result) => result.Seqno === seqno);
-                                        if(item !== undefined) {
-                                            data[item.Columnname] = excelData[i][headers[j]];
-                                        }
+                                        data[columnData[j].Columnname] = excelJson[i][idx];
                                     }
                                     rowData.push(data);
                                 }
@@ -186,7 +171,8 @@ sap.ui.define([
                                 oTable.bindColumns("DataModel>/columns", function (sId, oContext) {
                                     var column = oContext.getObject();
                                     return new sap.ui.table.Column({
-                                        label: column.Columnname,
+                                        name: column.Columnname,
+                                        label: "{i18n>" + column.Columnname + "}",
                                         template: new sap.m.Text({ text: "{DataModel>" + column.Columnname + "}" }),
                                         sortProperty: column.Columnname,
                                         filterProperty: column.Columnname,
@@ -202,49 +188,8 @@ sap.ui.define([
                                 me.setChangeStatus(true);
                             },
                             error: function (err) { 
-                                // Common.closeLoadingDialog(that);
                             }
                         });
-                        
-                        // var results = [
-                        //     {
-                        //         "Columnname": "PARTNO",
-                        //         "Seqno": 3
-                        //     },
-                        //     {
-                        //         "Columnname": "PARTS",
-                        //         "Seqno": 4
-                        //     },
-                        //     {
-                        //         "Columnname": "PRODUCT",
-                        //         "Seqno": 5
-                        //     }
-                        // ];
-                        
-                        // var idx;
-                        // var data = { };
-                        // var items = [];
-                        
-                        // for (var i = 0; i < excelData.length; i++) {
-                        //     for (var j = 0; j < headers.length; j++) {
-                        //         idx = j + 1;
-                                
-                        //         var item = results.find((result) => result.Seqno === idx);
-                        //         if(item !== undefined) {
-                        //             data[item.Columnname] = excelData[0][headers[j]];
-                        //         }
-                        //     }
-                        //     items.push(data);
-                        // }
-                        
-                        // Object.keys(excelData[0])[0]
-                        // Object.values(excelData[0])[0]
-                        
-                        // Setting the data to the local model 
-                        // that.localModel.setData({
-                        //     items: excelData
-                        // });
-                        // that.localModel.refresh(true);
                     };
                     reader.onerror = function(ex) {
                         console.log(ex);
@@ -259,64 +204,52 @@ sap.ui.define([
                 var oTableModel = this.getView().byId("UploadTable").getModel("DataModel");
                 var path;
 
+                var columns = this.getView().byId("UploadTable").getColumns();
+
                 var oMsgStrip = this.getView().byId('UploadMessageStrip');
                 oMsgStrip.setVisible(false);
 
-                // if (!this._versionAttrChanged) {
-                //     Common.showMessage('No changes made');
-                // } else {
+                var oData = oTableModel.getData();
+                var oEntry = {
+                    "FILENAME": this._fileName,
+                    UploadToItems: []
+                }
 
-                    var oData = oTableModel.getData();
-                    var oEntry = {
-                        sbu: this._sbu
+                for (var i = 0; i < oData.results.length; i++) {
+
+                    var item = {};
+                    var colName;
+
+                    item['FILENAME'] = this._fileName;
+
+                    for (var j = 0; j < columns.length; j++) {
+                        colName = columns[j].getName();
+                        item[colName] = oData.results[i][colName];
                     }
 
-                    for (var i = 0; i < oData.results.length; i++) {
+                    oEntry.UploadToItems.push(item);
+                };
 
-                        var item = {
-                            "Styleno": this._styleNo,
-                            "Verno": this._version,
-                            "Attribgrp": "1",
-                            "Attribseq": "1",
-                            "Attribtyp": oData.results[i].Attribtyp,
-                            "Attribcd": oData.results[i].Attribcd,
-                            "Baseind": " ",
-                            "Desc1": oData.results[i].Desc1,
-                            "Desc2": " ",
-                            "Valuetyp": " ",
-                            "Attribval": oData.results[i].Attribval,
-                            "Deleted": " ",
-                            "Valunit": oData.results[i].Valunit,
-                            "Createdby": " ",
-                            "Createddt": " ",
-                            "Updatedby": " ",
-                            "Updateddt": " "
-                        }
+                Common.openLoadingDialog(that);
 
-                        oEntry.VersionToItems.push(item);
-                    };
+                path = "/UploadStyleSet";
 
-                    Common.openLoadingDialog(that);
+                oModel.create(path, oEntry, {
+                    method: "POST",
+                    success: function (oData, oResponse) {
+                        Common.showMessage("Saved");
+                        Common.closeLoadingDialog(that);
+                        me.setChangeStatus(false);
+                    },
+                    error: function (err) {
+                        Common.showMessage("Error");
+                        Common.closeLoadingDialog(that);
+                        var errorMsg = JSON.parse(err.responseText).error.message.value;
+                        oMsgStrip.setVisible(true);
+                        oMsgStrip.setText(errorMsg);
+                    }
+                });
 
-                    path = "/StyleUploadSet";
-
-                    oModel.create(path, oEntry, {
-                        method: "POST",
-                        success: function (oData, oResponse) {
-                            Common.showMessage("Saved");
-                            Common.closeLoadingDialog(that);
-                            me.setChangeStatus(false);
-                        },
-                        error: function (err) {
-                            Common.showMessage("Error");
-                            Common.closeLoadingDialog(that);
-                            var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            oMsgStrip.setVisible(true);
-                            oMsgStrip.setText(errorMsg);
-                        }
-                    });
-
-                // }
             },
 
             pad: Common.pad

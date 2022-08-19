@@ -1,11 +1,11 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
-	<Dialog title="Delete Attributes">
+	<Dialog>
 		<Panel>
-			<Text text="Are you sure you want delete selected attributes?"/>
+			<Text text="{i18n>ConfirmDeleteAttribute}"/>
 		</Panel>
 		<buttons>
-			<Button text="Yes" press="onConfirmDeleteGeneralAttr"/>
-			<Button text="Cancel" press="onCancelDeleteGeneralAttr"/>
+			<Button text="{i18n>Yes}" press="onConfirmDeleteGeneralAttr"/>
+			<Button text="{i18n>Cancel}" press="onCancelDeleteGeneralAttr"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

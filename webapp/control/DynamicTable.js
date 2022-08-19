@@ -59,8 +59,9 @@ sap.ui.define([
 				templateItem.push(path);
 				if (path === startProperty) {
 					startPropertyIndex = int;
+                    cell_element.fireChange();
 				}
-
+                
 			}
 
 			for (var int = 0; int < sNewCopiedData.length; int++) {
@@ -86,7 +87,7 @@ sap.ui.define([
 
 			}
 			model.refresh();
-
+                        
 		},
 		onAfterRendering: function() {
 			var that = this;

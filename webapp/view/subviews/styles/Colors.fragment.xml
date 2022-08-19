@@ -4,25 +4,21 @@
 
         <headerToolbar>
             <Toolbar height="3rem" style="Clear">
-                <Label text="Colors" />
+                <Label text="{i18n>Colors}" />
             </Toolbar>
         </headerToolbar>
 
         <Toolbar height="3rem" style="Clear">
             <ToolbarSpacer />
-            <Button type="Ghost" icon="sap-icon://save" text="Save" visible="{ColorEditModeModel>/editMode}" press="onSaveColorTable"/>
-            <Button type="Ghost" icon="sap-icon://add" press="addLine" visible="{ColorEditModeModel>/editMode}">
+            <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Savecolorattributes}" press="onSaveColorTable" visible="{ColorEditModeModel>/editMode}"/>
+            <Button type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="{ColorEditModeModel>/editMode}">
                 <customData>
                     <core:CustomData key="TableName" value="colorsTable"/>
                 </customData>
             </Button>
-            <Button type="Ghost" icon="sap-icon://delete" press="onDeleteColor" visible="{ColorEditModeModel>/editMode}">
-                <customData>
-                    <core:CustomData key="TableName" value="colorsTable"/>
-                </customData>
-            </Button>
-            <Button type="Ghost" icon="sap-icon://edit" text="Edit" press="setColorEditMode" visible="{= ${ColorEditModeModel>/editMode} === true ? false : true }"/>
-            <Button type="Ghost" icon="sap-icon://decline" text="Cancel" press="cancelColorsEdit" visible="{= ${ColorEditModeModel>/editMode} === true ? true : false }"/>
+            <Button type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedcolors}" press="onDeleteColor" visible="{ColorEditModeModel>/editMode}"/>
+            <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editcolorattributes}" press="setColorEditMode" visible="{= ${ColorEditModeModel>/editMode} === true ? false : true }"/>
+            <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelColorsEdit" visible="{= ${ColorEditModeModel>/editMode} === true ? true : false }"/>
         </Toolbar>
 
         <MessageStrip id="ColorsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
@@ -31,7 +27,7 @@
             selectionMode="{= ${ColorEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
             <c:columns>
                 <t:Column width="11rem" filterProperty="Attribcd">
-                    <Label text="Color Code" />
+                    <Label text="{i18n>ColorCode}" />
                     <t:template>
                         <HBox class="sapUiResponsiveContentPadding">
                             <Label required="true"/>
@@ -41,7 +37,7 @@
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Desc1" >
-                    <Label text="Description" />
+                    <Label text="{i18n>Description}" />
                     <t:template>
                         <Input value="{DataModel>Desc1}" editable="{ColorEditModeModel>/editMode}" 
                             change="onColorChange" liveChange="onColorChange"/>

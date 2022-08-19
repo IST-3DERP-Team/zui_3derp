@@ -6,12 +6,8 @@
                 <Label text="Welcome" class="sapUiTinyMarginBegin"/>
             </contentLeft>
         </Bar>
+
         <HBox class="sapUiSmallMargin">
-            <!-- <headerToolbar>
-                <Toolbar height="2rem">
-                    <Title text="Welcome"/>
-                </Toolbar>
-            </headerToolbar> -->
             <f:Card class="sapUiTinyMargin"
                 width="300px">
                 <f:header>
@@ -55,32 +51,9 @@
                     </TileContent>
                 </tileContent>
             </GenericTile>
-
-        <!-- <SlideTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout">
-            <tiles>
-                <GenericTile
-                    backgroundImage="test-resources/sap/m/demokit/sample/GenericTileAsFeedTile/images/NewsImage1.png"
-                    frameType="TwoByOne" press="press">
-                    <TileContent footer="August 21, 2016">
-                        <NewsContent
-                            contentText="Wind Map: Monitoring Real-Time and Fore-casted Wind Conditions across the Globe"
-                            subheader="Today, SAP News" />
-                    </TileContent>
-                </GenericTile>
-                <GenericTile
-                    backgroundImage="test-resources/sap/m/demokit/sample/GenericTileAsFeedTile/images/NewsImage2.png"
-                    frameType="TwoByOne" press="press">
-                    <TileContent footer="August 21, 2016">
-                        <NewsContent
-                            contentText="SAP Unveils Powerful New Player Comparision Tool Exclusively on NFL.com"
-                            subheader="Today, SAP News" />
-                    </TileContent>
-                </GenericTile>
-            </tiles>
-        </SlideTile> -->
-
-            
+           
         </HBox>
+
         <Panel>
             <headerToolbar>
                 <Toolbar height="2rem">
@@ -88,13 +61,11 @@
                 </Toolbar>
             </headerToolbar>
             <GenericTile class="sapUiTinyMarginBegin" header="{i18n>ManageStyles}" press="goToStyles">
-                <!-- <TileContent footer="{i18n>order}"> -->
-                    <!-- <NumericContent value="856" icon="sap-icon://puzzle" valueColor="Neutral" withMargin="false" /> -->
-                <!-- </TileContent> -->
                 <TileContent>
                     <ImageContent src="sap-icon://puzzle" />
                 </TileContent>
             </GenericTile>
         </Panel>
+        
     </Page>
 </mvc:View>
