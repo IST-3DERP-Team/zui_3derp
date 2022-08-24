@@ -130,7 +130,7 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new sap.ui.model.json.JSONModel();
 
-                //get header columns
+                //get header fields
                 oModel.setHeaders({
                     sbu: this._sbu,
                     type: 'STYLHDR'
