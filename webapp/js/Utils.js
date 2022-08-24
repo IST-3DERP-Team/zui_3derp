@@ -5,6 +5,8 @@ sap.ui.define([
 ], function (MessageToast, JSONModel, Spreadsheet) {
     "use strict";
 
+    var that = this;
+
     return {
 
         getStyleSearchHelps: function (that) {
@@ -362,6 +364,41 @@ sap.ui.define([
                 error: function (err) { }
             });
         },
+
+        // onSeasonsValueHelp: function (oEvent, oView) {
+        //     var sInputValue = oEvent.getSource().getValue();
+        //     that.inputId = oEvent.getSource().getId();
+        //     that._oView = oView;
+        //     if (!oView._seasonsHelpDialog) {
+        //         oView._seasonsHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.Seasons", oView);
+        //         oView._seasonsHelpDialog.attachSearch(this._seasonsGroupValueHelpSearch);   
+        //         oView._seasonsHelpDialog.attachConfirm(this._seasonsGroupValueHelpClose);  
+        //         oView._seasonsHelpDialog.attachCancel(this._seasonsGroupValueHelpClose);  
+        //         oView.getView().addDependent(oView._seasonsHelpDialog);
+        //     }
+        //     oView._seasonsHelpDialog.open(sInputValue);
+        // },
+
+        // _seasonsGroupValueHelpSearch: function (evt) {
+        //     var sValue = evt.getParameter("value");
+        //     var andFilter = [], orFilter = [];
+        //     orFilter.push(new sap.ui.model.Filter("Seasoncd", sap.ui.model.FilterOperator.Contains, sValue));
+        //     orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
+        //     andFilter.push(new sap.ui.model.Filter(orFilter, false));
+        //     evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+        // },
+
+        // _seasonsGroupValueHelpClose: function (evt) {
+        //     var oSelectedItem = evt.getParameter("selectedItem");
+        //     if (oSelectedItem) {
+        //         var productInput = sap.ui.getCore().byId(that.inputId);
+        //         productInput.setValue(oSelectedItem.getTitle());
+        //         try {
+        //             that._oView.onHeaderChange();
+        //         } catch (err) {}
+        //     }
+        //     evt.getSource().getBinding("items").filter([]);
+        // },
 
         onExport: function (oEvent) {
             var oButton = oEvent.getSource();

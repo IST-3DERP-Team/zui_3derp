@@ -56,7 +56,10 @@ sap.ui.define([
             },
 
             setChangeStatus: function(changed) {
-                sap.ushell.Container.setDirtyFlag(changed);
+                try {
+                    sap.ushell.Container.setDirtyFlag(changed);
+                } catch(err) {}
+                
             },
 
             onRefresh: function() { 
@@ -1844,8 +1847,6 @@ sap.ui.define([
                 if (oSelectedItem) {
                     var productInput = this.byId(this.inputId);
                     productInput.setValue(oSelectedItem.getTitle());
-                    var descText = this.byId(this.descId);
-                    descText.setText(oSelectedItem.getDescription());
                     this.onVersionAttrChange();
                 }
                 evt.getSource().getBinding("items").filter([]);

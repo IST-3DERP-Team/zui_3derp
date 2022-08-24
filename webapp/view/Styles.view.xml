@@ -75,7 +75,12 @@
                 <smartfilterbar:ControlConfiguration key="CREATEDBY" groupId="_ADVANCED" label="{i18n>CREATEDBY}"/>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration key="CREATEDDT" conditionType="sap.ui.comp.config.condition.DateRangeType" groupId="_ADVANCED" label="{i18n>CREATEDDT}">
+                <smartfilterbar:ControlConfiguration key="CREATEDDT" label="{i18n>CREATEDDT}">
+                    <smartfilterbar:customControl>
+                        <!-- <DatePicker id="CreatedDatePicker" valueFormat="yyyyMMdd"/>3 -->
+                        <DateRangeSelection id="CreatedDatePicker" value="{parts: [{path: ''}, {path: ''}], type: 'sap.ui.model.type.DateInterval',
+                            formatOptions: { UTC: false, format: 'yyyyMMdd' }}"/>    
+                    </smartfilterbar:customControl>
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
@@ -85,7 +90,12 @@
                 <smartfilterbar:ControlConfiguration key="UPDATEDDT" groupId="_ADVANCED" label="{i18n>UPDATEDDT}"/>
             </smartfilterbar:controlConfiguration> -->
             <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration key="UPDATEDDT" conditionType="sap.ui.comp.config.condition.DateRangeType" groupId="_ADVANCED" label="{i18n>UPDATEDDT}">
+                <smartfilterbar:ControlConfiguration key="UPDATEDDT" label="{i18n>UPDATEDDT}">
+                    <smartfilterbar:customControl>
+                        <!-- <DatePicker id="CreatedDatePicker" valueFormat="yyyyMMdd"/>3 -->
+                        <DateRangeSelection id="UpdatedDatePicker" value="{parts: [{path: ''}, {path: ''}], type: 'sap.ui.model.type.DateInterval',
+                            formatOptions: { UTC: false, format: 'yyyyMMdd' }}"/>    
+                    </smartfilterbar:customControl>
                 </smartfilterbar:ControlConfiguration>
             </smartfilterbar:controlConfiguration>
         </smartfilterbar:SmartFilterBar>

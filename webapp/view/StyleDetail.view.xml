@@ -18,7 +18,7 @@
         <core:Fragment fragmentName="zui3derp.view.subviews.styles.Header" type="XML"/>
          
         <!-- DETAILS -->
-        <Panel id="detailPanel" expandable="true" expanded="false" width="auto" class="sapUiSizeCompact whiteBackground">
+        <Panel id="detailPanel" expandable="true" expanded="false" width="auto" class="sapUiSizeCompact">
             <headerToolbar>
                 <Toolbar height="3rem" style="Clear">
                     <Title text="{i18n>Detail}" />
@@ -57,6 +57,6 @@
             </IconTabBar>
         </Panel>
         
-        <VBox height="200px"/>
+        <!-- <VBox height="200px"/> -->
     </Page>
 </mvc:View>
