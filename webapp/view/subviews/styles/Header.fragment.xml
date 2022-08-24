@@ -1,6 +1,6 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-        <Panel id="headerPanel" expandable="true" expanded="true" width="auto" class="sapUiSizeCompact whiteBackground">
+        <Panel id="headerPanel" expandable="true" expanded="true" width="auto" class="sapUiSizeCompact">
 
             <headerToolbar>
                 <Toolbar id="TB1" height="3rem" style="Clear">
@@ -43,7 +43,7 @@
                                 <f:fields>
                                     <Input id="SEASONCD" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
                                         valueHelpRequest="onSeasonsValueHelp" suggestionItems="{SeasonsModel>/results}" value="{headerData>/Seasoncd}"
-                                        change="onHeaderChange" liveChange="onHeaderChange" textFormatMode="KeyValue">
+                                        change="onHeaderChange" liveChange="onHeaderChange">
                                         <suggestionItems>
                                             <core:ListItem text="{SeasonsModel>Seasoncd}" additionalText="{SeasonsModel>Desc1}"/>
                                         </suggestionItems>

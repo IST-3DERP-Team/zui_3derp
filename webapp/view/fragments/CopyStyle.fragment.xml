@@ -33,10 +33,17 @@
                             </f:FormElement>
                             <f:FormElement label="{i18n>NewSeason}">
                                 <f:fields>
-                                    <ComboBox id="seasonCB" items="{ path: 'SeasonModel>/results', sorter: { path: 'Seasoncd' } }" selectedKey="{SeasonModel>/Seasoncd}"
+                                    <!-- <ComboBox id="seasonCB" items="{ path: 'SeasonModel>/results', sorter: { path: 'Seasoncd' } }" selectedKey="{SeasonModel>/Seasoncd}"
                                         showSecondaryValues="true" filterSecondaryValues= "true">
                                         <core:ListItem key="{SeasonModel>Seasoncd}" text="{SeasonModel>Desc1}" additionalText = "{SeasonModel>Yr}"/>
-                                    </ComboBox>
+                                    </ComboBox> -->
+                                    <Input id="SEASONCD2" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
+                                        valueHelpRequest="onSeasonsValueHelp" suggestionItems="{SeasonsModel>/results}" value="{headerData>/Seasoncd}"
+                                        change="onHeaderChange" liveChange="onHeaderChange">
+                                        <suggestionItems>
+                                            <core:ListItem text="{SeasonsModel>Seasoncd}" additionalText="{SeasonsModel>Desc1}"/>
+                                        </suggestionItems>
+                                    </Input>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>

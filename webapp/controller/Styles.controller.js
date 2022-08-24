@@ -18,6 +18,7 @@ sap.ui.define([
 
             onInit: function () {
                 that = this;
+                
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteStyles").attachPatternMatched(this._routePatternMatched, this);
@@ -29,7 +30,9 @@ sap.ui.define([
             },
 
             setChangeStatus: function(changed) {
-                sap.ushell.Container.setDirtyFlag(changed);
+                try {
+                    sap.ushell.Container.setDirtyFlag(changed);
+                } catch (err) {}
             },
 
             setSmartFilterModel: function () {
@@ -74,7 +77,7 @@ sap.ui.define([
                 var i = 1;
                 var statusColNo;
 
-                // var datePickerValue = this.getView().byId("CreatedDatePicker").getValue();
+                
 
                 //build select columns
                 var oColCount = columns.length;
@@ -99,16 +102,7 @@ sap.ui.define([
                 var aFilters = this.getView().byId("SmartFilterBar").getFilters();
                 var oText = this.getView().byId("StylesCount");
 
-                // var la_filters = new Array(); // Don't normally do this but just for the example.
-                // var ld_date = new Date("2015-08-20"); // Javascript Date object
-                // var lv_pickedDateFilter = new sap.ui.model.Filter({
-                //                     path: "CREATEDDT",
-                //                     operator: sap.ui.model.FilterOperator.EQ,
-                //                     value1: datePickerValue
-                //             });
-                // aFilters.push(lv_pickedDateFilter);
-                // var filterData = aFilters.getFilterData();
-                // aFilters.push(new sap.ui.model.Filter("CREATEDDT", FilterOperators.EQ, datePickerValue));
+                this.addDateFilters(aFilters);
 
                 oModel.read("/StyleSet", {
                     filters: aFilters,
@@ -121,6 +115,46 @@ sap.ui.define([
                     },
                     error: function (err) { }
                 });
+            },
+
+            addDateFilters: function(aFilters) {
+                var createdDate = this.getView().byId("CreatedDatePicker").getValue();
+                    if(createdDate !== undefined && createdDate !== '') {
+                        createdDate = createdDate.replace(/\s/g, '').toString();
+                        var createDateStr = createdDate.split('–');
+                        var createdDate1 = createDateStr[0];
+                        var createdDate2 = createDateStr[1];
+                        if(createdDate2 === undefined) {
+                            createdDate2 = createdDate1;
+                        }
+                        var lv_createdDateFilter = new sap.ui.model.Filter({
+                            path: "CREATEDDT",
+                            operator: sap.ui.model.FilterOperator.BT,
+                            value1: createdDate1,
+                            value2: createdDate2
+                    });
+                    
+                    aFilters.push(lv_createdDateFilter);
+                }
+
+                var updatedDate = this.getView().byId("UpdatedDatePicker").getValue();
+                    if(updatedDate !== undefined && updatedDate !== '') {
+                        updatedDate = updatedDate.replace(/\s/g, '').toString();
+                        var createDateStr = updatedDate.split('–');
+                        var updatedDate1 = createDateStr[0];
+                        var updatedDate2 = createDateStr[1];
+                        if(updatedDate2 === undefined) {
+                            updatedDate2 = updatedDate1;
+                        }
+                        var lv_updatedDateFilter = new sap.ui.model.Filter({
+                            path: "UPDATEDDT",
+                            operator: sap.ui.model.FilterOperator.BT,
+                            value1: updatedDate1,
+                            value2: updatedDate2
+                    });
+                    
+                    aFilters.push(lv_updatedDateFilter);
+                }
             },
 
             setTableData: function (statusColNo) {
@@ -324,7 +358,7 @@ sap.ui.define([
                 var selected = oTable.getSelectedIndices();
 
                 var newStyleCode = sap.ui.getCore().byId("newStyleCode").getValue();
-                var newSeason = sap.ui.getCore().byId("seasonCB").getSelectedKey();
+                var newSeason = sap.ui.getCore().byId("SEASONCD2").getValue();
                 var colorCheck = sap.ui.getCore().byId("ColorCB").getSelected();
                 var bomCheck = sap.ui.getCore().byId("bomCB").getSelected();
                 var versions = [];
@@ -379,22 +413,25 @@ sap.ui.define([
             },
 
             getFiltersData: function () {
-                var me = this;
-                var oModel = this.getOwnerComponent().getModel();
+                var oSHModel = this.getOwnerComponent().getModel("SearchHelps");
 
                 //get Seasons
                 var oJSONModel = new JSONModel();
                 var oView = this.getView();
-                oModel.setHeaders({
+                oSHModel.setHeaders({
                     sbu: that._sbu
                 });
-                oModel.read("/SeasonSet", {
+                oSHModel.read("/SeasonSet", {
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
-                        oView.setModel(oJSONModel, "SeasonModel");
+                        oView.setModel(oJSONModel, "SeasonsModel");
                     },
                     error: function (err) { }
                 });
+            },
+
+            onSeasonsValueHelp: function (oEvent) {
+                Utils.onSeasonsValueHelp(oEvent, this);
             },
 
             onSaveLayoutSettings: function () {
@@ -441,6 +478,8 @@ sap.ui.define([
                 var oShipped = this.getView().byId("shippedNumber");
 
                 var aFilters = this.getView().byId("SmartFilterBar").getFilters();
+
+                this.addDateFilters(aFilters);
 
                 oModel.read("/StyleStatsSet", {
                     filters: aFilters,

@@ -35,33 +35,20 @@ sap.ui.define(
         },
 
         onAfterRendering: function() {
-            this.onSideNavButtonPress();
-        //     this.navigatePage('RouteMain');
+            this.onSideNavButtonPress(); //hide the sidebar by default
         },
 
         navigatePage: function(oRouteName) {
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-            oRouter.navTo(oRouteName);
-
-            // oRouter.navTo("RouteStyleDetail", {
-            //     styleno: "1000000039",
-            //     sbu: "VER"
-            // } );
-        
-            // oRouter.navTo("RouteVersion", {
-            //     styleno: "1000000039",
-            //     sbu: "VER",
-            //     version: 3
-            // } );
+            oRouter.navTo(oRouteName); 
         },
 
         onItemSelect: function (oEvent) {
-            var item = oEvent.getParameter('item');
-            this.navigatePage(item.getKey());
+            var item = oEvent.getParameter('item'); //get the selected key
+            this.navigatePage(item.getKey()); //go to selected page based on key target
         },
 
         onSideNavButtonPress: function () {
-            // var viewId = this.getView().getId();
             var toolPage = this.byId("toolPage");
             toolPage.setSideExpanded(!toolPage.getSideExpanded());
         }

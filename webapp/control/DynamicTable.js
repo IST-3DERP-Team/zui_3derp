@@ -18,7 +18,7 @@ sap.ui.define([
 			// } else {
 				sNewCopiedData = rows.slice(0, oTableLength+1);
 			// }
-            var cells = table.getRows()[0].getCells()
+            var cells = table.getRows()[startRowIndex].getCells()
 			// var cells = table.getBindingInfo('rows').template.getCells();
 			var templateItem = [];
 			var itemsPath = table.getBindingPath('rows');

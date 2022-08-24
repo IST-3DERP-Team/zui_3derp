@@ -6,7 +6,7 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     'jquery.sap.global',
     'sap/ui/core/routing/HashChanger',
-    'sap/m/MessageStrip'
+    'sap/m/MessageStrip' 
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
@@ -22,13 +22,14 @@ sap.ui.define([
 
             onInit: function () {
                 that = this;
+                
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteStyleDetail").attachPatternMatched(this._routePatternMatched, this);
+                
+                this.appendUploadCollection(); //add the upload collection to screen
 
-                this.appendUploadCollection();
-
-                var oModel = this.getOwnerComponent().getModel("FileModel");
+                var oModel = this.getOwnerComponent().getModel("FileModel"); //set the file odata service model
                 this.getView().setModel(oModel, "FileModel");
 
                 this._headerChanged = false;
@@ -37,9 +38,10 @@ sap.ui.define([
             },
 
             _routePatternMatched: function (oEvent) {
-                this._styleNo = oEvent.getParameter("arguments").styleno;
-                this._sbu = oEvent.getParameter("arguments").sbu;
+                this._styleNo = oEvent.getParameter("arguments").styleno; //get Style from route pattern
+                this._sbu = oEvent.getParameter("arguments").sbu; //get SBU from route pattern
                 
+                //set all as no changes
                 this._headerChanged = false;
                 this._generalAttrChanged = false;
                 this._colorChanged = false;
@@ -48,23 +50,23 @@ sap.ui.define([
                 this._versionChanged = false;
                 
                 this.setChangeStatus(false);
-
-                // window.onbeforeunload = function() { return "You work will be lost."; };
                 
-                if (this._styleNo === "NEW") {
-                    this.setHeaderEditMode();
+                if (this._styleNo === "NEW") { 
+                    //create new - only header is editable at first
+                    this.setHeaderEditMode(); 
                     this.setDetailVisible(false);
                 } else {
-                    this.cancelHeaderEdit();
-                    this.setDetailVisible(true);
-                    this.getGeneralTable();
-                    this.getSizesTable();
-                    this.getProcessesTable();
-                    this.getVersionsTable();
+                    //existing style, get the style data
+                    this.cancelHeaderEdit(); 
+                    this.setDetailVisible(true); //make detail section visible
+                    this.getGeneralTable(); //get general attributes
+                    this.getSizesTable(); //get sizes
+                    this.getProcessesTable(); //get process
+                    this.getVersionsTable(); //get versions
                 }
                 this.getColorsTable();
 
-                //close edit modes
+                //close all edit modes
                 this.cancelGeneralAttrEdit();
                 this.cancelColorsEdit();
                 this.cancelSizeEdit();
@@ -73,8 +75,8 @@ sap.ui.define([
                 this.cancelFilesEdit();
 
                 //Load header
-                this.getHeaderConfig();
-                this.getHeaderData();
+                this.getHeaderConfig(); //get visible header fields
+                this.getHeaderData(); //get header data
 
                 //Load value helps
                 Utils.getStyleSearchHelps(this);
@@ -87,11 +89,14 @@ sap.ui.define([
             },
 
             setChangeStatus: function(changed) {
-                sap.ushell.Container.setDirtyFlag(changed);
+                //controls the edited warning message
+                try {
+                    sap.ushell.Container.setDirtyFlag(changed);
+                } catch(err) {}
             },
 
             setDetailVisible: function(bool) {
-                var detailPanel = this.getView().byId('detailPanel');
+                var detailPanel = this.getView().byId('detailPanel'); //show detail section if there is header info
                 detailPanel.setVisible(bool);
             },
 
@@ -104,8 +109,8 @@ sap.ui.define([
 
                 Common.openLoadingDialog(that);
 
+                //read Style header data
                 var entitySet = "/StyleDetailSet('" + styleNo + "')"
-
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
@@ -122,10 +127,10 @@ sap.ui.define([
             getHeaderConfig: function () {
                 var me = this;
                 var oView = this.getView();
-
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new sap.ui.model.json.JSONModel();
 
+                //get header columns
                 oModel.setHeaders({
                     sbu: this._sbu,
                     type: 'STYLHDR'
@@ -134,13 +139,12 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         var visibleFields = new JSONModel();
                         var visibleFields = {};
-
+                        //get only visible fields
                         for (var i = 0; i < oData.results.length; i++) {
                             visibleFields[oData.results[i].ColumnName] = oData.results[i].Visible;
                         }
                         var JSONdata = JSON.stringify(visibleFields);
                         var JSONparse = JSON.parse(JSONdata);
-
                         oJSONModel.setData(JSONparse);
                         oView.setModel(oJSONModel, "VisibleFieldsData");
                     },
@@ -150,6 +154,7 @@ sap.ui.define([
             },
 
             setHeaderEditMode: function () {
+                //unlock editable fields of style header
                 var oJSONModel = new JSONModel();
                 var data = {};
                 this._headerChanged = false;
@@ -233,7 +238,6 @@ sap.ui.define([
                                 var oJSONModel = new JSONModel();
                                 me._styleNo = oData.Styleno;
                                 oJSONModel.setData(oData);
-                                // me.getView().setModel(oJSONModel, "headerData");
                                 me.getHeaderData();
                                 me.getGeneralTable();
                                 me.getSizesTable();
@@ -263,11 +267,9 @@ sap.ui.define([
 
                     } else {
                         path = "/StyleDetailSet('" + this._styleNo + "')";
-
                         oModel.setHeaders({
                             sbu: this._sbu
                         });
-
                         oModel.update(path, oEntry, {
                             method: "PUT",
                             success: function (data, oResponse) {
@@ -340,7 +342,6 @@ sap.ui.define([
                 Common.openLoadingDialog(that);
 
                 var entitySet = "/StyleAttributesGeneralSet";
-
                 oModel.setHeaders({
                     styleno: this._styleNo,
                     sbu: this._sbu
@@ -427,7 +428,6 @@ sap.ui.define([
                     }
 
                     for (var i = 0; i < oData.results.length; i++) {
-
                         var item = {
                             "Styleno": this._styleNo,
                             "Attribtyp": oData.results[i].Attribtyp,
@@ -453,11 +453,9 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     path = "/AttributesGeneralSet";
-
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
-
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oData, oResponse) {
@@ -552,7 +550,6 @@ sap.ui.define([
                 Common.openLoadingDialog(that);
 
                 var entitySet = "/StyleAttributesColorSet"
-
                 oModel.setHeaders({
                     styleno: this._styleNo
                 });
@@ -576,10 +573,6 @@ sap.ui.define([
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "ColorEditModeModel");
             },
-
-            // cancelColorEdit: function () {
-            //     this.cancelEdit(this._colorChanged, this.confirmCancelColorEdit);
-            // },
 
             cancelColorsEdit: function () {
                 if (this._colorChanged) {
@@ -633,8 +626,7 @@ sap.ui.define([
                 if (!this._colorChanged) {
                     Common.showMessage(this._i18n.getText('t7'));
                 } else {
-                    var oInput = this.getView().byId('ColorIdInput');
-
+                    // var oInput = this.getView().byId('ColorIdInput');
                     var oEntry = {
                         Styleno: this._styleNo,
                         Type: "COLOR",
@@ -666,11 +658,9 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     path = "/AttributesGeneralSet";
-
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
-
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oData, oResponse) {
@@ -791,10 +781,6 @@ sap.ui.define([
                 this.getView().setModel(oJSONModel, "SizeEditModeModel");
             },
 
-            // cancelSizeEdit: function () {
-            //     this.cancelEdit(this._sizeChanged, this.confirmCancelSizeEdit);
-            // },
-
             cancelSizeEdit: function () {
                 if (this._sizeChanged) {
                     if (!this._DiscardSizesChangesDialog) {
@@ -879,7 +865,6 @@ sap.ui.define([
                             "Updatedby": " ",
                             "Updateddt": " "
                         };
-
                         oEntry.AttributesToItems.push(item);
                     };
 
@@ -889,11 +874,9 @@ sap.ui.define([
                         Common.openLoadingDialog(that);
 
                         path = "/AttributesGeneralSet";
-
                         oModel.setHeaders({
                             sbu: this._sbu
                         });
-
                         oModel.create(path, oEntry, {
                             method: "POST",
                             success: function (oData, oResponse) {
@@ -912,7 +895,6 @@ sap.ui.define([
                             }
                         });
                     }
-
                 }
             },
 
@@ -927,7 +909,6 @@ sap.ui.define([
                 Common.openLoadingDialog(that);
 
                 var entitySet = "/StyleAttributesProcessSet"
-
                 oModel.setHeaders({
                     styleno: this._styleNo,
                     sbu: this._sbu
@@ -952,10 +933,6 @@ sap.ui.define([
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "ProcessEditModeModel");
             },
-
-            // cancelProcessEdit: function () {
-            //     this.cancelEdit(this._processChanged, this.confirmCancelProcessEdit);
-            // },
 
             cancelProcessEdit: function () {
                 if (this._processChanged) {
@@ -1016,7 +993,6 @@ sap.ui.define([
                     }
 
                     for (var i = 0; i < oData.results.length; i++) {
-
                         var item = {
                             "Styleno": this._styleNo,
                             "Seqno": oData.results[i].Seqno,
@@ -1037,14 +1013,12 @@ sap.ui.define([
 
                         oEntry.ProcessToItems.push(item);
                     };
+
                     Common.openLoadingDialog(that);
-
                     path = "/AttributesProcessSet";
-
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
-
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oData, oResponse) {
@@ -1061,7 +1035,6 @@ sap.ui.define([
                             oMsgStrip.setText(errorMsg);
                         }
                     });
-
                 }
             },
 
@@ -1193,11 +1166,6 @@ sap.ui.define([
             onSelectVersion: function (oEvent) {
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
                 var version = oData.getProperty('Verno');
-                // if(that.dataChanged()) {
-                //     that.setChangeStatus(true);
-                // } else {
-                //     that.setChangeStatus(false);
-                // }
                 that._router.navTo("RouteVersion", {
                     styleno: that._styleNo,
                     sbu: that._sbu,
@@ -1248,10 +1216,6 @@ sap.ui.define([
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "VersionEditModeModel");
             },
-
-            // cancelVersionEdit: function () {
-            //     this.cancelEdit(this._versionChanged, this.confirmCancelVersionEdit);
-            // },
 
             cancelVersionEdit: function () {
                 if (this._versionChanged) {
@@ -1586,6 +1550,12 @@ sap.ui.define([
             },
 
             onBeforeUploadStarts: function (oEvent) {
+
+                var oStylenoParam = new sap.m.UploadCollectionParameter({
+                    name: "sbu",
+                    value: that._sbu
+                });
+                oEvent.getParameters().addHeaderParameter(oStylenoParam);
 
                 var oStylenoParam = new sap.m.UploadCollectionParameter({
                     name: "styleno",
@@ -2005,6 +1975,7 @@ sap.ui.define([
                 this.inputId = oEvent.getSource().getId();
                 if (!this._seasonsHelpDialog) {
                     this._seasonsHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.Seasons", this);
+                    this._seasonsHelpDialog.attachSearch(Utils._seasonsGroupValueHelpSearch);                    
                     this.getView().addDependent(this._seasonsHelpDialog);
                 }
                 this._seasonsHelpDialog.open(sInputValue);
@@ -2135,7 +2106,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         // oJSONModel6.setSizeLimit(9999);
                         // oJSONModel6.oJSONModelt(9999);
-                        oView.setModel(oJSONModel6, "SizeGroupModel");
+                        oView.setModel(oJSONModel, "SizeGroupModel");
 
                         if (!me._sizeGroupHelpDialog) {
                             me._sizeGroupHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.SizeGroups", me);
@@ -2197,8 +2168,6 @@ sap.ui.define([
             pad: Common.pad,
 
             onCancelNewVersion: Common.onCancelNewVersion,
-
-            // onCancelUploadFile: Common.onCancelUploadFile,
 
             onCancelDeleteStyle: Common.onCancelDeleteStyle,
 
