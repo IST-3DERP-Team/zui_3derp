@@ -4,6 +4,7 @@
         <Toolbar height="3rem" style="Clear">
             <Label text="{i18n>VersionAttributes}"/>
             <ToolbarSpacer />
+            <Button text="Attach" press="attach"/>
             <Button icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveversionattributes}" press="onSaveVersionAttrTable" visible="{VersionAttrEditModeModel>/editMode}"/>
             <Button icon="sap-icon://add" press="addLine" tooltip="{i18n>Addnewline}" visible="{VersionAttrEditModeModel>/editMode}">
                 <customData>
@@ -17,8 +18,8 @@
 
         <MessageStrip id="VersionAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
 
-        <c:DynamicTable id="versionAttrTable" rows="{DataModel>/results}" enableColumnReordering="false"  
-            visibleRowCountMode="Auto" minAutoRowCount="5" class="sapUiSizeCompact" selectionMode="{= ${VersionAttrEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
+        <c:DynamicTable id="versionAttrTable" enableColumnReordering="false" visibleRowCountMode="Fixed"
+            class="sapUiSizeCompact" selectionMode="{= ${VersionAttrEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
             <c:columns>
                 <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="{i18n>AttributeType}"/>
@@ -62,7 +63,7 @@
                     <Label text="{i18n>UOM}" />
                     <t:template>
                         <Input id="UomInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
-                            change="onVersionAttrChange" liveChange="onVersionAttrChange"
+                            change="onVersionAttrChange" liveChange="onVersionAttrChange" visibleRowCountMode="Fixed"
                             valueHelpRequest="onUomValueHelp" suggestionItems="{UOMModel>/results}" value="{DataModel>Valunit}">
                             <suggestionItems>
                                 <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}"/>

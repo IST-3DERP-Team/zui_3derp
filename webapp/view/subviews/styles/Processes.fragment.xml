@@ -25,7 +25,7 @@
 
             <MessageStrip id="ProcessesMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
             
-            <c:DynamicTable id="processesTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="8" visibleRowCountMode="Auto" class="sapUiSizeCompact"
+            <c:DynamicTable id="processesTable" rows="{DataModel>/results}" enableColumnReordering="false" visibleRowCountMode="Fixed" class="sapUiSizeCompact"
                 selectionMode="{= ${ProcessEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
                 <c:columns>
                     <t:Column width="4rem" filterProperty="Seqno">

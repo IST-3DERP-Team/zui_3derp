@@ -116,9 +116,17 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        oTable.bindRows("DataModel>/results");
+                        oTable.setVisibleRowCount(oData.results.length);
+                        oTable.attachPaste();
                     },
                     error: function () { }
                 })
+            },
+
+            attach: function() {
+                var oTable = this.getView().byId("versionAttrTable");
+                oTable.attachPaste();                
             },
 
             setVersionAttrEditMode: function() {
@@ -279,7 +287,7 @@ sap.ui.define([
                 if(selected.length > 0) {
 	                for (var i = 0; i < selected.length; i++) {
 	                	
-	                	var verno = oData.results[selected[i]].Verno;
+	                	var verno = this._version;
 	                	var attrtype = oData.results[selected[i]].Attribtyp;
 	                	var attrcd = oData.results[selected[i]].Attribcd;
 	                	
@@ -442,6 +450,9 @@ sap.ui.define([
                         });
 
                         oTable.setModel(oJSONModel, "DataModel");
+                        oTable.setVisibleRowCount(oData.results.length);
+                        oTable.attachPaste();
+
                         me.getBOMGMCColorsData();
                         me.getbomUVTable();
                     },
@@ -510,34 +521,46 @@ sap.ui.define([
 
                 try {
                         var oTable = that.getView().byId("bomGMCTable");
-                        var oColumns = oTable.getColumns();
+                        var oTableModel = oTable.getModel('DataModel');
+                        var oData = oTableModel.getData();
+                        var gmc =  that.getView().getModel('GMCModel').getData().results;
 
-                        for(var i = 0; i < oColumns.length; i++) {
-                            var name = oColumns[i].getName();
-                            if(name === 'ENTRYUOM') {
-                                var uomValue = oEvent.getSource().getParent().mAggregations.cells[i].getValue()
-                                var oBaseUomInput = oEvent.getSource().getParent().mAggregations.cells[i].getId();
-                            }
-                            if(name === 'GMC') {
-                                var sInputValue = oEvent.getSource().getParent().mAggregations.cells[i].getValue()
-                            }
-                        }
-
-                        if(uomValue === '') {
-                            var gmc =  that.getView().getModel('GMCModel').getData().results;
-                            var gmcUom = gmc.find((item) => item.Gmc === sInputValue)
-
-                            var oBaseUomInput2 = sap.ui.getCore().byId(oBaseUomInput);
-
+                        for(var i = 0; i < oData.results.length; i++) {
+                            var gmcUom = gmc.find((item) => item.Gmc === oData.results[i].GMC)
                             if(gmcUom !== undefined) {
-                                var baseUom = gmcUom.Baseuom;
-                                if(baseUom !== undefined) {    
-                                    oBaseUomInput2.setValue(baseUom);
-                                } 
-                            } else {
-                                oBaseUomInput2.setValue('');
+                                if(oData.results[i].ENTRYUOM === undefined) {
+                                    oData.results[i].ENTRYUOM = gmcUom.Baseuom;
+                                }
                             }
                         }
+                        // var oColumns = oTable.getColumns();
+
+                        // for(var i = 0; i < oColumns.length; i++) {
+                        //     var name = oColumns[i].getName();
+                        //     if(name === 'ENTRYUOM') {
+                        //         var uomValue = oEvent.getSource().getParent().mAggregations.cells[i].getValue()
+                        //         var oBaseUomInput = oEvent.getSource().getParent().mAggregations.cells[i].getId();
+                        //     }
+                        //     if(name === 'GMC') {
+                        //         var sInputValue = oEvent.getSource().getParent().mAggregations.cells[i].getValue()
+                        //     }
+                        // }
+
+                        // if(uomValue === '') {
+                        //     var gmc =  that.getView().getModel('GMCModel').getData().results;
+                        //     var gmcUom = gmc.find((item) => item.Gmc === sInputValue)
+
+                        //     var oBaseUomInput2 = sap.ui.getCore().byId(oBaseUomInput);
+
+                        //     if(gmcUom !== undefined) {
+                        //         var baseUom = gmcUom.Baseuom;
+                        //         if(baseUom !== undefined) {    
+                        //             oBaseUomInput2.setValue(baseUom);
+                        //         } 
+                        //     } else {
+                        //         oBaseUomInput2.setValue('');
+                        //     }
+                        // }
 
                 } catch(err) {}
             },
@@ -795,6 +818,8 @@ sap.ui.define([
                         });
 
                         oTable.setModel(oJSONModel, "DataModel");
+                        oTable.setVisibleRowCount(unique.length);
+                        oTable.attachPaste();
 
                         oTable.bindColumns("DataModel>/columns", function (sId, oContext) {
                             var column = oContext.getObject();
@@ -1292,6 +1317,8 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        oTable.setVisibleRowCount(oData.results.length);
+                        oTable.attachPaste();
                     },
                     error: function () { 
                     }
@@ -1674,6 +1701,8 @@ sap.ui.define([
                 var oData = oModel.getProperty('/results');
                 oData.push({});
                 oTable.getBinding("rows").refresh();
+                oTable.setVisibleRowCount(oData.length);
+                // oTable.attachPaste();
             },
 
             addLineBOM: function (oEvent) {
@@ -1684,6 +1713,7 @@ sap.ui.define([
                 var oData = oModel.getProperty('/results');
                 oData.push({});
                 oTable.getBinding("rows").refresh();
+                oTable.setVisibleRowCount(oData.length);
             },
 
             removeLine: function (oEvent) {

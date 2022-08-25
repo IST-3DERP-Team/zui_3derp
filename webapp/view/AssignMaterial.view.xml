@@ -14,7 +14,8 @@
 
             <MessageStrip id="AssignMaterialMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
 
-            <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" height="100%">
+            <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" height="100%"
+                visibleRowCountMode="Fixed">
                 <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                     <Label text="GMC"/>
                     <t:template>

@@ -181,9 +181,11 @@ sap.ui.define([
 		// },
 
         pad: function (num, size) {
-            num = num.toString();
-            while (num.length < size) num = "0" + num;
-            return num;
+            try {
+                num = num.toString();
+                while (num.length < size) num = "0" + num;
+                return num;
+            } catch(err) {}
         },
 
         showMessage: function(oMessage) {

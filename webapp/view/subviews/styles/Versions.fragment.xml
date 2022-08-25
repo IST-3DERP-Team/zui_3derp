@@ -20,7 +20,7 @@
         <MessageStrip id="VersionsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
 
         <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" 
-            selectionMode="{= ${VersionEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }" visibleRowCountMode="Auto" minAutoRowCount="4" class="sapUiSizeCompact">
+            selectionMode="{= ${VersionEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }" visibleRowCountMode="Fixed" class="sapUiSizeCompact">
             <c:columns>
                 <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
                     <Label text="{i18n>Manage}"/>
