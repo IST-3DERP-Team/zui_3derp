@@ -60,6 +60,8 @@ sap.ui.define([
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        oTable.setVisibleRowCount(oData.results.length);
+                        oTable.attachPaste();
                         Common.closeLoadingDialog(that);
                         me.setChangeStatus(false);
                     },

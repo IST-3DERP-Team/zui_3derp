@@ -59,32 +59,34 @@ sap.ui.define([
 				templateItem.push(path);
 				if (path === startProperty) {
 					startPropertyIndex = int;
-                    cell_element.fireChange();
+                    // try {
+                        cell_element.fireChange();
+                    // } catch(err) {}
 				}
-                
 			}
 
 			for (var int = 0; int < sNewCopiedData.length; int++) {
             // for (var int = 0; int < sNewCopiedData.length -1; int++) {
-				var rows_element = sNewCopiedData[int];
-				var cells = rows_element.split(/\t/);
+                if(sNewCopiedData[int] !== "") {                
+                    sNewCopiedData[int] = sNewCopiedData[int].replace(/[\n\r]+/g, '');
+                    var rows_element = sNewCopiedData[int];
+                    var cells = rows_element.split(/\t/);
 
-				var originalObject = model.getProperty(itemsPath + "/" + startRowIndex++);
-				if (originalObject === undefined) {
-					originalObject = {};
-					for (var k = 0; k < templateItem.length; k++) {
-						originalObject[templateItem[k]] = undefined;
-					}
-					// itemsArray.push(originalObject);
-				}
+                    var originalObject = model.getProperty(itemsPath + "/" + startRowIndex++);
+                    if (originalObject === undefined) {
+                        originalObject = {};
+                        for (var k = 0; k < templateItem.length; k++) {
+                            originalObject[templateItem[k]] = undefined;
+                        }
+                        // itemsArray.push(originalObject);
+                    }
 
-				var lesserLength = Math.min(templateItem.length, (cells.length + startPropertyIndex));
-				for (int2 = startPropertyIndex, intValue = 0; int2 < lesserLength; int2++, intValue++) {
-					var name = templateItem[int2];
-					originalObject[name] = cells[intValue];
-
-				}
-
+                    var lesserLength = Math.min(templateItem.length, (cells.length + startPropertyIndex));
+                    for (int2 = startPropertyIndex, intValue = 0; int2 < lesserLength; int2++, intValue++) {
+                        var name = templateItem[int2];
+                        originalObject[name] = cells[intValue];
+                    }
+                }
 			}
 			model.refresh();
                         

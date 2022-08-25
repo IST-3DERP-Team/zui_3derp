@@ -24,8 +24,8 @@
 
             <MessageStrip id="GeneralAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
             
-            <c:DynamicTable id="generalTable" rows="{DataModel>/results}" enableColumnReordering="false" minAutoRowCount="10" visibleRowCountMode="Auto" class="sapUiSizeCompact"
-                selectionMode="{= ${GenAttrEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
+            <c:DynamicTable id="generalTable" rows="{DataModel>/results}" enableColumnReordering="false" class="sapUiSizeCompact"
+                selectionMode="{= ${GenAttrEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }" visibleRowCountMode="Fixed">
                 <c:columns>
                     <t:Column width="11rem" filterProperty="Attribtyp">
                         <Label text="{i18n>AttributeType}" />

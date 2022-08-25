@@ -350,6 +350,8 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        oTable.setVisibleRowCount(oData.results.length);
+                        oTable.attachPaste();
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
@@ -557,6 +559,8 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        oTable.setVisibleRowCount(oData.results.length);
+                        oTable.attachPaste();
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
@@ -917,6 +921,8 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        oTable.setVisibleRowCount(oData.results.length);
+                        oTable.attachPaste();
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
@@ -1117,6 +1123,8 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
+                        oTable.setVisibleRowCount(oData.results.length);
+                        oTable.attachPaste();
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
@@ -1409,6 +1417,7 @@ sap.ui.define([
                 var oData = oModel.getProperty('/results');
                 oData.push({});
                 oTable.getBinding("rows").refresh();
+                oTable.setVisibleRowCount(oData.length);
             },
 
             addProcessLine: function (oEvent) {
@@ -1428,6 +1437,7 @@ sap.ui.define([
                     "Seqno": seqno
                 });
                 oTable.getBinding("rows").refresh();
+                oTable.setVisibleRowCount(oData.length);
             },
 
             removeLine: function (oEvent) {
