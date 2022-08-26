@@ -7,49 +7,44 @@ sap.ui.define([
 
 		},
 		insertRows: function(value, table, model, startRowIndex, startProperty) {
-
-			var oTableLength = table.getModel(model).getData().results.length;
-
-			var rows = value.split(/\n/);
-		
+            var oTableLength = table.getModel(model).getData().results.length;
+			
+            //get copied data from clipboard
+            var rows = value.split(/\n/);
 			var sNewCopiedData;
 			// if (currentRowIndex !== 0) {
 			// 	sNewCopiedData = rows.slice(0, currentRowIndex-1);
 			// } else {
-				sNewCopiedData = rows.slice(0, oTableLength+1);
+			sNewCopiedData = rows.slice(0, oTableLength+1);
 			// }
+            
+            //get cells
             var cells = table.getRows()[startRowIndex].getCells()
-			// var cells = table.getBindingInfo('rows').template.getCells();
 			var templateItem = [];
 			var itemsPath = table.getBindingPath('rows');
-			var itemsArray = table.getModel(model).getProperty(itemsPath);
+			// var itemsArray = table.getModel(model).getProperty(itemsPath);
 			var startPropertyIndex = 0;
 			var model = table.getModel(model);
 			var fData = model.oData.results;
 
+            //determine start index
 			if (startPropertyIndex === 2) {
-
 				for (var i = 0; i < fData.length; i++) {
-
 					for (var int = 0; int < sNewCopiedData.length - 1; int++) {
 						var rows_element = sNewCopiedData[int];
 						fData[i].Number = rows_element;
-					
 					}
-
 				}
 			} else if (startPropertyIndex === 3) {
 				for (var q = 0; q < fData.length; q++) {
-
 					for (var w = 0; w < sNewCopiedData.length - 1; w++) {
 						var row = sNewCopiedData[w];
 						fData[q].Email = row;
-					
 					}
-
 				}
 			}
-
+            
+            //determine start row index
 			if (startRowIndex === undefined) {
 				startRowIndex = 0;
 			}
@@ -59,14 +54,12 @@ sap.ui.define([
 				templateItem.push(path);
 				if (path === startProperty) {
 					startPropertyIndex = int;
-                    // try {
-                        cell_element.fireChange();
-                    // } catch(err) {}
+                    cell_element.fireChange();
 				}
 			}
 
+            //change the value to copied data
 			for (var int = 0; int < sNewCopiedData.length; int++) {
-            // for (var int = 0; int < sNewCopiedData.length -1; int++) {
                 if(sNewCopiedData[int] !== "") {                
                     sNewCopiedData[int] = sNewCopiedData[int].replace(/[\n\r]+/g, '');
                     var rows_element = sNewCopiedData[int];
@@ -88,19 +81,22 @@ sap.ui.define([
                     }
                 }
 			}
+            //refresh the table
 			model.refresh();
                         
 		},
 		onAfterRendering: function() {
 			var that = this;
-			// sap.m.Table.prototype.onAfterRendering.apply(this, arguments);
+
+            //get the copied data
 			sap.ui.table.Table.prototype.onAfterRendering.apply(this, arguments);
             this.attachBrowserEvent('paste', function(e) {
 				e.preventDefault();
 				var text = (e.originalEvent || e).clipboardData.getData('text/plain');
-
 				that.insertRows(text, this, undefined);
 			});
+
+            //attach paste event for each row and cell
             try {
                 this.getAggregation('rows').forEach(function(row) {
                     row.getCells().forEach(function(cell) {
@@ -123,9 +119,7 @@ sap.ui.define([
                     });
                 }); 
             } catch(err) { }
-
 		},
-		// renderer: sap.m.Table.prototype.getRenderer()
         renderer: sap.ui.table.Table.prototype.getRenderer()
 	});
 });

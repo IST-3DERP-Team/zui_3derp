@@ -23,17 +23,21 @@ sap.ui.define([
             onInit: function () {
                 that = this;
                 
+                //Initialize router
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteStyleDetail").attachPatternMatched(this._routePatternMatched, this);
                 
-                this.appendUploadCollection(); //add the upload collection to screen
+                //Add the attachments to screen
+                this.appendUploadCollection();
 
-                var oModel = this.getOwnerComponent().getModel("FileModel"); //set the file odata service model
+                //Set the file data model
+                var oModel = this.getOwnerComponent().getModel("FileModel"); 
                 this.getView().setModel(oModel, "FileModel");
 
-                this._headerChanged = false;
+                this._headerChanged = false; //Set change flag
 
+                //Initialize translations
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             },
 
@@ -41,7 +45,7 @@ sap.ui.define([
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get Style from route pattern
                 this._sbu = oEvent.getParameter("arguments").sbu; //get SBU from route pattern
                 
-                //set all as no changes
+                //set all as no changes at first load
                 this._headerChanged = false;
                 this._generalAttrChanged = false;
                 this._colorChanged = false;
@@ -164,6 +168,7 @@ sap.ui.define([
             },
 
             cancelHeaderEdit: function () {
+                //confirm cancel edit of style header
                 if (this._headerChanged) {
                     if (!this._DiscardHeaderChangesDialog) {
                         this._DiscardHeaderChangesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.DiscardHeaderChanges", this);
@@ -182,6 +187,7 @@ sap.ui.define([
             },
 
             closeHeaderEdit: function () {
+                //on cancel confirmed - close edit mode and reselect backend data
                 var oJSONModel = new JSONModel();
                 var data = {};
                 that._headerChanged = false;
@@ -198,28 +204,35 @@ sap.ui.define([
             },
 
             onHeaderChange: function () {
+                //set change flag for header
                 this._headerChanged = true;
                 this.setChangeStatus(true);
             },
 
             onSaveHeader: function () {
+                //save style header button clicked
                 var oModel = this.getOwnerComponent().getModel();
                 var me = this;
                 var path;
                 var oHeaderModel = this.getView().getModel("headerData");
                 var oEntry = oHeaderModel.getData();
+
+                //initialize message strip
                 var oMsgStrip = this.getView().byId('HeaderMessageStrip');
                 oMsgStrip.setVisible(false);
 
+                //check if there are changes
                 if (!this._headerChanged) {
-                    Common.showMessage(this._i18n.getText('t7'));
+                    Common.showMessage(this._i18n.getText('t7')); //no changes made
                 } else {
 
+                    //set http header data
                     oEntry.Styleno = this._styleNo;
                     oEntry.Sbu = this._sbu;
 
-                    if (this._styleNo === "NEW") {
+                    if (this._styleNo === "NEW") { //creating a new style
 
+                        //set default style info for NEW
                         oEntry.Statuscd = 'CRT';
                         oEntry.Createdby = "$";
                         oEntry.Createddt = "$";
@@ -231,6 +244,7 @@ sap.ui.define([
                             sbu: this._sbu
                         });
 
+                        //call create new style
                         oModel.create(path, oEntry, {
                             method: "POST",
                             success: function (oData, oResponse) {
@@ -238,6 +252,8 @@ sap.ui.define([
                                 var oJSONModel = new JSONModel();
                                 me._styleNo = oData.Styleno;
                                 oJSONModel.setData(oData);
+
+                                //on successful create, select data related to style
                                 me.getHeaderData();
                                 me.getGeneralTable();
                                 me.getSizesTable();
@@ -248,12 +264,14 @@ sap.ui.define([
                                 me.setDetailVisible(true);
                                 Common.showMessage(me._i18n.getText('t4'));
 
+                                //change the url hash to the new style no
                                 var oHashChanger = HashChanger.getInstance();
                                 var currHash = oHashChanger.getHash();
                                 var newHash = currHash.replace("NEW", me._styleNo);
                                 oHashChanger.replaceHash(newHash);
                             },
                             error: function (err) {
+                                //show message strip on error
                                 var errorMsg;
                                 try {
                                     errorMsg = JSON.parse(err.responseText).error.message.value;
@@ -266,6 +284,7 @@ sap.ui.define([
                         });
 
                     } else {
+                        //style already existing, call update method
                         path = "/StyleDetailSet('" + this._styleNo + "')";
                         oModel.setHeaders({
                             sbu: this._sbu
@@ -273,6 +292,7 @@ sap.ui.define([
                         oModel.update(path, oEntry, {
                             method: "PUT",
                             success: function (data, oResponse) {
+                                //reselect the data to ensure consistency
                                 me.getHeaderData();
                                 me.getSizesTable();
                                 me._headerChanged = false;
@@ -280,6 +300,7 @@ sap.ui.define([
                                 Common.showMessage(me._i18n.getText('t4'));
                             },
                             error: function (err, oMessage) {
+                                //show message strip on error
                                 var errorMsg;
                                 try {
                                     errorMsg = JSON.parse(err.responseText).error.message.value;
@@ -295,6 +316,7 @@ sap.ui.define([
             },
 
             onDeleteStyle: function () {
+                //show confirmation to delete style
                 if (!this._ConfirmDeleteDialog) {
                     this._ConfirmDeleteDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmDeleteStyle", this);
                     this.getView().addDependent(this._ConfirmDeleteDialog);
@@ -308,10 +330,11 @@ sap.ui.define([
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
 
-                if (this._styleNo === "NEW") {
+                if (this._styleNo === "NEW") { //deleted without style no, return to style screen
                     this.setChangeStatus(false);
                     that._router.navTo("RouteStyles");
                 } else {
+                    //existing style, call style delete method
                     var entitySet = "/StyleSet(STYLENO='" + that._styleNo + "')";
 
                     Common.openLoadingDialog(that);
@@ -321,7 +344,7 @@ sap.ui.define([
                         method: "DELETE",
                         success: function (data, oResponse) {
                             me.setChangeStatus(false);
-                            me._router.navTo("RouteStyles");
+                            me._router.navTo("RouteStyles"); //return to styles screen
                             Common.closeLoadingDialog(me);
                             Common.showMessage(me._i18n.getText('t4'));
                         },
@@ -334,6 +357,7 @@ sap.ui.define([
             },
 
             getGeneralTable: function () {
+                //Get general attributes data
                 var oTable = this.getView().byId("generalTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
@@ -350,8 +374,8 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
-                        oTable.setVisibleRowCount(oData.results.length);
-                        oTable.attachPaste();
+                        oTable.setVisibleRowCount(oData.results.length); //updating visible rows
+                        oTable.attachPaste(); //for copy-paste
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
@@ -361,6 +385,7 @@ sap.ui.define([
             },
 
             setGeneralAttrEditMode: function () {
+                //set general attributes table edit mode
                 var oJSONModel = new JSONModel();
                 var data = {};
                 this._generalAttrChanged = false;
@@ -370,6 +395,7 @@ sap.ui.define([
             },
 
             cancelGeneralAttrEdit: function () {
+                //cancel edit mode of general attributes
                 if (this._generalAttrChanged) {
                     if (!this._DiscardGeneralAttrChangesDialog) {
                         this._DiscardGeneralAttrChangesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.DiscardGeneralAttrChanges", this);
@@ -388,6 +414,7 @@ sap.ui.define([
             },
 
             closeGeneralAttrEdit: function () {
+                //on confirm cancel, reselect general attributes from backend
                 var oJSONModel = new JSONModel();
                 var data = {};
                 that._generalAttrChanged = false;
@@ -409,26 +436,26 @@ sap.ui.define([
             },
 
             onSaveGeneralTable: function () {
+                //save general attributes table changes
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
                 var oTableModel = this.getView().byId("generalTable").getModel("DataModel");
                 var path;
 
+                //initialize message strip
                 var oMsgStrip = this.getView().byId('GeneralAttrMessageStrip');
                 oMsgStrip.setVisible(false);
 
-                if (!this._generalAttrChanged) {
+                if (!this._generalAttrChanged) { //check if data is changed
                     Common.showMessage(this._i18n.getText('t7'));
                 } else {
-
+                    //get table data and build the payload
                     var oData = oTableModel.getData();
-
                     var oEntry = {
                         Styleno: this._styleNo,
                         Type: "GENERAL",
                         AttributesToItems: []
                     }
-
                     for (var i = 0; i < oData.results.length; i++) {
                         var item = {
                             "Styleno": this._styleNo,
@@ -454,6 +481,7 @@ sap.ui.define([
 
                     Common.openLoadingDialog(that);
 
+                    //call deep entity create method 
                     path = "/AttributesGeneralSet";
                     oModel.setHeaders({
                         sbu: this._sbu
@@ -465,9 +493,10 @@ sap.ui.define([
                             me._generalAttrChanged = false;
                             me.setChangeStatus(false);
                             Common.showMessage(me._i18n.getText('t4'));
-                            Utils.getProcessAttributes(me);
+                            Utils.getProcessAttributes(me); //need to reload available attribute types for process tables
                         },
                         error: function (err) {
+                            //show error messages
                             Common.closeLoadingDialog(that);
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
                             oMsgStrip.setVisible(true);
@@ -480,6 +509,7 @@ sap.ui.define([
             },
 
             onDeleteGeneralAttr: function () {
+                //confirmation to delete selected general attribute lines
                 var oTable = this.getView().byId('generalTable');
                 var selected = oTable.getSelectedIndices();
                 if(selected.length > 0) {
@@ -496,9 +526,11 @@ sap.ui.define([
             },
             
             onConfirmDeleteGeneralAttr: function() {
+                //start of delete of selected lines
             	var me = this;
                 var oModel = this.getOwnerComponent().getModel();
 
+                //get selected lines to delete
                 var oTable = this.getView().byId("generalTable");
                 var oTableModel = oTable.getModel("DataModel");
                 var oData = oTableModel.getData();
@@ -510,6 +542,7 @@ sap.ui.define([
                 this._ConfirmDeleteGeneralAttr.close();
                 
                 if(selected.length > 0) {
+                    //call delete method for each selected line
 	                for (var i = 0; i < selected.length; i++) {
 	                	
 	                	var attrtype = oData.results[selected[i]].Attribtyp;
@@ -533,18 +566,18 @@ sap.ui.define([
 						oModel.setRefreshAfterChange(true);
 	                }
 	                
+                    //remove the deleted lines from the table
 	                oData.results = oData.results.filter(function (value, index) {
                     	return selected.indexOf(index) == -1;
 	                })
-	
 	                oTableModel.setData(oData);
 	                oTable.clearSelection();
                 }
             },
 
             getColorsTable: function () {
+                //selection of color attributes table
                 var oTable = this.getView().byId("colorsTable");
-
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oTable = this.getView().byId("colorsTable");
@@ -559,8 +592,8 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
-                        oTable.setVisibleRowCount(oData.results.length);
-                        oTable.attachPaste();
+                        oTable.setVisibleRowCount(oData.results.length); //updating visible rows
+                        oTable.attachPaste(); //for copy-paste
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
@@ -570,6 +603,7 @@ sap.ui.define([
             },
 
             setColorEditMode: function () {
+                //set colors table editable
                 var oJSONModel = new JSONModel();
                 var data = {};
                 this._colorChanged = false;
@@ -579,6 +613,7 @@ sap.ui.define([
             },
 
             cancelColorsEdit: function () {
+                //cancel edit of colors table
                 if (this._colorChanged) {
                     if (!this._DiscardColorsChangesDialog) {
                         this._DiscardColorsChangesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.DiscardColorsChanges", this);
@@ -597,6 +632,7 @@ sap.ui.define([
             },
 
             closeColorsEdit: function () {
+                //edit cancelled, reselect backend data, close edit mode
                 var oJSONModel = new JSONModel();
                 var data = {};
                 that._colorChanged = false;
@@ -613,24 +649,28 @@ sap.ui.define([
             },
 
             onColorChange: function () {
+                //set colors table edit flag
                 this._colorChanged = true;
                 this.setChangeStatus(true);
             },
 
             onSaveColorTable: function () {
+                //save changes to colors table
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
                 var oTableModel = this.getView().byId("colorsTable").getModel("DataModel");
                 var path;
                 var oData = oTableModel.getData();
 
+                //initialize message strip
                 var oMsgStrip = this.getView().byId('ColorsMessageStrip');
                 oMsgStrip.setVisible(false);
 
-                if (!this._colorChanged) {
+                if (!this._colorChanged) { //check if there are changes to colors table
                     Common.showMessage(this._i18n.getText('t7'));
                 } else {
-                    // var oInput = this.getView().byId('ColorIdInput');
+
+                    //build the headers and payload
                     var oEntry = {
                         Styleno: this._styleNo,
                         Type: "COLOR",
@@ -638,7 +678,6 @@ sap.ui.define([
                     }
 
                     for (var i = 0; i < oData.results.length; i++) {
-
                         var item = {
                             "Styleno": this._styleNo,
                             "Attribtyp": "COLOR",
@@ -661,6 +700,7 @@ sap.ui.define([
                     };
                     Common.openLoadingDialog(that);
 
+                    //call the create deep of general attributes
                     path = "/AttributesGeneralSet";
                     oModel.setHeaders({
                         sbu: this._sbu
@@ -687,6 +727,7 @@ sap.ui.define([
             },
 
             onDeleteColor: function () {
+                //get selected lines to delete
                 var oTable = this.getView().byId('colorsTable');
                 var selected = oTable.getSelectedIndices();
                 if(selected.length > 0) {
@@ -703,9 +744,10 @@ sap.ui.define([
             },
             
             onConfirmDeleteColor: function() {
-            	var me = this;
-                var oModel = this.getOwnerComponent().getModel();
+                //confirm delete selected colors
 
+                //get selected lines to delete
+                var oModel = this.getOwnerComponent().getModel();
                 var oTable = this.getView().byId("colorsTable");
                 var oTableModel = oTable.getModel("DataModel");
                 var oData = oTableModel.getData();
@@ -717,6 +759,7 @@ sap.ui.define([
                 this._ConfirmDeleteColor.close();
                 
                 if(selected.length > 0) {
+                    //call delete method for each selected lines
 	                for (var i = 0; i < selected.length; i++) {
 	                	
 	                	var attrtype = "COLOR";
@@ -733,23 +776,23 @@ sap.ui.define([
 		                    error: function () {
 		                    }
 		                });
-		                
 		                oModel.submitChanges({
 						    groupId: "group1"
 						});
 						oModel.setRefreshAfterChange(true);
 	                }
-	                
+
+	                //remove deleted lines from the table
 	                oData.results = oData.results.filter(function (value, index) {
                     	return selected.indexOf(index) == -1;
 	                })
-	
 	                oTableModel.setData(oData);
 	                oTable.clearSelection();
                 }
             },
 
             getSizesTable: function () {
+                //select size attributes
                 var oTable = this.getView().byId("sizesTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
@@ -777,6 +820,7 @@ sap.ui.define([
             },
 
             setSizeEditMode: function () {
+                //set size table editable
                 var oJSONModel = new JSONModel();
                 var data = {};
                 this._sizeChanged = false;
@@ -786,6 +830,7 @@ sap.ui.define([
             },
 
             cancelSizeEdit: function () {
+                //confirm size edit cancel
                 if (this._sizeChanged) {
                     if (!this._DiscardSizesChangesDialog) {
                         this._DiscardSizesChangesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.DiscardSizesChanges", this);
@@ -804,6 +849,7 @@ sap.ui.define([
             },
 
             closeSizeEdit: function () {
+                //editing cancelled, reselect sizes from backend, close table edit mode
                 var oJSONModel = new JSONModel();
                 var data = {};
                 that._sizeChanged = false;
@@ -820,37 +866,37 @@ sap.ui.define([
             },
 
             onSizeChange: function () {
+                //set size attributes change flag
                 this._sizeChanged = true;
                 this.setChangeStatus(true);
             },
 
             onSaveSizeTable: function () {
+                //save changes of size table
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
                 var oTableModel = this.getView().byId("sizesTable").getModel("DataModel");
                 var path;
                 var lv_baseindctr = 0;
 
+                //initiliaze message strip
                 var oMsgStrip = this.getView().byId('SizesMessageStrip');
                 oMsgStrip.setVisible(false);
 
-                if (!this._sizeChanged) {
+                if (!this._sizeChanged) { //check if there are changes 
                     Common.showMessage(this._i18n.getText('t7'));
                 } else {
-
+                    //build header and payload
                     var oData = oTableModel.getData();
                     var oEntry = {
                         Styleno: this._styleNo,
                         Type: "SIZE",
                         AttributesToItems: []
-                    }
-
+                    }                    
                     for (var i = 0; i < oData.results.length; i++) {
-
-                        if (oData.results[i].Baseind === true) {
+                        if (oData.results[i].Baseind === true) { //for checking if multiple base ind selected
                             lv_baseindctr++;
                         }
-
                         var item = {
                             "Styleno": this._styleNo,
                             "Attribtyp": "SIZE",
@@ -872,11 +918,11 @@ sap.ui.define([
                         oEntry.AttributesToItems.push(item);
                     };
 
-                    if (lv_baseindctr > 1) {
+                    if (lv_baseindctr > 1) { //do not allow multiple base indicator
                         Common.showMessage(this._i18n.getText('t9'));
                     } else {
                         Common.openLoadingDialog(that);
-
+                        //call create deep method of size attirbutes
                         path = "/AttributesGeneralSet";
                         oModel.setHeaders({
                             sbu: this._sbu
@@ -903,9 +949,8 @@ sap.ui.define([
             },
 
             getProcessesTable: function () {
-                var me = this;
+                //get processes data
                 var oTable = this.getView().byId("processesTable");
-
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oTable = this.getView().byId("processesTable");
@@ -932,6 +977,7 @@ sap.ui.define([
             },
 
             setProcessEditMode: function () {
+                //set edit mode processes table
                 var oJSONModel = new JSONModel();
                 var data = {};
                 this._processChanged = false;
@@ -941,6 +987,7 @@ sap.ui.define([
             },
 
             cancelProcessEdit: function () {
+                //confirm cancel editing of process table
                 if (this._processChanged) {
                     if (!this._DiscardProcessChangesDialog) {
                         this._DiscardProcessChangesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.DiscardProcessChanges", this);
@@ -959,6 +1006,7 @@ sap.ui.define([
             },
 
             closeProcessEdit: function () {
+                //editing process tbale cancelled, reselect backend data, close edit mode
                 var oJSONModel = new JSONModel();
                 var data = {};
                 that._processChanged = false;
@@ -980,18 +1028,20 @@ sap.ui.define([
             },
 
             onSaveProcessTable: function () {
+                //save process table
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
                 var oTableModel = this.getView().byId("processesTable").getModel("DataModel");
                 var path;
 
+                //initialize message strip
                 var oMsgStrip = this.getView().byId('ProcessesMessageStrip');
                 oMsgStrip.setVisible(false);
 
-                if (!this._processChanged) {
+                if (!this._processChanged) { //check changed data
                     Common.showMessage(this._i18n.getText('t7'));
                 } else {
-
+                    //build header and payload
                     var oData = oTableModel.getData();
                     var oEntry = {
                         Styleno: this._styleNo,
@@ -1019,7 +1069,7 @@ sap.ui.define([
 
                         oEntry.ProcessToItems.push(item);
                     };
-
+                    //call create deep method of process attributes
                     Common.openLoadingDialog(that);
                     path = "/AttributesProcessSet";
                     oModel.setHeaders({
@@ -1045,6 +1095,7 @@ sap.ui.define([
             },
 
             onDeleteProcess: function () {
+                //confirm delete selected process items
                 var oTable = this.getView().byId('processesTable');
                 var selected = oTable.getSelectedIndices();
                 if(selected.length > 0) {
@@ -1061,9 +1112,9 @@ sap.ui.define([
             },
             
             onConfirmDeleteProcess: function() {
-            	var me = this;
+                //start delete process of selected items
+            	//get selected items to delete
                 var oModel = this.getOwnerComponent().getModel();
-
                 var oTable = this.getView().byId("processesTable");
                 var oTableModel = oTable.getModel("DataModel");
                 var oData = oTableModel.getData();
@@ -1074,8 +1125,9 @@ sap.ui.define([
                 
                 this._ConfirmDeleteProcess.close();
                 
-                if(selected.length > 0) {
-	                for (var i = 0; i < selected.length; i++) {
+                if(selected.length > 0) { 
+                    //call delete method for each selected item
+                    for (var i = 0; i < selected.length; i++) {
 	                	
 	                	var seqno = oData.results[selected[i]].Seqno;
 	                	seqno = this.pad(seqno, 3);
@@ -1108,6 +1160,7 @@ sap.ui.define([
             },
 
             getVersionsTable: function () {
+                //get versions data of style
                 var oTable = this.getView().byId("versionsTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
@@ -1134,13 +1187,20 @@ sap.ui.define([
             },
 
             onSaveNewVersion: function () {
+                //save info of new versions
                 var oModel = this.getOwnerComponent().getModel();
                 var me = this;
                 var path;
+
+                //get data from new version dialog
                 var oDesc1 = Core.byId("newVersionDesc1").getValue();
                 var oDesc2 = Core.byId("newVersionDesc2").getValue();
                 var oCurrent = Core.byId("newVersionCurrent").getSelected();
 
+                Common.openLoadingDialog(that);
+
+                //build header and payload
+                path = "/StyleVersionSet";                
                 var oEntry = {
                     "Styleno": this._styleNo,
                     "Verno": "",
@@ -1148,14 +1208,10 @@ sap.ui.define([
                     "Desc2": oDesc2,
                     "Currentver": oCurrent
                 };
-                Common.openLoadingDialog(that);
-
-                path = "/StyleVersionSet";
-
                 oModel.setHeaders({
                     sbu: this._sbu
                 });
-
+                //call create method of style version
                 oModel.create(path, oEntry, {
                     method: "POST",
                     success: function (oData, oResponse) {
@@ -1172,6 +1228,7 @@ sap.ui.define([
             },
 
             onSelectVersion: function (oEvent) {
+                //selecting version to view
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
                 var version = oData.getProperty('Verno');
                 that._router.navTo("RouteVersion", {
@@ -1182,6 +1239,7 @@ sap.ui.define([
             },
 
             setVersionCurrent: function (oEvent) {
+                //clicking the set version as current during edit mode
                 var me = this;
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
                 var version = oData.getProperty('Verno');
@@ -1190,17 +1248,16 @@ sap.ui.define([
 
                 Common.openLoadingDialog(that);
 
+                //set header and payload
                 var entitySet = "/StyleVersionSet(Styleno='" + this._styleNo + "',Verno='" + version + "')";
-
                 var oEntry = {
                     Styleno: this._styleNo,
                     Verno: version
                 };
-
                 oModel.setHeaders({
                     sbu: this._sbu
                 });
-
+                //call the update method of style version
                 oModel.update(entitySet, oEntry, {
                     method: "PUT",
                     success: function (data, oResponse) {
@@ -1217,6 +1274,7 @@ sap.ui.define([
             },
 
             setVersionEditMode: function () {
+                //set edit mode of versions table
                 var oJSONModel = new JSONModel();
                 var data = {};
                 this._versionChanged = false;
@@ -1226,6 +1284,7 @@ sap.ui.define([
             },
 
             cancelVersionEdit: function () {
+                //confirm cancel of edit versions
                 if (this._versionChanged) {
                     if (!this._DiscardVersionChangesDialog) {
                         this._DiscardVersionChangesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.DiscardVersionChanges", this);
@@ -1244,6 +1303,7 @@ sap.ui.define([
             },
 
             closeVersionEdit: function () {
+                //cancel edit mode, reselect versions data
                 var oJSONModel = new JSONModel();
                 var data = {};
                 that._versionChanged = false;
@@ -1260,31 +1320,34 @@ sap.ui.define([
             },
 
             onVersionChange: function () {
+                //versions change flag
                 this._versionChanged = true;
                 this.setChangeStatus(true);
             },
 
             onSaveVersions: function () {
+                //save changes to versions table
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
                 var oTableModel = this.getView().byId("versionsTable").getModel("DataModel");
                 var path;
 
+                //initialize message strip
                 var oMsgStrip = this.getView().byId('VersionsMessageStrip');
                 oMsgStrip.setVisible(false);
 
-                if (!this._versionChanged) {
+                if (!this._versionChanged) { //check if there changes
                     Common.showMessage(this._i18n.getText('t7'));
                 } else {
+                    Common.openLoadingDialog(that);
 
+                    //build header and payload
                     var oData = oTableModel.getData();
                     var oEntry = {
                         Styleno: this._styleNo,
                         VerToItems: []
-                    }
-
+                    }                    
                     for (var i = 0; i < oData.results.length; i++) {
-
                         var item = {
                             "Styleno": this._styleNo,
                             "Verno": oData.results[i].Verno,
@@ -1304,17 +1367,13 @@ sap.ui.define([
                             "Updatedby": " ",
                             "Updateddt": " "
                         }
-
                         oEntry.VerToItems.push(item);
                     };
-                    Common.openLoadingDialog(that);
-                    
                     path = "/VersionSet";
-
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
-
+                    //call create deep method of style versions
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oData, oResponse) {
@@ -1337,6 +1396,7 @@ sap.ui.define([
             },
 
             onCreateNewVersion: function () {
+                //open create new version dialog
                 if (!that._NewVerionDialog) {
                     that._NewVerionDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CreateNewVersion", that);
                     that.getView().addDependent(that._NewVerionDialog);
@@ -1347,6 +1407,7 @@ sap.ui.define([
             },
 
             onDeleteVersion: function () {
+                //confirm delete of selected version items
                 var oTable = this.getView().byId('versionsTable');
                 var selected = oTable.getSelectedIndices();
                 if(selected.length > 0) {
@@ -1363,9 +1424,10 @@ sap.ui.define([
             },
             
             onConfirmDeleteVersion: function() {
-            	var me = this;
+                //confirm deletion of version
                 var oModel = this.getOwnerComponent().getModel();
 
+                //get selected items to delete
                 var oTable = this.getView().byId("versionsTable");
                 var oTableModel = oTable.getModel("DataModel");
                 var oData = oTableModel.getData();
@@ -1377,6 +1439,7 @@ sap.ui.define([
 				this._ConfirmDeleteVersionDialog.close();
                 
                 if(selected.length > 0) {
+                    //call delete method for each item selected
 	                for (var i = 0; i < selected.length; i++) {
 	                	
 	                	var verno = oData.results[selected[i]].Verno;
@@ -1410,6 +1473,7 @@ sap.ui.define([
             },
 
             addLine: function (oEvent) {
+                //adding lines to tables via model
                 var oButton = oEvent.getSource();
                 var tabName = oButton.data('TableName')
                 var oTable = this.getView().byId(tabName);
@@ -1421,6 +1485,7 @@ sap.ui.define([
             },
 
             addProcessLine: function (oEvent) {
+                //adding lines to process table via model, with sequence increment logic
                 var oButton = oEvent.getSource();
                 var tabName = oButton.data('TableName')
                 var oTable = this.getView().byId(tabName);
@@ -1440,44 +1505,47 @@ sap.ui.define([
                 oTable.setVisibleRowCount(oData.length);
             },
 
-            removeLine: function (oEvent) {
-                var oButton = oEvent.getSource();
-                var tabName = oButton.data('TableName')
-                var oTable = this.getView().byId(tabName);
-                var oModel = this.getView().byId(tabName).getModel("DataModel");
-                var oData = oModel.getData();
-                var selected = oTable.getSelectedIndices();
+            // removeLine: function (oEvent) {
+            //     var oButton = oEvent.getSource();
+            //     var tabName = oButton.data('TableName')
+            //     var oTable = this.getView().byId(tabName);
+            //     var oModel = this.getView().byId(tabName).getModel("DataModel");
+            //     var oData = oModel.getData();
+            //     var selected = oTable.getSelectedIndices();
 
-                oData.results = oData.results.filter(function (value, index) {
-                    return selected.indexOf(index) == -1;
-                })
+            //     oData.results = oData.results.filter(function (value, index) {
+            //         return selected.indexOf(index) == -1;
+            //     })
 
-                oModel.setData(oData);
-                oTable.clearSelection();
-            },
+            //     oModel.setData(oData);
+            //     oTable.clearSelection();
+            // },
 
-            addGeneralAttr: function () {
-                var oModel = this.getView().byId("generalTable").getModel("DataModel");
-                var oData = oModel.getProperty('/results');
-                oData.push({});
+            // addGeneralAttr: function () {
+            //     var oModel = this.getView().byId("generalTable").getModel("DataModel");
+            //     var oData = oModel.getProperty('/results');
+            //     oData.push({});
 
-                var oTable = this.getView().byId("generalTable");
-                oTable.getBinding("rows").refresh();
-            },
+            //     var oTable = this.getView().byId("generalTable");
+            //     oTable.getBinding("rows").refresh();
+            // },
 
             appendUploadCollection: function () {
+                //set properties and adding the attachments component to the screen
                 var oUploadCollection = this.getView().byId('UploadCollection');
                 oUploadCollection.attachChange(that.onFileSelected);
                 oUploadCollection.setMode(sap.m.ListMode.SingleSelectLeft);
                 oUploadCollection.attachBeforeUploadStarts(that.onBeforeUploadStarts);
                 oUploadCollection.setMultiple(true);
+                //set the odata path of the upload collection
                 oUploadCollection.setUploadUrl("/sap/opu/odata/sap/ZGW_3DERP_FILES_SRV/FileSet");
+                //attach function when an upload is completed
                 oUploadCollection.attachUploadComplete(that.onUploadComplete);
             },
 
             bindUploadCollection: function () {
                 var oUploadCollection = this.getView().byId('UploadCollection');
-
+                //setting the properties of the upload collection and binding
                 oUploadCollection.bindItems({
                     path: 'FileModel>/FileSet',
                     filters: [
@@ -1503,6 +1571,7 @@ sap.ui.define([
             },
 
             setFilesEditMode: function() {
+                //set edit mode to the upload collection
                 var oJSONModel = new JSONModel();
                 var data = {};
                 data.editMode = true;
@@ -1517,26 +1586,28 @@ sap.ui.define([
             cancelFilesEdit: function() {
                 var oJSONModel = new JSONModel();
                 var data = {};
-                // this._headerChanged = false;
                 data.editMode = false;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "FilesEditModeModel");
-
+                //make upload button visible
                 var oUploadCollection = this.getView().byId('UploadCollection');
                 oUploadCollection.setUploadButtonInvisible(true);
                 oUploadCollection.setMode(sap.m.ListMode.None);
             },
 
             onAddFile: function() {
+                //open the file select dialog
                 var oUploadCollection = this.getView().byId('UploadCollection');
                 oUploadCollection.openFileDialog();
             },
 
             onFileSelected: function() {
+                //triggered when file selected
                 that.uploadFile();
             },
 
             uploadFile: function () {
+                //open the new file dialog
                 if (!this._UploadFileDialog) {
                     this._UploadFileDialog = sap.ui.xmlfragment("zui3derp.view.fragments.UploadFile", this);
                     this.getView().addDependent(this._UploadFileDialog);
@@ -1549,6 +1620,7 @@ sap.ui.define([
             },
 
             onStartUploadFile: function () {
+                //on confirm of upload dialog, start upload of file
                 this._UploadFileDialog.close();
 
                 var oUploadCollection = this.getView().byId('UploadCollection');
@@ -1560,19 +1632,23 @@ sap.ui.define([
             },
 
             onBeforeUploadStarts: function (oEvent) {
+                //setting the HTTP headers for additional information
 
+                //SBU
                 var oStylenoParam = new sap.m.UploadCollectionParameter({
                     name: "sbu",
                     value: that._sbu
                 });
                 oEvent.getParameters().addHeaderParameter(oStylenoParam);
 
+                //style no
                 var oStylenoParam = new sap.m.UploadCollectionParameter({
                     name: "styleno",
                     value: that._styleNo
                 });
                 oEvent.getParameters().addHeaderParameter(oStylenoParam);
 
+                //file description 1
                 var fileDesc1 = sap.ui.getCore().byId("FileDesc1");
                 var oFileDesc1Param = new sap.m.UploadCollectionParameter({
                     name: "desc1",
@@ -1581,6 +1657,7 @@ sap.ui.define([
                 oEvent.getParameters().addHeaderParameter(oFileDesc1Param);
                 fileDesc1.setValue('');
 
+                //file description 2
                 var fileDesc2 = sap.ui.getCore().byId("FileDesc2");
                 var oFileDesc2Param = new sap.m.UploadCollectionParameter({
                     name: "desc2",
@@ -1589,6 +1666,7 @@ sap.ui.define([
                 oEvent.getParameters().addHeaderParameter(oFileDesc2Param);
                 fileDesc2.setValue('');
 
+                //remarks
                 var fileRemarks = sap.ui.getCore().byId("FileRemarks");
                 var oFileRemarksParam = new sap.m.UploadCollectionParameter({
                     name: "remarks",
@@ -1597,6 +1675,7 @@ sap.ui.define([
                 oEvent.getParameters().addHeaderParameter(oFileRemarksParam);
                 fileRemarks.setValue('');
 
+                //filename selected
                 var oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
                     name: "slug",
                     value: oEvent.getParameter("fileName")
@@ -1606,6 +1685,7 @@ sap.ui.define([
                 var oModel = that.getView().getModel("FileModel");
                 oModel.refreshSecurityToken();
 
+                //add the HTTP headers
                 var oHeaders = oModel.oHeaders;
                 var sToken = oHeaders['x-csrf-token'];
 
@@ -1617,12 +1697,14 @@ sap.ui.define([
             },
 
             onUploadComplete: function () {
+                //on upload complete refresh the list
                 that.getView().getModel("FileModel").refresh();
                 var oUploadCollection = that.getView().byId('UploadCollection');
                 oUploadCollection.removeAllItems();
             },
 
             onDeleteFile: function () {
+                //confirm delete selected file dialog
                 var oUploadCollection = this.getView().byId('UploadCollection');
                 var selected = oUploadCollection.getSelectedItems();
 
@@ -1641,6 +1723,7 @@ sap.ui.define([
             },
 
             onConfirmDeleteFile: function() {
+                //delete selected file, call delete method of file odata service
                 that._ConfirmDeleteFileDialog.close();
                 var oUploadCollection = this.getView().byId('UploadCollection');
                 var sPath = oUploadCollection.getSelectedItems()[0].getBindingContext('FileModel').sPath;
@@ -1655,6 +1738,7 @@ sap.ui.define([
             },
 
             onCancelUploadFile: function() {
+                //close edit mode, refresh the file list
                 that._UploadFileDialog.close();
                 var oUploadCollection = this.getView().byId('UploadCollection');
                 that.getView().getModel("FileModel").refresh();
@@ -1677,49 +1761,325 @@ sap.ui.define([
                 }
             },
 
-            onNavBack: function() {
-                if(this._headerChanged === false && this._generalAttrChanged === false &&
-                    this._colorChanged === false && this._sizeChanged === false &&
-                    this._processChanged === false && this._versionChanged === false) {
-                    this.confirmNavBack();
-                } else {
-                    if (!this._ConfirmDiscardChangesNavDialog) {
-                        this._ConfirmDiscardChangesNavDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ConfirmDiscardChangesNav", this);
-                        this.getView().addDependent(this._ConfirmDiscardChangesNavDialog);
-                    }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    this._ConfirmDiscardChangesNavDialog.addStyleClass("sapUiSizeCompact");
-                    this._ConfirmDiscardChangesNavDialog.open();
-                }
-            },
+            // onNavBack: function() {
+            //     if(this._headerChanged === false && this._generalAttrChanged === false &&
+            //         this._colorChanged === false && this._sizeChanged === false &&
+            //         this._processChanged === false && this._versionChanged === false) {
+            //         this.confirmNavBack();
+            //     } else {
+            //         if (!this._ConfirmDiscardChangesNavDialog) {
+            //             this._ConfirmDiscardChangesNavDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ConfirmDiscardChangesNav", this);
+            //             this.getView().addDependent(this._ConfirmDiscardChangesNavDialog);
+            //         }
+            //         jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
+            //         this._ConfirmDiscardChangesNavDialog.addStyleClass("sapUiSizeCompact");
+            //         this._ConfirmDiscardChangesNavDialog.open();
+            //     }
+            // },
 
-            dataChanged: function() {
-                var changed = false;
-                if(this._headerChanged === false && this._generalAttrChanged === false &&
-                    this._colorChanged === false && this._sizeChanged === false &&
-                    this._processChanged === false && this._versionChanged === false) {
-                    changed = false;
-                } else {
-                    changed = true;
-                }
-                return changed;
-            },
+            // dataChanged: function() {
+            //     var changed = false;
+            //     if(this._headerChanged === false && this._generalAttrChanged === false &&
+            //         this._colorChanged === false && this._sizeChanged === false &&
+            //         this._processChanged === false && this._versionChanged === false) {
+            //         changed = false;
+            //     } else {
+            //         changed = true;
+            //     }
+            //     return changed;
+            // },
 
             /****************************************************/
-            // Start of Value Helps logic
+            // Start of Search Helps logic
             /****************************************************/
 
-            onAttrTypesValueHelp: function (oEvent) {
+            onSeasonsValueHelp: function (oEvent) {
+                //open seaons value help
+                var sInputValue = oEvent.getSource().getValue();
+                this.inputId = oEvent.getSource().getId(); //get input field id
+                if (!this._seasonsHelpDialog) {
+                    this._seasonsHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.Seasons", this);
+                    this._seasonsHelpDialog.attachSearch(this._seasonsGroupValueHelpSearch);                    
+                    this.getView().addDependent(this._seasonsHelpDialog);
+                }
+                this._seasonsHelpDialog.open(sInputValue);
+            },
+
+            _seasonsGroupValueHelpSearch: function (evt) {
+                //search seasons
+                var sValue = evt.getParameter("value");
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("Seasoncd", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+            },
+
+            _seasonsGroupValueHelpClose: function (evt) {
+                //on select season
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected value
+                    this.onHeaderChange();
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onStyleCatValueHelp: function (oEvent) {
+                //open style category value help
+                var sInputValue = oEvent.getSource().getValue();
+                this.inputId = oEvent.getSource().getId(); //get input field id
+                if (!this._styleCatHelpDialog) {
+                    this._styleCatHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.StyleCat", this);
+                    this.getView().addDependent(this._styleCatHelpDialog);
+                }
+                this._styleCatHelpDialog.open(sInputValue);
+            },
+
+            _styleCatValueHelpSearch: function (evt) {
+                //search style categories
+                var sValue = evt.getParameter("value");
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("Stylcat", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+            },
+
+            _styleCatValueHelpClose: function (evt) {
+                //on select style category
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected value
+                    this.onHeaderChange();
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onProdTypeValueHelp: function (oEvent) {
+                //open product type value help
+                var sInputValue = oEvent.getSource().getValue();
+                this.inputId = oEvent.getSource().getId(); //get input field id
+                if (!this._prodTypeHelpDialog) {
+                    this._prodTypeHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.ProdTypes", this);
+                    this.getView().addDependent(this._prodTypeHelpDialog);
+                }
+                this._prodTypeHelpDialog.open(sInputValue);
+            },
+
+            _prodTypeValueHelpSearch: function (evt) {
+                //search product types
+                var sValue = evt.getParameter("value");
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("ProdTyp", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+            },
+
+            _prodTypeValueHelpClose: function (evt) {
+                //on select product type
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected value
+                    this.onHeaderChange();
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onSalesGroupValueHelp: function (oEvent) {
+                //open sales group value help
+                var sInputValue = oEvent.getSource().getValue();
+                this.inputId = oEvent.getSource().getId(); //get input field id
+                if (!this._salesGroupHelpDialog) {
+                    this._salesGroupHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.SalesGroups", this);
+                    this.getView().addDependent(this._salesGroupHelpDialog);
+                }
+                this._salesGroupHelpDialog.open(sInputValue);
+            },
+
+            _salesGroupValueHelpSearch: function (evt) {
+                //search sales groups
+                var sValue = evt.getParameter("value");
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("SalesGrp", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+            },
+
+            _salesGroupValueHelpClose: function (evt) {
+                //on select sales group
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected value
+                    this.onHeaderChange();
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onCustGroupValueHelp: function (oEvent) {
+                //open customer group value help
+                var sInputValue = oEvent.getSource().getValue();
+                this.inputId = oEvent.getSource().getId(); //get input field id
+                if (!this._custGroupHelpDialog) {
+                    this._custGroupHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.CustGroups", this);
+                    this.getView().addDependent(this._custGroupHelpDialog);
+                }
+                this._custGroupHelpDialog.open(sInputValue);
+            },
+
+            _custGroupValueHelpSearch: function (evt) {
+                //search customer groups
+                var sValue = evt.getParameter("value");
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("CustGrp", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+            },
+
+            _custGroupValueHelpClose: function (evt) {
+                //on select customer group
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected value
+                    this.onHeaderChange();
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onCustomersValueHelp: function (oEvent) {
+                //open customers value help
+                var sInputValue = oEvent.getSource().getValue();
+                var custGrp = this.getView().byId("CUSTGRP").getValue(); //get customer group value
+                this.inputId = oEvent.getSource().getId(); //get input field id
+                if (!this._customersHelpDialog) {
+                    this._customersHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.Customers", this);
+                    this.getView().addDependent(this._customersHelpDialog);
+                }
+                //filter customers by customer group
+                this._customersHelpDialog.getBinding("items").filter([new Filter(
+                    "Custgrp",
+                    sap.ui.model.FilterOperator.EQ, custGrp
+                )]);
+                this._customersHelpDialog.open(sInputValue);
+            },
+
+            _customersValueHelpSearch: function (evt) {
+                //search customers
+                var sValue = evt.getParameter("value");
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("Custno", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+            },
+
+            _customersValueHelpClose: function (evt) {
+                //on select customer
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected customer
+                    this.onHeaderChange();
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onSizeGroupValueHelp: function (oEvent) {
+                //open size group value help
+                var me = this;
                 var sInputValue = oEvent.getSource().getValue();
                 this.inputId = oEvent.getSource().getId();
+                var oSHModel = this.getOwnerComponent().getModel("SearchHelps");
+                var oView = this.getView();
+
+                //get size groups entityset
+                var oJSONModel = new JSONModel();
+                oSHModel.read("/SizeGrpSet", {
+                    success: function (oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        oView.setModel(oJSONModel, "SizeGroupModel");
+                        //open size group value help
+                        if (!me._sizeGroupHelpDialog) {
+                            me._sizeGroupHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.SizeGroups", me);
+                            me.getView().addDependent(me._sizeGroupHelpDialog);
+                        }
+                        me._sizeGroupHelpDialog.open(sInputValue);
+                    },
+                    error: function (err) { }
+                });
+            },
+
+            _sizeGroupValueHelpSearch: function (evt) {
+                //search size group value help
+                var sValue = evt.getParameter("value");
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("AttribGrp", sap.ui.model.FilterOperator.Contains, sValue));
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+            },
+
+            _sizeGroupValueHelpClose: function (evt) {
+                //on select size group
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected size group
+                    this.onHeaderChange();
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onUomValueHelp: function () {
+                //open uom value help
+                if (!this._uomValueHelpDialog) {
+                    this._uomValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.UoM", this);
+                    this.getView().addDependent(this._uomValueHelpDialog);
+                }
+                this._uomValueHelpDialog.open();
+            },
+
+            _uomValueHelpSearch: function (evt) {
+                //search uom
+                var sValue = evt.getParameter("value");
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("Valunit", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+            },
+
+            _uomValueHelpClose: function (evt) {
+                //on select uom
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var input = this.byId("UOM");
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected uom
+                    this.onHeaderChange();
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            onAttrTypesValueHelp: function (oEvent) {
+                //open Attribute Types search help dialog
+                var sInputValue = oEvent.getSource().getValue();
+                this.inputId = oEvent.getSource().getId(); //get the id of the input field
                 if (!this._attrTypesValueHelpDialog) {
-                    this._attrTypesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.AttributeTypes", this);
+                    this._attrTypesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.AttributeTypes", this);
                     this.getView().addDependent(this._attrTypesValueHelpDialog);
                 }
                 this._attrTypesValueHelpDialog.open(sInputValue);
             },
 
             _attrTypesValueHelpSearch: function (evt) {
+                //search Attribute Types
                 var sValue = evt.getParameter("value");
                 var andFilter = [], orFilter = [];
                 orFilter.push(new sap.ui.model.Filter("Attribtyp", sap.ui.model.FilterOperator.Contains, sValue));
@@ -1729,21 +2089,24 @@ sap.ui.define([
             },
 
             _attrTypesValueHelpClose: function (evt) {
+                //on select Attribute Types
                 var oSelectedItem = evt.getParameter("selectedItem");
                 if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set value of input field
                     this.onGeneralAttrChange();
                 }
                 evt.getSource().getBinding("items").filter([]);
             },
 
             onAttrCodesValueHelp: function (oEvent) {
+                //open Attribute Codes search help dialog
                 var sInputValue = oEvent.getSource().getValue();
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
                 var attrTyp = oData.getProperty('Attribtyp');
-                this.inputId = oEvent.getSource().getId();
+                this.inputId = oEvent.getSource().getId(); //get the id of the input field
 
+                //get the id of input field of description and uom
                 var oTable = that.getView().byId("generalTable");
                 var oColumns = oTable.getColumns();
                 for(var i = 0; i < oColumns.length; i++) {
@@ -1755,11 +2118,12 @@ sap.ui.define([
                         this.attribUom = oEvent.getSource().getParent().mAggregations.cells[i].getId();
                     }
                 }
-
+                //open dialog
                 if (!this._attrCodesValueHelpDialog) {
-                    this._attrCodesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.AttributeCodes", this);
+                    this._attrCodesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.AttributeCodes", this);
                     this.getView().addDependent(this._attrCodesValueHelpDialog);
                 }
+                //filter the attribute codes based on the value of attribute type
                 this._attrCodesValueHelpDialog.getBinding("items").filter([new Filter(
                     "Attribtyp",
                     sap.ui.model.FilterOperator.EQ, attrTyp
@@ -1768,6 +2132,7 @@ sap.ui.define([
             },
 
             _attrCodesValueHelpSearch: function (evt) {
+                //attribute codes search
                 var sValue = evt.getParameter("value");
                 var andFilter = [], orFilter = [];
                 orFilter.push(new sap.ui.model.Filter("Attribcd", sap.ui.model.FilterOperator.Contains, sValue));
@@ -1777,31 +2142,34 @@ sap.ui.define([
             },
 
             _attrCodesValueHelpClose: function (evt) {
+                //on select of attribute code
                 var oSelectedItem = evt.getParameter("selectedItem");
                 if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set the value to selected attribute code
                     this.onGeneralAttrChange();
                     var descText = this.byId(this.descId);
-                    descText.setText(oSelectedItem.getDescription());
+                    descText.setText(oSelectedItem.getDescription()); //set the description
                     var uom = oSelectedItem.data('Uom');
                     var attribUom = this.byId(this.attribUom);
-                    attribUom.setText(uom);
+                    attribUom.setText(uom); //set the uom
                 }
                 evt.getSource().getBinding("items").filter([]);
             },
 
             onProcessesValueHelp: function (oEvent) {
+                //open process code value help
                 var sInputValue = oEvent.getSource().getValue();
-                this.inputId = oEvent.getSource().getId();
+                this.inputId = oEvent.getSource().getId(); //get the input field id
                 if (!this._processesValueHelpDialog) {
-                    this._processesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.Processes", this);
+                    this._processesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.Processes", this);
                     this.getView().addDependent(this._processesValueHelpDialog);
                 }
                 this._processesValueHelpDialog.open(sInputValue);
             },
 
             _processesValueHelpSearch: function (evt) {
+                //search process code
                 var sValue = evt.getParameter("value");
                 var andFilter = [], orFilter = [];
                 orFilter.push(new sap.ui.model.Filter("ProcessCd", sap.ui.model.FilterOperator.Contains, sValue));
@@ -1811,35 +2179,37 @@ sap.ui.define([
             },
 
             _processesValueHelpClose: function (evt) {
+                //on select process code
                 var oSelectedItem = evt.getParameter("selectedItem");
                 if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set selected value of input field
                     this.onProcessChange();
                 }
                 evt.getSource().getBinding("items").filter([]);
             },
 
             onVASTypeValueHelp: function (oEvent) {
+                //open VAS types value help
                 var sInputValue = oEvent.getSource().getValue();
-                this.inputId = oEvent.getSource().getId();
+                this.inputId = oEvent.getSource().getId(); //get the input field id
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
-                var ProcessCd = oData.getProperty('Processcd');
-
+                var ProcessCd = oData.getProperty('Processcd'); //get the selected process code
+                
                 if (!this._VASTypeValueHelpDialog) {
-                    this._VASTypeValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.VASTypes", this);
+                    this._VASTypeValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.VASTypes", this);
                     this.getView().addDependent(this._VASTypeValueHelpDialog);
                 }
-
+                //filter the items by process code selected
                 this._VASTypeValueHelpDialog.getBinding("items").filter([new Filter(
                     "Vasproc",
                     sap.ui.model.FilterOperator.EQ, ProcessCd
                 )]);
-
                 this._VASTypeValueHelpDialog.open(sInputValue);
             },
 
             _VASTypesValueHelpSearch: function (evt) {
+                //search VAS types
                 var sValue = evt.getParameter("value");
                 var andFilter = [], orFilter = [];
                 orFilter.push(new sap.ui.model.Filter("Processcd", sap.ui.model.FilterOperator.Contains, sValue));
@@ -1849,26 +2219,29 @@ sap.ui.define([
             },
 
             _VASTypesValueHelpClose: function (evt) {
+                //on select VAS types
                 var oSelectedItem = evt.getParameter("selectedItem");
                 if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
+                    var input = this.byId(this.inputId); 
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected value
                     this.onProcessChange();
                 }
                 evt.getSource().getBinding("items").filter([]);
             },
 
             onProcessAttrTypesValueHelp: function (oEvent) {
+                //open process attributes value help
                 var sInputValue = oEvent.getSource().getValue();
-                this.inputId = oEvent.getSource().getId();
+                this.inputId = oEvent.getSource().getId(); //get input field id
                 if (!this._processAttrTypesValueHelpDialog) {
-                    this._processAttrTypesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ProcessAttributeTypes", this);
+                    this._processAttrTypesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.ProcessAttributeTypes", this);
                     this.getView().addDependent(this._processAttrTypesValueHelpDialog);
                 }
                 this._processAttrTypesValueHelpDialog.open(sInputValue);
             },
 
             _processAttrTypesValueHelpSearch: function (evt) {
+                //search process attribute types
                 var sValue = evt.getParameter("value");
                 var andFilter = [], orFilter = [];
                 orFilter.push(new sap.ui.model.Filter("Attribtyp", sap.ui.model.FilterOperator.Contains, sValue));
@@ -1878,24 +2251,27 @@ sap.ui.define([
             },
 
             _processAttrTypesValueHelpClose: function (evt) {
+                //on select process attribute type
                 var oSelectedItem = evt.getParameter("selectedItem");
                 if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected value
                     this.onProcessChange();
                 }
                 evt.getSource().getBinding("items").filter([]);
             },
 
             onProcessAttrCodesValueHelp: function (oEvent) {
+                //open process attribute codes value help
                 var sInputValue = oEvent.getSource().getValue();
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
-                var attrTyp = oData.getProperty('Attribtyp');
-                this.inputId = oEvent.getSource().getId();
+                var attrTyp = oData.getProperty('Attribtyp'); //get select attribute type
+                this.inputId = oEvent.getSource().getId(); //get input field id
                 if (!this._processAttrCodesValueHelpDialog) {
-                    this._processAttrCodesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ProcessAttributeCodes", this);
+                    this._processAttrCodesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.ProcessAttributeCodes", this);
                     this.getView().addDependent(this._processAttrCodesValueHelpDialog);
                 }
+                //filter attribute codes by attribute type
                 this._processAttrCodesValueHelpDialog.getBinding("items").filter([new Filter(
                     "Attribtype",
                     sap.ui.model.FilterOperator.EQ, attrTyp
@@ -1904,6 +2280,7 @@ sap.ui.define([
             },
 
             _processAttrCodesValueHelpSearch: function (evt) {
+                //search process attribute codes
                 var sValue = evt.getParameter("value");
                 var andFilter = [], orFilter = [];
                 orFilter.push(new sap.ui.model.Filter("Attribcd", sap.ui.model.FilterOperator.Contains, sValue));
@@ -1913,267 +2290,17 @@ sap.ui.define([
             },
 
             _processAttrCodesValueHelpClose: function (evt) {
+                //on select attribute code
                 var oSelectedItem = evt.getParameter("selectedItem");
                 if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
+                    var input = this.byId(this.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected value
                     this.onProcessChange();
                 }
                 evt.getSource().getBinding("items").filter([]);
             },
 
-            onProdTypeValueHelp: function (oEvent) {
-                var sInputValue = oEvent.getSource().getValue();
-                this.inputId = oEvent.getSource().getId();
-                if (!this._prodTypeHelpDialog) {
-                    this._prodTypeHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ProdTypes", this);
-                    this.getView().addDependent(this._prodTypeHelpDialog);
-                }
-                this._prodTypeHelpDialog.open(sInputValue);
-            },
-
-            _prodTypeValueHelpSearch: function (evt) {
-                var sValue = evt.getParameter("value");
-                var andFilter = [], orFilter = [];
-                orFilter.push(new sap.ui.model.Filter("ProdTyp", sap.ui.model.FilterOperator.Contains, sValue));
-                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
-                andFilter.push(new sap.ui.model.Filter(orFilter, false));
-                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
-            },
-
-            _prodTypeValueHelpClose: function (evt) {
-                var oSelectedItem = evt.getParameter("selectedItem");
-                if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
-                    this.onHeaderChange();
-                }
-                evt.getSource().getBinding("items").filter([]);
-            },
-
-            onStyleCatValueHelp: function (oEvent) {
-                var sInputValue = oEvent.getSource().getValue();
-                this.inputId = oEvent.getSource().getId();
-                if (!this._styleCatHelpDialog) {
-                    this._styleCatHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.StyleCat", this);
-                    this.getView().addDependent(this._styleCatHelpDialog);
-                }
-                this._styleCatHelpDialog.open(sInputValue);
-            },
-
-            _styleCatValueHelpSearch: function (evt) {
-                var sValue = evt.getParameter("value");
-                var andFilter = [], orFilter = [];
-                orFilter.push(new sap.ui.model.Filter("Stylcat", sap.ui.model.FilterOperator.Contains, sValue));
-                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
-                andFilter.push(new sap.ui.model.Filter(orFilter, false));
-                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
-            },
-
-            _styleCatValueHelpClose: function (evt) {
-                var oSelectedItem = evt.getParameter("selectedItem");
-                if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
-                    this.onHeaderChange();
-                }
-                evt.getSource().getBinding("items").filter([]);
-            },
-
-            onSeasonsValueHelp: function (oEvent) {
-                var sInputValue = oEvent.getSource().getValue();
-                this.inputId = oEvent.getSource().getId();
-                if (!this._seasonsHelpDialog) {
-                    this._seasonsHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.Seasons", this);
-                    this._seasonsHelpDialog.attachSearch(Utils._seasonsGroupValueHelpSearch);                    
-                    this.getView().addDependent(this._seasonsHelpDialog);
-                }
-                this._seasonsHelpDialog.open(sInputValue);
-            },
-
-            _seasonsGroupValueHelpSearch: function (evt) {
-                var sValue = evt.getParameter("value");
-                var andFilter = [], orFilter = [];
-                orFilter.push(new sap.ui.model.Filter("Seasoncd", sap.ui.model.FilterOperator.Contains, sValue));
-                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
-                andFilter.push(new sap.ui.model.Filter(orFilter, false));
-                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
-            },
-
-            _seasonsGroupValueHelpClose: function (evt) {
-                var oSelectedItem = evt.getParameter("selectedItem");
-                if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
-                    this.onHeaderChange();
-                }
-                evt.getSource().getBinding("items").filter([]);
-            },
-
-            onSalesGroupValueHelp: function (oEvent) {
-                var sInputValue = oEvent.getSource().getValue();
-                this.inputId = oEvent.getSource().getId();
-                if (!this._salesGroupHelpDialog) {
-                    this._salesGroupHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.SalesGroups", this);
-                    this.getView().addDependent(this._salesGroupHelpDialog);
-                }
-                this._salesGroupHelpDialog.open(sInputValue);
-            },
-
-            _salesGroupValueHelpSearch: function (evt) {
-                var sValue = evt.getParameter("value");
-                var andFilter = [], orFilter = [];
-                orFilter.push(new sap.ui.model.Filter("SalesGrp", sap.ui.model.FilterOperator.Contains, sValue));
-                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
-                andFilter.push(new sap.ui.model.Filter(orFilter, false));
-                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
-            },
-
-            _salesGroupValueHelpClose: function (evt) {
-                var oSelectedItem = evt.getParameter("selectedItem");
-                if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
-                    this.onHeaderChange();
-                }
-                evt.getSource().getBinding("items").filter([]);
-            },
-
-            onCustGroupValueHelp: function (oEvent) {
-                var sInputValue = oEvent.getSource().getValue();
-                this.inputId = oEvent.getSource().getId();
-                if (!this._custGroupHelpDialog) {
-                    this._custGroupHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CustGroups", this);
-                    this.getView().addDependent(this._custGroupHelpDialog);
-                }
-                this._custGroupHelpDialog.open(sInputValue);
-            },
-
-            _custGroupValueHelpSearch: function (evt) {
-                var sValue = evt.getParameter("value");
-                var andFilter = [], orFilter = [];
-                orFilter.push(new sap.ui.model.Filter("CustGrp", sap.ui.model.FilterOperator.Contains, sValue));
-                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
-                andFilter.push(new sap.ui.model.Filter(orFilter, false));
-                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
-            },
-
-            _custGroupValueHelpClose: function (evt) {
-                var oSelectedItem = evt.getParameter("selectedItem");
-                if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
-                    this.onHeaderChange();
-                }
-                evt.getSource().getBinding("items").filter([]);
-            },
-
-            onCustomersValueHelp: function (oEvent) {
-                var sInputValue = oEvent.getSource().getValue();
-                var custGrp = this.getView().byId("CUSTGRP").getValue();
-                this.inputId = oEvent.getSource().getId();
-                if (!this._customersHelpDialog) {
-                    this._customersHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.Customers", this);
-                    this.getView().addDependent(this._customersHelpDialog);
-                }
-
-                this._customersHelpDialog.getBinding("items").filter([new Filter(
-                    "Custgrp",
-                    sap.ui.model.FilterOperator.EQ, custGrp
-                )]);
-                this._customersHelpDialog.open(sInputValue);
-            },
-
-            _customersValueHelpSearch: function (evt) {
-                var sValue = evt.getParameter("value");
-                var andFilter = [], orFilter = [];
-                orFilter.push(new sap.ui.model.Filter("Custno", sap.ui.model.FilterOperator.Contains, sValue));
-                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
-                andFilter.push(new sap.ui.model.Filter(orFilter, false));
-                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
-            },
-
-            _customersValueHelpClose: function (evt) {
-                var oSelectedItem = evt.getParameter("selectedItem");
-                if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
-                    this.onHeaderChange();
-                }
-                evt.getSource().getBinding("items").filter([]);
-            },
-
-            onSizeGroupValueHelp: function (oEvent) {
-                var me = this;
-                var sInputValue = oEvent.getSource().getValue();
-                this.inputId = oEvent.getSource().getId();
-                var oSHModel = this.getOwnerComponent().getModel("SearchHelps");
-                var oView = this.getView();
-
-                var oJSONModel = new JSONModel();
-                oSHModel.read("/SizeGrpSet", {
-                    success: function (oData, oResponse) {
-                        oJSONModel.setData(oData);
-                        // oJSONModel6.setSizeLimit(9999);
-                        // oJSONModel6.oJSONModelt(9999);
-                        oView.setModel(oJSONModel, "SizeGroupModel");
-
-                        if (!me._sizeGroupHelpDialog) {
-                            me._sizeGroupHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.SizeGroups", me);
-                            me.getView().addDependent(me._sizeGroupHelpDialog);
-                        }
-                        me._sizeGroupHelpDialog.open(sInputValue);
-                    },
-                    error: function (err) { }
-                });
-            },
-
-            _sizeGroupValueHelpSearch: function (evt) {
-                var sValue = evt.getParameter("value");
-                var andFilter = [], orFilter = [];
-                orFilter.push(new sap.ui.model.Filter("AttribGrp", sap.ui.model.FilterOperator.Contains, sValue));
-                andFilter.push(new sap.ui.model.Filter(orFilter, false));
-                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
-            },
-
-            _sizeGroupValueHelpClose: function (evt) {
-                var oSelectedItem = evt.getParameter("selectedItem");
-                if (oSelectedItem) {
-                    var productInput = this.byId(this.inputId);
-                    productInput.setValue(oSelectedItem.getTitle());
-                    this.onHeaderChange();
-                }
-                evt.getSource().getBinding("items").filter([]);
-            },
-
-            onUomValueHelp: function () {
-                if (!this._uomValueHelpDialog) {
-                    this._uomValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.UoM", this);
-                    this.getView().addDependent(this._uomValueHelpDialog);
-                }
-                this._uomValueHelpDialog.open();
-            },
-
-            _uomValueHelpSearch: function (evt) {
-                var sValue = evt.getParameter("value");
-                var andFilter = [], orFilter = [];
-                orFilter.push(new sap.ui.model.Filter("Valunit", sap.ui.model.FilterOperator.Contains, sValue));
-                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
-                andFilter.push(new sap.ui.model.Filter(orFilter, false));
-                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
-            },
-
-            _uomValueHelpClose: function (evt) {
-                var oSelectedItem = evt.getParameter("selectedItem");
-                if (oSelectedItem) {
-                    var productInput = this.byId("UOM");
-                    productInput.setValue(oSelectedItem.getTitle());
-                    this.onHeaderChange();
-                }
-                evt.getSource().getBinding("items").filter([]);
-            },
-
-            onExportExcel: Utils.onExportExcel,
+            // onExportExcel: Utils.onExportExcel,
 
             pad: Common.pad,
 

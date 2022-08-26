@@ -9,7 +9,7 @@
             </customData>
         </Button>
     </Toolbar>
-    <c:DynamicTreeTable id="bomDetailedTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}"
+    <t:TreeTable id="bomDetailedTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}"
         selectionMode="None">
         <t:Column width="10rem" filterType="" filterProperty="Bomitem" sortProperty="Bomitem">
             <Label text="{i18n>BOMITEM}"/>
@@ -143,5 +143,5 @@
                 <Text text="{DataModel>Consump}"/>
             </t:template>
         </t:Column>
-    </c:DynamicTreeTable>
+    </t:TreeTable>
 </core:FragmentDefinition>            

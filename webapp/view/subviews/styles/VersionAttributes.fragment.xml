@@ -4,7 +4,6 @@
         <Toolbar height="3rem" style="Clear">
             <Label text="{i18n>VersionAttributes}"/>
             <ToolbarSpacer />
-            <Button text="Attach" press="attach"/>
             <Button icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveversionattributes}" press="onSaveVersionAttrTable" visible="{VersionAttrEditModeModel>/editMode}"/>
             <Button icon="sap-icon://add" press="addLine" tooltip="{i18n>Addnewline}" visible="{VersionAttrEditModeModel>/editMode}">
                 <customData>

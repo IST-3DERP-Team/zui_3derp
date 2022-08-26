@@ -39,6 +39,7 @@ sap.ui.define(
         },
 
         navigatePage: function(oRouteName) {
+            //route to selected menu item
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
             oRouter.navTo(oRouteName); 
         },
