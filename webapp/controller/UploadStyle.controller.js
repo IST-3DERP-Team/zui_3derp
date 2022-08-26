@@ -20,9 +20,10 @@ sap.ui.define([
             onInit: function() {
                 that = this;
 
-                this.localModel = new sap.ui.model.json.JSONModel();
-                this.getView().setModel(this.localModel, "localModel");
+                // var oModel = new sap.ui.model.json.JSONModel();
+                // this.getView().setModel(oModel, "localModel");
 
+                //initialize router
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteUploadStyle").attachPatternMatched(this._routePatternMatched, this);
@@ -33,11 +34,12 @@ sap.ui.define([
 
                 this.setChangeStatus(false);
 
+                //get available map ids
                 this.getMapId();
 
+                //hide first file uploader and save button
                 var oFileUploader = this.getView().byId('FileUploaderId');
                 oFileUploader.setVisible(false);
-                
                 var oSaveButton = this.getView().byId('SaveButton');
                 oSaveButton.setEnabled(false);
             },
@@ -47,6 +49,7 @@ sap.ui.define([
             },
 
             getMapId: function() {
+                //get Map ids from odata
                 var oModel = this.getOwnerComponent().getModel('SearchHelps');
                 var oMapIdCB = this.getView().byId('MapIdCB');
                 oModel.setHeaders({
@@ -59,17 +62,19 @@ sap.ui.define([
                         oMapIdCB.setModel(oJSONModel, "MapIdData");
                     },
                     error: function (err) { 
-                        // Common.closeLoadingDialog(that);
+                        
                     }
                 });
             },
 
             onSelectMapId: function() {
+                //set file uploader visible on select map id
                 var oFileUploader = this.getView().byId('FileUploaderId');
                 oFileUploader.setVisible(true);
             },
     
             onUpload: function(e) {
+                //start of upload
                 this._import(e.getParameter("files") && e.getParameter("files")[0]);
                 this._fileName = e.getParameter('files')[0].name;
             },
@@ -84,11 +89,13 @@ sap.ui.define([
                 var oMapIdCB = this.getView().byId('MapIdCB');
                 var template = oMapIdCB.getSelectedKey();
 
-                var rowData = {
-                    items: []
-                };
+                // var rowData = {
+                //     items: []
+                // };
 
                 // var excelData = {};
+
+                //get the file from the file reader
                 if (file && window.FileReader) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
@@ -96,9 +103,14 @@ sap.ui.define([
                         var workbook = XLSX.read(data, {
                             type: 'binary'
                         });
+
+                        //get the first sheet
                         var sheetName = workbook.SheetNames[0];
-                        // excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {range:1});                        
+                        
+                        //get excel data in json format
                         var excelJson = XLSX.utils.make_json(workbook.Sheets[sheetName], {header:1});                        
+                        
+                        // excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {range:1});   
                         // var sheet = workbook.Sheets[sheetName];
                         
                         // var headers = [];
@@ -107,10 +119,8 @@ sap.ui.define([
                         
                         // for(C = range.s.c; C <= range.e.c; ++C) {
                         //     var cell = sheet[XLSX.utils.encode_cell({c:C, r:R})];
-                    
                         //     var hdr = "UNKNOWN";
                         //     if(cell && cell.t) hdr = XLSX.utils.format_cell(cell);
-                    
                         //     headers.push(hdr);
                         // }
 
@@ -137,6 +147,7 @@ sap.ui.define([
                             module: 'STYLEBOM'
                         });
                 
+                        //get the template based on Map ID
                         oModel.read("/UploadTemplateSet", {
                             success: function (oData, oResponse) {
                                 oData.results.forEach((column) => {
@@ -147,8 +158,8 @@ sap.ui.define([
                                     })
                                 })
 
+                                //Map the selected template on the uploaded data in json format
                                 var rowData = [];
-
                                 for (var i = 3; i < excelJson.length; i++) {
                                     var data = { };
                                     for (var j = 0; j < columnData.length; j++) {
@@ -166,8 +177,8 @@ sap.ui.define([
                                     columns: columnData
                                 });
         
+                                //bind the data on the table
                                 oTable.setModel(oJSONModel, "DataModel");
-        
                                 oTable.bindColumns("DataModel>/columns", function (sId, oContext) {
                                     var column = oContext.getObject();
                                     return new sap.ui.table.Column({
@@ -199,6 +210,7 @@ sap.ui.define([
             },
 
             onSaveUploadStyle: function() {
+                //on save of uploaded data
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
                 var oTableModel = this.getView().byId("UploadTable").getModel("DataModel");
@@ -209,24 +221,20 @@ sap.ui.define([
                 var oMsgStrip = this.getView().byId('UploadMessageStrip');
                 oMsgStrip.setVisible(false);
 
+                //set headers and payload
                 var oData = oTableModel.getData();
                 var oEntry = {
                     "FILENAME": this._fileName,
                     UploadToItems: []
                 }
-
                 for (var i = 0; i < oData.results.length; i++) {
-
                     var item = {};
                     var colName;
-
                     item['FILENAME'] = this._fileName;
-
                     for (var j = 0; j < columns.length; j++) {
                         colName = columns[j].getName();
                         item[colName] = oData.results[i][colName];
                     }
-
                     oEntry.UploadToItems.push(item);
                 };
 
@@ -234,6 +242,7 @@ sap.ui.define([
 
                 path = "/UploadStyleSet";
 
+                //call create deep method of uploadstyle
                 oModel.create(path, oEntry, {
                     method: "POST",
                     success: function (oData, oResponse) {
