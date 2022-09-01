@@ -42,6 +42,9 @@
                 <smartfilterbar:ControlConfiguration key="FTSTYLE" groupId="_ADVANCED" label="{i18n>FTSTYLE}"/>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
+                <smartfilterbar:ControlConfiguration key="SOLDTOCUST" groupId="_ADVANCED" label="{i18n>SOLDTOCUST}" preventInitialDataFetchInValueHelpDialog="false"/>
+            </smartfilterbar:controlConfiguration>
+            <smartfilterbar:controlConfiguration>
                 <smartfilterbar:ControlConfiguration key="DESC1" groupId="_ADVANCED" label="{i18n>DESC1}"/>
             </smartfilterbar:controlConfiguration>
             <smartfilterbar:controlConfiguration>
