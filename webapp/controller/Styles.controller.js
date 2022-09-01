@@ -52,6 +52,10 @@ sap.ui.define([
                 this.getStyleStats(); //style statistics
             },
 
+            //******************************************* */
+            // Styles Table
+            //******************************************* */
+
             getDynamicTableColumns: function () {
                 var me = this;
 
@@ -78,28 +82,6 @@ sap.ui.define([
             getDynamicTableData: function (columns) {
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
-                // var selectString = "";
-                // var lv1 = "Col";
-                // var i = 1;
-                // var statusColNo;
-
-                //build select columns
-                // var oColCount = columns.length;
-                // columns.forEach((column) => {
-
-                //     if (column.ColumnName === "STATUSCD")
-                //         statusColNo = i;
-
-                //     if (column.ColumnName === "STYLENO")
-                //         this._StyleNoColNo = i;
-
-                //     var lv2 = this.pad(i, 3);
-                //     i++;
-
-                //     var colString = lv1 + lv2;
-                //     selectString += colString + ",";
-                // })
-                // selectString = selectString.slice(0, -1);
 
                 //get styles data for the table
                 var oJSONDataModel = new JSONModel();
@@ -256,20 +238,11 @@ sap.ui.define([
                 return oColumnTemplate;
             },
 
-            getColumnSize: function (sColumnId, sColumnType) {
-                //column width of fields
-                var mSize = '7rem';
-                if (sColumnType === "SEL") {
-                    mSize = '5rem';
-                } else if (sColumnType === "COPY") {
-                    mSize = '4rem';
-                } else if (sColumnId === "STYLECD") {
-                    mSize = '25rem';
-                } else if (sColumnId === "DESC1" || sColumnId === "PRODTYP") {
-                    mSize = '15rem';
-                }
-                return mSize;
-            },
+            
+
+            //******************************************* */
+            // Navigation
+            //******************************************* */
 
             goToDetail: function (oEvent) {
                 var oButton = oEvent.getSource();
@@ -285,6 +258,10 @@ sap.ui.define([
                     sbu: that._sbu
                 });
             },
+
+            //******************************************* */
+            // Create New Style
+            //******************************************* */
 
             onCreateNewStyle: function () {
                 //create new button clicked
@@ -305,6 +282,10 @@ sap.ui.define([
                 //confirm create new style, navigate to detail as NEW
                 this.navToDetail("NEW");
             },
+
+            //******************************************* */
+            // Copy Style
+            //******************************************* */
 
             onCopyMode: function() {
                 //show copy buttons
@@ -487,6 +468,10 @@ sap.ui.define([
                 evt.getSource().getBinding("items").filter([]);
             },
 
+            //******************************************* */
+            // Save Table Layout
+            //******************************************* */
+
             onSaveLayoutSettings: function () {
                 //saving of the layout of table
                 var me = this;
@@ -525,6 +510,10 @@ sap.ui.define([
                 });                
             },
 
+            //******************************************* */
+            // Style Stats
+            //******************************************* */
+
             getStyleStats: function () {
                 //select the style statistics
                 var oModel = this.getOwnerComponent().getModel();
@@ -547,6 +536,10 @@ sap.ui.define([
                 });
             },
 
+            //******************************************* */
+            // Upload Style
+            //******************************************* */
+
             onUploadStyle: function() {
                 //navigate to upload style on click of upload button
                 var sbu = this.getView().byId("SmartFilterBar").getFilterData().SBU;
@@ -555,22 +548,34 @@ sap.ui.define([
                 });
             },
 
+            //******************************************* */
+            // Common Functions
+            //******************************************* */
+
+            getColumnSize: function (sColumnId, sColumnType) {
+                //column width of fields
+                var mSize = '7rem';
+                if (sColumnType === "SEL") {
+                    mSize = '5rem';
+                } else if (sColumnType === "COPY") {
+                    mSize = '4rem';
+                } else if (sColumnId === "STYLECD") {
+                    mSize = '25rem';
+                } else if (sColumnId === "DESC1" || sColumnId === "PRODTYP") {
+                    mSize = '15rem';
+                }
+                return mSize;
+            },
+
+            onCloseDialog: function(oEvent) {
+                oEvent.getSource().getParent().close();
+            },
+
             //padding zeroes for formatting
             pad: Common.pad,
 
-            // onExportExcel: Utils.onExportExcel,
-
             //export to spreadsheet utility
-            onExport: Utils.onExport,
-
-            onCancelNewStyle: Common.onCancelNewStyle,
-
-            onCancelCopyStyles: Common.onCancelCopyStyles,
-
-            onCancelCopyStyle: Common.onCancelCopyStyle,
-
-            onCancelUploadStyle: Common.onCancelUploadStyle
-
+            onExport: Utils.onExport
         });
 
     });

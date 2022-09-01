@@ -17,60 +17,62 @@
 
         <MessageStrip id="VersionAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
 
-        <c:DynamicTable id="versionAttrTable" enableColumnReordering="false" visibleRowCountMode="Fixed"
-            class="sapUiSizeCompact" selectionMode="{= ${VersionAttrEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
-            <c:columns>
-                <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
-                    <Label text="{i18n>AttributeType}"/>
-                    <t:template>
-                        <Input id="AttrTypesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
-                            change="onVersionAttrChange" liveChange="onVersionAttrChange"
-                            valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{AttribTypeModel>/results}" value="{DataModel>Attribtyp}">
-                            <suggestionItems>
-                                <core:ListItem text="{AttribTypeModel>Attribtyp}" additionalText="{AttribTypeModel>Desc1}"/>
-                            </suggestionItems>
-                        </Input>
-                    </t:template>
-                </t:Column>
-                <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
-                    <Label text="{i18n>AttributeCode}"/>
-                    <t:template>
-                        <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
-                            change="onVersionAttrChange" liveChange="onVersionAttrChange"
-                            valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{AttribCdModel>/results}" value="{DataModel>Attribcd}">
-                            <suggestionItems>
-                                <core:ListItem text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}"/>
-                            </suggestionItems>
-                        </Input>
-                    </t:template>
-                </t:Column>
-                <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
-                    <Label text="{i18n>Description}" />
-                    <t:template>
-                        <Input value="{DataModel>Desc1}" editable="{VersionAttrEditModeModel>/editMode}" 
-                            change="onVersionAttrChange" liveChange="onVersionAttrChange"/>
-                    </t:template>
-                </t:Column>
-                <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">
-                    <Label text="{i18n>Value}" />
-                    <t:template>
-                        <Input value="{DataModel>Attribval}" editable="{VersionAttrEditModeModel>/editMode}" 
-                            change="onVersionAttrChange" liveChange="onVersionAttrChange"/>
-                    </t:template>
-                </t:Column>
-                <t:Column width="11rem" filterProperty="Valunit" sortProperty="Valunit">
-                    <Label text="{i18n>UOM}" />
-                    <t:template>
-                        <Input id="UomInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
-                            change="onVersionAttrChange" liveChange="onVersionAttrChange" visibleRowCountMode="Fixed"
-                            valueHelpRequest="onUomValueHelp" suggestionItems="{UOMModel>/results}" value="{DataModel>Valunit}">
-                            <suggestionItems>
-                                <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}"/>
-                            </suggestionItems>
-                        </Input>
-                    </t:template>
-                </t:Column>
-            </c:columns>
-        </c:DynamicTable>
-        
+        <!-- Version Attributes Table -->
+        <ScrollContainer height="400px" vertical="true">
+            <c:DynamicTable id="versionAttrTable" enableColumnReordering="false" visibleRowCountMode="Fixed"
+                class="sapUiSizeCompact" selectionMode="{= ${VersionAttrEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
+                <c:columns>
+                    <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                        <Label text="{i18n>AttributeType}"/>
+                        <t:template>
+                            <Input id="AttrTypesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
+                                change="onVersionAttrChange" liveChange="onVersionAttrChange"
+                                valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{AttribTypeModel>/results}" value="{DataModel>Attribtyp}">
+                                <suggestionItems>
+                                    <core:ListItem text="{AttribTypeModel>Attribtyp}" additionalText="{AttribTypeModel>Desc1}"/>
+                                </suggestionItems>
+                            </Input>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
+                        <Label text="{i18n>AttributeCode}"/>
+                        <t:template>
+                            <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
+                                change="onVersionAttrChange" liveChange="onVersionAttrChange"
+                                valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{AttribCdModel>/results}" value="{DataModel>Attribcd}">
+                                <suggestionItems>
+                                    <core:ListItem text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}"/>
+                                </suggestionItems>
+                            </Input>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
+                        <Label text="{i18n>Description}" />
+                        <t:template>
+                            <Input value="{DataModel>Desc1}" editable="{VersionAttrEditModeModel>/editMode}" 
+                                change="onVersionAttrChange" liveChange="onVersionAttrChange"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">
+                        <Label text="{i18n>Value}" />
+                        <t:template>
+                            <Input value="{DataModel>Attribval}" editable="{VersionAttrEditModeModel>/editMode}" 
+                                change="onVersionAttrChange" liveChange="onVersionAttrChange"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="11rem" filterProperty="Valunit" sortProperty="Valunit">
+                        <Label text="{i18n>UOM}" />
+                        <t:template>
+                            <Input id="UomInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
+                                change="onVersionAttrChange" liveChange="onVersionAttrChange" visibleRowCountMode="Fixed"
+                                valueHelpRequest="onUomValueHelp" suggestionItems="{UOMModel>/results}" value="{DataModel>Valunit}">
+                                <suggestionItems>
+                                    <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}"/>
+                                </suggestionItems>
+                            </Input>
+                        </t:template>
+                    </t:Column>
+                </c:columns>
+            </c:DynamicTable>
+        </ScrollContainer>
 </core:FragmentDefinition>        

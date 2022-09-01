@@ -3,10 +3,9 @@ sap.ui.define([
 	"sap/ui/table/Table"
 ], function(Table) {
 	return Table.extend("Table_Binding.DynamicTable", {
-		onInit: function() {
-
-		},
+        
 		insertRows: function(value, table, model, startRowIndex, startProperty) {
+
             var oTableLength = table.getModel(model).getData().results.length;
 			
             //get copied data from clipboard
@@ -90,6 +89,7 @@ sap.ui.define([
 
             //get the copied data
 			sap.ui.table.Table.prototype.onAfterRendering.apply(this, arguments);
+            
             this.attachBrowserEvent('paste', function(e) {
 				e.preventDefault();
 				var text = (e.originalEvent || e).clipboardData.getData('text/plain');
@@ -104,10 +104,10 @@ sap.ui.define([
                             e.stopPropagation();
 
                             e.preventDefault();
-                            var text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                            var text = (e.originalEvent || e).clipboardData.getData('text/plain'); //clipboard
                             var domCell = jQuery.sap.domById(e.currentTarget.id);
                             var insertCell = jQuery('#' + domCell.id).control()[0];
-                            var itemsPath = that.getBindingPath('rows');
+                            var itemsPath = that.getBindingPath('rows'); //row binding
                             var pathRow = insertCell.getBindingContext('DataModel').sPath;
 
                             currentRowIndex = parseInt(pathRow.substring(pathRow.lastIndexOf('/') + 1)); //Selected row index

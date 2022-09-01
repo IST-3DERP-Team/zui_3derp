@@ -69,6 +69,10 @@ sap.ui.define([
                 this.getVersionsData();
             },
 
+            //******************************************* */
+            // Style Header
+            //******************************************* */
+
             getHeaderData: function () {
                 //get style header data
                 var me = this;
@@ -101,6 +105,10 @@ sap.ui.define([
                 this.getMaterialList(); //Get material list
             },
 
+            //******************************************* */
+            // Version Attributes
+            //******************************************* */
+
             getVersionAttrTable: function () {
                 //Get version attributes
                 var oTable = this.getView().byId("versionAttrTable");
@@ -123,11 +131,6 @@ sap.ui.define([
                 })
             },
 
-            // attach: function() {
-            //     var oTable = this.getView().byId("versionAttrTable");
-            //     oTable.attachPaste();                
-            // },
-
             setVersionAttrEditMode: function() {
                 //set version attributes table edit mode
                 var oJSONModel = new JSONModel();
@@ -137,10 +140,6 @@ sap.ui.define([
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "VersionAttrEditModeModel");
             },
-
-            // cancelVersionAttrEdit: function () {
-            //     this.cancelEdit(this._versionAttrChanged, this.confirmCancelVersionAttrEdit);
-            // },
 
             cancelVersionAttrEdit: function () {
                 //confirm cancel edit of version attributes
@@ -155,10 +154,6 @@ sap.ui.define([
                 } else {
                     this.closeVersionAttrEdit();
                 }
-            },
-
-            onCancelDiscardVersionAttrChanges: function() {
-                this._DiscardVersionAttrChangesDialog.close();
             },
 
             closeVersionAttrEdit: function() {
@@ -209,21 +204,11 @@ sap.ui.define([
                         var item = {
                             "Styleno": this._styleNo,
                             "Verno": this._version,
-                            "Attribgrp": "1",
-                            "Attribseq": "1",
                             "Attribtyp": oData.results[i].Attribtyp,
                             "Attribcd": oData.results[i].Attribcd,
-                            "Baseind": " ",
                             "Desc1": oData.results[i].Desc1,
-                            "Desc2": " ",
-                            "Valuetyp": " ",
                             "Attribval": oData.results[i].Attribval,
-                            "Deleted": " ",
-                            "Valunit": oData.results[i].Valunit,
-                            "Createdby": " ",
-                            "Createddt": " ",
-                            "Updatedby": " ",
-                            "Updateddt": " "
+                            "Valunit": oData.results[i].Valunit
                         }
                         oEntry.VersionToItems.push(item);
                     };
@@ -231,7 +216,6 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     path = "/VersionAttributesSet";
-
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
@@ -258,22 +242,10 @@ sap.ui.define([
 
             onDeleteVersionAttr: function () {
                 //confirm delete of selected version attributes
-                var oTable = this.getView().byId('versionAttrTable');
-                var selected = oTable.getSelectedIndices();
-                if(selected.length > 0) {
-                    if (!this._ConfirmDeleteVersionAttr) {
-                        this._ConfirmDeleteVersionAttr = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmDeleteVersionAttr", this);
-                        this.getView().addDependent(this._ConfirmDeleteVersionAttr);
-                    }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    this._ConfirmDeleteVersionAttr.addStyleClass("sapUiSizeCompact");
-                    this._ConfirmDeleteVersionAttr.open();
-                } else {
-                    Common.showMessage(this._i18n.getText('t8'));
-                }
+                this.onDeleteTableItems('versionAttrTable', 'ConfirmDeleteVersionAttr', this._ConfirmDeleteVersionAttr);
             },
             
-            onConfirmDeleteVersionAttr: function() {
+            onConfirmDeleteVersionAttr: function(oEvent) {
                 //on delete selected version attributes
                 
                 //get selected items to delete
@@ -286,7 +258,8 @@ sap.ui.define([
                 oModel.setUseBatch(true);
                 oModel.setDeferredGroups(["group1"]);
                 
-				this._ConfirmDeleteVersionAttr.close();
+				// this._ConfirmDeleteVersionAttr.close();
+                oEvent.getSource().getParent().close();
                 
                 if(selected.length > 0) {
                     //call delete method for each item selected
@@ -299,15 +272,12 @@ sap.ui.define([
 	                	verno = this.pad(verno, 3);
 	
 		                var entitySet = "/StyleVersionAttributesSet(Styleno='" + that._styleNo + "',Verno='" + verno + "',Attribtyp='" + attrtype + "',Attribcd='" + attrcd + "')";
-		
 		                oModel.remove(entitySet, {
 		                	groupId: "group1", 
     						changeSetId: "changeSetId1",
 		                    method: "DELETE",
-		                    success: function (data, oResponse) {
-		                    },
-		                    error: function () {
-		                    }
+		                    success: function (data, oResponse) { },
+		                    error: function () { }
 		                });
 		                
 		                oModel.submitChanges({
@@ -323,6 +293,10 @@ sap.ui.define([
 	                oTable.clearSelection();
                 }
             },
+
+            //******************************************* */
+            // Color Attributes
+            //******************************************* */
 
             getColors: function () {
                 //get color attributes
@@ -340,6 +314,10 @@ sap.ui.define([
                 });
             },
 
+            //******************************************* */
+            // Size Attributes
+            //******************************************* */
+
             getSizes: function () {
                 //get sizes attributes
                 var me = this;
@@ -356,9 +334,8 @@ sap.ui.define([
                 });
             },
 
-
             //******************************************* */
-            // BOM by GMC Logic
+            // BOM by GMC
             //******************************************* */
 
             getbomGMCTable: function (oGetComponentInd) {
@@ -451,10 +428,7 @@ sap.ui.define([
 
             getBOMGMCColorsData: function () {
                 var me = this;
-                // var oTable = this.getView().byId("bomUVTable");
                 var oModel = this.getOwnerComponent().getModel();
-                // var usageClass = this.getView().byId("UsageClassCB").getSelectedKey();
-
                 var pivot = me._colors;
 
                 oModel.setHeaders({
@@ -464,9 +438,6 @@ sap.ui.define([
                 oModel.read("/StyleBOMGMCColorsSet", {
                     success: function (oData, oResponse) {
                         var rowData = oData.results;
-
-                        // var unique = rowData.filter((rowData, index, self) =>
-                        //     index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS)));
 
                         //GMC Colors data
                         pivot = me._colors;
@@ -495,7 +466,7 @@ sap.ui.define([
                                 template: that.columnTemplate('GMC', column),
                                 sortProperty: column.ColumnName,
                                 filterProperty: column.ColumnName,
-                                width: "9rem"
+                                width: that.getColumnSize(column)
                             });
                         });
 
@@ -538,10 +509,6 @@ sap.ui.define([
                 }
             },
 
-            onCancelDiscardBOMbyGMCChanges: function() {
-                this._DiscardBOMbyGMCDialog.close();
-            },
-
             closeBOMbyGMCEdit: function() {
                 //close edit mode, reselect backend data
                 var oJSONModel = new JSONModel();
@@ -574,7 +541,7 @@ sap.ui.define([
                     for(var i = 0; i < oData.results.length; i++) {
                         var gmcUom = gmc.find((item) => item.Gmc === oData.results[i].GMC)
                         if(gmcUom !== undefined) {
-                            if(oData.results[i].ENTRYUOM === undefined) {
+                            if(oData.results[i].ENTRYUOM === undefined || oData.results[i].ENTRYUOM === "") {
                                 oData.results[i].ENTRYUOM = gmcUom.Baseuom;
                             }
                         }
@@ -655,21 +622,12 @@ sap.ui.define([
                                             "Gmc": oData.results[i].GMC,
                                             "Partcd": oData.results[i].PARTCD,
                                             "Usgcls": oData.results[i].USGCLS,
-                                            "Seqno": " ",
-                                            "Bomitem": " ",
                                             "Color": color.Attribcd,
-                                            "Sze": " ",
-                                            "Dest": " ",
                                             "Mattyp": oData.results[i].MATTYP,
                                             "Mattypcls": "ZCOLR",
-                                            "Attribcd": " ",
                                             "Desc1": oData.results[i][color.Attribcd],
                                             "Consump": oData.results[i].CONSUMP,
-                                            "Wastage": oData.results[i].WASTAGE,
-                                            "Createdby": " ",
-                                            "Createddt": " ",
-                                            "Updatedby": " ",
-                                            "Updateddt": " "
+                                            "Wastage": oData.results[i].WASTAGE
                                         };
                                         oEntry.UVToItems.push(item);
                                     }
@@ -713,14 +671,107 @@ sap.ui.define([
                 }
             },
 
+            onDeleteBOMItems: function () {
+                //confirm delete selected BOM items
+                this.onDeleteTableItems('bomGMCTable', 'ConfirmDeleteBOMItems', this._ConfirmDeleteBOMDialog);
+            },
+           
+            onConfirmDeleteBOMItems: function(oEvent) {
+                //delete selected BOM items
+            	var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+
+                //get selected items for deletion
+                var oTable = this.getView().byId("bomGMCTable");
+                var oTableModel = oTable.getModel("DataModel");
+                var oData = oTableModel.getData();
+                var selected = oTable.getSelectedIndices();
+                
+                oModel.setUseBatch(true);
+                oModel.setDeferredGroups(["group1"]);
+                
+                // this._ConfirmDeleteBOMDialog.close();
+                oEvent.getSource().getParent().close();
+                
+                if(selected.length > 0) {
+
+                    //call delete method of BOM for each item selected
+	                for (var i = 0; i < selected.length; i++) {
+	                	var verno = this._version;
+	                	var bomseq = oData.results[selected[i]].BOMSEQ;
+                        if(bomseq !== "0") {	                	
+                            verno = this.pad(verno, 3);
+                            bomseq = this.pad(bomseq, 3);
+        
+                            var entitySet = "/StyleBOMGMCSet(STYLENO='" + this._styleNo + "',VERNO='" + verno + "',BOMSEQ='" + bomseq + "')";
+            
+                            oModel.remove(entitySet, {
+                                groupId: "group1", 
+                                changeSetId: "changeSetId1",
+                                method: "DELETE",
+                                success: function (data, oResponse) {},
+                                error: function () {}
+                            });
+                            
+                            oModel.submitChanges({
+                                groupId: "group1"
+                            });
+                            oModel.setRefreshAfterChange(true);
+                        }
+	                }
+	                //remove deleted items from the table
+	                oData.results = oData.results.filter(function (value, index) {
+                    	return selected.indexOf(index) == -1;
+	                })
+	                oTableModel.setData(oData);
+	                oTable.clearSelection();
+                }
+            },
+
             onGetComponent: function () {
                 //save first before get components
                 this._BOMbyGMCChanged = true;
                 this.onSaveBOMbyGMC(true);
             },
+            
+            //******************************************* */
+            // RMC
+            //******************************************* */
+
+            onRMC: function() {
+                //RMC clicked
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+
+                Common.openLoadingDialog(this);
+
+                //build header and payload
+                var entitySet = "/StyleBOMGMCSet(STYLENO='" + this._styleNo +  "',VERNO='" + this._version + "',BOMSEQ='')";
+                oModel.setHeaders({sbu: this._sbu});
+                var oEntry = {
+                    STYLENO: this._styleNo,
+                    VERNO: this._version
+                };
+                oModel.setHeaders({
+                    sbu: this._sbu
+                });
+                //call update method of Style BOm by GMC
+                oModel.update(entitySet, oEntry, {
+                    method: "PUT",
+                    success: function(data, oResponse) {
+                        me.onRefresh();
+                        Common.closeLoadingDialog(me);
+                        Common.showMessage(me._i18n.getText('t4'));
+                    },
+                    error: function() {
+                        Common.closeLoadingDialog(me);
+                        Common.showMessage(me._i18n.getText('t5'));
+                    }
+                });
+            },
 
             //******************************************* */
-            // BOM by UV Logic
+            // BOM by UV
             //******************************************* */
 
             getbomUVTable: function () {
@@ -828,7 +879,6 @@ sap.ui.define([
                                     }
                                 }
                             }
-
                         }
 
                         //set the table columns/rows
@@ -848,7 +898,7 @@ sap.ui.define([
                                 template: that.columnTemplate('UV',column),
                                 sortProperty: column.ColumnName,
                                 filterProperty: column.ColumnName,
-                                width: "8rem"
+                                width: that.getColumnSize(column)
                             });
                         });
                         oTable.bindRows("DataModel>/results");
@@ -881,10 +931,6 @@ sap.ui.define([
                 this.getView().setModel(oJSONModel, "BOMbyUVEditModeModel");
             },
 
-            // cancelBOMbyUVEdit: function () {
-            //     this.cancelEdit(this._BOMbyUVChanged, this.confirmCancelBOMbyUVEdit);
-            // },
-
             cancelBOMbyUVEdit: function () {
                 //confirm cancel edit of BOm by UV table
                 if (this._BOMbyUVChanged) {
@@ -898,10 +944,6 @@ sap.ui.define([
                 } else {
                     this.closeBOMbyUVEdit();
                 }
-            },
-
-            onCancelDiscardBOMbyUVChanges: function() {
-                this._DiscardBOMbyUVDialog.close();
             },
 
             closeBOMbyUVEdit: function() {
@@ -973,8 +1015,6 @@ sap.ui.define([
                                 "Gmc": oData.results[i].GMC,
                                 "Partcd": oData.results[i].PARTCD,
                                 "Usgcls": oData.results[i].USGCLS,
-                                "Seqno": " ",
-                                "Bomitem": " ",
                                 "Color": ((oData.results[i].USGCLS === 'AUV') ? attrib.Attribcd : ''), //for AUV save on Color
                                 "Sze": ((oData.results[i].USGCLS !== 'AUV') ? attrib.Attribcd : ''), //Non-AUV save on Sze
                                 "Dest": " ",
@@ -983,11 +1023,7 @@ sap.ui.define([
                                 "Attribcd": oData.results[i].ATTRIBCD,
                                 "Desc1": oData.results[i][attrib.Attribcd],
                                 "Consump": oData.results[i].CONSUMP,
-                                "Wastage": oData.results[i].WASTAGE,
-                                "Createdby": " ",
-                                "Createddt": " ",
-                                "Updatedby": " ",
-                                "Updateddt": " "
+                                "Wastage": oData.results[i].WASTAGE
                             };
                             oEntry.UVToItems.push(item);
                         }
@@ -1021,37 +1057,9 @@ sap.ui.define([
                 }
             },
 
-            onRMC: function() {
-                //RMC clicked
-                var me = this;
-                var oModel = this.getOwnerComponent().getModel();
-
-                Common.openLoadingDialog(this);
-
-                //build header and payload
-                var entitySet = "/StyleBOMGMCSet(STYLENO='" + this._styleNo +  "',VERNO='" + this._version + "',BOMSEQ='')";
-                oModel.setHeaders({sbu: this._sbu});
-                var oEntry = {
-                    STYLENO: this._styleNo,
-                    VERNO: this._version
-                };
-                oModel.setHeaders({
-                    sbu: this._sbu
-                });
-                //call update method of Style BOm by GMC
-                oModel.update(entitySet, oEntry, {
-                    method: "PUT",
-                    success: function(data, oResponse) {
-                        me.onRefresh();
-                        Common.closeLoadingDialog(me);
-                        Common.showMessage(me._i18n.getText('t4'));
-                    },
-                    error: function() {
-                        Common.closeLoadingDialog(me);
-                        Common.showMessage(me._i18n.getText('t5'));
-                    }
-                });
-            },
+            //******************************************* */
+            // Detailed BOM
+            //******************************************* */
 
             getDetailedBOM: function () {
                 //get detailed bom data
@@ -1071,9 +1079,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
 
                         //build the tree table based on selected data
-                        var style;
-                        var gmc;
-                        var partcd;
+                        var style, gmc, partcd;
                         var item = {};
                         var item2 = {};
                         var items = [];
@@ -1138,6 +1144,10 @@ sap.ui.define([
                 })
             },
 
+            //******************************************* */
+            // Material List
+            //******************************************* */
+
             getMaterialList: function () {
                 //get material list
                 var me = this;
@@ -1185,10 +1195,6 @@ sap.ui.define([
                 } else {
                     this.closeMaterialListEdit();
                 }
-            },
-
-            onCancelDiscardMaterialListChanges: function() {
-                this._DiscardMaterialListChangesDialog.close();
             },
 
             closeMaterialListEdit: function() {
@@ -1255,12 +1261,7 @@ sap.ui.define([
                             "Purgrp": oData.results[i].Purgrp,
                             "Purplant": oData.results[i].Purplant,
                             "Matdesc1": oData.results[i].Matdesc1,
-                            "Matdesc2": oData.results[i].Matdesc2,
-                            "Deleted": " ",
-                            "Createdby": " ",
-                            "Createddt": " ",
-                            "Updatedby": " ",
-                            "Updateddt": " "
+                            "Matdesc2": oData.results[i].Matdesc2
                         }
                         oEntry.MatListToItems.push(item);
                     };
@@ -1268,7 +1269,6 @@ sap.ui.define([
                     Common.openLoadingDialog(that);
 
                     path = "/MaterialListSet";
-
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
@@ -1303,6 +1303,10 @@ sap.ui.define([
                     version: this._version
                 });
             },
+
+            //******************************************* */
+            // BOM GMC / BOM UV Columns
+            //******************************************* */
 
             columnTemplate: function (type, column) {
                 //set the column template based on gynamic fields
@@ -1404,7 +1408,7 @@ sap.ui.define([
                             visible: column.Visible
                         });
                     
-                    } else if (columnName === "GMC") {
+                    } else if (columnName === "GMC") { 
                         //setting the GMC input with value help
                         oColumnTemplate = new sap.m.Input({
                             value: "{DataModel>" + columnName + "}",
@@ -1470,12 +1474,6 @@ sap.ui.define([
                     "Styleno": this._styleNo,
                     "Verno": this._version,
                     "Bomseq": item.BOMSEQ,
-                    "Bomitem": " ",
-                    "Compseq": " ",
-                    "Sortseq": " ",
-                    "Partseq": " ",
-                    "Uvseq": " ",
-                    "Altseq": " ",
                     "Bomitmtyp": item.BOMITMTYP,
                     "Bomstyle": item.BOMSTYLE,
                     "Bomstylver": item.BOMSTYLVER,
@@ -1484,57 +1482,20 @@ sap.ui.define([
                     "Partcnt": item.PARTCNT,
                     "Usgcls": item.USGCLS,
                     "Custstyle": item.CUSTSTYLE,
-                    "Color": " ",
-                    "Sizes": " ",
-                    "Dest": " ",
                     "Mattyp": item.MATTYP,
                     "Gmc": item.GMC,
                     "Matno": item.REFMATNO,
                     "Entryuom": item.ENTRYUOM,
                     "Matconsper": item.MATCONSPER,
                     "Per": item.PER,
-                    "Issueuom": " ",
-                    "Matconsump": " ",
                     "Wastage": item.WASTAGE,
                     "Comconsump": item.COMCONSUMP,
-                    "Override": " ",
-                    "Altconsump": " ",
                     "Consump": item.CONSUMP,
-                    "Diml": " ",
-                    "Dimw": " ",
-                    "Dimuom":  " ",
                     "Processcd": item.PROCESSCD,
-                    "Remarks": " ",
                     "Refmatno": item.REFMATNO,
-                    "Refmatdesc": item.REFMATDESC,
-                    "Refcolor": " ",
-                    "Refmattyp": " ",
-                    "Vendmatcd": " ",
-                    "Vendmatdesc": " ",
-                    "Deleted": " ",
-                    "Createdby": " ",
-                    "Createddt": " ",
-                    "Updatedby": " ",
-                    "Updateddt": " "
+                    "Refmatdesc": item.REFMATDESC
                 }
             },
-
-            // cancelEdit(ochangeIndicator, oFunction) {
-            //     //confirm cancel edit
-            //     if (ochangeIndicator === true) {
-            //         if (!this._ConfirmDiscardChangesDialog) {
-            //             this._ConfirmDiscardChangesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ConfirmDiscardChanges", this);
-            //             this.getView().addDependent(this._ConfirmDiscardChangesDialog);
-            //         }
-            //         jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-            //         this._ConfirmDiscardChangesDialog.addStyleClass("sapUiSizeCompact");
-            //         this._ConfirmDiscardChangesDialog.open();
-            //         var oConfirmButton = sap.ui.getCore().byId('ConfirmDiscardButton');
-            //         oConfirmButton.attachPress(oFunction);
-            //     } else {
-            //         oFunction();
-            //     }
-            // },
 
             addLine: function (oEvent) {
                 //add line to tables
@@ -1546,7 +1507,10 @@ sap.ui.define([
                 oData.push({});
                 oTable.getBinding("rows").refresh();
                 oTable.setVisibleRowCount(oData.length);
-                // oTable.attachPaste();
+
+                if(tabName === "versionAttrTable") {
+                    this.onVersionAttrChange();
+                }
             },
 
             addLineBOM: function (oEvent) {
@@ -1559,108 +1523,12 @@ sap.ui.define([
                 oData.push({});
                 oTable.getBinding("rows").refresh();
                 oTable.setVisibleRowCount(oData.length);
+                this.onBOMbyGMCChange();
             },
 
-            // removeLine: function (oEvent) {
-            //     var oButton = oEvent.getSource();
-            //     var tabName = oButton.data('TableName')
-            //     var oTable = this.getView().byId(tabName);
-            //     var oModel = this.getView().byId(tabName).getModel("DataModel");
-            //     var oData = oModel.getData(); // oModel.getProperty('/results');
-            //     var selected = oTable.getSelectedIndices();
-            //     oData.results = oData.results.filter(function (value, index) {
-            //         return selected.indexOf(index) == -1;
-            //     })
-            //     oModel.setData(oData);
-            //     oTable.clearSelection();
-            // },
-
-            onDeleteBOMItems: function () {
-                //confirm delete selected BOM items
-                var oTable = this.getView().byId('bomGMCTable');
-                var selected = oTable.getSelectedIndices();
-                if(selected.length > 0) {
-                    if (!this._ConfirmDeleteBOMDialog) {
-                        this._ConfirmDeleteBOMDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmDeleteBOMItems", this);
-                        this.getView().addDependent(this._ConfirmDeleteBOMDialog);
-                    }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    this._ConfirmDeleteBOMDialog.addStyleClass("sapUiSizeCompact");
-                    this._ConfirmDeleteBOMDialog.open();
-                } else {
-                    Common.showMessage(this._i18n.getText('t8'))
-                }
-            },
-           
-            onConfirmDeleteBOMItems: function() {
-                //delete selected BOM items
-            	var me = this;
-                var oModel = this.getOwnerComponent().getModel();
-
-                //get selected items for deletion
-                var oTable = this.getView().byId("bomGMCTable");
-                var oTableModel = oTable.getModel("DataModel");
-                var oData = oTableModel.getData();
-                var selected = oTable.getSelectedIndices();
-                
-                oModel.setUseBatch(true);
-                oModel.setDeferredGroups(["group1"]);
-                
-                this._ConfirmDeleteBOMDialog.close();
-                
-                if(selected.length > 0) {
-
-                    //call delete method of BOM for each item selected
-	                for (var i = 0; i < selected.length; i++) {
-	                	var verno = this._version;
-	                	var bomseq = oData.results[selected[i]].BOMSEQ;
-                        if(bomseq !== "0") {	                	
-                            verno = this.pad(verno, 3);
-                            bomseq = this.pad(bomseq, 3);
-        
-                            var entitySet = "/StyleBOMGMCSet(STYLENO='" + this._styleNo + "',VERNO='" + verno + "',BOMSEQ='" + bomseq + "')";
-            
-                            oModel.remove(entitySet, {
-                                groupId: "group1", 
-                                changeSetId: "changeSetId1",
-                                method: "DELETE",
-                                success: function (data, oResponse) {
-                                },
-                                error: function () {
-                                }
-                            });
-                            
-                            oModel.submitChanges({
-                                groupId: "group1"
-                            });
-                            oModel.setRefreshAfterChange(true);
-
-                        }
-	                }
-	                //remove deleted items from the table
-	                oData.results = oData.results.filter(function (value, index) {
-                    	return selected.indexOf(index) == -1;
-	                })
-	                oTableModel.setData(oData);
-	                oTable.clearSelection();
-                }
-            },
-
-            // onNavBack: function () {
-            //     var oHistory = History.getInstance();
-            //     var sPreviousHash = oHistory.getPreviousHash();
-    
-            //     if (sPreviousHash !== undefined) {
-            //         window.history.go(-1);
-            //     } else {
-            //         var oRouter = this.getOwnerComponent().getRouter();
-            //         oRouter.navTo("RouteStyles");
-            //     }
-            // },
-
-            /****************************************************/
-            // Start of Value Helps logic
-            /****************************************************/
+            //******************************************* */
+            // Search Helps
+            //******************************************* */
 
             onAttrTypesValueHelp: function (oEvent) {
                 //open Attribute Types value help
@@ -2140,16 +2008,43 @@ sap.ui.define([
                 evt.getSource().getBinding("items").filter([]);
             },
 
+            //******************************************* */
+            // Common Functions
+            //******************************************* */
+
+            getColumnSize: function (oColumn) {
+                //column width of fields
+                var mSize = '8rem';
+                if (oColumn.ColumnName === "GMCDESC") {
+                    mSize = '28rem';
+                } else if (oColumn.ColumnName === "PARTDESC") {
+                    mSize = '16rem';
+                }
+                return mSize;
+            },
+
+            onDeleteTableItems: function(oTableName, oFragmentName, oDialog) {
+                var oTable = this.getView().byId(oTableName);
+                var selected = oTable.getSelectedIndices();
+                if(selected.length > 0) {
+                    if (!oDialog) {
+                        oDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog." + oFragmentName, this);
+                        this.getView().addDependent(oDialog);
+                    }
+                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
+                    oDialog.addStyleClass("sapUiSizeCompact");
+                    oDialog.open();
+                } else {
+                    Common.showMessage(this._i18n.getText('t8'))
+                }
+            },
+
+            onCloseDialog: function(oEvent) {
+                oEvent.getSource().getParent().close();
+            },
+
             pad: Common.pad,
 
-            // onExportExcel: Utils.onExportExcel,
-
-            onExport: Utils.onExport,
-
-            onCancelDeleteVersionAttr: Common.onCancelDeleteVersionAttr,
-
-            onCancelDeleteBOMItems: Common.onCancelDeleteBOMItems,
-
-            onCancelDiscardChanges: Common.onCancelDiscardChanges
+            onExport: Utils.onExport
         });
     });

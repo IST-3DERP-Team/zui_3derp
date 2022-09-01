@@ -1,5 +1,6 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+
     <Toolbar height="3rem" style="Clear">
         <Label text="{i18n>DetailedBOM}"/>
         <ToolbarSpacer />
@@ -9,6 +10,8 @@
             </customData>
         </Button>
     </Toolbar>
+
+    <!-- Detailed BOM Tree Table -->
     <t:TreeTable id="bomDetailedTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}"
         selectionMode="None">
         <t:Column width="10rem" filterType="" filterProperty="Bomitem" sortProperty="Bomitem">

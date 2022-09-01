@@ -1,6 +1,8 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
 	<Dialog title="{i18n>CopyStyle} {CopyModel>/STYLENO}" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" xmlns:tnt="sap.tnt" contentWidth="75%">
 		<Panel height="500px">
+
+            <!-- New Style Details -->
 			<f:Form id="StyleHeaderForm1" editable="true" class="sapUiNoContentPadding">
                 <f:layout>
                     <f:ResponsiveGridLayout columnsXL="12" columnsL="12" columnsM="12"/>
@@ -33,10 +35,6 @@
                             </f:FormElement>
                             <f:FormElement label="{i18n>NewSeason}">
                                 <f:fields>
-                                    <!-- <ComboBox id="seasonCB" items="{ path: 'SeasonModel>/results', sorter: { path: 'Seasoncd' } }" selectedKey="{SeasonModel>/Seasoncd}"
-                                        showSecondaryValues="true" filterSecondaryValues= "true">
-                                        <core:ListItem key="{SeasonModel>Seasoncd}" text="{SeasonModel>Desc1}" additionalText = "{SeasonModel>Yr}"/>
-                                    </ComboBox> -->
                                     <Input id="SEASONCD2" type="Text" showSuggestion="true" showValueHelp="true" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required"
                                         valueHelpRequest="onSeasonsValueHelp" suggestionItems="{SeasonsModel>/results}" value="{headerData>/Seasoncd}"
                                         change="onHeaderChange" liveChange="onHeaderChange">
@@ -71,6 +69,8 @@
                     </f:FormContainer>
                 </f:formContainers>
             </f:Form>
+
+            <!-- Versions Table -->
             <t:Table id="versionsTableMain" rows="{VersionsDataModel>/results}" class="sapUiSizeCompact">
                 <t:columns>
                     <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
@@ -103,7 +103,7 @@
 		</Panel>
 		<buttons>
 			<Button text="{i18n>Save}" press="onSaveCopyStyle"/>
-			<Button text="{i18n>Cancel}" press="onCancelCopyStyle"/>
+			<Button text="{i18n>Cancel}" press="onCloseDialog"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

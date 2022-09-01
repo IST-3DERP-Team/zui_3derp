@@ -7,6 +7,7 @@
             </contentLeft>
         </Bar>
 
+        <!-- KPI -->
         <HBox class="sapUiSmallMargin">
             <f:Card class="sapUiTinyMargin"
                 width="300px">
@@ -51,9 +52,9 @@
                     </TileContent>
                 </tileContent>
             </GenericTile>
-           
         </HBox>
 
+        <!-- Quick Access Tiles -->
         <Panel>
             <headerToolbar>
                 <Toolbar height="2rem">

@@ -5,18 +5,15 @@ sap.ui.define([
     "../js/Utils",
     "sap/ui/model/json/JSONModel",
     'jquery.sap.global',
-    'sap/ui/core/routing/HashChanger',
-    'sap/m/MessageStrip' 
+    'sap/ui/core/routing/HashChanger'
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, Utils, JSONModel, jQuery, HashChanger, MessageStrip) {
+    function (Controller, Filter, Common, Utils, JSONModel, jQuery, HashChanger) {
         "use strict";
 
         var that;
-        
-        var Core = sap.ui.getCore();
 
         return Controller.extend("zui3derp.controller.StyleDetail", {
 
@@ -68,19 +65,15 @@ sap.ui.define([
                     this.getProcessesTable(); //get process
                     this.getVersionsTable(); //get versions
                 }
-                this.getColorsTable();
-
+                
                 //close all edit modes
-                this.cancelGeneralAttrEdit();
-                this.cancelColorsEdit();
-                this.cancelSizeEdit();
-                this.cancelProcessEdit();
-                this.cancelVersionEdit();
-                this.cancelFilesEdit();
+                this.closeEditModes();
 
                 //Load header
                 this.getHeaderConfig(); //get visible header fields
                 this.getHeaderData(); //get header data
+
+                this.getColorsTable();
 
                 //Load value helps
                 Utils.getStyleSearchHelps(this);
@@ -90,6 +83,15 @@ sap.ui.define([
                 //Attachments
                 this.bindUploadCollection();
                 this.getView().getModel("FileModel").refresh();
+            },
+
+            closeEditModes: function() {
+                this.cancelGeneralAttrEdit();
+                this.cancelColorsEdit();
+                this.cancelSizeEdit();
+                this.cancelProcessEdit();
+                this.cancelVersionEdit();
+                this.cancelFilesEdit();
             },
 
             setChangeStatus: function(changed) {
@@ -104,6 +106,10 @@ sap.ui.define([
                 detailPanel.setVisible(bool);
             },
 
+            //******************************************* */
+            // Style Header
+            //******************************************* */
+
             getHeaderData: function () {
                 var me = this;
                 var styleNo = this._styleNo;
@@ -117,6 +123,8 @@ sap.ui.define([
                 var entitySet = "/StyleDetailSet('" + styleNo + "')"
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
+                        // var oldData = oData;
+                        // me._headerData = JSON.parse(JSON.stringify(oData));
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "headerData");
                         Common.closeLoadingDialog(that);
@@ -154,7 +162,6 @@ sap.ui.define([
                     },
                     error: function (err) { }
                 });
-
             },
 
             setHeaderEditMode: function () {
@@ -180,10 +187,6 @@ sap.ui.define([
                 } else {
                     this.closeHeaderEdit();
                 }
-            },
-
-            onCancelDiscardHeaderChanges: function() {
-                this._DiscardHeaderChangesDialog.close();
             },
 
             closeHeaderEdit: function () {
@@ -223,6 +226,7 @@ sap.ui.define([
 
                 //check if there are changes
                 if (!this._headerChanged) {
+                // if (oEntry === me._headerData) {
                     Common.showMessage(this._i18n.getText('t7')); //no changes made
                 } else {
 
@@ -356,6 +360,10 @@ sap.ui.define([
                 }
             },
 
+            //******************************************* */
+            // General Attributes
+            //******************************************* */
+
             getGeneralTable: function () {
                 //Get general attributes data
                 var oTable = this.getView().byId("generalTable");
@@ -375,7 +383,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         oTable.setVisibleRowCount(oData.results.length); //updating visible rows
-                        oTable.attachPaste(); //for copy-paste
+                        // oTable.onAttachPaste(); //for copy-paste
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
@@ -407,10 +415,6 @@ sap.ui.define([
                 } else {
                     this.closeGeneralAttrEdit();
                 }
-            },
-
-            onCancelDiscardGeneralAttrChanges: function() {
-                this._DiscardGeneralAttrChangesDialog.close();
             },
 
             closeGeneralAttrEdit: function () {
@@ -461,19 +465,10 @@ sap.ui.define([
                             "Styleno": this._styleNo,
                             "Attribtyp": oData.results[i].Attribtyp,
                             "Attribcd": oData.results[i].Attribcd,
-                            "Attribgrp": "",
-                            "Attribseq": " ",
                             "Baseind": false,
-                            "Deleted": " ",
                             "Desc1": oData.results[i].Desc1,
-                            "Desc2": " ",
                             "Valuetyp": "STRVAL",
-                            "Attribval": oData.results[i].Attribval,
-                            "Valunit": " ",
-                            "Createdby": " ",
-                            "Createddt": " ",
-                            "Updatedby": " ",
-                            "Updateddt": " "
+                            "Attribval": oData.results[i].Attribval
                         };
 
                         oEntry.AttributesToItems.push(item);
@@ -510,22 +505,10 @@ sap.ui.define([
 
             onDeleteGeneralAttr: function () {
                 //confirmation to delete selected general attribute lines
-                var oTable = this.getView().byId('generalTable');
-                var selected = oTable.getSelectedIndices();
-                if(selected.length > 0) {
-                    if (!this._ConfirmDeleteGeneralAttr) {
-                        this._ConfirmDeleteGeneralAttr = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmDeleteGeneralAttr", this);
-                        this.getView().addDependent(this._ConfirmDeleteGeneralAttr);
-                    }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    this._ConfirmDeleteGeneralAttr.addStyleClass("sapUiSizeCompact");
-                    this._ConfirmDeleteGeneralAttr.open();
-                } else {
-                    Common.showMessage(this._i18n.getText('t8'))
-                }
+                this.onDeleteTableItems('generalTable', 'ConfirmDeleteGeneralAttr', this._ConfirmDeleteGeneralAttr);
             },
             
-            onConfirmDeleteGeneralAttr: function() {
+            onConfirmDeleteGeneralAttr: function(oEvent) {
                 //start of delete of selected lines
             	var me = this;
                 var oModel = this.getOwnerComponent().getModel();
@@ -539,7 +522,8 @@ sap.ui.define([
                 oModel.setUseBatch(true);
                 oModel.setDeferredGroups(["group1"]);
                 
-                this._ConfirmDeleteGeneralAttr.close();
+                // this._ConfirmDeleteGeneralAttr.close();
+                oEvent.getSource().getParent().close();
                 
                 if(selected.length > 0) {
                     //call delete method for each selected line
@@ -575,6 +559,10 @@ sap.ui.define([
                 }
             },
 
+            //******************************************* */
+            // Colors Attribute
+            //******************************************* */
+
             getColorsTable: function () {
                 //selection of color attributes table
                 var oTable = this.getView().byId("colorsTable");
@@ -593,7 +581,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         oTable.setVisibleRowCount(oData.results.length); //updating visible rows
-                        oTable.attachPaste(); //for copy-paste
+                        // oTable.attachPaste(); //for copy-paste
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
@@ -625,10 +613,6 @@ sap.ui.define([
                 } else {
                     this.closeColorsEdit();
                 }
-            },
-
-            onCancelDiscardColorsChanges: function() {
-                this._DiscardColorsChangesDialog.close();
             },
 
             closeColorsEdit: function () {
@@ -682,19 +666,9 @@ sap.ui.define([
                             "Styleno": this._styleNo,
                             "Attribtyp": "COLOR",
                             "Attribcd": oData.results[i].Attribcd,
-                            "Attribgrp": "",
-                            "Attribseq": " ",
                             "Baseind": false,
-                            "Deleted": " ",
                             "Desc1": oData.results[i].Desc1,
-                            "Desc2": " ",
-                            "Valuetyp": "STRVAL",
-                            "Attribval": " ",
-                            "Valunit": " ",
-                            "Createdby": " ",
-                            "Createddt": " ",
-                            "Updatedby": " ",
-                            "Updateddt": " "
+                            "Valuetyp": "STRVAL"
                         };
                         oEntry.AttributesToItems.push(item);
                     };
@@ -728,22 +702,10 @@ sap.ui.define([
 
             onDeleteColor: function () {
                 //get selected lines to delete
-                var oTable = this.getView().byId('colorsTable');
-                var selected = oTable.getSelectedIndices();
-                if(selected.length > 0) {
-                    if (!this._ConfirmDeleteColor) {
-                        this._ConfirmDeleteColor = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmDeleteColor", this);
-                        this.getView().addDependent(this._ConfirmDeleteColor);
-                    }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    this._ConfirmDeleteColor.addStyleClass("sapUiSizeCompact");
-                    this._ConfirmDeleteColor.open();
-                } else {
-                    Common.showMessage(this._i18n.getText('t8'))
-                }
+                this.onDeleteTableItems('colorsTable', 'ConfirmDeleteColor', this._ConfirmDeleteColor);
             },
             
-            onConfirmDeleteColor: function() {
+            onConfirmDeleteColor: function(oEvent) {
                 //confirm delete selected colors
 
                 //get selected lines to delete
@@ -756,7 +718,8 @@ sap.ui.define([
                 oModel.setUseBatch(true);
                 oModel.setDeferredGroups(["group1"]);
                 
-                this._ConfirmDeleteColor.close();
+                oEvent.getSource().getParent().close();
+                // this._ConfirmDeleteColor.close();
                 
                 if(selected.length > 0) {
                     //call delete method for each selected lines
@@ -791,6 +754,10 @@ sap.ui.define([
                 }
             },
 
+            //******************************************* */
+            // Sizes Attribute
+            //******************************************* */
+
             getSizesTable: function () {
                 //select size attributes
                 var oTable = this.getView().byId("sizesTable");
@@ -802,7 +769,6 @@ sap.ui.define([
                 Common.openLoadingDialog(that);
 
                 var entitySet = "/StyleAttributesSizeSet"
-
                 oModel.setHeaders({
                     styleno: this._styleNo,
                     attribgrp: oSizeGrp
@@ -842,10 +808,6 @@ sap.ui.define([
                 } else {
                     this.closeSizeEdit();
                 }
-            },
-
-            onCancelDiscardSizeChanges: function() {
-                this._DiscardSizesChangesDialog.close();
             },
 
             closeSizeEdit: function () {
@@ -902,18 +864,9 @@ sap.ui.define([
                             "Attribtyp": "SIZE",
                             "Attribcd": oData.results[i].Attribcd,
                             "Attribgrp": oData.results[i].Attribgrp,
-                            "Attribseq": " ",
                             "Baseind": oData.results[i].Baseind,
-                            "Deleted": " ",
                             "Desc1": oData.results[i].Desc1,
-                            "Desc2": " ",
-                            "Valuetyp": "STRVAL",
-                            "Attribval": " ",
-                            "Valunit": " ",
-                            "Createdby": " ",
-                            "Createddt": " ",
-                            "Updatedby": " ",
-                            "Updateddt": " "
+                            "Valuetyp": "STRVAL"
                         };
                         oEntry.AttributesToItems.push(item);
                     };
@@ -948,6 +901,10 @@ sap.ui.define([
                 }
             },
 
+            //******************************************* */
+            // Process Attributes
+            //******************************************* */
+
             getProcessesTable: function () {
                 //get processes data
                 var oTable = this.getView().byId("processesTable");
@@ -967,7 +924,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         oTable.setVisibleRowCount(oData.results.length);
-                        oTable.attachPaste();
+                        // oTable.attachPaste();
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
@@ -999,10 +956,6 @@ sap.ui.define([
                 } else {
                     this.closeProcessEdit();
                 }
-            },
-
-            onCancelDiscardProcessChanges: function() {
-                this._DiscardProcessChangesDialog.close();
             },
 
             closeProcessEdit: function () {
@@ -1052,21 +1005,12 @@ sap.ui.define([
                         var item = {
                             "Styleno": this._styleNo,
                             "Seqno": oData.results[i].Seqno,
-                            "Parentproc": " ",
-                            "Hasoutput": " ",
                             "Processcd": oData.results[i].Processcd,
-                            "Reqind": " ",
-                            "Deleted": " ",
                             "Leadtime": oData.results[i].Leadtime,
                             "Attribtyp": oData.results[i].Attribtyp,
                             "Attribcd": oData.results[i].Attribcd,
-                            "Vastyp": oData.results[i].Vastyp,
-                            "Createdby": " ",
-                            "Createddt": " ",
-                            "Updatedby": " ",
-                            "Updateddt": " "
+                            "Vastyp": oData.results[i].Vastyp
                         }
-
                         oEntry.ProcessToItems.push(item);
                     };
                     //call create deep method of process attributes
@@ -1096,22 +1040,10 @@ sap.ui.define([
 
             onDeleteProcess: function () {
                 //confirm delete selected process items
-                var oTable = this.getView().byId('processesTable');
-                var selected = oTable.getSelectedIndices();
-                if(selected.length > 0) {
-                    if (!this._ConfirmDeleteProcess) {
-                        this._ConfirmDeleteProcess = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmDeleteProcess", this);
-                        this.getView().addDependent(this._ConfirmDeleteProcess);
-                    }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    this._ConfirmDeleteProcess.addStyleClass("sapUiSizeCompact");
-                    this._ConfirmDeleteProcess.open();
-                } else {
-                    Common.showMessage(this._i18n.getText('t8'))
-                }
+                this.onDeleteTableItems('processesTable', 'ConfirmDeleteProcess', this._ConfirmDeleteProcess);
             },
             
-            onConfirmDeleteProcess: function() {
+            onConfirmDeleteProcess: function(oEvent) {
                 //start delete process of selected items
             	//get selected items to delete
                 var oModel = this.getOwnerComponent().getModel();
@@ -1123,17 +1055,16 @@ sap.ui.define([
                 oModel.setUseBatch(true);
                 oModel.setDeferredGroups(["group1"]);
                 
-                this._ConfirmDeleteProcess.close();
+                // this._ConfirmDeleteProcess.close();
+                oEvent.getSource().getParent().close();
                 
                 if(selected.length > 0) { 
                     //call delete method for each selected item
                     for (var i = 0; i < selected.length; i++) {
-	                	
 	                	var seqno = oData.results[selected[i]].Seqno;
 	                	seqno = this.pad(seqno, 3);
 	
 		                var entitySet = "/StyleAttributesProcessSet(Styleno='" + that._styleNo + "',Seqno='" + seqno + "')";
-		
 		                oModel.remove(entitySet, {
 		                	groupId: "group1", 
     						changeSetId: "changeSetId1",
@@ -1159,6 +1090,10 @@ sap.ui.define([
                 }
             },
 
+            //******************************************* */
+            // Style Versions
+            //******************************************* */
+
             getVersionsTable: function () {
                 //get versions data of style
                 var oTable = this.getView().byId("versionsTable");
@@ -1168,7 +1103,6 @@ sap.ui.define([
                 Common.openLoadingDialog(that);
 
                 var entitySet = "/StyleVersionSet"
-
                 oModel.setHeaders({
                     styleno: this._styleNo
                 });
@@ -1177,13 +1111,35 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         oTable.setVisibleRowCount(oData.results.length);
-                        oTable.attachPaste();
+                        // oTable.attachPaste();
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
                         Common.closeLoadingDialog(that);
                     }
                 })
+            },
+
+            onSelectVersion: function (oEvent) {
+                //selecting version to view
+                var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                var version = oData.getProperty('Verno');
+                that._router.navTo("RouteVersion", {
+                    styleno: that._styleNo,
+                    sbu: that._sbu,
+                    version: version
+                });
+            },
+
+            onCreateNewVersion: function () {
+                //open create new version dialog
+                if (!that._NewVerionDialog) {
+                    that._NewVerionDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CreateNewVersion", that);
+                    that.getView().addDependent(that._NewVerionDialog);
+                }
+                jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
+                that._NewVerionDialog.addStyleClass("sapUiSizeCompact");
+                that._NewVerionDialog.open();
             },
 
             onSaveNewVersion: function () {
@@ -1193,9 +1149,9 @@ sap.ui.define([
                 var path;
 
                 //get data from new version dialog
-                var oDesc1 = Core.byId("newVersionDesc1").getValue();
-                var oDesc2 = Core.byId("newVersionDesc2").getValue();
-                var oCurrent = Core.byId("newVersionCurrent").getSelected();
+                var oDesc1 = sap.ui.getCore().byId("newVersionDesc1").getValue();
+                var oDesc2 = sap.ui.getCore().byId("newVersionDesc2").getValue();
+                var oCurrent = sap.ui.getCore().byId("newVersionCurrent").getSelected();
 
                 Common.openLoadingDialog(that);
 
@@ -1227,52 +1183,6 @@ sap.ui.define([
                 });
             },
 
-            onSelectVersion: function (oEvent) {
-                //selecting version to view
-                var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
-                var version = oData.getProperty('Verno');
-                that._router.navTo("RouteVersion", {
-                    styleno: that._styleNo,
-                    sbu: that._sbu,
-                    version: version
-                });
-            },
-
-            setVersionCurrent: function (oEvent) {
-                //clicking the set version as current during edit mode
-                var me = this;
-                var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
-                var version = oData.getProperty('Verno');
-                version = this.pad(version, 3);
-                var oModel = this.getOwnerComponent().getModel();
-
-                Common.openLoadingDialog(that);
-
-                //set header and payload
-                var entitySet = "/StyleVersionSet(Styleno='" + this._styleNo + "',Verno='" + version + "')";
-                var oEntry = {
-                    Styleno: this._styleNo,
-                    Verno: version
-                };
-                oModel.setHeaders({
-                    sbu: this._sbu
-                });
-                //call the update method of style version
-                oModel.update(entitySet, oEntry, {
-                    method: "PUT",
-                    success: function (data, oResponse) {
-                        me.getHeaderData();
-                        me.getVersionsTable();
-                        Common.closeLoadingDialog(that);
-                        Common.showMessage(me._i18n.getText('t4'));
-                    },
-                    error: function () {
-                        Common.closeLoadingDialog(that);
-                        Common.showMessage(me._i18n.getText('t5'));
-                    }
-                });
-            },
-
             setVersionEditMode: function () {
                 //set edit mode of versions table
                 var oJSONModel = new JSONModel();
@@ -1296,10 +1206,6 @@ sap.ui.define([
                 } else {
                     this.closeVersionEdit();
                 }
-            },
-
-            onCancelDiscardVersionChanges: function() {
-                this._DiscardVersionChangesDialog.close();
             },
 
             closeVersionEdit: function () {
@@ -1348,24 +1254,13 @@ sap.ui.define([
                         VerToItems: []
                     }                    
                     for (var i = 0; i < oData.results.length; i++) {
+                        var verno = this.pad(oData.results[i].Verno);
                         var item = {
                             "Styleno": this._styleNo,
-                            "Verno": oData.results[i].Verno,
-                            "Remarks": " ",
-                            "Completed": " ",
+                            "Currentver": oData.results[i].Currentver,
+                            "Verno": verno,
                             "Desc1": oData.results[i].Desc1,
-                            "Matno": " ",
-                            "Desc2": oData.results[i].Desc2,
-                            "Seasoncd": " ",
-                            "Salesgrp": " ",
-                            "Srcstyl": " ",
-                            "Srcstylver": " ",
-                            "Rmcdttm": " ",
-                            "Deleted": " ",
-                            "Createdby": " ",
-                            "Createddt": " ",
-                            "Updatedby": " ",
-                            "Updateddt": " "
+                            "Desc2": oData.results[i].Desc2
                         }
                         oEntry.VerToItems.push(item);
                     };
@@ -1391,39 +1286,50 @@ sap.ui.define([
                             oMsgStrip.setText(errorMsg);
                         }
                     });
-
                 }
             },
 
-            onCreateNewVersion: function () {
-                //open create new version dialog
-                if (!that._NewVerionDialog) {
-                    that._NewVerionDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CreateNewVersion", that);
-                    that.getView().addDependent(that._NewVerionDialog);
-                }
-                jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
-                that._NewVerionDialog.addStyleClass("sapUiSizeCompact");
-                that._NewVerionDialog.open();
+            setVersionCurrent: function (oEvent) {
+                //clicking the set version as current during edit mode
+                var me = this;
+                var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
+                var version = oData.getProperty('Verno');
+                version = this.pad(version, 3);
+                var oModel = this.getOwnerComponent().getModel();
+
+                Common.openLoadingDialog(that);
+
+                //set header and payload
+                var entitySet = "/StyleVersionSet(Styleno='" + this._styleNo + "',Verno='" + version + "')";
+                var oEntry = {
+                    Styleno: this._styleNo,
+                    Verno: version
+                };
+                oModel.setHeaders({
+                    sbu: this._sbu
+                });
+                //call the update method of style version
+                oModel.update(entitySet, oEntry, {
+                    method: "PUT",
+                    success: function (data, oResponse) {
+                        me.getHeaderData();
+                        me.getVersionsTable();
+                        Common.closeLoadingDialog(that);
+                        Common.showMessage(me._i18n.getText('t4'));
+                    },
+                    error: function () {
+                        Common.closeLoadingDialog(that);
+                        Common.showMessage(me._i18n.getText('t5'));
+                    }
+                });
             },
 
             onDeleteVersion: function () {
                 //confirm delete of selected version items
-                var oTable = this.getView().byId('versionsTable');
-                var selected = oTable.getSelectedIndices();
-                if(selected.length > 0) {
-                    if (!this._ConfirmDeleteVersionDialog) {
-                        this._ConfirmDeleteVersionDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmDeleteVersion", this);
-                        this.getView().addDependent(this._ConfirmDeleteVersionDialog);
-                    }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    this._ConfirmDeleteVersionDialog.addStyleClass("sapUiSizeCompact");
-                    this._ConfirmDeleteVersionDialog.open();
-                } else {
-                    Common.showMessage(this._i18n.getText('t8'))
-                }
+                this.onDeleteTableItems('versionsTable', 'ConfirmDeleteVersion', this._ConfirmDeleteVersionDialog);
             },
             
-            onConfirmDeleteVersion: function() {
+            onConfirmDeleteVersion: function(oEvent) {
                 //confirm deletion of version
                 var oModel = this.getOwnerComponent().getModel();
 
@@ -1436,25 +1342,22 @@ sap.ui.define([
                 oModel.setUseBatch(true);
                 oModel.setDeferredGroups(["group1"]);
                 
-				this._ConfirmDeleteVersionDialog.close();
+				// this._ConfirmDeleteVersionDialog.close();
+                oEvent.getSource().getParent().close();
                 
                 if(selected.length > 0) {
                     //call delete method for each item selected
 	                for (var i = 0; i < selected.length; i++) {
-	                	
 	                	var verno = oData.results[selected[i]].Verno;
 	                	verno = this.pad(verno, 3);
 	
 		                var entitySet = "/StyleVersionSet(Styleno='" + that._styleNo + "',Verno='" + verno + "')";
-		
 		                oModel.remove(entitySet, {
 		                	groupId: "group1", 
     						changeSetId: "changeSetId1",
 		                    method: "DELETE",
-		                    success: function (data, oResponse) {
-		                    },
-		                    error: function () {
-		                    }
+		                    success: function (data, oResponse) { },
+		                    error: function () { }
 		                });
 		                
 		                oModel.submitChanges({
@@ -1472,63 +1375,9 @@ sap.ui.define([
                 }
             },
 
-            addLine: function (oEvent) {
-                //adding lines to tables via model
-                var oButton = oEvent.getSource();
-                var tabName = oButton.data('TableName')
-                var oTable = this.getView().byId(tabName);
-                var oModel = this.getView().byId(tabName).getModel("DataModel");
-                var oData = oModel.getProperty('/results');
-                oData.push({});
-                oTable.getBinding("rows").refresh();
-                oTable.setVisibleRowCount(oData.length);
-            },
-
-            addProcessLine: function (oEvent) {
-                //adding lines to process table via model, with sequence increment logic
-                var oButton = oEvent.getSource();
-                var tabName = oButton.data('TableName')
-                var oTable = this.getView().byId(tabName);
-                var oModel = this.getView().byId(tabName).getModel("DataModel");
-                var oData = oModel.getProperty('/results');
-                var length = oData.length;
-                var lastSeqno = 0;
-                if (length > 0) {
-                    lastSeqno = parseInt(oData[length - 1].Seqno);
-                }
-                lastSeqno++;
-                var seqno = lastSeqno.toString();
-                oData.push({
-                    "Seqno": seqno
-                });
-                oTable.getBinding("rows").refresh();
-                oTable.setVisibleRowCount(oData.length);
-            },
-
-            // removeLine: function (oEvent) {
-            //     var oButton = oEvent.getSource();
-            //     var tabName = oButton.data('TableName')
-            //     var oTable = this.getView().byId(tabName);
-            //     var oModel = this.getView().byId(tabName).getModel("DataModel");
-            //     var oData = oModel.getData();
-            //     var selected = oTable.getSelectedIndices();
-
-            //     oData.results = oData.results.filter(function (value, index) {
-            //         return selected.indexOf(index) == -1;
-            //     })
-
-            //     oModel.setData(oData);
-            //     oTable.clearSelection();
-            // },
-
-            // addGeneralAttr: function () {
-            //     var oModel = this.getView().byId("generalTable").getModel("DataModel");
-            //     var oData = oModel.getProperty('/results');
-            //     oData.push({});
-
-            //     var oTable = this.getView().byId("generalTable");
-            //     oTable.getBinding("rows").refresh();
-            // },
+            //******************************************* */
+            // Attachments
+            //******************************************* */
 
             appendUploadCollection: function () {
                 //set properties and adding the attachments component to the screen
@@ -1611,8 +1460,6 @@ sap.ui.define([
                 if (!this._UploadFileDialog) {
                     this._UploadFileDialog = sap.ui.xmlfragment("zui3derp.view.fragments.UploadFile", this);
                     this.getView().addDependent(this._UploadFileDialog);
-                } else {
-                    
                 }
                 jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
                 this._UploadFileDialog.addStyleClass("sapUiSizeCompact");
@@ -1622,10 +1469,8 @@ sap.ui.define([
             onStartUploadFile: function () {
                 //on confirm of upload dialog, start upload of file
                 this._UploadFileDialog.close();
-
                 var oUploadCollection = this.getView().byId('UploadCollection');
                 var cFiles = oUploadCollection.getItems().length;
-
                 if (cFiles > 0) {
                     oUploadCollection.upload();
                 }
@@ -1719,7 +1564,6 @@ sap.ui.define([
                 } else {
                     Common.showMessage(this._i18n.getText('t10'));
                 }
-                
             },
 
             onConfirmDeleteFile: function() {
@@ -1745,53 +1589,25 @@ sap.ui.define([
                 oUploadCollection.removeAllItems();
             },
 
-            cancelEdit(ochangeIndicator, oFunction) {
-                if (ochangeIndicator === true) {
-                    if (!this._ConfirmDiscardChangesDialog) {
-                        this._ConfirmDiscardChangesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ConfirmDiscardChanges", this);
-                        this.getView().addDependent(this._ConfirmDiscardChangesDialog);
-                    }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    this._ConfirmDiscardChangesDialog.addStyleClass("sapUiSizeCompact");
-                    this._ConfirmDiscardChangesDialog.open();
-                    var oConfirmButton = sap.ui.getCore().byId('ConfirmDiscardButton');
-                    oConfirmButton.attachPress(oFunction);
-                } else {
-                    oFunction();
-                }
-            },
-
-            // onNavBack: function() {
-            //     if(this._headerChanged === false && this._generalAttrChanged === false &&
-            //         this._colorChanged === false && this._sizeChanged === false &&
-            //         this._processChanged === false && this._versionChanged === false) {
-            //         this.confirmNavBack();
-            //     } else {
-            //         if (!this._ConfirmDiscardChangesNavDialog) {
-            //             this._ConfirmDiscardChangesNavDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ConfirmDiscardChangesNav", this);
-            //             this.getView().addDependent(this._ConfirmDiscardChangesNavDialog);
+            // cancelEdit(ochangeIndicator, oFunction) {
+            //     if (ochangeIndicator === true) {
+            //         if (!this._ConfirmDiscardChangesDialog) {
+            //             this._ConfirmDiscardChangesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ConfirmDiscardChanges", this);
+            //             this.getView().addDependent(this._ConfirmDiscardChangesDialog);
             //         }
             //         jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-            //         this._ConfirmDiscardChangesNavDialog.addStyleClass("sapUiSizeCompact");
-            //         this._ConfirmDiscardChangesNavDialog.open();
-            //     }
-            // },
-
-            // dataChanged: function() {
-            //     var changed = false;
-            //     if(this._headerChanged === false && this._generalAttrChanged === false &&
-            //         this._colorChanged === false && this._sizeChanged === false &&
-            //         this._processChanged === false && this._versionChanged === false) {
-            //         changed = false;
+            //         this._ConfirmDiscardChangesDialog.addStyleClass("sapUiSizeCompact");
+            //         this._ConfirmDiscardChangesDialog.open();
+            //         var oConfirmButton = sap.ui.getCore().byId('ConfirmDiscardButton');
+            //         oConfirmButton.attachPress(oFunction);
             //     } else {
-            //         changed = true;
+            //         oFunction();
             //     }
-            //     return changed;
             // },
 
-            /****************************************************/
-            // Start of Search Helps logic
-            /****************************************************/
+            //******************************************* */
+            // Search Helps
+            //******************************************* */
 
             onSeasonsValueHelp: function (oEvent) {
                 //open seaons value help
@@ -2300,24 +2116,70 @@ sap.ui.define([
                 evt.getSource().getBinding("items").filter([]);
             },
 
-            // onExportExcel: Utils.onExportExcel,
+            //******************************************* */
+            // Common Functions
+            //******************************************* */
 
-            pad: Common.pad,
+            addLine: function (oEvent) {
+                //adding lines to tables via model
+                var oButton = oEvent.getSource();
+                var tabName = oButton.data('TableName')
+                var oTable = this.getView().byId(tabName);
+                var oModel = this.getView().byId(tabName).getModel("DataModel");
+                var oData = oModel.getProperty('/results');
+                oData.push({});
+                oTable.getBinding("rows").refresh();
+                oTable.setVisibleRowCount(oData.length);
 
-            onCancelNewVersion: Common.onCancelNewVersion,
+                if(tabName === "generalTable") {
+                    this.onGeneralAttrChange();
+                } else if(tabName === "colorsTable") {
+                    this.onColorChange();
+                } 
+            },
 
-            onCancelDeleteStyle: Common.onCancelDeleteStyle,
+            addProcessLine: function (oEvent) {
+                //adding lines to process table via model, with sequence increment logic
+                var oButton = oEvent.getSource();
+                var tabName = oButton.data('TableName')
+                var oTable = this.getView().byId(tabName);
+                var oModel = this.getView().byId(tabName).getModel("DataModel");
+                var oData = oModel.getProperty('/results');
+                var length = oData.length;
+                var lastSeqno = 0;
+                if (length > 0) {
+                    lastSeqno = parseInt(oData[length - 1].Seqno);
+                }
+                lastSeqno++;
+                var seqno = lastSeqno.toString();
+                oData.push({
+                    "Seqno": seqno
+                });
+                oTable.getBinding("rows").refresh();
+                oTable.setVisibleRowCount(oData.length);
+                this.onProcessChange();
+            },
 
-            onCancelDeleteGeneralAttr: Common.onCancelDeleteGeneralAttr,
-            
-            onCancelDeleteColor: Common.onCancelDeleteColor,
-            
-            onCancelDeleteProcess: Common.onCancelDeleteProcess,
+            onDeleteTableItems: function(oTableName, oFragmentName, oDialog) {
+                var oTable = this.getView().byId(oTableName);
+                var selected = oTable.getSelectedIndices();
+                if(selected.length > 0) {
+                    if (!oDialog) {
+                        oDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog." + oFragmentName, this);
+                        this.getView().addDependent(oDialog);
+                    }
+                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
+                    oDialog.addStyleClass("sapUiSizeCompact");
+                    oDialog.open();
+                } else {
+                    Common.showMessage(this._i18n.getText('t8'))
+                }
+            },
 
-            onCancelDeleteVersion: Common.onCancelDeleteVersion,
+            onCloseDialog: function(oEvent) {
+                oEvent.getSource().getParent().close();
+            },
 
-            onCancelDeleteFile: Common.onCancelDeleteFile,
-
-            onCancelDiscardChanges: Common.onCancelDiscardChanges
+            pad: Common.pad
         });
     });

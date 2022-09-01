@@ -77,7 +77,6 @@
             <smartfilterbar:controlConfiguration>
                 <smartfilterbar:ControlConfiguration key="CREATEDDT" label="{i18n>CREATEDDT}">
                     <smartfilterbar:customControl>
-                        <!-- <DatePicker id="CreatedDatePicker" valueFormat="yyyyMMdd"/>3 -->
                         <DateRangeSelection id="CreatedDatePicker" value="{parts: [{path: ''}, {path: ''}], type: 'sap.ui.model.type.DateInterval',
                             formatOptions: { UTC: false, format: 'yyyyMMdd' }}"/>    
                     </smartfilterbar:customControl>
@@ -86,13 +85,9 @@
             <smartfilterbar:controlConfiguration>
                 <smartfilterbar:ControlConfiguration key="UPDATEDBY" groupId="_ADVANCED" label="{i18n>UPDATEDBY}"/>
             </smartfilterbar:controlConfiguration>
-            <!-- <smartfilterbar:controlConfiguration>
-                <smartfilterbar:ControlConfiguration key="UPDATEDDT" groupId="_ADVANCED" label="{i18n>UPDATEDDT}"/>
-            </smartfilterbar:controlConfiguration> -->
             <smartfilterbar:controlConfiguration>
                 <smartfilterbar:ControlConfiguration key="UPDATEDDT" label="{i18n>UPDATEDDT}">
                     <smartfilterbar:customControl>
-                        <!-- <DatePicker id="CreatedDatePicker" valueFormat="yyyyMMdd"/>3 -->
                         <DateRangeSelection id="UpdatedDatePicker" value="{parts: [{path: ''}, {path: ''}], type: 'sap.ui.model.type.DateInterval',
                             formatOptions: { UTC: false, format: 'yyyyMMdd' }}"/>    
                     </smartfilterbar:customControl>
@@ -100,7 +95,7 @@
             </smartfilterbar:controlConfiguration>
         </smartfilterbar:SmartFilterBar>
 	    
-        <!-- >>> Statistics <<< -->
+        <!-- Statistics -->
         <layout:HorizontalLayout class="sapUiResponsiveContentPadding">
             <GenericTag text="{i18n>forecast}" design="StatusIconHidden" status="Warning" class="sapUiSmallMarginBottom tag">
                 <ObjectNumber emphasized="true" number="{model>forecast}" state="Warning" id="forecastNumber"/>
@@ -113,6 +108,7 @@
             </GenericTag>
         </layout:HorizontalLayout>
 
+        <!-- Toolbar -->
         <Toolbar id="tableToolbar" class="sapUiSmallMargin">
             <HBox>
                 <Title id="StylesCount"/>
@@ -130,6 +126,7 @@
             <Button icon="sap-icon://grid" text="{i18n>Save}" tooltip="{i18n>Savetablelayout}" press="onSaveLayoutSettings"/>
         </Toolbar>
        
+        <!-- Styles Table -->
         <Panel class="sapUiTinyMarginTop">
             <ScrollContainer width="100%" horizontal="true" vertical="true" focusable="true">
                 <c:DynamicTable id="styleDynTable" class="sapUiSizeCompact" selectionMode="None" showColumnVisibilityMenu="true">
