@@ -28,11 +28,13 @@
 
     <MessageStrip id="BOMbyGMCMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
 
+    <!-- BOM by GMC Table -->
     <!-- <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['BOMSTYLE']}}"
         selectionMode="{= ${BOMbyGMCEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
     </c:DynamicTreeTable> -->
-    <c:DynamicTable id="bomGMCTable" class="sapUiSizeCompact" rows="{path:'DataModel>/results'}" visibleRowCountMode="Fixed"
-        selectionMode="{= ${BOMbyGMCEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
-    </c:DynamicTable>
-    
+    <ScrollContainer height="400px" vertical="true">
+        <c:DynamicTable id="bomGMCTable" class="sapUiSizeCompact" rows="{path:'DataModel>/results'}" visibleRowCountMode="Fixed"
+            selectionMode="{= ${BOMbyGMCEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }" width="300%">
+        </c:DynamicTable>
+    </ScrollContainer>
 </core:FragmentDefinition>    

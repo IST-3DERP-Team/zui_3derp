@@ -15,6 +15,7 @@
 
             <MessageStrip id="HeaderMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
             
+            <!-- Style Header Form -->
             <f:Form id="StyleHeaderForm1" editable="false" class="sapUiNoContentPadding">
                 <f:layout>
                     <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3"/>

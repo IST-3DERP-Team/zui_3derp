@@ -45,6 +45,10 @@ sap.ui.define([
                 sap.ushell.Container.setDirtyFlag(changed);
             },
 
+            //******************************************* */
+            // Material List
+            //******************************************* */
+
             getMaterialList:function(){
                 //select Material List
                 var me = this;
@@ -80,14 +84,14 @@ sap.ui.define([
             getMaterials: function() {
                 //get Materials for value help
                 var oView = this.getView();
-                var oModel = this.getOwnerComponent().getModel();
+                var oSHModel = this.getOwnerComponent().getModel("SearchHelps");
                 var oJSONModel = new JSONModel();
 
                 Common.openLoadingDialog(that);
 
                 var entitySet = "/MaterialNoSet"
                 
-                oModel.read(entitySet, {
+                oSHModel.read(entitySet, {
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "MaterialsModel");
@@ -98,6 +102,10 @@ sap.ui.define([
                     }
                 })
             },
+
+            //******************************************* */
+            // Assign Automatic
+            //******************************************* */
 
             onAssignAutomatic: function() {
                 //Assign automatic clicked
@@ -142,12 +150,7 @@ sap.ui.define([
                             "Purgrp": oData.results[index].Purgrp,
                             "Purplant": oData.results[index].Purplant,
                             "Matdesc1": oData.results[index].Matdesc1,
-                            "Matdesc2": oData.results[index].Matdesc2,
-                            "Deleted": " ",
-                            "Createdby": " ",
-                            "Createddt": " ",
-                            "Updatedby": " ",
-                            "Updateddt": " "
+                            "Matdesc2": oData.results[index].Matdesc2
                         }
                         oEntry.MatListToItems.push(item);
                     };
@@ -190,6 +193,10 @@ sap.ui.define([
                     Common.showMessage(this._i18n.getText('t10'));
                 }
             },
+
+            //******************************************* */
+            // Create Material
+            //******************************************* */
 
             onCreateMaterial: function() {
                 //create material clicked
@@ -275,6 +282,7 @@ sap.ui.define([
                             oTable.setModel(oJSONModel, "DataModel");
                             Common.closeLoadingDialog(that);
                             me.onMaterialListChange();
+                            me.onSaveMaterialList();
                         },
                         error: function(err) {
                             Common.closeLoadingDialog(that);
@@ -335,12 +343,7 @@ sap.ui.define([
                             "Purgrp": oData.results[i].Purgrp,
                             "Purplant": oData.results[i].Purplant,
                             "Matdesc1": oData.results[i].Matdesc1,
-                            "Matdesc2": oData.results[i].Matdesc2,
-                            "Deleted": " ",
-                            "Createdby": " ",
-                            "Createddt": " ",
-                            "Updatedby": " ",
-                            "Updateddt": " "
+                            "Matdesc2": oData.results[i].Matdesc2
                         }
                         oEntry.MatListToItems.push(item);
                     };
@@ -368,6 +371,10 @@ sap.ui.define([
                     });
                 }
             },
+
+            //******************************************* */
+            // Search Helps
+            //******************************************* */
 
             onMaterialValueHelp : function (oEvent) {
                 //open Materials value help

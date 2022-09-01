@@ -12,7 +12,7 @@ sap.ui.define([
         return Controller.extend("zui3derp.controller.Main", {
 
             onInit: function () {
-                this.onStyleReader();
+                this.getStyleStats();
             },
 
             goToStyles: function () {
@@ -21,7 +21,7 @@ sap.ui.define([
                 oRouter.navTo("RouteStyles");
             },
 
-            onStyleReader: function () {
+            getStyleStats: function () {
                 var oModel = this.getOwnerComponent().getModel();
                 var oForecast = this.getView().byId("forecastNumber");
                 var oOrder = this.getView().byId("orderNumber");

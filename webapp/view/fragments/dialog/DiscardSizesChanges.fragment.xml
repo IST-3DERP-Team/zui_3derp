@@ -5,7 +5,7 @@
 		</Panel>
 		<buttons>
 			<Button text="{i18n>Yes}" press="closeSizeEdit"/>
-			<Button text="{i18n>Cancel}" press="onCancelDiscardSizeChanges"/>
+			<Button text="{i18n>Cancel}" press="onCloseDialog"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

@@ -19,56 +19,58 @@
 
         <MessageStrip id="VersionsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
 
-        <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" 
-            selectionMode="{= ${VersionEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }" visibleRowCountMode="Fixed" class="sapUiSizeCompact">
-            <c:columns>
-                <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
-                    <Label text="{i18n>Manage}"/>
-                    <t:template>
-                        <Button icon="sap-icon://detail-view" press="onSelectVersion">
-                        <customData>
-                            <core:CustomData  key="VerNo" value="{DataModel>Verno}"/>
-                        </customData>
-                        </Button>
-                    </t:template>
-                </t:Column>
-                <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno" hAlign="End">
-                    <Label text="{i18n>Version}"/>
-                    <t:template>
-                        <Text text="{DataModel>Verno}"/>
-                    </t:template>
-                </t:Column>
-                <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
-                    <Label text="{i18n>Status}" />
-                    <t:template>
-                        <tnt:InfoLabel id="il8" text="{= ${DataModel>Currentver} === true ? 'Current' : ' ' }" colorScheme="{= ${DataModel>Currentver} === true ? 8 : 7 }" displayOnly= "true"
-                            visible="{DataModel>Currentver}"/>
-                    </t:template>
-                </t:Column>
-                <t:Column width="8rem" filterType="" filterProperty="Verno" sortProperty="Verno"  visible="{VersionEditModeModel>/editMode}">
-                    <Label text=""/>
-                    <t:template>
-                        <Button text="{i18n>SetCurrent}" icon="sap-icon://detail-view" press="setVersionCurrent" visible="{= ${DataModel>Currentver} === true ? false : true }">
+        <!-- Versions Table -->
+        <ScrollContainer height="400px" vertical="true">
+            <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" 
+                selectionMode="{= ${VersionEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }" visibleRowCountMode="Fixed" class="sapUiSizeCompact">
+                <c:columns>
+                    <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
+                        <Label text="{i18n>Manage}"/>
+                        <t:template>
+                            <Button icon="sap-icon://detail-view" press="onSelectVersion">
                             <customData>
                                 <core:CustomData  key="VerNo" value="{DataModel>Verno}"/>
                             </customData>
-                        </Button>
-                    </t:template>
-                </t:Column>
-                <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">
-                    <Label text="{i18n>Description}"/>
-                    <t:template>
-                        <Input value="{DataModel>Desc1}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange"/>
-                    </t:template>
-                </t:Column>
-                <t:Column width="15rem" filterProperty="Desc2" sortProperty="Desc2">
-                    <Label text="{i18n>Description}"/>
-                    <t:template>
-                        <Input value="{DataModel>Desc2}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange"/>
-                    </t:template>
-                </t:Column>
-            </c:columns>
-        </c:DynamicTable>
-        
+                            </Button>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno" hAlign="End">
+                        <Label text="{i18n>Version}"/>
+                        <t:template>
+                            <Text text="{DataModel>Verno}"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
+                        <Label text="{i18n>VersionStatus}" />
+                        <t:template>
+                            <tnt:InfoLabel id="il8" text="{= ${DataModel>Currentver} === true ? 'Current' : ' ' }" colorScheme="{= ${DataModel>Currentver} === true ? 8 : 7 }" displayOnly= "true"
+                                visible="{DataModel>Currentver}"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="8rem" filterType="" filterProperty="Verno" sortProperty="Verno"  visible="{VersionEditModeModel>/editMode}">
+                        <Label text=""/>
+                        <t:template>
+                            <Button text="{i18n>SetCurrent}" icon="sap-icon://detail-view" press="setVersionCurrent" visible="{= ${DataModel>Currentver} === true ? false : true }">
+                                <customData>
+                                    <core:CustomData  key="VerNo" value="{DataModel>Verno}"/>
+                                </customData>
+                            </Button>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">
+                        <Label text="{i18n>Description}"/>
+                        <t:template>
+                            <Input value="{DataModel>Desc1}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="15rem" filterProperty="Desc2" sortProperty="Desc2">
+                        <Label text="{i18n>Description}"/>
+                        <t:template>
+                            <Input value="{DataModel>Desc2}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange"/>
+                        </t:template>
+                    </t:Column>
+                </c:columns>
+            </c:DynamicTable>
+        </ScrollContainer>
     </Panel>
 </core:FragmentDefinition>    

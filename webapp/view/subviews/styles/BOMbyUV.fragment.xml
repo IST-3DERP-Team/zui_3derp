@@ -26,7 +26,11 @@
 
     <MessageStrip id="BOMbyUVMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
     
-    <c:DynamicTable id="bomUVTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" selectionMode="Single" visibleRowCountMode="Fixed">
-    </c:DynamicTable>
+    <!-- BOM by UV Table -->
+    <ScrollContainer height="400px" vertical="true">
+        <c:DynamicTable id="bomUVTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" 
+            selectionMode="Single" visibleRowCountMode="Fixed" width="500%">
+        </c:DynamicTable>
+    </ScrollContainer>
 
-</core:FragmentDefinition>    
+</core:FragmentDefinition>

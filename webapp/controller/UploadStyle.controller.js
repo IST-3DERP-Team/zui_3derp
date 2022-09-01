@@ -20,9 +20,6 @@ sap.ui.define([
             onInit: function() {
                 that = this;
 
-                // var oModel = new sap.ui.model.json.JSONModel();
-                // this.getView().setModel(oModel, "localModel");
-
                 //initialize router
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
