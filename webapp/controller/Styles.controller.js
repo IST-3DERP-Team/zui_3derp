@@ -1,6 +1,7 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "../js/Common",
+    "../js/Constants",
     "../js/Utils",
     "sap/ui/model/json/JSONModel",
     "sap/ui/export/Spreadsheet",
@@ -9,7 +10,7 @@ sap.ui.define([
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Common, Utils, JSONModel, Spreadsheet, control) {
+    function (Controller, Common, Constants, Utils, JSONModel, Spreadsheet, control) {
         "use strict";
 
         var that;
@@ -66,7 +67,7 @@ sap.ui.define([
                 this._sbu = this.getView().byId("SmartFilterBar").getFilterData().SBU; //get selected SBU
                 this._Model.setHeaders({
                     sbu: this._sbu,
-                    type: 'STYLINIT'
+                    type: Constants.STYLINIT
                 });
                 this._Model.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
@@ -156,14 +157,14 @@ sap.ui.define([
 
                 //add column for copy button
                 oColumnsData.unshift({
-                    "ColumnName": "Copy",
+                    "ColumnName": this._i18n.getText('Copy'),
                     "ColumnType": "COPY",
                     "Visible": false
                 });
 
                 //add column for manage button
                 oColumnsData.unshift({
-                    "ColumnName": "Manage",
+                    "ColumnName": this._i18n.getText('Manage'),
                     "ColumnType": "SEL"
                 });
 
@@ -219,7 +220,7 @@ sap.ui.define([
                         icon: "sap-icon://detail-view",
                         type: "Ghost",
                         press: this.goToDetail,
-                        tooltip: "Manage this style"
+                        tooltip: this._i18n.getText('ManageStyles')
                     });
                     oColumnTemplate.data("StyleNo", "{}"); //custom data to hold style number
                 } else if (sColumnType === "COPY") { //Copy button
@@ -228,7 +229,7 @@ sap.ui.define([
                         icon: "sap-icon://copy",
                         type: "Ghost",
                         press: this.onCopyStyle,
-                        tooltip: "Copy this style"
+                        tooltip: this._i18n.getText('CopyStyle')
                     });
                     oColumnTemplate.data("StyleNo", "{}"); //custom data to hold style number
                 } else {
@@ -237,8 +238,6 @@ sap.ui.define([
 
                 return oColumnTemplate;
             },
-
-            
 
             //******************************************* */
             // Navigation

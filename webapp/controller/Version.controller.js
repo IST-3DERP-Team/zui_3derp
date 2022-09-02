@@ -2,6 +2,7 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     'sap/ui/model/Filter',
     "../js/Common",
+    "../js/Constants",
     "../js/Utils",
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/routing/History"
@@ -9,7 +10,7 @@ sap.ui.define([
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, Utils, JSONModel, History) {
+    function (Controller, Filter, Common, Constants, Utils, JSONModel, History) {
         "use strict";
 
         var that;
@@ -346,7 +347,7 @@ sap.ui.define([
 
                 oModel.setHeaders({
                     sbu: this._sbu,
-                    type: 'BOMGMC'
+                    type: Constants.BOMGMC
                 });
 
                 Common.openLoadingDialog(that);
@@ -369,7 +370,7 @@ sap.ui.define([
                             columnData.push({
                                 "ColumnName": column.Attribcd,
                                 "ColumnDesc": column.Desc1,
-                                "ColumnType": "COLOR",
+                                "ColumnType": Constants.COLOR,
                                 "Editable": column.Editable,
                                 "Mandatory": false,
                                 "Visible": true
@@ -449,7 +450,7 @@ sap.ui.define([
                             for (var k = 0; k < pivot.length; k++) {
                                 var colorName = pivot[k].Attribcd;
                                 for (var j = 0; j < rowData.length; j++) {
-                                    if (rowData[j].MATTYPCLS === 'ZCOLR' && rowData[j].COLOR === colorName) {
+                                    if (rowData[j].MATTYPCLS === Constants.ZCOLR && rowData[j].COLOR === colorName) {
                                         if (oGMCTableData.results[i].GMC === rowData[j].GMC && oGMCTableData.results[i].PARTCD === rowData[j].PARTCD && oGMCTableData.results[i].MATTYP === rowData[j].MATTYP) {
                                             oGMCTableData.results[i][colorName] = rowData[j].DESC1;
                                         }
@@ -606,13 +607,13 @@ sap.ui.define([
                             var oEntry = {
                                 Styleno: me._styleNo,
                                 Verno: me._version,
-                                Usgcls: "AUV",
+                                Usgcls: Constants.AUV,
                                 UVToItems: []
                             }
 
                             for (var i = 0; i < oData.results.length; i++) {
                                 //pivot colros only for AUV and ASUV
-                                if (oData.results[i].USGCLS === "AUV" || oData.results[i].USGCLS === "ASUV") {
+                                if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
                                     for (var j = 0; j < me._colors.length; j++) {
 
                                         var color = me._colors[j];
@@ -624,7 +625,7 @@ sap.ui.define([
                                             "Usgcls": oData.results[i].USGCLS,
                                             "Color": color.Attribcd,
                                             "Mattyp": oData.results[i].MATTYP,
-                                            "Mattypcls": "ZCOLR",
+                                            "Mattypcls": Constants.ZCOLR,
                                             "Desc1": oData.results[i][color.Attribcd],
                                             "Consump": oData.results[i].CONSUMP,
                                             "Wastage": oData.results[i].WASTAGE
@@ -783,12 +784,12 @@ sap.ui.define([
 
                 oModelUV.setHeaders({
                     sbu: this._sbu,
-                    type: 'BOMUV',
+                    type: Constants.BOMUV,
                     usgcls: usageClass
                 });
 
                 var pivotArray;
-                if(usageClass === "AUV") { //for AUV, pivot will be colors
+                if(usageClass === Constants.AUV) { //for AUV, pivot will be colors
                     pivotArray = me._colors;
                 } else {
                     pivotArray = me._sizes;
@@ -913,7 +914,7 @@ sap.ui.define([
 
             getColumnDesc: function (column) {
                 var desc;
-                if (column.ColumnType === "COLOR" || column.ColumnType === "SIZE") {
+                if (column.ColumnType === Constants.COLOR || column.ColumnType === Constants.SIZE) {
                     desc = column.ColumnDesc;
                 } else {
                     desc = "{i18n>" + column.ColumnName + "}";
@@ -995,7 +996,7 @@ sap.ui.define([
                     }
 
                     var pivotArray;
-                    if (usageClass === "AUV") {
+                    if (usageClass === Constants.AUV) {
                         pivotArray = this._colors;
                     } else {
                         pivotArray = this._sizes;
@@ -1015,8 +1016,8 @@ sap.ui.define([
                                 "Gmc": oData.results[i].GMC,
                                 "Partcd": oData.results[i].PARTCD,
                                 "Usgcls": oData.results[i].USGCLS,
-                                "Color": ((oData.results[i].USGCLS === 'AUV') ? attrib.Attribcd : ''), //for AUV save on Color
-                                "Sze": ((oData.results[i].USGCLS !== 'AUV') ? attrib.Attribcd : ''), //Non-AUV save on Sze
+                                "Color": ((oData.results[i].USGCLS === Constants.AUV) ? attrib.Attribcd : ''), //for AUV save on Color
+                                "Sze": ((oData.results[i].USGCLS !== Constants.AUV) ? attrib.Attribcd : ''), //Non-AUV save on Sze
                                 "Dest": " ",
                                 "Mattyp": oData.results[i].MATTYP,
                                 "Mattypcls": oData.results[i].MATTYPCLS,
@@ -1087,7 +1088,7 @@ sap.ui.define([
 
                         for (var i = 0; i < oData.results.length; i++) {
 
-                            if (oData.results[i].Bomitmtyp === 'STY') { //highest level is STY
+                            if (oData.results[i].Bomitmtyp === Constants.STY) { //highest level is STY
 
                                 item = oData.results[i];
                                 items = [];
@@ -1095,7 +1096,7 @@ sap.ui.define([
 
                                 //add GMC items under the Style, add as child
                                 for (var j = 0; j < oData.results.length; j++) {
-                                    if (oData.results[j].Bomitmtyp === 'GMC' && oData.results[j].Bomstyle === style) {
+                                    if (oData.results[j].Bomitmtyp === Constants.GMC && oData.results[j].Bomstyle === style) {
                                         
                                         items2 = [];
                                         item2 = oData.results[j];
@@ -1104,7 +1105,7 @@ sap.ui.define([
 
                                         //add MAT items under the GMC, add as child
                                         for (var k = 0; k < oData.results.length; k++) {
-                                            if (oData.results[k].Bomitmtyp === 'MAT' && oData.results[k].Gmc === gmc && oData.results[k].Partcd === partcd) {
+                                            if (oData.results[k].Bomitmtyp === Constants.MAT && oData.results[k].Gmc === gmc && oData.results[k].Partcd === partcd) {
                                                 items2.push(oData.results[k]);
                                             }
                                         }
@@ -1117,7 +1118,7 @@ sap.ui.define([
                                 item.items = items;
                                 rowData.items.push(item);
 
-                            } else if (oData.results[i].Bomitmtyp === 'GMC' && oData.results[i].Bomstyle === '') { 
+                            } else if (oData.results[i].Bomitmtyp === Constants.GMC && oData.results[i].Bomstyle === '') { 
                                 //for GMC type, immediately add item
                                 items = [];
                                 item = oData.results[i];
@@ -1126,7 +1127,7 @@ sap.ui.define([
 
                                 //add MAT items under the GMC, add as child
                                 for (var k = 0; k < oData.results.length; k++) {
-                                    if (oData.results[k].Bomitmtyp === 'MAT' && oData.results[k].Gmc === gmc && oData.results[k].Partcd === partcd) {
+                                    if (oData.results[k].Bomitmtyp === Constants.MAT && oData.results[k].Gmc === gmc && oData.results[k].Partcd === partcd) {
                                         items.push(oData.results[k]);
                                     }
                                 }
@@ -1315,7 +1316,7 @@ sap.ui.define([
                 var editModeCond, changeFunction, liveChangeFunction;
 
                 //setting the change function
-                if(type === "GMC") {
+                if(type === Constants.GMC) {
                     changeFunction = that.onBOMbyGMCChange;
                     liveChangeFunction = that.onBOMbyGMCLiveChange;
                     editModeCond = '${BOMbyGMCEditModeModel>/editMode} ? true : false';
@@ -1326,7 +1327,7 @@ sap.ui.define([
                 }
 
                 var oColumnTemplate;
-                if (columnType === "COLOR") {
+                if (columnType === Constants.COLOR) {
                     //input for pivot color field
                     oColumnTemplate = new sap.m.Input({
                         value: "{DataModel>" + columnName + "}",
@@ -1341,13 +1342,13 @@ sap.ui.define([
                         oColumnTemplate = new sap.m.ComboBox({
                             value: "{DataModel>" + columnName + "}",
                             items: [{
-                                key: "GMC",
-                                text: "GMC"
+                                key: Constants.GMC,
+                                text: Constants.GMC
                             }, {
-                                key: "STY",
-                                text: "STY"
+                                key: Constants.STY,
+                                text: Constants.STY
                             }],
-                            selectedKey: "GMC",
+                            selectedKey: Constants.GMC,
                             change: changeFunction,
                             editable: ((column.Editable) ? "{= " + editModeCond + " }" : false ),
                             visible: column.Visible
@@ -1740,10 +1741,10 @@ sap.ui.define([
                 //Get input field ids of Material Type and GMC
                 for(var i = 0; i < oColumns.length; i++) {
                     var name = oColumns[i].getName();
-                    if(name === 'MATTYP') {
+                    if(name === Constants.MATTYP) {
                         that.matType = oEvent.getSource().getParent().mAggregations.cells[i].getId();
                     }
-                    if(name === 'ENTRYUOM') {
+                    if(name === Constants.ENTRYUOM) {
                         that.baseUom = oEvent.getSource().getParent().mAggregations.cells[i].getId();
                     }
                 }
@@ -1800,10 +1801,10 @@ sap.ui.define([
                 //get input field ids of Version and Description
                 for(var i = 0; i < oColumns.length; i++) {
                     var name = oColumns[i].getName();
-                    if(name === 'BOMSTYLVER') {
+                    if(name === Constants.BOMSTYLVER) {
                         that.vernoInput = oEvent.getSource().getParent().mAggregations.cells[i].getId();
                     }
-                    if(name === 'DESC1') {
+                    if(name === Constants.DESC1) {
                         that.desc1Input = oEvent.getSource().getParent().mAggregations.cells[i].getId();
                     }
                 }
