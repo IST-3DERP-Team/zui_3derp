@@ -2,6 +2,7 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     'sap/ui/model/Filter',
     "../js/Common",
+    "../js/Constants",
     "../js/Utils",
     "sap/ui/model/json/JSONModel",
     'jquery.sap.global',
@@ -10,7 +11,7 @@ sap.ui.define([
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, Utils, JSONModel, jQuery, HashChanger) {
+    function (Controller, Filter, Common, Constants, Utils, JSONModel, jQuery, HashChanger) {
         "use strict";
 
         var that;
@@ -52,7 +53,7 @@ sap.ui.define([
                 
                 this.setChangeStatus(false);
                 
-                if (this._styleNo === "NEW") { 
+                if (this._styleNo === Constants.NEW) { 
                     //create new - only header is editable at first
                     this.setHeaderEditMode(); 
                     this.setDetailVisible(false);
@@ -145,7 +146,7 @@ sap.ui.define([
                 //get header fields
                 oModel.setHeaders({
                     sbu: this._sbu,
-                    type: 'STYLHDR'
+                    type: Constants.STYLHDR
                 });
                 oModel.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
@@ -234,10 +235,10 @@ sap.ui.define([
                     oEntry.Styleno = this._styleNo;
                     oEntry.Sbu = this._sbu;
 
-                    if (this._styleNo === "NEW") { //creating a new style
+                    if (this._styleNo === Constants.NEW) { //creating a new style
 
                         //set default style info for NEW
-                        oEntry.Statuscd = 'CRT';
+                        oEntry.Statuscd = Constants.CRT;
                         oEntry.Createdby = "$";
                         oEntry.Createddt = "$";
                         oEntry.Verno = "1";
@@ -271,7 +272,7 @@ sap.ui.define([
                                 //change the url hash to the new style no
                                 var oHashChanger = HashChanger.getInstance();
                                 var currHash = oHashChanger.getHash();
-                                var newHash = currHash.replace("NEW", me._styleNo);
+                                var newHash = currHash.replace(Constants.NEW, me._styleNo);
                                 oHashChanger.replaceHash(newHash);
                             },
                             error: function (err) {
@@ -334,7 +335,7 @@ sap.ui.define([
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
 
-                if (this._styleNo === "NEW") { //deleted without style no, return to style screen
+                if (this._styleNo === Constants.NEW) { //deleted without style no, return to style screen
                     this.setChangeStatus(false);
                     that._router.navTo("RouteStyles");
                 } else {
@@ -457,7 +458,7 @@ sap.ui.define([
                     var oData = oTableModel.getData();
                     var oEntry = {
                         Styleno: this._styleNo,
-                        Type: "GENERAL",
+                        Type: Constants.GENERAL,
                         AttributesToItems: []
                     }
                     for (var i = 0; i < oData.results.length; i++) {
@@ -657,7 +658,7 @@ sap.ui.define([
                     //build the headers and payload
                     var oEntry = {
                         Styleno: this._styleNo,
-                        Type: "COLOR",
+                        Type: Constants.COLOR,
                         AttributesToItems: []
                     }
 
@@ -725,7 +726,7 @@ sap.ui.define([
                     //call delete method for each selected lines
 	                for (var i = 0; i < selected.length; i++) {
 	                	
-	                	var attrtype = "COLOR";
+	                	var attrtype = Constants.COLOR;
 	                	var attrcd = oData.results[selected[i]].Attribcd;
 	
 		                var entitySet = "/StyleAttributesColorSet(Styleno='" + that._styleNo + "',Attribtype='" + attrtype + "',Attribcd='" + attrcd + "')";
@@ -764,7 +765,7 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oTable = this.getView().byId("sizesTable");
-                var oSizeGrp = "G235";
+                var oSizeGrp = this.getView().byId("SIZEGRP").getValue();
 
                 Common.openLoadingDialog(that);
 
@@ -852,7 +853,7 @@ sap.ui.define([
                     var oData = oTableModel.getData();
                     var oEntry = {
                         Styleno: this._styleNo,
-                        Type: "SIZE",
+                        Type: Constants.SIZE,
                         AttributesToItems: []
                     }                    
                     for (var i = 0; i < oData.results.length; i++) {
@@ -861,12 +862,12 @@ sap.ui.define([
                         }
                         var item = {
                             "Styleno": this._styleNo,
-                            "Attribtyp": "SIZE",
+                            "Attribtyp": Constants.SIZE,
                             "Attribcd": oData.results[i].Attribcd,
                             "Attribgrp": oData.results[i].Attribgrp,
                             "Baseind": oData.results[i].Baseind,
                             "Desc1": oData.results[i].Desc1,
-                            "Valuetyp": "STRVAL"
+                            "Valuetyp": Constants.STRVAL
                         };
                         oEntry.AttributesToItems.push(item);
                     };
@@ -1588,22 +1589,6 @@ sap.ui.define([
                 that.getView().getModel("FileModel").refresh();
                 oUploadCollection.removeAllItems();
             },
-
-            // cancelEdit(ochangeIndicator, oFunction) {
-            //     if (ochangeIndicator === true) {
-            //         if (!this._ConfirmDiscardChangesDialog) {
-            //             this._ConfirmDiscardChangesDialog = sap.ui.xmlfragment("zui3derp.view.fragments.ConfirmDiscardChanges", this);
-            //             this.getView().addDependent(this._ConfirmDiscardChangesDialog);
-            //         }
-            //         jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-            //         this._ConfirmDiscardChangesDialog.addStyleClass("sapUiSizeCompact");
-            //         this._ConfirmDiscardChangesDialog.open();
-            //         var oConfirmButton = sap.ui.getCore().byId('ConfirmDiscardButton');
-            //         oConfirmButton.attachPress(oFunction);
-            //     } else {
-            //         oFunction();
-            //     }
-            // },
 
             //******************************************* */
             // Search Helps

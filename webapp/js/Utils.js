@@ -5,7 +5,7 @@ sap.ui.define([
 ], function (MessageToast, JSONModel, Spreadsheet) {
     "use strict";
 
-    var that = this;
+    // var that = this;
 
     return {
 

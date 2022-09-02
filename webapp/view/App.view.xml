@@ -31,7 +31,7 @@
 				</Button>
 				</tnt:ToolHeader>
 		</tnt:header>
-
+        <!-- Side navigation -->
 		<tnt:sideContent>
 			<tnt:SideNavigation expanded="false" selectedKey="{/selectedKey}" itemSelect="onItemSelect">
 				<tnt:NavigationList items="{path: '/navigation'}">
