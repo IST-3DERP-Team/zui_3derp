@@ -25,6 +25,7 @@ sap.ui.define([
                 this._router = oComponent.getRouter();
                 this._router.getRoute("RouteVersion").attachPatternMatched(this._routePatternMatched, this);
 
+                //pivot arrays
                 this._colors;
                 this._sizes;
 
