@@ -28,3 +28,38 @@
 .shippedTile{
     background-color: #c6e0b4;
 }
+
+.sapUiHLayout.statClass {
+    padding: .3rem 2rem !important;
+    box-sizing: border-box;
+}
+
+.sapUiTableContentRow.sapUiTableRowHvr {
+     /* background-color: #e8eff6; 
+    color: #333333 ;
+    outline: 0.125rem solid blue ;
+    outline-offset: calc(-0.125rem - 0.0625rem) ; */
+}
+
+.sapUiTableContentRow.sapUiTableRowSel
+{
+    background-color: #e8eff6;
+    outline: 0.125rem solid blue ;
+    outline-offset: calc(-0.125rem - 0.0625rem) ;
+}
+ 
+.sapMOHR  {
+    padding: 1.1rem 1rem 0.5rem 1rem !important;
+}
+
+.sapMPanelContent {
+    padding: 0rem 0.5rem 0rem 1rem !important;
+} 
+
+
+/*
+for header.fragment
+*/
+ .sapUiFormResGrid>div {
+    padding: .5rem 0.5rem !important;
+}  

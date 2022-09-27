@@ -84,17 +84,44 @@ sap.ui.define([
 			model.refresh();
                         
 		},
+         
+        
+         
 		onAfterRendering: function() {
 			var that = this;
-
+           
+            console.log("after render")
             //get the copied data
-			sap.ui.table.Table.prototype.onAfterRendering.apply(this, arguments);
+			//sap.ui.table.Table.prototype.onAfterRendering.apply(this, arguments);
+            if (sap.ui.table.Table.prototype.onAfterRendering) {
+                sap.ui.table.Table.prototype.onAfterRendering.apply(this, arguments);
+              }
+               
+            var doubleClick= function() {
+                // var oTable = new dbclkTable({
+                //     selectionMode: sap.ui.table.SelectionMode.Single,
+                //     dblClick: function(e) {
+                //        sap.m.MessageToast.show(JSON.stringify(e.getParameter('rowContext').getObject()));
+                //     }
+                //   });
+                alert('double click');
+                console.log("fire!");
+                 
+            }
             
             this.attachBrowserEvent('paste', function(e) {
 				e.preventDefault();
 				var text = (e.originalEvent || e).clipboardData.getData('text/plain');
 				that.insertRows(text, this, undefined);
 			});
+           
+          
+            // this.attachBrowserEvent('dblclick',function(e){
+            //     e.preventDefault();
+            //    // console.log(JSON.stringify(e.getParameter('rowContext').getObject()));
+            //     alert('double click');
+            //     console.log("fire!");
+            // } );
 
             //attach paste event for each row and cell
             try {

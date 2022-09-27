@@ -14,12 +14,13 @@ sap.ui.define([
         "use strict";
 
         var that;
+        var styleNo;
 
         return Controller.extend("zui3derp.controller.Styles", {
 
             onInit: function () {
                 that = this;
-                
+
                 //Initialize router
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
@@ -33,11 +34,11 @@ sap.ui.define([
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             },
 
-            setChangeStatus: function(changed) {
+            setChangeStatus: function (changed) {
                 //Set change flag 
                 try {
                     sap.ushell.Container.setDirtyFlag(changed);
-                } catch (err) {}
+                } catch (err) { }
             },
 
             setSmartFilterModel: function () {
@@ -49,7 +50,10 @@ sap.ui.define([
 
             onSearch: function () {
                 //trigger search, reselect styles
-                this.getDynamicTableColumns(); //styles table
+                //njoaquin replace getDynamicTableColumns with setTableColumns function
+                //this.getDynamicTableColumns(); //styles table
+                this.getColumns("SEARCH");
+
                 this.getStyleStats(); //style statistics
             },
 
@@ -80,7 +84,52 @@ sap.ui.define([
                 });
             },
 
+            getColumns(arg) {
+                var me = this;
+
+                //get dynamic columns based on saved layout or ZERP_CHECK
+                var oJSONColumnsModel = new JSONModel();
+                // this.oJSONModel = new JSONModel();
+
+                var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+                this._sbu = this.getView().byId("SmartFilterBar").getFilterData().SBU; //get selected SBU
+                //var vSBU = this.getView().getModel("ui").getData().sbu;
+                // console.log(oModel)
+                oModel.setHeaders({
+                    sbu: this._sbu, // vSBU,
+                    type: Constants.STYLINIT,
+                    tabname: 'ZERP_S_STYLHDR'
+                });
+
+                oModel.read("/ColumnsSet", {
+                    success: function (oData, oResponse) {
+                        // console.log(oData);
+                        oJSONColumnsModel.setData(oData);
+                        // me.oJSONModel.setData(oData);
+                        me.getView().setModel(oJSONColumnsModel, "DynColumns"); //set the view model
+
+                        if (oData.results.length > 0) {
+                            if (arg === "AUTO_INIT") {
+                               // me.getInitTableData();
+                            }
+                            else {
+                                //me.getTableData();
+                                me.getDynamicTableData(oData.results);
+                            }
+                        }
+                        else {
+                            me.closeLoadingDialog();
+                            sap.m.MessageBox.information("No table layout retrieve.");
+                        }
+                    },
+                    error: function (err) {
+                        Common.closeLoadingDialog(that);
+                    }
+                });
+            },
+
             getDynamicTableData: function (columns) {
+                console.log(columns);
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
 
@@ -97,48 +146,49 @@ sap.ui.define([
                         oJSONDataModel.setData(oData);
                         me.getView().setModel(oJSONDataModel, "DataModel");
                         me.setTableData();
+                        me.setTableColumns();
                         me.setChangeStatus(false);
                     },
                     error: function (err) { }
                 });
             },
 
-            addDateFilters: function(aFilters) {
+            addDateFilters: function (aFilters) {
                 //get the date filter of created date
                 var createdDate = this.getView().byId("CreatedDatePicker").getValue();
-                    if(createdDate !== undefined && createdDate !== '') {
-                        createdDate = createdDate.replace(/\s/g, '').toString(); //properly format the date for ABAP
-                        var createDateStr = createdDate.split('–');
-                        var createdDate1 = createDateStr[0];
-                        var createdDate2 = createDateStr[1];
-                        if(createdDate2 === undefined) {
-                            createdDate2 = createdDate1;
-                        }
-                        var lv_createdDateFilter = new sap.ui.model.Filter({
-                            path: "CREATEDDT",
-                            operator: sap.ui.model.FilterOperator.BT,
-                            value1: createdDate1,
-                            value2: createdDate2
+                if (createdDate !== undefined && createdDate !== '') {
+                    createdDate = createdDate.replace(/\s/g, '').toString(); //properly format the date for ABAP
+                    var createDateStr = createdDate.split('–');
+                    var createdDate1 = createDateStr[0];
+                    var createdDate2 = createDateStr[1];
+                    if (createdDate2 === undefined) {
+                        createdDate2 = createdDate1;
+                    }
+                    var lv_createdDateFilter = new sap.ui.model.Filter({
+                        path: "CREATEDDT",
+                        operator: sap.ui.model.FilterOperator.BT,
+                        value1: createdDate1,
+                        value2: createdDate2
                     });
-                    
+
                     aFilters.push(lv_createdDateFilter);
                 }
 
                 //get the date filter of updated date
                 var updatedDate = this.getView().byId("UpdatedDatePicker").getValue();
-                    if(updatedDate !== undefined && updatedDate !== '') {
-                        updatedDate = updatedDate.replace(/\s/g, '').toString(); //properly format the date for ABAP
-                        var createDateStr = updatedDate.split('–');
-                        var updatedDate1 = createDateStr[0];
-                        var updatedDate2 = createDateStr[1];
-                        if(updatedDate2 === undefined) {
-                            updatedDate2 = updatedDate1;
-                        }
-                        var lv_updatedDateFilter = new sap.ui.model.Filter({
-                            path: "UPDATEDDT",
-                            operator: sap.ui.model.FilterOperator.BT,
-                            value1: updatedDate1,
-                            value2: updatedDate2
+                if (updatedDate !== undefined && updatedDate !== '') {
+                    updatedDate = updatedDate.replace(/\s/g, '').toString(); //properly format the date for ABAP
+                    var createDateStr = updatedDate.split('–');
+                    var updatedDate1 = createDateStr[0];
+                    var updatedDate2 = createDateStr[1];
+                    if (updatedDate2 === undefined) {
+                        updatedDate2 = updatedDate1;
+                    }
+                    var lv_updatedDateFilter = new sap.ui.model.Filter({
+                        path: "UPDATEDDT",
+                        operator: sap.ui.model.FilterOperator.BT,
+                        value1: updatedDate1,
+                        value2: updatedDate2
                     });
                     aFilters.push(lv_updatedDateFilter); //add to the odata filter
                 }
@@ -174,10 +224,31 @@ sap.ui.define([
                     columns: oColumnsData,
                     rows: oData
                 });
-
+                
+                var oDelegateKeyUp = {
+                    onkeyup: function(oEvent){
+                        that.onKeyUp(oEvent);
+                    },
+                    
+                    onsapenter : function(oEvent){
+                        that.onSapEnter(oEvent);
+                    }
+                };
+                this.byId("styleDynTable").addEventDelegate(oDelegateKeyUp);
+                
                 var oTable = this.getView().byId("styleDynTable");
                 oTable.setModel(oModel);
 
+                //double click event
+                oTable.attachBrowserEvent('dblclick',function(e){
+                    e.preventDefault();
+                    that.setChangeStatus(false); //remove change flag
+                    that.navToDetail(styleNo); //navigate to detail page
+                    
+                 } );
+
+                /*
+                //njoaquin 09/20/2022 comment. binding of dynamic column to the table was transferred to setTableColumns function
                 //bind the dynamic column to the table
                 oTable.bindColumns("/columns", function (index, context) {
                     var sColumnId = context.getObject().ColumnName;
@@ -197,12 +268,46 @@ sap.ui.define([
                         autoResizable: true,
                         visible: sColumnVisible,
                         sorted: sColumnSorted,
-                        sortOrder: ((sColumnSorted === true) ? sColumnSortOrder : "Ascending" )
+                        sortOrder: ((sColumnSorted === true) ? sColumnSortOrder : "Ascending")
                     });
                 });
+                */
 
                 //bind the data to the table
                 oTable.bindRows("/rows");
+            },
+
+            setTableColumns() {
+                var me = this;
+                var oTable = this.getView().byId("styleDynTable");
+                
+                //bind the dynamic column to the table
+                oTable.bindColumns("/columns", function (index, context) {
+                    var sColumnId = context.getObject().ColumnName;
+                    var sColumnLabel = context.getObject().ColumnLabel;
+                    var sColumnType = context.getObject().ColumnType;
+                    var sColumnWidth = context.getObject().ColumnWidth;
+                    var sColumnVisible = context.getObject().Visible;
+                    var sColumnSorted = context.getObject().Sorted;
+                    var sColumnSortOrder = context.getObject().SortOrder;
+                    // var sColumnToolTip = context.getObject().Tooltip;
+                    //alert(sColumnId.);
+
+                    if (sColumnWidth === 0) sColumnWidth = 100;
+
+                    return new sap.ui.table.Column({
+                        id: sColumnId,
+                        label: sColumnLabel ? sColumnLabel : "{i18n>" + sColumnId + "}",
+                        template: me.columnTemplate(sColumnId, sColumnType),
+                        width:  sColumnWidth ? sColumnWidth  + 'px' : me.getColumnSize(sColumnId, sColumnType)  ,
+                        sortProperty: sColumnId,
+                        filterProperty: sColumnId,
+                        autoResizable: true,
+                        visible: sColumnVisible,
+                        sorted: sColumnSorted,
+                        sortOrder: ((sColumnSorted === true) ? sColumnSortOrder : "Ascending" )
+                    });
+                });
             },
 
             columnTemplate: function (sColumnId, sColumnType) {
@@ -258,6 +363,7 @@ sap.ui.define([
                 });
             },
 
+            
             //******************************************* */
             // Create New Style
             //******************************************* */
@@ -277,7 +383,7 @@ sap.ui.define([
                 this._ConfirmNewDialog.open();
             },
 
-            onConfirmNewStyle: function() {
+            onConfirmNewStyle: function () {
                 //confirm create new style, navigate to detail as NEW
                 this.navToDetail("NEW");
             },
@@ -286,7 +392,7 @@ sap.ui.define([
             // Copy Style
             //******************************************* */
 
-            onCopyMode: function() {
+            onCopyMode: function () {
                 //show copy buttons
                 var oTable = this.getView().byId("styleDynTable");
                 var oCopyColumn = oTable.getColumns()[1];
@@ -303,7 +409,7 @@ sap.ui.define([
 
                 var oData = oEvent.getSource().getParent().getBindingContext();
                 //get info of selected style to copy
-                var styleCode = oData.getProperty('STYLECD'); 
+                var styleCode = oData.getProperty('STYLECD');
                 var seasonCode = oData.getProperty('SEASONCD');
                 var desc1 = oData.getProperty('DESC1');
 
@@ -358,7 +464,7 @@ sap.ui.define([
                 //get the selected versions to copy
                 var oTable = sap.ui.getCore().byId("versionsTableMain");
                 var oTableModel = oTable.getModel("VersionsDataModel");
-                var oData = oTableModel.getData(); 
+                var oData = oTableModel.getData();
                 var selected = oTable.getSelectedIndices();
 
                 //get the input data
@@ -368,13 +474,13 @@ sap.ui.define([
                 var bomCheck = sap.ui.getCore().byId("bomCB").getSelected();
                 var versions = [];
 
-                if(newStyleCode === "") {
+                if (newStyleCode === "") {
                     Common.showMessage(this._i18n.getText('t1'));
-                } else if(newSeason === "") {
+                } else if (newSeason === "") {
                     Common.showMessage(this._i18n.getText('t2'))
                 } else {
 
-                    if(bomCheck === true && colorCheck === false) {
+                    if (bomCheck === true && colorCheck === false) {
                         Common.showMessage(this._i18n.getText('t3'));
                     } else {
                         //add versions to copy to the payload
@@ -382,7 +488,7 @@ sap.ui.define([
                             versions.push(oData.results[selected[i]].Verno);
                         }
 
-                        var entitySet = "/StyleSet(STYLENO='" + that._styleNo +  "')";
+                        var entitySet = "/StyleSet(STYLENO='" + that._styleNo + "')";
 
                         var versionStr = versions.join();
                         //set the http headers
@@ -396,18 +502,18 @@ sap.ui.define([
                             versions: versionStr
                         });
 
-                        var oEntry = { 
+                        var oEntry = {
                             STYLENO: that._styleNo
                         };
                         //call the update method of styles
                         oModel.update(entitySet, oEntry, {
                             method: "PUT",
-                            success: function(data, oResponse) {
+                            success: function (data, oResponse) {
                                 me._CopyStyleDialog.close();
                                 me.onSearch();
                                 Common.showMessage(me._i18n.getText('t4'));
                             },
-                            error: function() {
+                            error: function () {
                                 me._CopyStyleDialog.close();
                                 Common.showMessage(me._i18n.getText('t5'));
                             }
@@ -440,7 +546,7 @@ sap.ui.define([
                 that.inputId = oEvent.getSource().getId();
                 if (!that._seasonsHelpDialog) {
                     that._seasonsHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.Seasons", that);
-                    that._seasonsHelpDialog.attachSearch(that._seasonsGroupValueHelpSearch);                    
+                    that._seasonsHelpDialog.attachSearch(that._seasonsGroupValueHelpSearch);
                     that.getView().addDependent(that._seasonsHelpDialog);
                 }
                 that._seasonsHelpDialog.open(sInputValue);
@@ -484,7 +590,7 @@ sap.ui.define([
                 var ctr = 1;
                 //get information of columns, add to payload
                 oColumns.forEach((column) => {
-                    if(column.sId !== "Manage" && column.sId !== "Copy") {
+                    if (column.sId !== "Manage" && column.sId !== "Copy") {
                         oEntry.LayoutToItems.push({
                             ColumnName: column.sId,
                             Order: ctr.toString(),
@@ -500,13 +606,78 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 oModel.create("/LayoutVariantSet", oEntry, {
                     method: "POST",
-                    success: function(data, oResponse) {
+                    success: function (data, oResponse) {
                         Common.showMessage(me._i18n.getText('t6'));
                     },
-                    error: function() {
+                    error: function () {
                         alert("Error");
                     }
-                });                
+                });
+            },
+
+            onSaveTableLayout: function (oEvent) {
+                //saving of the layout of table
+                var me = this;
+                var ctr = 1;
+                //var oTable = oEvent.getSource().oParent.oParent;
+                // var oTable = this.getView().byId("mainTab");
+                //var oColumns = oTable.getColumns();
+                var oTable = this.getView().byId("styleDynTable");
+                var oColumns = oTable.getColumns();
+                var vSBU = that._sbu;// this.getView().getModel("ui").getData().sbu;
+                console.log(oColumns)
+
+                // return;
+                var oParam = {
+                    "SBU": vSBU,
+                    "TYPE": "STYLINIT",
+                    "TABNAME": "ZERP_S_STYLHDR",
+                    "TableLayoutToItems": []
+                };
+
+                // if (oTable.getBindingInfo("rows").model === "gmc") {
+                //     oParam['TYPE'] = "GMCHDR";
+                //     oParam['TABNAME'] = "ZERP_MATGMC";
+                // }
+                // else if (oTable.getBindingInfo("rows").model === "attributes") {
+                //     oParam['TYPE'] = "GMCATTRIB";
+                //     oParam['TABNAME'] = "ZERP_GMCATTRIB";
+                // }
+                // else if (oTable.getBindingInfo("rows").model === "materials") {
+                //     oParam['TYPE'] = "GMCMAT";
+                //     oParam['TABNAME'] = "ZERP_MATERIAL";
+                // }
+               
+                //get information of columns, add to payload
+                oColumns.forEach((column) => {
+                    if (column.sId !== "Manage" && column.sId !== "Copy") {
+                        oParam.TableLayoutToItems.push({
+                            // COLUMNNAME: column.sId,
+                            COLUMNNAME: column.mProperties.sortProperty,
+                            ORDER: ctr.toString(),
+                            SORTED: column.mProperties.sorted,
+                            SORTORDER: column.mProperties.sortOrder,
+                            SORTSEQ: "1",
+                            VISIBLE: column.mProperties.visible,
+                            WIDTH: column.mProperties.width.replace('rem', '')
+                        });
+
+                        ctr++;
+                    }
+                });
+                //call the layout save
+                var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+                oModel.create("/TableLayoutSet", oParam, {
+                    method: "POST",
+                    success: function (data, oResponse) {
+                        sap.m.MessageBox.information("Layout saved.");
+                        //Common.showMessage(me._i18n.getText('t6'));
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        sap.m.MessageBox.error(err);
+                    }
+                });
             },
 
             //******************************************* */
@@ -539,7 +710,7 @@ sap.ui.define([
             // Upload Style
             //******************************************* */
 
-            onUploadStyle: function() {
+            onUploadStyle: function () {
                 //navigate to upload style on click of upload button
                 var sbu = this.getView().byId("SmartFilterBar").getFilterData().SBU;
                 that._router.navTo("RouteUploadStyle", {
@@ -552,23 +723,65 @@ sap.ui.define([
             //******************************************* */
 
             getColumnSize: function (sColumnId, sColumnType) {
+                //change rem to px. 1rem=16px
                 //column width of fields
-                var mSize = '7rem';
+                var mSize = '112px'//7rem'
                 if (sColumnType === "SEL") {
-                    mSize = '5rem';
+                    mSize = '70px';// '5rem'
                 } else if (sColumnType === "COPY") {
-                    mSize = '4rem';
+                    mSize = '60px';//4rem'
                 } else if (sColumnId === "STYLECD") {
-                    mSize = '25rem';
+                    mSize = '320px';//25rem'
                 } else if (sColumnId === "DESC1" || sColumnId === "PRODTYP") {
-                    mSize = '15rem';
+                    mSize = '240px'; //20rem
                 }
                 return mSize;
             },
 
-            onCloseDialog: function(oEvent) {
+            onCloseDialog: function (oEvent) {
                 oEvent.getSource().getParent().close();
             },
+
+            onKeyUp(oEvent) {
+                console.log("onKeyUp!");
+            
+                var _dataMode = this.getView().getModel("undefined").getData().dataMode;
+                _dataMode = _dataMode === undefined ? "READ": _dataMode;
+                
+                if ((oEvent.key === "ArrowUp" || oEvent.key === "ArrowDown") && oEvent.srcControl.sParentAggregationName === "rows" && _dataMode === "READ") {
+                    var oTable = this.getView().byId("styleDynTable");
+                    var model = oTable.getModel();
+                    
+                    var sRowPath = this.byId(oEvent.srcControl.sId).oBindingContexts["undefined"].sPath;
+                    var data  = model.getProperty(sRowPath);
+                   // var oRow = this.getView().getModel("DataModel").getProperty(sRowPath);
+                    console.log(sRowPath)
+                    console.log(data)
+                    //console.log(oRow)
+                   // this.getView().getModel("ui").setProperty("/activeGmc", oRow.GMC);
+                    
+                }
+            },
+
+            onSapEnter(oEvent) {
+                that.setChangeStatus(false); //remove change flag
+                that.navToDetail(styleNo); //navigate to detail page
+            },
+
+            onSelectionChange: function(oEvent) {
+                // var oTable = this.getView().byId("styleDynTable");
+                // iSelectedIndex = oEvent.getSource().getSelectedIndex();
+                // oTable.setSelectedIndex(iSelectedIndex);
+
+                var sPath = oEvent.getParameter("rowContext").getPath();
+                var oTable = this.getView().byId("styleDynTable");
+                var model = oTable.getModel();
+                //get the selected  data from the model and set to variable style
+                var data  = model.getProperty(sPath);
+                console.log(data['STYLENO'] );
+                styleNo = data['STYLENO'];
+                
+              },
 
             //padding zeroes for formatting
             pad: Common.pad,

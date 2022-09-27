@@ -2,7 +2,7 @@
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
     <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiSizeCompact">
     
-        <Toolbar height="3rem" style="Clear">
+        <Toolbar height="2rem" style="Clear">
             <Label text=""/>
             <ToolbarSpacer />
             <Button text="{i18n>DeleteSelected}" tooltip="{i18n>Deleteselectedattachment}" press="onDeleteFile" visible="{= ${FilesEditModeModel>/editMode} === true ? true : false }"/>

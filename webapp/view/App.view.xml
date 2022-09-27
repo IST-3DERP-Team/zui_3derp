@@ -4,8 +4,8 @@
     xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:tnt="sap.tnt" xmlns:core="sap.ui.core">
     
     <tnt:ToolPage id="toolPage">
-		<tnt:header>
-        
+		<!-- <tnt:header>
+            
 			<tnt:ToolHeader>
                 <Button id="sideNavigationToggleButton"
 						icon="sap-icon://menu2"
@@ -30,9 +30,10 @@
 					</layoutData>
 				</Button>
 				</tnt:ToolHeader>
-		</tnt:header>
+		</tnt:header> -->
         <!-- Side navigation -->
-		<tnt:sideContent>
+
+		<!-- <tnt:sideContent>
 			<tnt:SideNavigation expanded="false" selectedKey="{/selectedKey}" itemSelect="onItemSelect">
 				<tnt:NavigationList items="{path: '/navigation'}">
 					<tnt:NavigationListItem text="{title}" icon="{icon}" enabled="{enabled}" expanded="{expanded}" items="{items}" key="{key}">
@@ -40,15 +41,15 @@
 						</tnt:NavigationListItem>
 					</tnt:NavigationListItem>
 				</tnt:NavigationList>
-				<tnt:fixedItem>
+				<tnt:fixedItem> -->
 					<!-- <tnt:NavigationList items="{path: '/fixedNavigation'}"> -->
-                    <tnt:NavigationList items="{path: '/NA'}">
+                    <!-- <tnt:NavigationList items="{path: '/NA'}">
 						<tnt:NavigationListItem text="{title}" icon="{icon}">
 						</tnt:NavigationListItem>
 					</tnt:NavigationList>
 				</tnt:fixedItem>
 			</tnt:SideNavigation>
-		</tnt:sideContent>
+		</tnt:sideContent> -->
 
 		<tnt:mainContents>
             <App id="mainContents"/>

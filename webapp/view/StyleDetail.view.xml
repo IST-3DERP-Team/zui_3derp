@@ -5,7 +5,8 @@
 
         <!-- OBJECT HEADER -->
         <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>CurrentVersion}: {headerData>/Verno}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
-		        title="{headerData>/Stylecd} ({headerData>/Styleno})" number="{headerData>/Statuscd}" numberUnit="{i18n>Status}" numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}">
+		        title="{headerData>/Stylecd} ({headerData>/Styleno})" number="{headerData>/Statuscd}" numberUnit="{i18n>Status}" numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}"
+                class="sapUiTinyMarginBegin objectHeader">
             <attributes>
                 <ObjectAttribute title="{i18n>CREATEDBY}" text="{headerData>/Createdby}"/>
                 <ObjectAttribute title="{i18n>CREATEDDT}" text="{headerData>/Createddt}"/>
@@ -20,7 +21,7 @@
         <!-- DETAILS -->
         <Panel id="detailPanel" expandable="true" expanded="false" width="auto" class="sapUiSizeCompact">
             <headerToolbar>
-                <Toolbar height="3rem" style="Clear">
+                <Toolbar height="2rem" style="Clear">
                     <Title text="{i18n>Detail}" />
                 </Toolbar>
             </headerToolbar>

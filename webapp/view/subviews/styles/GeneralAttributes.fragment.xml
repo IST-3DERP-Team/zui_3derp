@@ -1,13 +1,13 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-    <Panel expandable="true" expanded="false" width="100%" class="sapUiSmallMargin sapUiSizeCompact">
+    <Panel expandable="true" expanded="false" width="100%" class="sapUiSizeCompact">
         <headerToolbar>
-            <Toolbar height="3rem" style="Clear">
+            <Toolbar height="2rem" style="Clear">
                 <Label text="{i18n>GeneralAttributes}"/>
             </Toolbar>
         </headerToolbar>
 
-        <Toolbar height="3rem" style="Clear">
+        <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
             <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveattributes}" press="onSaveGeneralTable" visible="{GenAttrEditModeModel>/editMode}"/>
             <Button type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="{GenAttrEditModeModel>/editMode}">
@@ -25,7 +25,7 @@
             <MessageStrip id="GeneralAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
             
             <!-- General Attributes Table -->
-            <ScrollContainer height="400px" vertical="true">
+            <!-- <ScrollContainer height="400px" vertical="true"> -->
                 <c:DynamicTable id="generalTable" rows="{DataModel>/results}" enableColumnReordering="false" class="sapUiSizeCompact"
                     selectionMode="{= ${GenAttrEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }" visibleRowCountMode="Fixed"
                     width="100%">
@@ -75,7 +75,7 @@
                         </t:Column>
                     </c:columns>
                 </c:DynamicTable>
-            </ScrollContainer>
+            <!-- </ScrollContainer> -->
         </VBox>
     </Panel>
 </core:FragmentDefinition>

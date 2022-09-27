@@ -1,14 +1,14 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-    <Panel expandable="true" expanded="false" width="80%" class="sapUiSmallMargin sapUiSizeCompact">
+    <Panel expandable="true" expanded="false" width="80%" class="sapUiSizeCompact">
     
         <headerToolbar>
-            <Toolbar height="3rem" style="Clear">
+            <Toolbar height="2rem" style="Clear">
                 <Label text="{i18n>Processes}" />
             </Toolbar>
         </headerToolbar>
 
-        <Toolbar height="3rem" style="Clear">
+        <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer/>
             <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveprocess}" press="onSaveProcessTable" visible="{ProcessEditModeModel>/editMode}"/>
             <Button type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addProcessLine" visible="{ProcessEditModeModel>/editMode}">
@@ -26,7 +26,7 @@
             <MessageStrip id="ProcessesMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
             
             <!-- Process Attributes Table -->
-            <ScrollContainer height="400px" vertical="true">
+            <!-- <ScrollContainer height="400px" vertical="true"> -->
                 <c:DynamicTable id="processesTable" rows="{DataModel>/results}" enableColumnReordering="false" visibleRowCountMode="Fixed" class="sapUiSizeCompact"
                     selectionMode="{= ${ProcessEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
                     <c:columns>
@@ -93,7 +93,7 @@
                         </t:Column>
                     </c:columns>
                 </c:DynamicTable>
-            </ScrollContainer>
+            <!-- </ScrollContainer> -->
         </VBox>
         
     </Panel>

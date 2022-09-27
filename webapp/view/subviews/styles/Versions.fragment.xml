@@ -3,12 +3,12 @@
     <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiSizeCompact">
     
         <headerToolbar>
-            <Toolbar height="3rem" style="Clear">
+            <Toolbar height="2rem" style="Clear">
                 <Title text="{i18n>Versions}" />
             </Toolbar>
         </headerToolbar>
 
-        <Toolbar height="3rem" style="Clear">
+        <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
             <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveversions}" press="onSaveVersions" visible="{VersionEditModeModel>/editMode}"/>
             <Button type="Ghost" icon="sap-icon://add-document" text="{i18n>NewVersion}" tooltip="{i18n>Addnewversion}" press="onCreateNewVersion" visible="{VersionEditModeModel>/editMode}"/>                                    

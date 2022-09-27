@@ -64,7 +64,7 @@
                         <Label text="{i18n>UOM}" />
                         <t:template>
                             <Input id="UomInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
-                                change="onVersionAttrChange" liveChange="onVersionAttrChange" visibleRowCountMode="Fixed"
+                                change="onVersionAttrChange" liveChange="onVersionAttrChange" 
                                 valueHelpRequest="onUomValueHelp" suggestionItems="{UOMModel>/results}" value="{DataModel>Valunit}">
                                 <suggestionItems>
                                     <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}"/>

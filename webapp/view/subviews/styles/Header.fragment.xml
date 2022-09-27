@@ -1,9 +1,10 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-        <Panel id="headerPanel" expandable="true" expanded="true" width="auto" class="sapUiSizeCompact">
+ 	<!-- <VBox class="sapUiTinyMargin"> -->
+        <Panel id="headerPanel" expandable="true" expanded="true" width="auto" >
 
             <headerToolbar>
-                <Toolbar id="TB1" height="3rem" style="Clear">
+                <Toolbar id="TB1" height="2rem" style="Clear">
                     <Title text="{i18n>Header}" />
                     <ToolbarSpacer />
                     <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Savestyleheader}" press="onSaveHeader" visible="{HeaderEditModeModel>/editMode}"/>
@@ -16,18 +17,19 @@
             <MessageStrip id="HeaderMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
             
             <!-- Style Header Form -->
-            <f:Form id="StyleHeaderForm1" editable="false" class="sapUiNoContentPadding">
+            <f:Form id="StyleHeaderForm1" editable="true"  >
                 <f:layout>
-                    <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3"/>
+                    <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3" singleContainerFullSize="false" />
                 </f:layout>
                 <f:formContainers>
-                    <f:FormContainer ariaLabelledBy="Grp1" class="sapUiNoContentPadding" >
+                    <f:FormContainer  class="sapUiNoContentPadding" >
                         <f:formElements>
                             <f:FormElement label="{i18n>STYLECD}" visible="{= ${VisibleFieldsData>/STYLECD} === true ? true : false }">
                                 <f:fields>
                                     <Input id="STYLECD" value="{headerData>/Stylecd}" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required" 
                                         change="onHeaderChange" liveChange="onHeaderChange">
                                     </Input>
+                                    
                                 </f:fields>
                             </f:FormElement>
                             <f:FormElement label="{i18n>DESC1}" visible="{= ${VisibleFieldsData>/DESC1} === true ? true : false }">
@@ -38,7 +40,7 @@
                             </f:FormElement>
                         </f:formElements>
                     </f:FormContainer>
-                    <f:FormContainer ariaLabelledBy="Grp2">
+                    <f:FormContainer  >
                         <f:formElements>
                             <f:FormElement label="{i18n>SEASONCD}" visible="{= ${VisibleFieldsData>/SEASONCD} === true ? true : false }">
                                 <f:fields>
@@ -61,6 +63,7 @@
                     </f:FormContainer>
                 </f:formContainers>
             </f:Form>
+            
             <f:Form id="StyleHeaderForm2" editable="true">
                 <f:layout>
                     <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3" singleContainerFullSize="false" />  
@@ -182,27 +185,43 @@
                             </f:FormElement>
                         </f:formElements>
                     </f:FormContainer>
-                </f:formContainers>
-            </f:Form>
-            <f:Form id="StyleHeaderForm3" editable="true">
-                <f:layout>
-                    <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3" singleContainerFullSize="false" />
-                </f:layout>
-                <f:formContainers>
-                    <f:FormContainer>
+                    <!-- <f:FormContainer class="sapUiNoContentPadding">
                         <f:formElements>
-                            <f:FormElement label="{i18n>REMARKS}" visible="{= ${VisibleFieldsData>/REMARKS} === true ? true : false }">
+                            <f:FormElement label="{i18n>REMARKS}" visible="true">
                                 <f:fields>
                                     <Input id="REMARKS" value="{headerData>/Remarks}" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required" 
                                         change="onHeaderChange" liveChange="onHeaderChange"/>
                                 </f:fields>
                             </f:FormElement>
                         </f:formElements>
+                          <f:layoutData>
+                            <l:GridData span="XL4 L4 M3 S3" />
+                        </f:layoutData>  
+                    </f:FormContainer> -->
+                    
+                </f:formContainers>
+            </f:Form>
+            
+            <f:Form id="StyleHeaderForm3" editable="true">
+                <f:layout>
+                    <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3" singleContainerFullSize="false" />
+                </f:layout>
+                <f:formContainers>
+                    <f:FormContainer class="sapUiNoContentPadding">
+                        <f:formElements>
+                            <f:FormElement label="{i18n>REMARKS}" visible="true">
+                                <f:fields>
+                                    <Input id="REMARKS1" value="{headerData>/Remarks}" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required" 
+                                        change="onHeaderChange" liveChange="onHeaderChange"/>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:formElements>
                         <f:layoutData>
-                            <l:GridData span="XL8 L8 M8 S3" />
+                            <l:GridData span="XL5 L5 M3 S3" />
                         </f:layoutData>
                     </f:FormContainer>
                 </f:formContainers>
             </f:Form>
         </Panel>
+        <!-- </VBox> -->
 </core:FragmentDefinition>
