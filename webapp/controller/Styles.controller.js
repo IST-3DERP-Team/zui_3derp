@@ -293,7 +293,7 @@ sap.ui.define([
                     // var sColumnToolTip = context.getObject().Tooltip;
                     //alert(sColumnId.);
 
-                    if (sColumnWidth === 0) sColumnWidth = 100;
+                    if (sColumnWidth === 0 ||sColumnWidth === 7  ) sColumnWidth = 110;
 
                     return new sap.ui.table.Column({
                         id: sColumnId,
