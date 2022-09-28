@@ -129,7 +129,7 @@ sap.ui.define([
             },
 
             getDynamicTableData: function (columns) {
-                console.log(columns);
+                //console.log(columns);
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
 
@@ -625,7 +625,7 @@ sap.ui.define([
                 var oTable = this.getView().byId("styleDynTable");
                 var oColumns = oTable.getColumns();
                 var vSBU = that._sbu;// this.getView().getModel("ui").getData().sbu;
-                console.log(oColumns)
+                //console.log(oColumns)
 
                 // return;
                 var oParam = {
@@ -743,7 +743,7 @@ sap.ui.define([
             },
 
             onKeyUp(oEvent) {
-                console.log("onKeyUp!");
+                //console.log("onKeyUp!");
             
                 var _dataMode = this.getView().getModel("undefined").getData().dataMode;
                 _dataMode = _dataMode === undefined ? "READ": _dataMode;
@@ -755,8 +755,8 @@ sap.ui.define([
                     var sRowPath = this.byId(oEvent.srcControl.sId).oBindingContexts["undefined"].sPath;
                     var data  = model.getProperty(sRowPath);
                    // var oRow = this.getView().getModel("DataModel").getProperty(sRowPath);
-                    console.log(sRowPath)
-                    console.log(data)
+                   // console.log(sRowPath)
+                   // console.log(data)
                     //console.log(oRow)
                    // this.getView().getModel("ui").setProperty("/activeGmc", oRow.GMC);
                     
@@ -778,7 +778,6 @@ sap.ui.define([
                 var model = oTable.getModel();
                 //get the selected  data from the model and set to variable style
                 var data  = model.getProperty(sPath);
-                console.log(data['STYLENO'] );
                 styleNo = data['STYLENO'];
                 
               },
