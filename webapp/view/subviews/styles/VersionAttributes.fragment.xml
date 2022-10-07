@@ -25,9 +25,9 @@
                     <t:Column width="11rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
                         <Label text="{i18n>AttributeType}"/>
                         <t:template>
-                            <Input id="AttrTypesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
+                            <Input id="AttrTypesInput3" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
                                 change="onVersionAttrChange" liveChange="onVersionAttrChange"
-                                valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{AttribTypeModel>/results}" value="{DataModel>Attribtyp}">
+                                valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{AttribTypeModel>/results, templateShareable=false}" value="{DataModel>Attribtyp}">
                                 <suggestionItems>
                                     <core:ListItem text="{AttribTypeModel>Attribtyp}" additionalText="{AttribTypeModel>Desc1}"/>
                                 </suggestionItems>
@@ -37,9 +37,9 @@
                     <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
                         <Label text="{i18n>AttributeCode}"/>
                         <t:template>
-                            <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
+                            <Input id="AttrCodesInput3" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
                                 change="onVersionAttrChange" liveChange="onVersionAttrChange"
-                                valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{AttribCdModel>/results}" value="{DataModel>Attribcd}">
+                                valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{AttribCdModel>/results, templateShareable=false}" value="{DataModel>Attribcd}">
                                 <suggestionItems>
                                     <core:ListItem text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}"/>
                                 </suggestionItems>

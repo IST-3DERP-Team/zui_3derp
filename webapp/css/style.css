@@ -63,3 +63,25 @@ for header.fragment
  .sapUiFormResGrid>div {
     padding: .5rem 0.5rem !important;
 }  
+
+
+.sapUiRespGrid{
+    padding-top: 0rem !important;
+    padding-bottom: 0rem !important;
+    padding-right: 1rem!important;
+    padding-left: 1rem!important;
+}
+
+/* style detail header panel */
+.sapMTB.sapMTBHeader-CTX {
+    height: 2rem;
+}
+
+.sapMLIB.sapMUCItem.sapMUCListFirstItem, .sapMLIB.sapMUCItem.sapMUCListLastItem, .sapMLIB.sapMUCItem.sapMUCListItem {
+    /* padding-left: 0.9rem; */
+    padding-top: 0.2rem !important;
+    padding-bottom: 0.2rem !important;
+    /* border-bottom-width: 0.0625rem;
+    border-bottom-style: solid;
+    padding-right: 1rem; */
+}

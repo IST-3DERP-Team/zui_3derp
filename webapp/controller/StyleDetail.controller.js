@@ -20,7 +20,6 @@ sap.ui.define([
 
             onInit: function () {
                 that = this;
-                
                 //Initialize router
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
@@ -33,6 +32,7 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel("FileModel"); 
                 this.getView().setModel(oModel, "FileModel");
 
+
                 this._headerChanged = false; //Set change flag
 
                 //Initialize translations
@@ -42,6 +42,8 @@ sap.ui.define([
             _routePatternMatched: function (oEvent) {
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get Style from route pattern
                 this._sbu = oEvent.getParameter("arguments").sbu; //get SBU from route pattern
+                this._iono = oEvent.getParameter("arguments").iono; //get SBU from route pattern
+                this._oModelStyle = this.getOwnerComponent().getModel("ZGW_3DERP_IOSTYLE_SRV");
                 
                 //set all as no changes at first load
                 this._headerChanged = false;
@@ -249,6 +251,7 @@ sap.ui.define([
                             sbu: this._sbu
                         });
 
+                     
                         //call create new style
                         oModel.create(path, oEntry, {
                             method: "POST",
@@ -268,6 +271,17 @@ sap.ui.define([
                                 me.setChangeStatus(false);
                                 me.setDetailVisible(true);
                                 Common.showMessage(me._i18n.getText('t4'));
+
+                                //from IO module create new Style
+                                var param={};
+                                param["IONO"]=me._iono;
+                                param["STYLENO"]=me._styleNo
+
+                                me._oModelStyle.update("/CreateIOStyleSet('"+ me._iono +"')", param, {
+                                    method: "PUT",
+                                    success: function(data, oResponse) {
+                                    }
+                                });
 
                                 //change the url hash to the new style no
                                 var oHashChanger = HashChanger.getInstance();

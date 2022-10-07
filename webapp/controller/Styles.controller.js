@@ -24,7 +24,7 @@ sap.ui.define([
                 //Initialize router
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
-                this._router.getRoute("RouteStyles").attachPatternMatched(this._routePatternMatched, this);
+                //this._router.getRoute("RouteStyles").attachPatternMatched(this._routePatternMatched, this);
 
                 //Set model of smartfilterbar
                 this._Model = this.getOwnerComponent().getModel();
@@ -32,6 +32,19 @@ sap.ui.define([
 
                 //Initialize translations
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+            },
+
+            onAfterRendering:function(){
+                 //double click event
+                var oModel = new JSONModel();
+                var oTable = this.getView().byId("styleDynTable");
+                oTable.setModel(oModel);
+                oTable.attachBrowserEvent('dblclick', function (e) {
+                    e.preventDefault();
+                    that.setChangeStatus(false); //remove change flag
+                    that.navToDetail(styleNo); //navigate to detail page
+
+                });
             },
 
             setChangeStatus: function (changed) {
@@ -110,7 +123,8 @@ sap.ui.define([
 
                         if (oData.results.length > 0) {
                             if (arg === "AUTO_INIT") {
-                               // me.getInitTableData();
+                                // me.getInitTableData();
+                                console.log("INIT")
                             }
                             else {
                                 //me.getTableData();
@@ -215,7 +229,8 @@ sap.ui.define([
                 //add column for manage button
                 oColumnsData.unshift({
                     "ColumnName": this._i18n.getText('Manage'),
-                    "ColumnType": "SEL"
+                    "ColumnType": "SEL",
+                    "Visible": false
                 });
 
                 //set the column and data model
@@ -224,28 +239,28 @@ sap.ui.define([
                     columns: oColumnsData,
                     rows: oData
                 });
-                
+
                 var oDelegateKeyUp = {
-                    onkeyup: function(oEvent){
+                    onkeyup: function (oEvent) {
                         that.onKeyUp(oEvent);
                     },
-                    
-                    onsapenter : function(oEvent){
+
+                    onsapenter: function (oEvent) {
                         that.onSapEnter(oEvent);
                     }
                 };
                 this.byId("styleDynTable").addEventDelegate(oDelegateKeyUp);
-                
+
                 var oTable = this.getView().byId("styleDynTable");
                 oTable.setModel(oModel);
 
                 //double click event
-                oTable.attachBrowserEvent('dblclick',function(e){
-                    e.preventDefault();
-                    that.setChangeStatus(false); //remove change flag
-                    that.navToDetail(styleNo); //navigate to detail page
-                    
-                 } );
+                // oTable.attachBrowserEvent('dblclick', function (e) {
+                //     e.preventDefault();
+                //     // that.setChangeStatus(false); //remove change flag
+                //     that.navToDetail(styleNo); //navigate to detail page
+
+                // });
 
                 /*
                 //njoaquin 09/20/2022 comment. binding of dynamic column to the table was transferred to setTableColumns function
@@ -280,7 +295,7 @@ sap.ui.define([
             setTableColumns() {
                 var me = this;
                 var oTable = this.getView().byId("styleDynTable");
-                
+
                 //bind the dynamic column to the table
                 oTable.bindColumns("/columns", function (index, context) {
                     var sColumnId = context.getObject().ColumnName;
@@ -293,19 +308,19 @@ sap.ui.define([
                     // var sColumnToolTip = context.getObject().Tooltip;
                     //alert(sColumnId.);
 
-                    if (sColumnWidth === 0 ||sColumnWidth === 7  ) sColumnWidth = 110;
+                    if (sColumnWidth === 0 || sColumnWidth === 7) sColumnWidth = 110;
 
                     return new sap.ui.table.Column({
                         id: sColumnId,
                         label: sColumnLabel ? sColumnLabel : "{i18n>" + sColumnId + "}",
                         template: me.columnTemplate(sColumnId, sColumnType),
-                        width:  sColumnWidth ? sColumnWidth  + 'px' : me.getColumnSize(sColumnId, sColumnType)  ,
+                        width: sColumnWidth ? sColumnWidth + 'px' : me.getColumnSize(sColumnId, sColumnType),
                         sortProperty: sColumnId,
                         filterProperty: sColumnId,
                         autoResizable: true,
                         visible: sColumnVisible,
                         sorted: sColumnSorted,
-                        sortOrder: ((sColumnSorted === true) ? sColumnSortOrder : "Ascending" )
+                        sortOrder: ((sColumnSorted === true) ? sColumnSortOrder : "Ascending")
                     });
                 });
             },
@@ -338,7 +353,11 @@ sap.ui.define([
                     });
                     oColumnTemplate.data("StyleNo", "{}"); //custom data to hold style number
                 } else {
-                    oColumnTemplate = new sap.m.Text({ text: "{" + sColumnId + "}" }); //default text
+                    oColumnTemplate = new sap.m.Text({ 
+                        text: "{" + sColumnId + "}",
+                        wrapping: false,
+                        tooltip: "{" + sColumnId + "}" 
+                    }); //default text
                 }
 
                 return oColumnTemplate;
@@ -359,11 +378,12 @@ sap.ui.define([
                 //route to detail page
                 that._router.navTo("RouteStyleDetail", {
                     styleno: styleNo,
-                    sbu: that._sbu
+                    sbu: that._sbu,
+                    iono:' '
                 });
             },
 
-            
+
             //******************************************* */
             // Create New Style
             //******************************************* */
@@ -647,7 +667,7 @@ sap.ui.define([
                 //     oParam['TYPE'] = "GMCMAT";
                 //     oParam['TABNAME'] = "ZERP_MATERIAL";
                 // }
-               
+
                 //get information of columns, add to payload
                 oColumns.forEach((column) => {
                     if (column.sId !== "Manage" && column.sId !== "Copy") {
@@ -742,33 +762,35 @@ sap.ui.define([
                 oEvent.getSource().getParent().close();
             },
 
-            onKeyUp(oEvent) {
+            onKeyUp(oEvent) {
                 //console.log("onKeyUp!");
-            
+
                 var _dataMode = this.getView().getModel("undefined").getData().dataMode;
-                _dataMode = _dataMode === undefined ? "READ": _dataMode;
-                
-                if ((oEvent.key === "ArrowUp" || oEvent.key === "ArrowDown") && oEvent.srcControl.sParentAggregationName === "rows" && _dataMode === "READ") {
+                _dataMode = _dataMode === undefined ? "READ" : _dataMode;
+
+                if ((oEvent.key === "ArrowUp" || oEvent.key === "ArrowDown") && oEvent.srcControl.sParentAggregationName === "rows" && _dataMode === "READ") {
                     var oTable = this.getView().byId("styleDynTable");
                     var model = oTable.getModel();
-                    
-                    var sRowPath = this.byId(oEvent.srcControl.sId).oBindingContexts["undefined"].sPath;
-                    var data  = model.getProperty(sRowPath);
-                   // var oRow = this.getView().getModel("DataModel").getProperty(sRowPath);
-                   // console.log(sRowPath)
-                   // console.log(data)
+
+                    var sRowPath = this.byId(oEvent.srcControl.sId).oBindingContexts["undefined"].sPath;
+                    var index = sRowPath.split("/");
+                    oTable.setSelectedIndex(parseInt(index[2]));
+                    //var data = model.getProperty(sRowPath);
+                    // var oRow = this.getView().getModel("DataModel").getProperty(sRowPath);
+                    // console.log(sRowPath)
+                    // console.log(data)
                     //console.log(oRow)
-                   // this.getView().getModel("ui").setProperty("/activeGmc", oRow.GMC);
-                    
+                    // this.getView().getModel("ui").setProperty("/activeGmc", oRow.GMC);
+
                 }
             },
 
-            onSapEnter(oEvent) {
+            onSapEnter(oEvent) {
                 that.setChangeStatus(false); //remove change flag
                 that.navToDetail(styleNo); //navigate to detail page
             },
 
-            onSelectionChange: function(oEvent) {
+            onSelectionChange: function (oEvent) {
                 // var oTable = this.getView().byId("styleDynTable");
                 // iSelectedIndex = oEvent.getSource().getSelectedIndex();
                 // oTable.setSelectedIndex(iSelectedIndex);
@@ -777,10 +799,10 @@ sap.ui.define([
                 var oTable = this.getView().byId("styleDynTable");
                 var model = oTable.getModel();
                 //get the selected  data from the model and set to variable style
-                var data  = model.getProperty(sPath);
+                var data = model.getProperty(sPath);
                 styleNo = data['STYLENO'];
-                
-              },
+
+            },
 
             //padding zeroes for formatting
             pad: Common.pad,

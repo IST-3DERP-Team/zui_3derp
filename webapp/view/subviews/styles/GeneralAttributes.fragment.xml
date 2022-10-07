@@ -35,9 +35,9 @@
                             <t:template>
                                 <Input id="AttrTypesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{GenAttrEditModeModel>/editMode}" 
                                     change="onGeneralAttrChange" liveChange="onGeneralAttrChange"
-                                    valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{AttribTypeModel>/results}" value="{DataModel>Attribtyp}">
+                                    valueHelpRequest="onAttrTypesValueHelp" suggestionItems="{path:'AttribTypeModel>/results', templateShareable=false}" value="{DataModel>Attribtyp}">
                                     <suggestionItems>
-                                        <core:ListItem text="{AttribTypeModel>Attribtyp}" additionalText="{AttribTypeModel>Desc1}"/>
+                                        <core:ListItem id="AttrTypeListItem" text="{AttribTypeModel>Attribtyp}" additionalText="{AttribTypeModel>Desc1}"/>
                                     </suggestionItems>
                                 </Input>
                             </t:template>
@@ -47,9 +47,9 @@
                             <t:template>
                                 <Input id="AttrCodesInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{GenAttrEditModeModel>/editMode}" 
                                     change="onGeneralAttrChange" liveChange="onGeneralAttrChange"
-                                    valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{AttribCdModel>/results}" value="{DataModel>Attribcd}">
+                                    valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{path:'AttribCdModel>/results', templateShareable=false}" value="{DataModel>Attribcd}">
                                     <suggestionItems>
-                                        <core:ListItem text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}"/>
+                                        <core:ListItem id="AttribcdListItem"  text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}"/>
                                     </suggestionItems>
                                 </Input>
                             </t:template>

@@ -26,6 +26,18 @@ sap.ui.define([
 
                 // set the device model
                 this.setModel(models.createDeviceModel(), "device");
+            },
+
+            destroy: function () {
+
+                if (this.oRouteHandler) {
+
+                    this.oRouteHandler.destroy();
+
+                }
+
+                sap.ui.core.UIComponent.prototype.destroy.apply(this, arguments);
+
             }
         });
     }

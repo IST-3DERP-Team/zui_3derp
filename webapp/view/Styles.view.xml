@@ -19,7 +19,7 @@
                 <!-- >>> Filters <<< -->
                 <smartfilterbar:SmartFilterBar id="SmartFilterBar" entitySet="ZVI_3DERP_STYLES_FILTER" search="onSearch" persistencyKey="3DERP_StylesPKey" filterContainerWidth="15rem">
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration id="filterSBU" key="SBU" groupId="_BASIC" label="{i18n>SBUFilter}" tooltip="{i18n>SBUFilter}" mandatory="mandatory" controlType="dropDownList" filterType="single" />
+                        <smartfilterbar:ControlConfiguration id="filterSBU" key="SBU" groupId="_BASIC" label="{i18n>SBU}" tooltip="{i18n>SBU}" mandatory="mandatory" controlType="dropDownList" filterType="single" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
                         <smartfilterbar:ControlConfiguration id="filterSalesGroup" key="SALESGRP" groupId="_BASIC" label="{i18n>SALESGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />

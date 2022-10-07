@@ -4,7 +4,7 @@
     <Page showHeader="false" title="Manage Style" showNavButton="true" navButtonPress="onNavBack">
 
         <!-- OBJECT HEADER -->
-        <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>CurrentVersion}: {headerData>/Verno}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
+        <ObjectHeader id="objectHeader1" responsive="true" fullScreenOptimized="true" intro="{i18n>CurrentVersion}: {headerData>/Verno}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2"
 		        title="{headerData>/Stylecd} ({headerData>/Styleno})" number="{headerData>/Statuscd}" numberUnit="{i18n>Status}" numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}"
                 class="sapUiTinyMarginBegin objectHeader">
             <attributes>
