@@ -186,17 +186,10 @@
                 "clearControlAggregation": false
             },
             "routes": [
-                {
-                    "name": "RouteMain",
-                    "pattern": "",
-                    "greedy": false,
-                    "target": [
-                        "TargetMain"
-                    ]
-                },
+                 
                 {
                     "name": "RouteStyles",
-                    "pattern": "RouteStyles",
+                    "pattern": "",
                     "greedy": false,
                     "target": [
                         "TargetStyles"
