@@ -1,12 +1,13 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-    <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiSizeCompact">
+     <VBox fitContainer="true" width="80%" class="sapUiTinyMargin">
+    <!-- <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiSizeCompact">
     
         <headerToolbar>
             <Toolbar height="2rem" style="Clear">
                 <Title text="{i18n>Versions}" />
             </Toolbar>
-        </headerToolbar>
+        </headerToolbar> -->
 
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
@@ -20,7 +21,7 @@
         <MessageStrip id="VersionsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
 
         <!-- Versions Table -->
-        <ScrollContainer height="400px" vertical="true">
+        <!-- <ScrollContainer height="400px" vertical="true"> -->
             <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" 
                 selectionMode="{= ${VersionEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }" visibleRowCountMode="Fixed" class="sapUiSizeCompact">
                 <c:columns>
@@ -71,6 +72,7 @@
                     </t:Column>
                 </c:columns>
             </c:DynamicTable>
-        </ScrollContainer>
-    </Panel>
+        <!-- </ScrollContainer> -->
+    <!-- </Panel> -->
+     </VBox>
 </core:FragmentDefinition>    

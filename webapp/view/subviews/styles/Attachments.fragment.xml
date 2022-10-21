@@ -1,7 +1,8 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-    <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiSizeCompact">
-    
+    <!-- <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiSizeCompact"> -->
+     <!-- <ScrollContainer width="100%" height="auto" horizontal="true" vertical="true" focusable="true">   -->
+     <VBox fitContainer="true" width="80%" height="200px" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <Label text=""/>
             <ToolbarSpacer />
@@ -11,9 +12,14 @@
         </Toolbar>
         
         <!-- Attachments -->
-        <VBox id="FilesBox">
-            <UploadCollection id="UploadCollection" instantUpload="false"></UploadCollection>
+        <VBox id="FilesBox" fitContainer="true" height="300px">
+            <UploadCollection id="UploadCollection" instantUpload="false">
+                     <layoutData>
+            <FlexItemData growFactor="1" baseSize="0%" />
+        </layoutData>
+            </UploadCollection>
         </VBox>
-        
-    </Panel>
+<!-- </ScrollContainer>         -->
+</VBox>
+    <!-- </Panel> -->
 </core:FragmentDefinition>

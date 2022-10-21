@@ -85,3 +85,8 @@ for header.fragment
     border-bottom-style: solid;
     padding-right: 1rem; */
 }
+
+.vBoxStyleDetail{
+    max-width: 100%;
+    overflow: hidden;
+}

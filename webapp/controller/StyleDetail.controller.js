@@ -105,8 +105,8 @@ sap.ui.define([
             },
 
             setDetailVisible: function(bool) {
-                var detailPanel = this.getView().byId('detailPanel'); //show detail section if there is header info
-                detailPanel.setVisible(bool);
+              var detailPanel = this.getView().byId('detailPanel'); //show detail section if there is header info
+               detailPanel.setVisible(bool);
             },
 
             //******************************************* */
@@ -397,7 +397,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
-                        oTable.setVisibleRowCount(oData.results.length); //updating visible rows
+                        //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
                         // oTable.onAttachPaste(); //for copy-paste
                         Common.closeLoadingDialog(that);
                     },
@@ -938,7 +938,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
-                        oTable.setVisibleRowCount(oData.results.length);
+                        //oTable.setVisibleRowCount(oData.results.length);
                         // oTable.attachPaste();
                         Common.closeLoadingDialog(that);
                     },

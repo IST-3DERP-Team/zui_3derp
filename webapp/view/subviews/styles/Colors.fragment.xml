@@ -1,13 +1,13 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-    <Panel expandable="true" expanded="false" width="80%" class="sapUiSizeCompact">
+    <!-- <Panel expandable="true" expanded="false" width="80%" class="sapUiSizeCompact">
 
         <headerToolbar>
             <Toolbar height="2rem" style="Clear">
                 <Label text="{i18n>Colors}" />
             </Toolbar>
-        </headerToolbar>
-
+        </headerToolbar> -->
+     <VBox fitContainer="true" width="80%" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
             <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Savecolorattributes}" press="onSaveColorTable" visible="{ColorEditModeModel>/editMode}"/>
@@ -21,13 +21,13 @@
             <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelColorsEdit" visible="{= ${ColorEditModeModel>/editMode} === true ? true : false }"/>
         </Toolbar>
 
-        <VBox>
+       
 
             <MessageStrip id="ColorsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
             
             <!-- Color Attributes Table -->
-            <ScrollContainer height="100%" vertical="true">
-                <c:DynamicTable id="colorsTable" rows="{DataModel>/results}" enableColumnReordering="false" visibleRowCountMode="Fixed" class="sapUiSizeCompact"
+            <!-- <ScrollContainer height="100%" vertical="true"> -->
+                <c:DynamicTable id="colorsTable" rows="{DataModel>/results}" enableColumnReordering="false"   class="sapUiSizeCompact"
                     selectionMode="{= ${ColorEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
                     <c:columns>
                         <t:Column width="11rem" filterProperty="Attribcd">
@@ -49,8 +49,8 @@
                         </t:Column>
                     </c:columns>
                 </c:DynamicTable>
-            </ScrollContainer>
+            <!-- </ScrollContainer> -->
         </VBox>
         
-    </Panel>
+    <!-- </Panel> -->
 </core:FragmentDefinition>    
