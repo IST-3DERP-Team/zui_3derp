@@ -73,7 +73,7 @@
             <!-- Versions Table -->
             <t:Table id="versionsTableMain" rows="{VersionsDataModel>/results}" class="sapUiSizeCompact">
                 <t:columns>
-                    <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
+                    <t:Column width="5rem" filterProperty="Verno" sortProperty="Verno">
                         <Label text="{i18n>Version}"/>
                         <t:template>
                             <Text text="{VersionsDataModel>Verno}" textAlign="End"/>

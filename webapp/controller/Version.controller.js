@@ -1367,7 +1367,7 @@ sap.ui.define([
                                     text: "{ProcessCodeModel>ProcessCd}",
                                     additionalText: "{ProcessCodeModel>Desc1}"
                                 }),
-                                templateShareable:true
+                                templateShareable:false
                             },
                             change: changeFunction,
                             liveChange: changeFunction,
@@ -1388,7 +1388,8 @@ sap.ui.define([
                                 template: new sap.ui.core.ListItem({
                                     text: "{MatTypeModel>Mattype}",
                                     additionalText: "{MatTypeModel>Desc1}"
-                                })
+                                }),
+                                templateShareable:false
                             },
                             change: changeFunction,
                             liveChange: changeFunction
@@ -1403,7 +1404,8 @@ sap.ui.define([
                                 template: new sap.ui.core.ListItem({
                                     text: "{UsageClassModel>Usgcls}",
                                     additionalText: "{UsageClassModel>Ucdesc1}"
-                                })
+                                }),
+                                templateShareable:false
                             },
                             change: changeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false ),
@@ -1446,7 +1448,8 @@ sap.ui.define([
                                 template: new sap.ui.core.ListItem({
                                     text: "{UOMGMCModel>Valunit}",
                                     additionalText: "{UOMGMCModel>Desc1}"
-                                })
+                                }),
+                                templateShareable:false
                             },
                             change: changeFunction,
                             liveChange: changeFunction

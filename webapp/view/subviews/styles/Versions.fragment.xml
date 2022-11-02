@@ -25,7 +25,7 @@
             <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" 
                 selectionMode="{= ${VersionEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }" visibleRowCountMode="Fixed" class="sapUiSizeCompact">
                 <c:columns>
-                    <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno">
+                    <t:Column width="5rem"   filterProperty="Verno" sortProperty="Verno">
                         <Label text="{i18n>Manage}"/>
                         <t:template>
                             <Button icon="sap-icon://detail-view" press="onSelectVersion">
@@ -35,7 +35,7 @@
                             </Button>
                         </t:template>
                     </t:Column>
-                    <t:Column width="5rem" filterType="" filterProperty="Verno" sortProperty="Verno" hAlign="End">
+                    <t:Column width="5rem"   filterProperty="Verno" sortProperty="Verno" hAlign="End">
                         <Label text="{i18n>Version}"/>
                         <t:template>
                             <Text text="{DataModel>Verno}"/>
@@ -48,7 +48,7 @@
                                 visible="{DataModel>Currentver}"/>
                         </t:template>
                     </t:Column>
-                    <t:Column width="8rem" filterType="" filterProperty="Verno" sortProperty="Verno"  visible="{VersionEditModeModel>/editMode}">
+                    <t:Column width="8rem"   filterProperty="Verno" sortProperty="Verno"  visible="{VersionEditModeModel>/editMode}">
                         <Label text=""/>
                         <t:template>
                             <Button text="{i18n>SetCurrent}" icon="sap-icon://detail-view" press="setVersionCurrent" visible="{= ${DataModel>Currentver} === true ? false : true }">

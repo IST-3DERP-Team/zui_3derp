@@ -19,31 +19,31 @@
             <ScrollContainer height="400px" vertical="true">
                 <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" height="100%"
                     visibleRowCountMode="Fixed" width="300%">
-                    <t:Column width="8rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <t:Column width="8rem"  filterProperty="Attribtyp" sortProperty="Attribtyp">
                         <Label text="GMC"/>
                         <t:template>
                             <Text text="{DataModel>Gmc}"/>
                         </t:template>
                     </t:Column>
-                    <t:Column width="30rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <t:Column width="30rem"  filterProperty="Attribtyp" sortProperty="Attribtyp">
                         <Label text="GMC Desc"/>
                         <t:template>
                             <Text text="{DataModel>Gmcdesc}"/>
                         </t:template>
                     </t:Column>
-                    <t:Column width="30rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <t:Column width="30rem"  filterProperty="Attribtyp" sortProperty="Attribtyp">
                         <Label text="Additional Description"/>
                         <t:template>
                             <Text text="{DataModel>Matdesc1}"/>
                         </t:template>
                     </t:Column>
-                    <t:Column width="5rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <t:Column width="5rem"  filterProperty="Attribtyp" sortProperty="Attribtyp">
                         <Label text="UOM"/>
                         <t:template>
                             <Text text="{DataModel>Entryuom}"/>
                         </t:template>
                     </t:Column>
-                    <t:Column width="18rem" filterType="" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <t:Column width="18rem"  filterProperty="Attribtyp" sortProperty="Attribtyp">
                         <Label text="Material No."/>
                         <t:template>
                             <Input id="productInput" type="Text" placeholder="Select Material ..." showSuggestion="true" showValueHelp="true"

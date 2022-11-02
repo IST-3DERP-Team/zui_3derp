@@ -15,6 +15,7 @@ sap.ui.define([
 
         var that;
         var styleNo;
+        //var isRender=false;
 
         return Controller.extend("zui3derp.controller.Styles", {
 
@@ -32,6 +33,7 @@ sap.ui.define([
 
                 //Initialize translations
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+                this.isSearch=false;
             },
 
             onAfterRendering:function(){
@@ -45,6 +47,10 @@ sap.ui.define([
                     that.navToDetail(styleNo); //navigate to detail page
 
                 });
+
+                if(this.isSearch){
+                    this.getColumns("SEARCH");
+                }
             },
 
             setChangeStatus: function (changed) {
@@ -66,8 +72,8 @@ sap.ui.define([
                 //njoaquin replace getDynamicTableColumns with setTableColumns function
                 //this.getDynamicTableColumns(); //styles table
                 this.getColumns("SEARCH");
-
                 this.getStyleStats(); //style statistics
+                this.isSearch=true;
             },
 
             //******************************************* */

@@ -21,60 +21,60 @@
     <ScrollContainer height="400px" vertical="true">
         <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true"
             selectionMode="Single" visibleRowCountMode="Fixed" width="300%">
-            <t:Column width="5rem" filterType="" filterProperty="Seqno" sortProperty="Seqno">
+            <t:Column width="5rem"   filterProperty="Seqno" sortProperty="Seqno">
                 <Label text="{i18n>SEQNO}"/>
                 <t:template>
                     <Text text="{DataModel>Seqno}"/>
                 </t:template>
             </t:Column>
-            <t:Column width="7rem" filterType="" filterProperty="Mattyp" sortProperty="Mattyp">
+            <t:Column width="7rem"  filterProperty="Mattyp" sortProperty="Mattyp">
                 <Label text="{i18n>MATTYP}"/>
                 <t:template>
                     <Text text="{DataModel>Mattyp}"/>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterType="" filterProperty="Matno" sortProperty="Matno">
+            <t:Column width="11rem"  filterProperty="Matno" sortProperty="Matno">
                 <Label text="{i18n>MATNO}"/>
                 <t:template>
                     <Text text="{DataModel>Matno}"/>
                 </t:template>
             </t:Column>
-            <t:Column width="7rem" filterType="" filterProperty="Gmc" sortProperty="Gmc">
+            <t:Column width="7rem"  filterProperty="Gmc" sortProperty="Gmc">
                 <Label text="{i18n>GMC}"/>
                 <t:template>
                     <Text text="{DataModel>Gmc}"/>
                 </t:template>
             </t:Column>
-            <t:Column width="28rem" filterType="" filterProperty="Gmcdesc" sortProperty="Gmcdesc">
+            <t:Column width="28rem"  filterProperty="Gmcdesc" sortProperty="Gmcdesc">
                 <Label text="{i18n>GMCDESC}"/>
                 <t:template>
                     <Text text="{DataModel>Gmcdesc}"/>
                 </t:template>
             </t:Column>
-            <t:Column width="24rem" filterType="" filterProperty="Matdesc1" sortProperty="Matdesc1">
+            <t:Column width="24rem"  filterProperty="Matdesc1" sortProperty="Matdesc1">
                 <Label text="{i18n>MATDESC1}"/>
                 <t:template>
                     <Input value="{DataModel>Matdesc1}" change="onMaterialListChange"
                         editable="{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>Matno} === '' ? true : false : false }"/>
                 </t:template>
             </t:Column>
-            <t:Column width="7rem" filterType="" filterProperty="Consump" sortProperty="Consump">
+            <t:Column width="7rem"  filterProperty="Consump" sortProperty="Consump">
                 <Label text="{i18n>CONSUMP}"/>
                 <t:template>
                     <Input value="{DataModel>Consump}" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange"/>
                 </t:template>
             </t:Column>
-            <t:Column width="8rem" filterType="" filterProperty="Uom" sortProperty="Uom">
+            <t:Column width="8rem"  filterProperty="Uom" sortProperty="Uom">
                 <Label text="{i18n>UOM}"/>
                 <t:template>
                     <Text text="{DataModel>Uom}"/>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterType="" filterProperty="Supplytyp" sortProperty="Supplytyp">
+            <t:Column width="11rem"  filterProperty="Supplytyp" sortProperty="Supplytyp">
                 <Label text="{i18n>SUPPLYTYP}"/>
                 <t:template>
                     <Input id="SupplyTypeInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{MaterialListEditModeModel>/editMode}"
-                        valueHelpRequest="onSupplyTypeValueHelp" suggestionItems="{SupplyTypeModel>/results}" value="{DataModel>Supplytyp}" 
+                        valueHelpRequest="onSupplyTypeValueHelp"   suggestionItems="{path:'SupplyTypeModel>/results', templateShareable=false}" value="{DataModel>Supplytyp}" 
                         change="onMaterialListChange">
                         <suggestionItems>
                             <core:ListItem text="{SupplyTypeModel>Supplytype}" additionalText="{SupplyTypeModel>Desc1}"/>
@@ -82,11 +82,11 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterType="" filterProperty="Vendorcd" sortProperty="Vendorcd">
+            <t:Column width="11rem"  filterProperty="Vendorcd" sortProperty="Vendorcd">
                 <Label text="{i18n>VENDORCD}"/>
                 <t:template>
                     <Input id="VendorInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{MaterialListEditModeModel>/editMode}"
-                        valueHelpRequest="onVendorValueHelp" suggestionItems="{VendorModel>/results}" value="{DataModel>Vendorcd}"
+                        valueHelpRequest="onVendorValueHelp"   suggestionItems="{path:'VendorModel>/results', templateShareable=false}" value="{DataModel>Vendorcd}"
                         change="onMaterialListChange">
                         <suggestionItems>
                             <core:ListItem text="{VendorModel>Lifnr}" additionalText="{VendorModel>Desc1}"/>
@@ -94,11 +94,11 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="8rem" filterType="" filterProperty="Currencycd" sortProperty="Currencycd">
+            <t:Column width="8rem"  filterProperty="Currencycd" sortProperty="Currencycd">
                 <Label text="{i18n>CURRENCYCD}"/>
                 <t:template>
                     <Input id="CurrencyInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{MaterialListEditModeModel>/editMode}"
-                        valueHelpRequest="onCurrencyValueHelp" suggestionItems="{CurrencyModel>/results}" value="{DataModel>Currencycd}"
+                        valueHelpRequest="onCurrencyValueHelp"   suggestionItems="{path:'CurrencyModel>/results', templateShareable=false}" value="{DataModel>Currencycd}"
                         change="onMaterialListChange">
                         <suggestionItems>
                             <core:ListItem text="{CurrencyModel>Waers}" additionalText="{CurrencyModel>Desc1}"/>
@@ -106,17 +106,17 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterType="" filterProperty="Unitprice" sortProperty="Unitprice">
+            <t:Column width="11rem"  filterProperty="Unitprice" sortProperty="Unitprice">
                 <Label text="{i18n>UnitPrice}"/>
                 <t:template>
                     <Input value="{DataModel>Unitprice}" type="Number" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange"/>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterType="" filterProperty="Purgrp" sortProperty="Purgrp">
+            <t:Column width="11rem"  filterProperty="Purgrp" sortProperty="Purgrp">
                 <Label text="{i18n>PURGRP}"/>
                 <t:template>
                     <Input id="PurGroupInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{MaterialListEditModeModel>/editMode}"
-                        valueHelpRequest="onPurGroupValueHelp" suggestionItems="{PurchGroupModel>/results}" value="{DataModel>Purgrp}" 
+                        valueHelpRequest="onPurGroupValueHelp"   suggestionItems="{path:'PurchGroupModel>/results', templateShareable=false}" value="{DataModel>Purgrp}" 
                         change="onMaterialListChange">
                         <suggestionItems>
                             <core:ListItem text="{PurchGroupModel>Purgrp}" additionalText="{PurchGroupModel>Desc1}"/>
@@ -124,11 +124,11 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterType="" filterProperty="Purplant" sortProperty="Purplant">
+            <t:Column width="11rem"  filterProperty="Purplant" sortProperty="Purplant">
                 <Label text="{i18n>PURPLANT}"/>
                 <t:template>
                     <Input id="PurPlantInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{MaterialListEditModeModel>/editMode}"
-                        valueHelpRequest="onPurPlantValueHelp" suggestionItems="{PurPlantModel>/results}" value="{DataModel>Purplant}"
+                        valueHelpRequest="onPurPlantValueHelp"  suggestionItems="{path:'PurPlantModel>/results', templateShareable=false}" value="{DataModel>Purplant}"
                         change="onMaterialListChange">
                         <suggestionItems>
                             <core:ListItem text="{PurPlantModel>Plant}" additionalText="{PurPlantModel>Desc1}"/>
