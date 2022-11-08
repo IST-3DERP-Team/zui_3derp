@@ -8,14 +8,14 @@
    <VBox fitContainer="true" width="80%" class="sapUiTinyMargin">
     <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
-            <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveattributes}" press="onSaveGeneralTable" visible="{GenAttrEditModeModel>/editMode}" />
-            <Button type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="{GenAttrEditModeModel>/editMode}">
+            <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveattributes}" press="onSaveGeneralTable" visible="{= ${GenAttrEditModeModel>/editMode} === true ? true : false }" />
+            <Button type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="{= ${GenAttrEditModeModel>/editMode} === true ? false : true }">
                 <customData>
                     <core:CustomData key="TableName" value="generalTable" />
                 </customData>
             </Button>
-            <Button type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteGeneralAttr" visible="{GenAttrEditModeModel>/editMode}" />
             <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editattributes}" press="setGeneralAttrEditMode" visible="{= ${GenAttrEditModeModel>/editMode} === true ? false : true }" />
+            <Button type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteGeneralAttr" visible="{= ${GenAttrEditModeModel>/editMode} === true ? false : true }" />
             <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelGeneralAttrEdit" visible="{= ${GenAttrEditModeModel>/editMode} === true ? true : false }" />
         </Toolbar>
 
@@ -31,7 +31,7 @@
         enableColumnReordering="false"
         class="sapUiTinyMarginBottom sapUiTinyMarginBegin sapUiTinyMarginEnd"
         enableColumnFreeze="true"
-        selectionMode="{= ${GenAttrEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }"
+        selectionMode="MultiToggle"
         width="100%"
         visibleRowCountMode="Auto"
     >
@@ -62,7 +62,7 @@
                         change="onGeneralAttrChange"
                         liveChange="onGeneralAttrChange"
                         valueHelpRequest="onAttrTypesValueHelp"
-                        suggestionItems="{path:'AttribTypeModel>/results', templateShareable=false}"
+                        suggestionItems="{path:'AttribTypeModel>/results'}"
                         value="{DataModel>Attribtyp}"
                     >
                         <suggestionItems>
@@ -83,7 +83,7 @@
                         change="onGeneralAttrChange"
                         liveChange="onGeneralAttrChange"
                         valueHelpRequest="onAttrCodesValueHelp"
-                        suggestionItems="{path:'AttribCdModel>/results', templateShareable=false}"
+                        suggestionItems="{path:'AttribCdModel>/results'}"
                         value="{DataModel>Attribcd}"
                     >
                         <suggestionItems>

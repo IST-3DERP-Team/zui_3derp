@@ -140,6 +140,7 @@
                             </HBox>
                             <ToolbarSpacer />
                             <Button text="{i18n>New}" icon="sap-icon://add-document" tooltip="{i18n>Createnewstyle}" press="onCreateNewStyle" />
+                            <Button icon="sap-icon://refresh" tooltip="Refresh" press="onRefresh" />
                             <Button text="{i18n>Copy}" icon="sap-icon://copy" tooltip="{i18n>Copystylemode}" press="onCopyMode" />
                             <Button text="{i18n>Upload}" icon="sap-icon://upload" tooltip="{i18n>Uploadstylesfromfile}" press="onUploadStyle" />
                             <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">

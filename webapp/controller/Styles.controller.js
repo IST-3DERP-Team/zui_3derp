@@ -233,11 +233,11 @@ sap.ui.define([
                 });
 
                 //add column for manage button
-                oColumnsData.unshift({
-                    "ColumnName": this._i18n.getText('Manage'),
-                    "ColumnType": "SEL",
-                    "Visible": false
-                });
+                // oColumnsData.unshift({
+                //     "ColumnName": this._i18n.getText('Manage'),
+                //     "ColumnType": "SEL",
+                //     "Visible": false
+                // });
 
                 //set the column and data model
                 var oModel = new JSONModel();
@@ -808,6 +808,11 @@ sap.ui.define([
                 var data = model.getProperty(sPath);
                 styleNo = data['STYLENO'];
 
+            },
+
+            onRefresh:function(oEvent){
+                //this.getColumns("SEARCH");
+                this.getDynamicTableData("");
             },
 
             //padding zeroes for formatting
