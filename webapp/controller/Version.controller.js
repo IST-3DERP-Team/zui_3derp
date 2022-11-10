@@ -215,6 +215,17 @@ sap.ui.define([
                         oEntry.VersionToItems.push(item);
                     };
 
+                    var hasDuplicate = false;
+                    oData.results.map(v => v.Attribtyp.toLowerCase() + v.Attribcd.toLowerCase()).sort().sort((a, b) => {
+                        if (a == b) hasDuplicate = true
+                    })
+                    if (hasDuplicate) {
+                        //Common.showMessage("Duplicate color is not allow");
+                        oMsgStrip.setVisible(true);
+                        oMsgStrip.setText("Duplicate Attribute is not allowed");
+                        return;
+                    }
+
                     Common.openLoadingDialog(that);
 
                     path = "/VersionAttributesSet";
@@ -228,6 +239,7 @@ sap.ui.define([
                             me._versionAttrChanged = false;
                             me.setChangeStatus(false);
                             Common.closeLoadingDialog(me);
+                            me.setTabReadEditMode(false,"VersionAttrEditModeModel");
                             Common.showMessage(me._i18n.getText('t4'));
                         },
                         error: function (err) {
@@ -601,7 +613,7 @@ sap.ui.define([
                             } else {
                                 me.getbomGMCTable();
                             }
-
+                            me.setTabReadEditMode(false,"BOMbyGMCEditModeModel")
                             Common.showMessage(me._i18n.getText('t4'));
 
                             //build the BOM by UV headers and payload - this is for the colors pivot
@@ -1454,7 +1466,25 @@ sap.ui.define([
                             change: changeFunction,
                             liveChange: changeFunction
                         });
-                    } else {
+                    }else if (columnName === "BOMSTYLVER") { 
+                        //setting the GMC input with value help
+                        oColumnTemplate = new sap.m.Input({
+                            value: "{DataModel>" + columnName + "}",
+                            change: changeFunction,
+                            liveChange: liveChangeFunction,
+                            editable:   false ,
+                            visible: column.Visible
+                        });
+                    } else if (columnName === "DESC1") { 
+                        //setting the GMC input with value help
+                        oColumnTemplate = new sap.m.Input({
+                            value: "{DataModel>" + columnName + "}",
+                            change: changeFunction,
+                            liveChange: liveChangeFunction,
+                            editable:  false ,
+                            visible: column.Visible
+                        });
+                    }  else {
                         //setting the default input field
                         if(column.Editable) {
                             oColumnTemplate = new sap.m.Input({
@@ -1514,8 +1544,11 @@ sap.ui.define([
                 oTable.setVisibleRowCount(oData.length);
 
                 if(tabName === "versionAttrTable") {
+                    //this.setVersionAttrEditMode();
+                    this.setTabReadEditMode(true,"VersionAttrEditModeModel");
                     this.onVersionAttrChange();
                 }
+                
             },
 
             addLineBOM: function (oEvent) {
@@ -1528,7 +1561,12 @@ sap.ui.define([
                 oData.push({});
                 oTable.getBinding("rows").refresh();
                 oTable.setVisibleRowCount(oData.length);
-                this.onBOMbyGMCChange();
+
+                if(tabName === "bomGMCTable") {
+                    this.setTabReadEditMode(true,"BOMbyGMCEditModeModel");
+                    this.onBOMbyGMCChange();
+                }
+               
             },
 
             //******************************************* */
@@ -2046,6 +2084,16 @@ sap.ui.define([
 
             onCloseDialog: function(oEvent) {
                 oEvent.getSource().getParent().close();
+            },
+
+            setTabReadEditMode: function (dataMode,editModelName) {
+                //set colors table editable
+                var oJSONModel = new JSONModel();
+                var data = {};
+                this._colorChanged = false;
+                data.editMode = dataMode;
+                oJSONModel.setData(data);
+                this.getView().setModel(oJSONModel, editModelName);
             },
 
             pad: Common.pad,

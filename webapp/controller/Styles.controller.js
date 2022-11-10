@@ -33,11 +33,39 @@ sap.ui.define([
 
                 //Initialize translations
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-                this.isSearch=false;
+                this.isSearch = false;
+                this.getView().setModel(new JSONModel({
+                    dataMode: 'READ'
+                }), "styleui");
+
+                if (sap.ui.getCore().byId("backBtn") !== undefined) {
+                    this._fBackButton = sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction;
+
+                    var oView = this.getView();
+                    oView.addEventDelegate({
+                        onAfterShow: function(oEvent){
+                            console.log("back")
+                            sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = that._fBackButton; 
+                            that.onRefresh();
+                        }
+                    }, oView);
+                }
+
+                var oDelegateKeyUp = {
+                    onkeyup: function (oEvent) {
+                        that.onKeyUp(oEvent);
+                    },
+
+                    onsapenter: function (oEvent) {
+                        that.onSapEnter(oEvent);
+                    }
+                };
+                this.byId("styleDynTable").addEventDelegate(oDelegateKeyUp);
+                console.log("init");
             },
 
-            onAfterRendering:function(){
-                 //double click event
+            onAfterRendering: function () {
+                //double click event
                 var oModel = new JSONModel();
                 var oTable = this.getView().byId("styleDynTable");
                 oTable.setModel(oModel);
@@ -48,9 +76,10 @@ sap.ui.define([
 
                 });
 
-                if(this.isSearch){
+                if (this.isSearch) {
                     this.getColumns("SEARCH");
                 }
+                console.log("after rendering");
             },
 
             setChangeStatus: function (changed) {
@@ -73,7 +102,7 @@ sap.ui.define([
                 //this.getDynamicTableColumns(); //styles table
                 this.getColumns("SEARCH");
                 this.getStyleStats(); //style statistics
-                this.isSearch=true;
+                this.isSearch = true;
             },
 
             //******************************************* */
@@ -166,7 +195,7 @@ sap.ui.define([
                         oJSONDataModel.setData(oData);
                         me.getView().setModel(oJSONDataModel, "DataModel");
                         me.setTableData();
-                        me.setTableColumns();
+                        if (me.byId('styleDynTable').getColumns().length === 0) me.setTableColumns();
                         me.setChangeStatus(false);
                     },
                     error: function (err) { }
@@ -225,12 +254,15 @@ sap.ui.define([
                 var oColumnsData = oColumnsModel.getProperty('/results');
                 var oData = oDataModel.getProperty('/results');
 
+                let hasValue = JSON.stringify(oColumnsData).includes("Copy")
                 //add column for copy button
-                oColumnsData.unshift({
-                    "ColumnName": this._i18n.getText('Copy'),
-                    "ColumnType": "COPY",
-                    "Visible": false
-                });
+                if (!hasValue) {
+                    oColumnsData.unshift({
+                        "ColumnName": this._i18n.getText('Copy'),
+                        "ColumnType": "COPY",
+                        "Visible": false
+                    });
+                }
 
                 //add column for manage button
                 // oColumnsData.unshift({
@@ -246,16 +278,16 @@ sap.ui.define([
                     rows: oData
                 });
 
-                var oDelegateKeyUp = {
-                    onkeyup: function (oEvent) {
-                        that.onKeyUp(oEvent);
-                    },
+                // var oDelegateKeyUp = {
+                //     onkeyup: function (oEvent) {
+                //         that.onKeyUp(oEvent);
+                //     },
 
-                    onsapenter: function (oEvent) {
-                        that.onSapEnter(oEvent);
-                    }
-                };
-                this.byId("styleDynTable").addEventDelegate(oDelegateKeyUp);
+                //     onsapenter: function (oEvent) {
+                //         that.onSapEnter(oEvent);
+                //     }
+                // };
+                // this.byId("styleDynTable").addEventDelegate(oDelegateKeyUp);
 
                 var oTable = this.getView().byId("styleDynTable");
                 oTable.setModel(oModel);
@@ -359,10 +391,10 @@ sap.ui.define([
                     });
                     oColumnTemplate.data("StyleNo", "{}"); //custom data to hold style number
                 } else {
-                    oColumnTemplate = new sap.m.Text({ 
+                    oColumnTemplate = new sap.m.Text({
                         text: "{" + sColumnId + "}",
                         wrapping: false,
-                        tooltip: "{" + sColumnId + "}" 
+                        tooltip: "{" + sColumnId + "}"
                     }); //default text
                 }
 
@@ -385,7 +417,7 @@ sap.ui.define([
                 that._router.navTo("RouteStyleDetail", {
                     styleno: styleNo,
                     sbu: that._sbu,
-                    iono:' '
+                    iono: ' '
                 });
             },
 
@@ -771,7 +803,7 @@ sap.ui.define([
             onKeyUp(oEvent) {
                 //console.log("onKeyUp!");
 
-                var _dataMode = this.getView().getModel("undefined").getData().dataMode;
+                var _dataMode = this.getView().getModel("styleui").getData().dataMode;
                 _dataMode = _dataMode === undefined ? "READ" : _dataMode;
 
                 if ((oEvent.key === "ArrowUp" || oEvent.key === "ArrowDown") && oEvent.srcControl.sParentAggregationName === "rows" && _dataMode === "READ") {
@@ -810,7 +842,7 @@ sap.ui.define([
 
             },
 
-            onRefresh:function(oEvent){
+            onRefresh: function (oEvent) {
                 //this.getColumns("SEARCH");
                 this.getDynamicTableData("");
             },

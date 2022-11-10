@@ -28,7 +28,7 @@
                     <f:formElements>
                         <f:FormElement label="{i18n>STYLECD}" visible="{= ${VisibleFieldsData>/STYLECD} === true ? true : false }">
                             <f:fields>
-                                <Input id="STYLECD" value="{headerData>/Stylecd}" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required" change="onHeaderChange" liveChange="onHeaderChange" />
+                                <Input id="STYLECD" value="{headerData>/Stylecd}" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required" change="onHeaderChange" liveChange="onHeaderChange" required = "true"/>
                             </f:fields>
                         </f:FormElement>
                          <f:FormElement label="{i18n>PRODTYP}" visible="{= ${VisibleFieldsData>/PRODTYP} === true ? true : false }">
@@ -45,6 +45,7 @@
                                     value="{headerData>/Prodtyp}"
                                     change="onHeaderChange"
                                     liveChange="onHeaderChange"
+                                    required = "true"
                                 >
                                     <suggestionItems>
                                         <core:ListItem text="{ProdTypeModel>ProdTyp}" additionalText="{ProdTypeModel>Desc1}" />
@@ -66,6 +67,7 @@
                                     value="{headerData>/Stylecat}"
                                     change="onHeaderChange"
                                     liveChange="onHeaderChange"
+                                    required = "true"
                                 >
                                     <suggestionItems>
                                         <core:ListItem text="{StyleCatModel>Stylcat}" additionalText="{StyleCatModel>Desc1}" />
@@ -85,7 +87,7 @@
                     <f:formElements>
                         <f:FormElement label="{i18n>DESC1}" visible="{= ${VisibleFieldsData>/DESC1} === true ? true : false }">
                             <f:fields>
-                                <Input id="DESC1" value="{headerData>/Desc1}" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required" change="onHeaderChange" liveChange="onHeaderChange" />
+                                <Input id="DESC1" value="{headerData>/Desc1}" editable="{HeaderEditModeModel>/editMode}" valueStateText="Required" change="onHeaderChange" liveChange="onHeaderChange" required = "true" />
                             </f:fields>
                         </f:FormElement>
                          <f:FormElement label="{i18n>SALESGRP}" visible="{= ${VisibleFieldsData>/SALESGRP} === true ? true : false }">
@@ -102,6 +104,7 @@
                                     value="{headerData>/Salesgrp}"
                                     change="onHeaderChange"
                                     liveChange="onHeaderChange"
+                                    required = "true"
                                 >
                                     <suggestionItems>
                                         <core:ListItem text="{SalesGroupModel>SalesGrp}" additionalText="{SalesGroupModel>Desc1}" />
@@ -137,6 +140,7 @@
                                     value="{headerData>/Seasoncd}"
                                     change="onHeaderChange"
                                     liveChange="onHeaderChange"
+                                    required = "true"
                                 >
                                     <suggestionItems>
                                         <core:ListItem text="{SeasonsModel>Seasoncd}" additionalText="{SeasonsModel>Desc1}" />
@@ -158,6 +162,7 @@
                                     value="{headerData>/Custgrp}"
                                     change="onHeaderChange"
                                     liveChange="onHeaderChange"
+                                    required = "true"
                                 >
                                     <suggestionItems>
                                         <core:ListItem text="{CustGroupModel>CustGrp}" additionalText="{CustGroupModel>Desc1}" />
@@ -178,6 +183,7 @@
                                 value="{headerData>/Soldtocust}"
                                 change="onHeaderChange"
                                 liveChange="onHeaderChange"
+                                required = "true"
                             >
                                 <suggestionItems>
                                     <core:ListItem text="{CustomersModel>Custno}" additionalText="{CustomersModel>Desc1}" />
@@ -198,6 +204,7 @@
                                     value="{headerData>/Sizegrp}"
                                     change="onHeaderChange"
                                     liveChange="onHeaderChange"
+                                    required = "true"
                                 >
                                     <suggestionItems>
                                         <core:ListItem text="{SizeGroupModel>AttribGrp}" />
@@ -228,6 +235,7 @@
                                     value="{headerData>/Uom}"
                                     change="onHeaderChange"
                                     liveChange="onHeaderChange"
+                                    required = "true"
                                 >
                                     <suggestionItems>
                                         <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}" />

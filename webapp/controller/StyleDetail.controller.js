@@ -712,14 +712,25 @@ sap.ui.define([
                         oEntry.AttributesToItems.push(item);
                     };
 
-                    var hasDuplicate = false;
+                    var hasDuplicateColorCd = false;
                     oData.results.map(v => v.Attribcd.toLowerCase()).sort().sort((a, b) => {
-                        if (a == b) hasDuplicate = true
+                        if (a == b) hasDuplicateColorCd = true
                     })
-                    if (hasDuplicate) {
+                    if (hasDuplicateColorCd) {
                         //Common.showMessage("Duplicate color is not allow");
                         oMsgStrip.setVisible(true);
-                        oMsgStrip.setText("Duplicate color is not allowed");
+                        oMsgStrip.setText("Duplicate Color is not allowed");
+                        return;
+                    }
+
+                    var hasDuplicateColorDesc = false;
+                    oData.results.map(v => v.Desc1.toLowerCase()).sort().sort((a, b) => {
+                        if (a == b) hasDuplicateColorDesc = true
+                    })
+                    if (hasDuplicateColorDesc) {
+                        //Common.showMessage("Duplicate color is not allow");
+                        oMsgStrip.setVisible(true);
+                        oMsgStrip.setText("Duplicate Description is not allowed");
                         return;
                     }
 
@@ -2202,7 +2213,7 @@ sap.ui.define([
                 });
                 oTable.getBinding("rows").refresh();
                 //oTable.setVisibleRowCount(oData.length);
-              
+
                 this.setProcessEditMode();
                 this.onProcessChange();
             },
