@@ -42,7 +42,8 @@ sap.ui.define([
             _routePatternMatched: function (oEvent) {
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get Style from route pattern
                 this._sbu = oEvent.getParameter("arguments").sbu; //get SBU from route pattern
-                this._iono = oEvent.getParameter("arguments").iono; //get SBU from route pattern
+                this._iono = oEvent.getParameter("arguments").iono; //get IONO from route pattern
+            
                 this._oModelStyle = this.getOwnerComponent().getModel("ZGW_3DERP_IOSTYLE_SRV");
 
                 //set all as no changes at first load
@@ -54,11 +55,24 @@ sap.ui.define([
                 this._versionChanged = false;
 
                 this.setChangeStatus(false);
+                //set blnIOMod to true if route from IO
+                var oJSONModel = new JSONModel();
+                var oView = this.getView();
+                var data  ={
+                    "blnIOMod": this._iono != ' ' ? true : false,
+                }
+                oJSONModel.setData(data);
+                oView.setModel(oJSONModel, "IO");
 
                 if (this._styleNo === Constants.NEW) {
                     //create new - only header is editable at first
                     this.setHeaderEditMode();
                     this.setDetailVisible(false);
+                    
+                    // if(this._iono != ' '){
+                    //     this.getIOHdrSet(this._iono);
+                    // }
+
                 } else {
                     //existing style, get the style data
                     this.cancelHeaderEdit();
@@ -67,6 +81,8 @@ sap.ui.define([
                     this.getSizesTable(); //get sizes
                     this.getProcessesTable(); //get process
                     this.getVersionsTable(); //get versions
+
+
                 }
 
                 //close all edit modes
@@ -75,6 +91,18 @@ sap.ui.define([
                 //Load header
                 this.getHeaderConfig(); //get visible header fields
                 this.getHeaderData(); //get header data
+
+                if (this._styleNo === Constants.NEW) {
+                    //create new - only header is editable at first
+                    this.setHeaderEditMode();
+                    this.setDetailVisible(false);
+                    
+                    //get default values from IO
+                    if(this._iono != ' '){
+                        this.getIOHdrSet(this._iono);
+                    }
+
+                }
 
                 this.getColorsTable();
 
@@ -109,6 +137,62 @@ sap.ui.define([
                 detailPanel.setVisible(bool);
             },
 
+            getIOHdrSet:function(iono){
+                var oJSONModel = new JSONModel();
+                var oView = this.getView();
+
+                Common.openLoadingDialog(that);
+
+                //read IO header data and set default value
+                var entitySet = "/IOHdrSet('" + iono + "')"
+                this._oModelStyle.read(entitySet, {
+                    success: function (oData, oResponse) {
+                        //console.log(oData);
+                        var ioData  ={
+                            "Stylecd":oData.Stylecd,
+                            "Custgrp":oData.Custgrp,
+                            "Prodtyp":oData.Prodtype,
+                            "Salesgrp":oData.Salesgrp,
+                            "Seasoncd":oData.Seasoncd,
+                            "Uom":oData.Baseuom
+                        }
+                       
+                        oJSONModel.setData(ioData);
+                        oView.setModel(oJSONModel, "headerData");
+                        Common.closeLoadingDialog(that);
+                    },
+                    error: function () {
+                        Common.closeLoadingDialog(that);
+                    }
+                })
+
+            },
+
+            applyToIO:function(){
+                 //from IO module create new Style
+                 var param = {};
+                 param["IONO"] = this._iono;
+                 param["STYLENO"] = this._styleNo
+
+                 this._oModelStyle.update("/CreateIOStyleSet('" + this._iono + "')", param, {
+                     method: "PUT",
+                     success: function (data, oResponse) {
+                        Common.showMessage(me._i18n.getText('t4'));
+                     },
+                     error: function (err) {
+                         //show message strip on error
+                         var errorMsg;
+                         try {
+                             errorMsg = JSON.parse(err.responseText).error.message.value;
+                         } catch (err) {
+                             errorMsg = err.responseText;
+                         }
+                         oMsgStrip.setVisible(true);
+                         oMsgStrip.setText(errorMsg);
+                     }
+                 });
+            },
+
             //******************************************* */
             // Style Header
             //******************************************* */
@@ -128,6 +212,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         // var oldData = oData;
                         // me._headerData = JSON.parse(JSON.stringify(oData));
+                        console.log(oData);
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "headerData");
                         Common.closeLoadingDialog(that);
@@ -285,15 +370,15 @@ sap.ui.define([
                                 me.setTabReadMode("HeaderEditModeModel");
 
                                 //from IO module create new Style
-                                var param = {};
-                                param["IONO"] = me._iono;
-                                param["STYLENO"] = me._styleNo
+                                // var param = {};
+                                // param["IONO"] = me._iono;
+                                // param["STYLENO"] = me._styleNo
 
-                                me._oModelStyle.update("/CreateIOStyleSet('" + me._iono + "')", param, {
-                                    method: "PUT",
-                                    success: function (data, oResponse) {
-                                    }
-                                });
+                                // me._oModelStyle.update("/CreateIOStyleSet('" + me._iono + "')", param, {
+                                //     method: "PUT",
+                                //     success: function (data, oResponse) {
+                                //     }
+                                // });
 
                                 //change the url hash to the new style no
                                 var oHashChanger = HashChanger.getInstance();
@@ -952,6 +1037,7 @@ sap.ui.define([
                                 me._sizeChanged = false;
                                 me.setChangeStatus(false);
                                 Common.closeLoadingDialog(me);
+                                me.setTabReadMode("SizeEditModeModel");
                                 Common.showMessage(me._i18n.getText('t4'));
                                 Utils.getProcessAttributes(me);
                             },
@@ -1188,6 +1274,28 @@ sap.ui.define([
             },
 
             onSelectVersion: function (oEvent) {
+                //check first if Size Group have selected Base Indicator
+                
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new JSONModel();
+               
+                var entitySet = "/VersionStyleCheckSet"
+                oModel.setHeaders({
+                    styleno: this._styleNo
+                });
+                oModel.read(entitySet, {
+                    success: function (oData, oResponse) {
+                        oJSONModel.setData(oData.results);
+                    },
+                    error: function () {
+                        Common.closeLoadingDialog(that);
+                    }
+                })
+
+                console.log(oJSONModel);
+                
+
+
                 //selecting version to view
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
                 var version = oData.getProperty('Verno');

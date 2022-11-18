@@ -10,8 +10,9 @@
                 <ToolbarSpacer />
                   <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editstyleheader}" press="setHeaderEditMode" visible="{= ${HeaderEditModeModel>/editMode} === true ? false : true }" />
                 <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Savestyleheader}" press="onSaveHeader" visible="{= ${HeaderEditModeModel>/editMode} === true ? true : false }" />
-                <Button type="Ghost" icon="sap-icon://delete" text="{i18n>Deletestyle}" tooltip="{i18n>Deletestyleheader}" press="onDeleteStyle" visible="{= ${HeaderEditModeModel>/editMode} === true ? false : true }" />
+                <Button type="Ghost" icon="sap-icon://delete" text="{i18n>Deletestyle}" tooltip="{i18n>Deletestyleheader}" press="onDeleteStyle" visible="{= ${IO>/blnIOMod} === true ? false : ${HeaderEditModeModel>/editMode} === true ? false : true }" />
                 <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelHeaderEdit" visible="{= ${HeaderEditModeModel>/editMode} === true ? true : false }" />
+                <Button type="Ghost" icon="sap-icon://activate" text="{i18n>ApplytoIO}" tooltip="{i18n>ApplytoIO}" press="applyToIO" visible="{= ${IO>/blnIOMod} === true ?  ${HeaderEditModeModel>/editMode} === true ? false : true :false }" />
                 <!-- </Toolbar> -->
             </OverflowToolbar>
         </headerToolbar>
@@ -232,7 +233,7 @@
                                     valueStateText="Required"
                                     valueHelpRequest="onUomValueHelp"
                                     suggestionItems="{UOMModel>/results}"
-                                    value="{headerData>/Uom}"
+                                    value="{{headerData>/Uom}"
                                     change="onHeaderChange"
                                     liveChange="onHeaderChange"
                                     required = "true"

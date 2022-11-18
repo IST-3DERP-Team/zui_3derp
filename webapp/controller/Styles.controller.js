@@ -43,9 +43,9 @@ sap.ui.define([
 
                     var oView = this.getView();
                     oView.addEventDelegate({
-                        onAfterShow: function(oEvent){
+                        onAfterShow: function (oEvent) {
                             console.log("back")
-                            sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = that._fBackButton; 
+                            sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = that._fBackButton;
                             that.onRefresh();
                         }
                     }, oView);
@@ -255,21 +255,23 @@ sap.ui.define([
                 var oData = oDataModel.getProperty('/results');
 
                 let hasValue = JSON.stringify(oColumnsData).includes("Copy")
-                //add column for copy button
                 if (!hasValue) {
+                    //add column for copy button
                     oColumnsData.unshift({
                         "ColumnName": this._i18n.getText('Copy'),
                         "ColumnType": "COPY",
                         "Visible": false
                     });
+
+                    //add column for manage button
+                    oColumnsData.unshift({
+                        "ColumnName": this._i18n.getText('Manage'),
+                        "ColumnType": "SEL",
+                        "Visible": false
+                    });
                 }
 
-                //add column for manage button
-                // oColumnsData.unshift({
-                //     "ColumnName": this._i18n.getText('Manage'),
-                //     "ColumnType": "SEL",
-                //     "Visible": false
-                // });
+
 
                 //set the column and data model
                 var oModel = new JSONModel();

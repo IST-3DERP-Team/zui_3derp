@@ -127,7 +127,7 @@ sap.ui.define([
                         oTable.setModel(oJSONModel, "DataModel");
                         oTable.bindRows("DataModel>/results");
                         oTable.setVisibleRowCount(oData.results.length);
-                        oTable.attachPaste();
+                        //oTable.attachPaste();
                     },
                     error: function () { }
                 })
@@ -429,10 +429,18 @@ sap.ui.define([
 
                         oTable.setModel(oJSONModel, "DataModel");
                         oTable.setVisibleRowCount(oData.results.length);
-                        oTable.attachPaste();
+                        //oTable.attachPaste();
 
                         me.getBOMGMCColorsData(); //get pivot colors data
-                        me.getbomUVTable(); //get BOM by UV data
+                        me.getbomUVTable();  //get BOM by UV data
+                       
+                        // if(oGetComponentInd === true) {
+                        //     me._BOMbyGMCChanged = true;
+                        //     me.getbomUVTable(true); 
+                        // }
+                        // else{
+                        //     me.getbomUVTable(); 
+                        // }
                     },
                     error: function (err) { 
                         Common.closeLoadingDialog(that);
@@ -594,13 +602,32 @@ sap.ui.define([
                         item = that.addBOMItem(oData.results[i]);
                         oEntry.GMCToItems.push(item);
                     };
-                    Common.openLoadingDialog(that);
+                    //Common.openLoadingDialog(that);
 
                     path = "/BOMGMCSet";
 
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
+
+                    var checkColor=[];
+
+                    for (var i = 0; i < oData.results.length; i++) {
+                        //pivot colros only for AUV and ASUV
+                        if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
+                            for (var j = 0; j < me._colors.length; j++) {
+                                var color = me._colors[j];
+                                if(oData.results[i][color.Attribcd]=="")
+                                {
+                                    oMsgStrip.setVisible(true);
+                                    oMsgStrip.setText("Color Description is required");
+                                    return;
+                                }
+                                 
+                            }
+                        }
+                    };   
+                    Common.openLoadingDialog(that);
                     //call create deep method for BOM by GMC
                     oModel.create(path, oEntry, {
                         method: "POST",
@@ -788,17 +815,24 @@ sap.ui.define([
             // BOM by UV
             //******************************************* */
 
-            getbomUVTable: function () {
+            getbomUVTable: function (oGetComponentInd) {
                 //get BOM by UV 
                 var me = this;
                 var columnData = [];
                 var oModelUV = this.getOwnerComponent().getModel();
                 var usageClass = this.getView().byId("UsageClassCB").getSelectedKey();
 
+                //flag if STY items needs to retrieve Components
+                var getComponent = "";
+                if(oGetComponentInd) {
+                    getComponent = "Y";
+                } 
+
                 oModelUV.setHeaders({
                     sbu: this._sbu,
                     type: Constants.BOMUV,
-                    usgcls: usageClass
+                    usgcls: usageClass,
+                    getcomponent: getComponent
                 });
 
                 var pivotArray;
@@ -904,7 +938,7 @@ sap.ui.define([
                         });
                         oTable.setModel(oJSONModel, "DataModel");
                         oTable.setVisibleRowCount(unique.length);
-                        oTable.attachPaste();
+                        //oTable.attachPaste();
                         oTable.bindColumns("DataModel>/columns", function (sId, oContext) {
                             var column = oContext.getObject();
                             return new sap.ui.table.Column({
@@ -1179,7 +1213,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         oTable.setVisibleRowCount(oData.results.length);
-                        oTable.attachPaste();
+                        //oTable.attachPaste();
                     },
                     error: function () { 
                     }
