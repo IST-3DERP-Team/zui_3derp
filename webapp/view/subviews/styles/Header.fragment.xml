@@ -233,7 +233,7 @@
                                     valueStateText="Required"
                                     valueHelpRequest="onUomValueHelp"
                                     suggestionItems="{UOMModel>/results}"
-                                    value="{{headerData>/Uom}"
+                                    value="{headerData>/Uom}"
                                     change="onHeaderChange"
                                     liveChange="onHeaderChange"
                                     required = "true"

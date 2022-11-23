@@ -19,6 +19,12 @@
         <!-- Sizes Table -->
         <c:DynamicTable id="sizesTable" rows="{DataModel>/results}" enableColumnReordering="false" class="sapUiSizeCompact" visibleRowCountMode="Auto" selectionMode="None">
             <c:columns>
+                 <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="ATTRIBSEQ">
+                <Label text="{i18n>Sequence}" />
+                <t:template>
+                    <Text text="{DataModel>Attribseq}" />
+                </t:template>
+            </t:Column>
                 <t:Column width="11rem" filterProperty="Attribgrp">
                     <Label text="{i18n>SizeRange}" />
                     <t:template>

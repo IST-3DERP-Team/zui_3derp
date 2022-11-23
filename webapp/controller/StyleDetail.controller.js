@@ -68,10 +68,6 @@ sap.ui.define([
                     //create new - only header is editable at first
                     this.setHeaderEditMode();
                     this.setDetailVisible(false);
-                    
-                    // if(this._iono != ' '){
-                    //     this.getIOHdrSet(this._iono);
-                    // }
 
                 } else {
                     //existing style, get the style data
@@ -90,18 +86,20 @@ sap.ui.define([
 
                 //Load header
                 this.getHeaderConfig(); //get visible header fields
-                this.getHeaderData(); //get header data
+               
 
                 if (this._styleNo === Constants.NEW) {
-                    //create new - only header is editable at first
-                    this.setHeaderEditMode();
-                    this.setDetailVisible(false);
-                    
                     //get default values from IO
                     if(this._iono != ' '){
                         this.getIOHdrSet(this._iono);
                     }
+                    else{
+                        this.getHeaderData(); //get header data from style
+                    }
 
+                }
+                else{
+                    this.getHeaderData(); //get header data from style
                 }
 
                 this.getColorsTable();
@@ -147,7 +145,7 @@ sap.ui.define([
                 var entitySet = "/IOHdrSet('" + iono + "')"
                 this._oModelStyle.read(entitySet, {
                     success: function (oData, oResponse) {
-                        //console.log(oData);
+                        console.log(oData);
                         var ioData  ={
                             "Stylecd":oData.Stylecd,
                             "Custgrp":oData.Custgrp,
@@ -218,7 +216,8 @@ sap.ui.define([
                         Common.closeLoadingDialog(that);
                         me.setChangeStatus(false);
                     },
-                    error: function () {
+                    error: function (err) {
+                        console.log(err);
                         Common.closeLoadingDialog(that);
                     }
                 })
@@ -493,6 +492,7 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
+                        console.log(oData);
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
@@ -509,7 +509,7 @@ sap.ui.define([
                 //set general attributes table edit mode
                 var oJSONModel = new JSONModel();
                 var data = {};
-                this._generalAttrChanged = false;
+                this._generalAttrChanged = true;
                 data.editMode = true;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "GenAttrEditModeModel");
@@ -581,7 +581,8 @@ sap.ui.define([
                             "Baseind": false,
                             "Desc1": oData.results[i].Desc1,
                             "Valuetyp": "STRVAL",
-                            "Attribval": oData.results[i].Attribval
+                            "Attribval": oData.results[i].Attribval,
+                            "Attribseq": oData.results[i].Attribseq
                         };
 
                         oEntry.AttributesToItems.push(item);
@@ -692,6 +693,7 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
+                        console.log(oData);
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
@@ -792,7 +794,8 @@ sap.ui.define([
                             "Attribcd": oData.results[i].Attribcd,
                             "Baseind": false,
                             "Desc1": oData.results[i].Desc1,
-                            "Valuetyp": "STRVAL"
+                            "Valuetyp": "STRVAL",
+                            "Attribseq": oData.results[i].Attribseq
                         };
                         oEntry.AttributesToItems.push(item);
                     };
@@ -1017,7 +1020,8 @@ sap.ui.define([
                             "Attribgrp": oData.results[i].Attribgrp,
                             "Baseind": oData.results[i].Baseind,
                             "Desc1": oData.results[i].Desc1,
-                            "Valuetyp": Constants.STRVAL
+                            "Valuetyp": Constants.STRVAL,
+                            "Attribseq": oData.results[i].Attribseq
                         };
                         oEntry.AttributesToItems.push(item);
                     };

@@ -14,6 +14,7 @@ sap.ui.define([
         "use strict";
 
         var that;
+        var blnGetComponentInd=false;
 
         return Controller.extend("zui3derp.controller.Version", {
 
@@ -431,6 +432,11 @@ sap.ui.define([
                         oTable.setVisibleRowCount(oData.results.length);
                         //oTable.attachPaste();
 
+                        if(blnGetComponentInd) {
+                            me.onSaveBOMbyGMC(oGetComponentInd);
+                            blnGetComponentInd=false;
+                        } 
+                       
                         me.getBOMGMCColorsData(); //get pivot colors data
                         me.getbomUVTable();  //get BOM by UV data
                        
@@ -712,6 +718,147 @@ sap.ui.define([
                 }
             },
 
+
+            onSaveGetComponents: function (oGetComponentInd) {
+                //on save of BOM by GMC 
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var oTableModel = this.getView().byId("bomGMCTable").getModel("DataModel");
+                var path;
+                var item = {};
+
+                var oMsgStrip = this.getView().byId('BOMbyGMCMessageStrip');
+                oMsgStrip.setVisible(false);
+
+                if(oGetComponentInd === true) {
+                    me.getbomGMCTable(true);
+                    me._BOMbyGMCChanged = true;
+                } 
+
+                if (!this._BOMbyGMCChanged) { //check if data changed
+                    Common.showMessage(this._i18n.getText('t7'));
+                } else {
+
+                    //build headers and payload
+                    var oData = oTableModel.getData();
+                    var oEntry = {
+                        Styleno: this._styleNo,
+                        GMCToItems: []
+                    }
+                    for (var i = 0; i < oData.results.length; i++) {
+                        item = that.addBOMItem(oData.results[i]);
+                        oEntry.GMCToItems.push(item);
+                    };
+                    //Common.openLoadingDialog(that);
+
+                    path = "/BOMGMCSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
+
+                    var checkColor=[];
+
+                    for (var i = 0; i < oData.results.length; i++) {
+                        //pivot colros only for AUV and ASUV
+                        if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
+                            for (var j = 0; j < me._colors.length; j++) {
+                                var color = me._colors[j];
+                                if(oData.results[i][color.Attribcd]=="")
+                                {
+                                    oMsgStrip.setVisible(true);
+                                    oMsgStrip.setText("Color Description is required");
+                                    return;
+                                }
+                                 
+                            }
+                        }
+                    };   
+                    Common.openLoadingDialog(that);
+                    //call create deep method for BOM by GMC
+                    oModel.create(path, oEntry, {
+                        method: "POST",
+                        success: function (oDataRes, oResponse) {
+                            me._BOMbyGMCChanged = false;
+
+                            // if(oGetComponentInd === true) {
+                            //     me.getbomGMCTable(true);
+                            //     me._BOMbyGMCChanged = true;
+                            // } else {
+                            //     me.getbomGMCTable();
+                            // }
+                            me.setTabReadEditMode(false,"BOMbyGMCEditModeModel")
+                            Common.showMessage(me._i18n.getText('t4'));
+
+                            //build the BOM by UV headers and payload - this is for the colors pivot
+                            var oEntry = {
+                                Styleno: me._styleNo,
+                                Verno: me._version,
+                                Usgcls: Constants.AUV,
+                                UVToItems: []
+                            }
+
+                            for (var i = 0; i < oData.results.length; i++) {
+                                //pivot colros only for AUV and ASUV
+                                if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
+                                    for (var j = 0; j < me._colors.length; j++) {
+
+                                        var color = me._colors[j];
+                                        item = {
+                                            "Styleno": me._styleNo,
+                                            "Verno": me._version,
+                                            "Gmc": oData.results[i].GMC,
+                                            "Partcd": oData.results[i].PARTCD,
+                                            "Usgcls": oData.results[i].USGCLS,
+                                            "Color": color.Attribcd,
+                                            "Mattyp": oData.results[i].MATTYP,
+                                            "Mattypcls": Constants.ZCOLR,
+                                            "Desc1": oData.results[i][color.Attribcd],
+                                            "Consump": oData.results[i].CONSUMP,
+                                            "Wastage": oData.results[i].WASTAGE
+                                        };
+                                        oEntry.UVToItems.push(item);
+                                    }
+                                }
+                            };                           
+
+                            if (oEntry.UVToItems.length > 0) {
+                                
+                                path = "/BOMUVSet";
+
+                                oModel.setHeaders({
+                                    sbu: me._sbu
+                                });
+                                //call create deep method for BOM by UV 
+                                oModel.create(path, oEntry, {
+                                    method: "POST",
+                                    success: function (oData, oResponse) {
+                                        me.getbomGMCTable();
+                                        me._BOMbyGMCChanged = false;
+                                        me.setChangeStatus(false);
+                                        Common.showMessage(me._i18n.getText('t4'));
+                                    },
+                                    error: function (err) {
+                                        var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                        oMsgStrip.setVisible(true);
+                                        oMsgStrip.setText(errorMsg);
+                                        Common.showMessage(me._i18n.getText('t5'));
+                                    }
+                                });
+                            }
+                            Common.closeLoadingDialog(that);
+                        },
+                        error: function (err) {
+                            Common.closeLoadingDialog(that);
+                            Common.showMessage(me._i18n.getText('t5'));
+                            var errorMsg = JSON.parse(err.responseText).error.message.value;
+                            oMsgStrip.setVisible(true);
+                            oMsgStrip.setText(errorMsg);
+                        }
+                    });
+                }
+            },
+
             onDeleteBOMItems: function () {
                 //confirm delete selected BOM items
                 this.onDeleteTableItems('bomGMCTable', 'ConfirmDeleteBOMItems', this._ConfirmDeleteBOMDialog);
@@ -773,6 +920,7 @@ sap.ui.define([
                 //save first before get components
                 this._BOMbyGMCChanged = true;
                 this.onSaveBOMbyGMC(true);
+                blnGetComponentInd=true;
             },
             
             //******************************************* */

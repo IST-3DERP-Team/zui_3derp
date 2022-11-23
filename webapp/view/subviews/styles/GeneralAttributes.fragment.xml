@@ -50,6 +50,13 @@
             </Toolbar>
         </t:extension> -->
         <t:columns>
+         <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="ATTRIBSEQ">
+                <Label text="{i18n>Sequence}" />
+                <t:template>
+                    <Text id="AttrTypeSeq" text="{DataModel>Attribseq}" />
+                </t:template>
+            </t:Column>
+
             <t:Column width="8rem" filterProperty="Attribtyp">
                 <Label text="{i18n>AttributeType}" />
                 <t:template>
@@ -58,7 +65,7 @@
                         type="Text"
                         showSuggestion="true"
                         showValueHelp="true"
-                        editable="{GenAttrEditModeModel>/editMode}"
+                        editable="false"
                         change="onGeneralAttrChange"
                         liveChange="onGeneralAttrChange"
                         valueHelpRequest="onAttrTypesValueHelp"
