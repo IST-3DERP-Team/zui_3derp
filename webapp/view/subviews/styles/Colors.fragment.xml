@@ -27,7 +27,7 @@
         <c:DynamicTable id="colorsTable" rows="{DataModel>/results}" enableColumnReordering="false" visibleRowCountMode="Auto" class="sapUiSizeCompact" selectionMode="MultiToggle">
             <c:columns>
                 <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="ATTRIBSEQ">
-                    <Label text="{i18n>Sequence}" />
+                    <Label text="{i18n>Seq}" />
                     <t:template>
                         <Text text="{DataModel>Attribseq}" />
                     </t:template>

@@ -27,7 +27,7 @@
                         <t:template>
                             <Input id="AttrTypesInput3" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
                                 change="onVersionAttrChange" liveChange="onVersionAttrChange"
-                                valueHelpRequest="onAttrTypesValueHelp"  suggestionItems="{path:'AttribTypeModel>/results'}" value="{DataModel>Attribtyp}">
+                                valueHelpRequest="onAttrTypesValueHelp"  suggestionItems="{path:'AttribTypeModel>/results'templateShareable: false}" value="{DataModel>Attribtyp}">
                                 <suggestionItems>
                                     <core:ListItem text="{AttribTypeModel>Attribtyp}" additionalText="{AttribTypeModel>Desc1}"/>
                                 </suggestionItems>
@@ -39,7 +39,7 @@
                         <t:template>
                             <Input id="AttrCodesInput3" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
                                 change="onVersionAttrChange" liveChange="onVersionAttrChange"
-                                valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{AttribCdModel>/results}" value="{DataModel>Attribcd}">
+                                valueHelpRequest="onAttrCodesValueHelp" suggestionItems="{path:'AttribCdModel>/results', templateShareable: false}" value="{DataModel>Attribcd}">
                                 <suggestionItems>
                                     <core:ListItem text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}"/>
                                 </suggestionItems>

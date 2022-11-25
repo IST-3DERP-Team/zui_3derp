@@ -192,6 +192,11 @@ sap.ui.define([
                     filters: aFilters,
                     success: function (oData, oResponse) {
                         oText.setText(oData.results.length + "");
+                        
+                        oData.results.sort(function(a,b) {
+                            return new Date(b.CREATEDDT) - new Date(a.CREATEDDT);
+                        });
+
                         oJSONDataModel.setData(oData);
                         me.getView().setModel(oJSONDataModel, "DataModel");
                         me.setTableData();

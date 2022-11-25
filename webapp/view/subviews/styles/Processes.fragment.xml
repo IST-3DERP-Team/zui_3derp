@@ -40,7 +40,7 @@
                             <t:template>
                                 <Input id="ProcessCdInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
                                     change="onProcessChange" liveChange="onProcessChange"
-                                    valueHelpRequest="onProcessesValueHelp" suggestionItems="{path:'ProcessCodeModel>/results'}" value="{DataModel>Processcd}">
+                                    valueHelpRequest="onProcessesValueHelp" suggestionItems="{path:'ProcessCodeModel>/results',templateShareable: false}" value="{DataModel>Processcd}">
                                     <suggestionItems>
                                         <core:ListItem text="{ProcessCodeModel>ProcessCd}" additionalText="{ProcessCodeModel>Desc1}"/>
                                     </suggestionItems>
@@ -52,7 +52,7 @@
                             <t:template>
                                 <Input id="VASTypeInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
                                     change="onProcessChange" liveChange="onProcessChange"
-                                    valueHelpRequest="onVASTypeValueHelp" suggestionItems="{path:'VASTypeModel>/results'}" value="{DataModel>Vastyp}">
+                                    valueHelpRequest="onVASTypeValueHelp" suggestionItems="{path:'VASTypeModel>/results',templateShareable: false}" value="{DataModel>Vastyp}">
                                     <suggestionItems>
                                         <core:ListItem text="{VASTypeModel>Processcd}" additionalText="{VASTypeModel>Desc1}"/>
                                     </suggestionItems>
@@ -71,7 +71,7 @@
                             <t:template>
                                 <Input id="AttrTypesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
                                     change="onProcessChange" liveChange="onProcessChange"
-                                    valueHelpRequest="onProcessAttrTypesValueHelp" suggestionItems="{path:'ProcessAttribTypeModel>/results'}" value="{DataModel>Attribtyp}">
+                                    valueHelpRequest="onProcessAttrTypesValueHelp" suggestionItems="{path:'ProcessAttribTypeModel>/results',templateShareable: false}" value="{DataModel>Attribtyp}">
                                     <suggestionItems>
                                         <core:ListItem text="{ProcessAttribTypeModel>Attribtyp}" additionalText="{ProcessAttribTypeModel>Desc1}"/>
                                     </suggestionItems>
@@ -83,7 +83,7 @@
                             <t:template>
                                 <Input id="AttrCodesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
                                     change="onProcessChange" liveChange="onProcessChange"
-                                    valueHelpRequest="onProcessAttrCodesValueHelp" suggestionItems="{path:'ProcessAttribCodeModel>/results'}" value="{DataModel>Attribcd}">
+                                    valueHelpRequest="onProcessAttrCodesValueHelp" suggestionItems="{path:'ProcessAttribCodeModel>/results',templateShareable: false}" value="{DataModel>Attribcd}">
                                     <suggestionItems>
                                         <core:ListItem text="{ProcessAttribCodeModel>Attribcd}" additionalText="{ProcessAttribCodeModel>Desc2}"/>
                                     </suggestionItems>

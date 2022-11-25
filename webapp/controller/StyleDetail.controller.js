@@ -344,6 +344,7 @@ sap.ui.define([
                         oModel.setHeaders({
                             sbu: this._sbu
                         });
+                        console.log(oEntry);
 
 
                         //call create new style
@@ -799,6 +800,7 @@ sap.ui.define([
                         };
                         oEntry.AttributesToItems.push(item);
                     };
+                    console.log(oEntry)
 
                     var hasDuplicateColorCd = false;
                     oData.results.map(v => v.Attribcd.toLowerCase()).sort().sort((a, b) => {
@@ -1278,8 +1280,8 @@ sap.ui.define([
             },
 
             onSelectVersion: function (oEvent) {
+                /*
                 //check first if Size Group have selected Base Indicator
-                
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                
@@ -1295,9 +1297,8 @@ sap.ui.define([
                         Common.closeLoadingDialog(that);
                     }
                 })
-
                 console.log(oJSONModel);
-                
+                */
 
 
                 //selecting version to view

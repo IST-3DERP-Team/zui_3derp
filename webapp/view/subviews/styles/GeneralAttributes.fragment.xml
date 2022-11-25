@@ -51,7 +51,7 @@
         </t:extension> -->
         <t:columns>
          <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="ATTRIBSEQ">
-                <Label text="{i18n>Sequence}" />
+                <Label text="{i18n>Seq}" />
                 <t:template>
                     <Text id="AttrTypeSeq" text="{DataModel>Attribseq}" />
                 </t:template>
@@ -65,11 +65,11 @@
                         type="Text"
                         showSuggestion="true"
                         showValueHelp="true"
-                        editable="false"
+                        editable="{GenAttrEditModeModel>/editMode}"
                         change="onGeneralAttrChange"
                         liveChange="onGeneralAttrChange"
                         valueHelpRequest="onAttrTypesValueHelp"
-                        suggestionItems="{path:'AttribTypeModel>/results'}"
+                        suggestionItems="{path:'AttribTypeModel>/results',templateShareable: false}"
                         value="{DataModel>Attribtyp}"
                     >
                         <suggestionItems>
@@ -90,7 +90,7 @@
                         change="onGeneralAttrChange"
                         liveChange="onGeneralAttrChange"
                         valueHelpRequest="onAttrCodesValueHelp"
-                        suggestionItems="{path:'AttribCdModel>/results'}"
+                        suggestionItems="{path:'AttribCdModel>/results',templateShareable: false}"
                         value="{DataModel>Attribcd}"
                     >
                         <suggestionItems>
