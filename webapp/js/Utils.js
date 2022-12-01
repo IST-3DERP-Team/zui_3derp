@@ -81,6 +81,7 @@ sap.ui.define([
             var oJSONModel5 = new JSONModel();
             oSHModel.read("/SoldToCustSet", {
                 success: function (oData, oResponse) {
+                    console.log("SoldTOCustomer", oData);
                     oJSONModel5.setData(oData);
                     oJSONModel5.setSizeLimit(9999);
                     oView.setModel(oJSONModel5, "CustomersModel")

@@ -8,7 +8,7 @@
 		        title="{headerData>/Stylecd}">
         </ObjectHeader>
 
-        <IconTabBar expandable="false" headerMode="Inline" upperCase="true" class="sapUiResponsiveContentPadding">
+        <IconTabBar expandable="false" headerMode="Inline" upperCase="true" stretchContentHeight="true" class="sapUiResponsiveContentPadding">
             <items>
 
                 <!-- VERSION ATTRIBUTES -->

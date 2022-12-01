@@ -35,6 +35,13 @@ sap.ui.define([
 
                 this._headerChanged = false; //Set change flag
 
+                if (sap.ui.getCore().byId("backBtn") !== undefined) {
+                    sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = function (oEvent) {
+                        that.onNavBack();
+                    }
+                }
+
+
                 //Initialize translations
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             },
@@ -43,7 +50,7 @@ sap.ui.define([
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get Style from route pattern
                 this._sbu = oEvent.getParameter("arguments").sbu; //get SBU from route pattern
                 this._iono = oEvent.getParameter("arguments").iono; //get IONO from route pattern
-            
+
                 this._oModelStyle = this.getOwnerComponent().getModel("ZGW_3DERP_IOSTYLE_SRV");
 
                 //set all as no changes at first load
@@ -58,7 +65,7 @@ sap.ui.define([
                 //set blnIOMod to true if route from IO
                 var oJSONModel = new JSONModel();
                 var oView = this.getView();
-                var data  ={
+                var data = {
                     "blnIOMod": this._iono != ' ' ? true : false,
                 }
                 oJSONModel.setData(data);
@@ -86,19 +93,19 @@ sap.ui.define([
 
                 //Load header
                 this.getHeaderConfig(); //get visible header fields
-               
+
 
                 if (this._styleNo === Constants.NEW) {
                     //get default values from IO
-                    if(this._iono != ' '){
+                    if (this._iono != ' ') {
                         this.getIOHdrSet(this._iono);
                     }
-                    else{
+                    else {
                         this.getHeaderData(); //get header data from style
                     }
 
                 }
-                else{
+                else {
                     this.getHeaderData(); //get header data from style
                 }
 
@@ -135,7 +142,7 @@ sap.ui.define([
                 detailPanel.setVisible(bool);
             },
 
-            getIOHdrSet:function(iono){
+            getIOHdrSet: function (iono) {
                 var oJSONModel = new JSONModel();
                 var oView = this.getView();
 
@@ -146,15 +153,15 @@ sap.ui.define([
                 this._oModelStyle.read(entitySet, {
                     success: function (oData, oResponse) {
                         console.log(oData);
-                        var ioData  ={
-                            "Stylecd":oData.Stylecd,
-                            "Custgrp":oData.Custgrp,
-                            "Prodtyp":oData.Prodtype,
-                            "Salesgrp":oData.Salesgrp,
-                            "Seasoncd":oData.Seasoncd,
-                            "Uom":oData.Baseuom
+                        var ioData = {
+                            "Stylecd": oData.Stylecd,
+                            "Custgrp": oData.Custgrp,
+                            "Prodtyp": oData.Prodtype,
+                            "Salesgrp": oData.Salesgrp,
+                            "Seasoncd": oData.Seasoncd,
+                            "Uom": oData.Baseuom
                         }
-                       
+
                         oJSONModel.setData(ioData);
                         oView.setModel(oJSONModel, "headerData");
                         Common.closeLoadingDialog(that);
@@ -166,30 +173,53 @@ sap.ui.define([
 
             },
 
-            applyToIO:function(){
-                 //from IO module create new Style
-                 var param = {};
-                 param["IONO"] = this._iono;
-                 param["STYLENO"] = this._styleNo
+            applyToIO: function () {
+                //from IO module create new Style
+                var param = {};
+                param["IONO"] = this._iono;
+                param["STYLENO"] = this._styleNo
 
-                 this._oModelStyle.update("/CreateIOStyleSet('" + this._iono + "')", param, {
-                     method: "PUT",
-                     success: function (data, oResponse) {
+                this._oModelStyle.update("/CreateIOStyleSet('" + this._iono + "')", param, {
+                    method: "PUT",
+                    success: function (data, oResponse) {
                         Common.showMessage(me._i18n.getText('t4'));
-                     },
-                     error: function (err) {
-                         //show message strip on error
-                         var errorMsg;
-                         try {
-                             errorMsg = JSON.parse(err.responseText).error.message.value;
-                         } catch (err) {
-                             errorMsg = err.responseText;
-                         }
-                         oMsgStrip.setVisible(true);
-                         oMsgStrip.setText(errorMsg);
-                     }
-                 });
+                    },
+                    error: function (err) {
+                        //show message strip on error
+                        var errorMsg;
+                        try {
+                            errorMsg = JSON.parse(err.responseText).error.message.value;
+                        } catch (err) {
+                            errorMsg = err.responseText;
+                        }
+                        oMsgStrip.setVisible(true);
+                        oMsgStrip.setText(errorMsg);
+                    }
+                });
             },
+
+            //redirect to IO
+            onNavBack: function (oEvent) {
+                console.log(this._iono)
+                if (this._iono != " ") {
+                    var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
+                    var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
+                        target: {
+                            semanticObject: "ZSO_IO2",
+                            action: "display&/RouteIODetail/" + this._iono + "/" + this._sbu + "/" + this._styleNo
+                        }
+                       
+                    })) || ""; // generate the Hash to display style
+
+                    oCrossAppNavigator.toExternal({
+                        target: {
+                            shellHash: hash
+                        }
+                    });
+                }
+
+            },
+
 
             //******************************************* */
             // Style Header

@@ -180,7 +180,7 @@
                                 editable="{HeaderEditModeModel>/editMode}"
                                 valueStateText="Required"
                                 valueHelpRequest="onCustomersValueHelp"
-                                suggestionItems="{path:'CustomersModel>/results', templateShareable: false}"
+                                suggestionItems="{path:'CustomersModel>/results'}"
                                 value="{headerData>/Soldtocust}"
                                 change="onHeaderChange"
                                 liveChange="onHeaderChange"
