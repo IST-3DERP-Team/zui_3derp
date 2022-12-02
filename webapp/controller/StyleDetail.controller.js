@@ -6,12 +6,13 @@ sap.ui.define([
     "../js/Utils",
     "sap/ui/model/json/JSONModel",
     'jquery.sap.global',
-    'sap/ui/core/routing/HashChanger'
+    'sap/ui/core/routing/HashChanger',
+    "sap/ui/core/routing/History"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, Constants, Utils, JSONModel, jQuery, HashChanger) {
+    function (Controller, Filter, Common, Constants, Utils, JSONModel, jQuery, HashChanger, History) {
         "use strict";
 
         var that;
@@ -47,6 +48,8 @@ sap.ui.define([
             },
 
             _routePatternMatched: function (oEvent) {
+                Common.openLoadingDialog(that);
+
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get Style from route pattern
                 this._sbu = oEvent.getParameter("arguments").sbu; //get SBU from route pattern
                 this._iono = oEvent.getParameter("arguments").iono; //get IONO from route pattern
@@ -119,6 +122,8 @@ sap.ui.define([
                 //Attachments
                 this.bindUploadCollection();
                 this.getView().getModel("FileModel").refresh();
+
+                Common.closeLoadingDialog(that);
             },
 
             closeEditModes: function () {
@@ -176,13 +181,19 @@ sap.ui.define([
             applyToIO: function () {
                 //from IO module create new Style
                 var param = {};
+                var me = this;
                 param["IONO"] = this._iono;
                 param["STYLENO"] = this._styleNo
+                Common.openLoadingDialog(that);
 
                 this._oModelStyle.update("/CreateIOStyleSet('" + this._iono + "')", param, {
                     method: "PUT",
                     success: function (data, oResponse) {
-                        Common.showMessage(me._i18n.getText('t4'));
+                        setTimeout(() => {
+                            Common.showMessage(me._i18n.getText('t13') + param["IONO"]);
+                            Common.closeLoadingDialog(that);
+                            me.routeTOIO();
+                        }, 1000);
                     },
                     error: function (err) {
                         //show message strip on error
@@ -202,22 +213,37 @@ sap.ui.define([
             onNavBack: function (oEvent) {
                 console.log(this._iono)
                 if (this._iono != " ") {
-                    var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
-                    var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
-                        target: {
-                            semanticObject: "ZSO_IO2",
-                            action: "display&/RouteIODetail/" + this._iono + "/" + this._sbu + "/" + this._styleNo
-                        }
-                       
-                    })) || ""; // generate the Hash to display style
+                    this.routeTOIO();
+                }
+                else {
+                    var oHistory = History.getInstance();
+                    var sPreviousHash = oHistory.getPreviousHash();
 
-                    oCrossAppNavigator.toExternal({
-                        target: {
-                            shellHash: hash
-                        }
-                    });
+                    if (sPreviousHash !== undefined) {
+                        window.history.go(-1);
+                    } else {
+                        var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                        oRouter.navTo("RouteStyles", {}, true);
+                    }
                 }
 
+            },
+
+            routeTOIO: function () {
+                var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
+                var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
+                    target: {
+                        semanticObject: "ZSO_IO2",
+                        action: "display&/RouteIODetail/" + this._iono + "/" + this._sbu + "/" + this._styleNo
+                    }
+
+                })) || ""; // generate the Hash to display style
+
+                oCrossAppNavigator.toExternal({
+                    target: {
+                        shellHash: hash
+                    }
+                });
             },
 
 
@@ -1334,6 +1360,7 @@ sap.ui.define([
                 //selecting version to view
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
                 var version = oData.getProperty('Verno');
+                this._iono = ' ';
                 that._router.navTo("RouteVersion", {
                     styleno: that._styleNo,
                     sbu: that._sbu,

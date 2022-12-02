@@ -1,6 +1,7 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
-    xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-
+    xmlns:c="zui3derp.control" xmlns:uiT="sap.ui.table"  xmlns:layout="sap.ui.layout"  >
+     
+<VBox fitContainer="true" >
     <Toolbar height="3rem" style="Clear">
         <Label text="{i18n>BOMbyGMC}"/>
         <Button icon="sap-icon://synchronize" press="onRefresh"/>
@@ -32,9 +33,27 @@
     <!-- <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['BOMSTYLE']}}"
         selectionMode="{= ${BOMbyGMCEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
     </c:DynamicTreeTable> -->
-    <ScrollContainer height="400px" vertical="true">
-        <c:DynamicTable id="bomGMCTable" class="sapUiSizeCompact" rows="{path:'DataModel>/results'}" visibleRowCountMode="Fixed"
+    <uiT:Table
+         id="bomGMCTable" 
+         class="sapUiTinyMarginBottom sapUiTinyMarginBegin sapUiTinyMarginEnd" 
+         rows="{path:'DataModel>/results'}"
+        visibleRowCountMode="Auto"
+        selectionMode="MultiToggle">
+            <uiT:layoutData>
+                <FlexItemData growFactor="1" baseSize="0%" />
+            </uiT:layoutData>
+         
+          
+    </uiT:Table>
+    <!-- <ScrollContainer height="400px" vertical="true">
+        <c:DynamicTable id="bomGMCTable" class="sapUiSizeCompact" rows="{path:'DataModel>/results'}" visibleRowCountMode="Auto"
             selectionMode="MultiToggle" width="300%">
+            <c:layoutData>
+                <FlexItemData growFactor="1" baseSize="0%" />
+            </c:layoutData>
         </c:DynamicTable>
-    </ScrollContainer>
+         
+    </ScrollContainer> -->
+    </VBox>
+    
 </core:FragmentDefinition>    

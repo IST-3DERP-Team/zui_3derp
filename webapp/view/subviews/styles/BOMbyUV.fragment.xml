@@ -1,6 +1,6 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-
+<VBox fitContainer="true" >
     <Toolbar height="3rem" style="Clear">
         <HBox alignContent="Center" alignItems="Center">
             <Label text="{i18n>UsageClass}"/>
@@ -27,10 +27,13 @@
     <MessageStrip id="BOMbyUVMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
     
     <!-- BOM by UV Table -->
-    <ScrollContainer height="400px" vertical="true">
+    <!-- <ScrollContainer height="400px" vertical="true"> -->
         <c:DynamicTable id="bomUVTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" 
-            selectionMode="Single" visibleRowCountMode="Fixed" width="500%">
+            selectionMode="Single" visibleRowCountMode="Auto" >
+            <c:layoutData>
+                <FlexItemData growFactor="1" baseSize="0%" />
+            </c:layoutData>
         </c:DynamicTable>
-    </ScrollContainer>
-
+    <!-- </ScrollContainer> -->
+</VBox>
 </core:FragmentDefinition>

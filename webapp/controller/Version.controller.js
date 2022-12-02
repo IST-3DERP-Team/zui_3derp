@@ -35,8 +35,8 @@ sap.ui.define([
             },
 
             _routePatternMatched: function (oEvent) {
-                this._sbu = oEvent.getParameter("arguments").sbu; //get SBU route parameter
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get style route parameter
+                this._sbu = oEvent.getParameter("arguments").sbu; //get SBU route parameter
                 this._version = oEvent.getParameter("arguments").version; //get version route parameter
 
                 //set change flag to false at start
@@ -429,7 +429,7 @@ sap.ui.define([
                         });
 
                         oTable.setModel(oJSONModel, "DataModel");
-                        oTable.setVisibleRowCount(oData.results.length);
+                        //oTable.setVisibleRowCount(oData.results.length);
                         //oTable.attachPaste();
 
                         if(blnGetComponentInd) {
@@ -1085,7 +1085,7 @@ sap.ui.define([
                             columns: columnData
                         });
                         oTable.setModel(oJSONModel, "DataModel");
-                        oTable.setVisibleRowCount(unique.length);
+                        //oTable.setVisibleRowCount(unique.length);
                         //oTable.attachPaste();
                         oTable.bindColumns("DataModel>/columns", function (sId, oContext) {
                             var column = oContext.getObject();
@@ -1360,7 +1360,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
-                        oTable.setVisibleRowCount(oData.results.length);
+                        //oTable.setVisibleRowCount(oData.results.length);
                         //oTable.attachPaste();
                     },
                     error: function () { 

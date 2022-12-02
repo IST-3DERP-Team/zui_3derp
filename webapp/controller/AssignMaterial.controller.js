@@ -3,12 +3,13 @@ sap.ui.define([
     'sap/ui/model/Filter',
     "../js/Common",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/core/routing/History"
+    "sap/ui/core/routing/History",
+    "../js/Constants"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, JSONModel, History) {
+    function (Controller, Filter, Common, JSONModel, History, Constants) {
         "use strict";
 
         var that;
@@ -32,7 +33,7 @@ sap.ui.define([
                 this._version = oEvent.getParameter("arguments").version; //get version route parameter
 
                 //set change false as initial
-                this._materialListChanged = false;
+                //this._materialListChanged = false;
                 this.setChangeStatus(false);
 
                 //get data
@@ -40,9 +41,12 @@ sap.ui.define([
                 this.getMaterials();
             },
 
+            
             setChangeStatus: function(changed) {
                 //set change flag
-                sap.ushell.Container.setDirtyFlag(changed);
+                try {
+                    sap.ushell.Container.setDirtyFlag(changed);
+                } catch(err) {}
             },
 
             //******************************************* */
@@ -70,8 +74,8 @@ sap.ui.define([
                     success: function(oData, oResponse) {
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
-                        oTable.setVisibleRowCount(oData.results.length);
-                        oTable.attachPaste();
+                        //oTable.setVisibleRowCount(oData.results.length);
+                        //oTable.attachPaste();
                         Common.closeLoadingDialog(that);
                         me.setChangeStatus(false);
                     },
