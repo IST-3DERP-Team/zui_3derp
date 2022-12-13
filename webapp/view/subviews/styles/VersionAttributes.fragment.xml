@@ -65,7 +65,7 @@
                         <t:template>
                             <Input id="UomInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{VersionAttrEditModeModel>/editMode}" 
                                 change="onVersionAttrChange" liveChange="onVersionAttrChange" 
-                                valueHelpRequest="onUomValueHelp" suggestionItems="{path:'UOMModel>/results', templateShareable=false}" value="{DataModel>Valunit}">
+                                valueHelpRequest="onUomValueHelp" suggestionItems="{path:'UOMModel>/results', templateShareable:false}" value="{DataModel>Valunit}">
                                 <suggestionItems>
                                     <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}"/>
                                 </suggestionItems>

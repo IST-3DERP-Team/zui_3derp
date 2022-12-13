@@ -421,7 +421,6 @@ sap.ui.define([
                 oModel.read("/StyleBOMGMCSet", {
                     success: function (oData, oResponse) {
                         rowData = oData.results;
-
                         var oJSONModel = new JSONModel();
                         oJSONModel.setData({
                             results: rowData,
@@ -617,7 +616,8 @@ sap.ui.define([
                     });
 
                     var checkColor=[];
-
+                    //ncjoaquin 12/13/2022. remove the validation
+                    /*
                     for (var i = 0; i < oData.results.length; i++) {
                         //pivot colros only for AUV and ASUV
                         if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
@@ -632,7 +632,8 @@ sap.ui.define([
                                  
                             }
                         }
-                    };   
+                    };
+                    */   
                     Common.openLoadingDialog(that);
                     //call create deep method for BOM by GMC
                     oModel.create(path, oEntry, {
@@ -1358,6 +1359,7 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
+                        console.log("StyleMaterialListSet",oData)
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length);
@@ -1461,7 +1463,6 @@ sap.ui.define([
                         }
                         oEntry.MatListToItems.push(item);
                     };
-
                     Common.openLoadingDialog(that);
 
                     path = "/MaterialListSet";
@@ -1475,6 +1476,7 @@ sap.ui.define([
                             me.getMaterialList();
                             me._materialListChanged = false;
                             me.setChangeStatus(false);
+                            me.setTabReadEditMode(false,"MaterialListEditModeModel");
                             Common.closeLoadingDialog(me);
                             Common.showMessage(me._i18n.getText('t4'));
                         },
@@ -2194,9 +2196,9 @@ sap.ui.define([
                 //on select Purchasing Group
                 var oSelectedItem = evt.getParameter("selectedItem");
                 if (oSelectedItem) {
-                    var input = sap.ui.getCore().byId(that.inputId);
+                    var input = sap.ui.getCore().byId(this.inputId);
                     input.setValue(oSelectedItem.getTitle()); //set input field selected Purchasing Group
-                    that.onMaterialListChange();
+                    this.onMaterialListChange();
                 }
                 evt.getSource().getBinding("items").filter([]);
             },

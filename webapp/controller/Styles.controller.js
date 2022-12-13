@@ -610,7 +610,7 @@ sap.ui.define([
                 var sInputValue = oEvent.getSource().getValue();
                 that.inputId = oEvent.getSource().getId();
                 if (!that._seasonsHelpDialog) {
-                    that._seasonsHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.Seasons", that);
+                    that._seasonsHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.Seasons", that);
                     that._seasonsHelpDialog.attachSearch(that._seasonsGroupValueHelpSearch);
                     that.getView().addDependent(that._seasonsHelpDialog);
                 }

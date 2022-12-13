@@ -16,8 +16,8 @@
                     <core:CustomData key="TableName" value="processesTable"/>
                 </customData>
             </Button>
+             <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editprocess}" press="setProcessEditMode" visible="{= ${ProcessEditModeModel>/editMode} === true ? false : true }"/>
             <Button type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedprocess}" press="onDeleteProcess" visible="{= ${ProcessEditModeModel>/editMode} === true ? false : true }"/>
-            <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editprocess}" press="setProcessEditMode" visible="{= ${ProcessEditModeModel>/editMode} === true ? false : true }"/>
             <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelProcessEdit" visible="{= ${ProcessEditModeModel>/editMode} === true ? true : false }"/>
         </Toolbar>
 

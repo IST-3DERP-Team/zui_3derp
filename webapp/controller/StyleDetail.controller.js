@@ -36,7 +36,9 @@ sap.ui.define([
 
                 this._headerChanged = false; //Set change flag
 
+                 
                 if (sap.ui.getCore().byId("backBtn") !== undefined) {
+                    this._fBackButton = sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction;
                     sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = function (oEvent) {
                         that.onNavBack();
                     }
@@ -45,6 +47,10 @@ sap.ui.define([
 
                 //Initialize translations
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+            },
+
+            onExit: function() {
+                sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = this._fBackButton;
             },
 
             _routePatternMatched: function (oEvent) {
@@ -214,6 +220,7 @@ sap.ui.define([
                 console.log(this._iono)
                 if (this._iono != " ") {
                     this.routeTOIO();
+                    //sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = this._fBackButton;
                 }
                 else {
                     var oHistory = History.getInstance();

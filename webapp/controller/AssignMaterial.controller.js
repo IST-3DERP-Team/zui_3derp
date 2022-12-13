@@ -70,8 +70,14 @@ sap.ui.define([
                     styleno: this._styleNo,
                     verno: this._version                  
                 });
-                oModel.read(entitySet, {
+                oModel.read(entitySet,  {
+                    urlParameters: {
+                        "$filter": "Matno eq " + ''
+                    },
                     success: function(oData, oResponse) {
+                        console.log('StyleMaterialListSet',oData);
+                        //var result =oData;
+                        //result=result.filter(a => a.Matno == "");
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length);
