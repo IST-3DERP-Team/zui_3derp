@@ -7,11 +7,14 @@ sap.ui.define([
 
     // var that = this;
 
+   
+
     return {
 
         getStyleSearchHelps: function (that) {
             var oView = that.getView();
             var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
+            oSHModel.setUseBatch(false);
             var oModel = that.getOwnerComponent().getModel();
 
             oModel.setHeaders({
@@ -81,7 +84,6 @@ sap.ui.define([
             var oJSONModel5 = new JSONModel();
             oSHModel.read("/SoldToCustSet", {
                 success: function (oData, oResponse) {
-                    console.log("SoldTOCustomer", oData);
                     oJSONModel5.setData(oData);
                     oJSONModel5.setSizeLimit(9999);
                     oView.setModel(oJSONModel5, "CustomersModel")
@@ -107,6 +109,8 @@ sap.ui.define([
                     oJSONModel7.setData(oData);
                     oJSONModel7.setSizeLimit(9999);
                     oView.setModel(oJSONModel7, "UOMModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/UOMModel",oData);
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/UOMGMCModel",oData);
                 },
                 error: function (err) { }
             });
@@ -118,7 +122,7 @@ sap.ui.define([
 
             var oModel = that.getOwnerComponent().getModel();
             var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
-            
+            oSHModel.setUseBatch(false);
             oModel.setHeaders({
                 sbu: that._sbu
             });
@@ -137,21 +141,26 @@ sap.ui.define([
                     oJSONModel1.setData(oData);
                     oJSONModel1.setSizeLimit(9999);
                     oView.setModel(oJSONModel1, "AttribTypeModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/AttribTypeModel",oData);
                 },
                 error: function (err) { }
             });
 
+           
             //get Attribute Codes
             var oJSONModel2 = new JSONModel();
-            oSHModel.read("/AttribCodeSet", {
+            oSHModel.read("/AttribCode2Set", {
                 success: function (oData, oResponse) {
                     oJSONModel2.setData(oData);
                     oJSONModel2.setSizeLimit(9999);
                     oView.setModel(oJSONModel2, "AttribCdModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/AttribCdModel",oData);
+                    
                 },
                 error: function (err) { }
             });
-
+            
+            /*transfer to getProcessAttributes
             //Process Codes
             var oJSONModel3 = new JSONModel();
             oSHModel.read("/ProcessCodeSet", {
@@ -173,6 +182,7 @@ sap.ui.define([
                 },
                 error: function (err) { }
             });
+            */
 
         },
 
@@ -204,6 +214,30 @@ sap.ui.define([
                 },
                 error: function (err) { }
             });
+
+
+            //Process Codes
+            var oJSONModel3 = new JSONModel();
+            oSHModel.read("/ProcessCodeSet", {
+                success: function (oData, oResponse) {
+                    oJSONModel3.setData(oData);
+                    oJSONModel3.setSizeLimit(9999);
+                    oView.setModel(oJSONModel3, "ProcessCodeModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/ProcessCodeModel",oData);
+                },
+                error: function (err) { }
+            });
+
+            //VAS Types
+            var oJSONModel6 = new JSONModel();
+            oSHModel.read("/VASTypeSet", {
+                success: function (oData, oResponse) {
+                    oJSONModel6.setData(oData);
+                    oJSONModel6.setSizeLimit(9999);
+                    oView.setModel(oJSONModel6, "VASTypeModel");
+                },
+                error: function (err) { }
+            });
         },
 
         getVersionSearchHelps: function (that) {
@@ -217,32 +251,33 @@ sap.ui.define([
             });
 
             var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
+            oSHModel.setUseBatch(false);
             oSHModel.setHeaders({
                 sbu: that._sbu,
                 dispgrp: "STYINFO"
             });
 
             //get Attribute Types
-            var oJSONModel1 = new JSONModel();
-            oSHModel.read("/AttribTypeSet", {
-                success: function (oData, oResponse) {
-                    oJSONModel1.setData(oData);
-                    oJSONModel1.setSizeLimit(9999);
-                    oView.setModel(oJSONModel1, "AttribTypeModel");
-                },
-                error: function (err) { }
-            });
+            // var oJSONModel1 = new JSONModel();
+            // oSHModel.read("/AttribTypeSet", {
+            //     success: function (oData, oResponse) {
+            //         oJSONModel1.setData(oData);
+            //         oJSONModel1.setSizeLimit(9999);
+            //         oView.setModel(oJSONModel1, "AttribTypeModel");
+            //     },
+            //     error: function (err) { }
+            // });
 
-            //get Attribute Codes
-            var oJSONModel2 = new JSONModel();
-            oSHModel.read("/AttribCodeSet", {
-                success: function (oData, oResponse) {
-                    oJSONModel2.setData(oData);
-                    oJSONModel2.setSizeLimit(9999);
-                    oView.setModel(oJSONModel2, "AttribCdModel");
-                },
-                error: function (err) { }
-            });
+            // //get Attribute Codes
+            // var oJSONModel2 = new JSONModel();
+            // oSHModel.read("/AttribCodeSet", {
+            //     success: function (oData, oResponse) {
+            //         oJSONModel2.setData(oData);
+            //         oJSONModel2.setSizeLimit(9999);
+            //         oView.setModel(oJSONModel2, "AttribCdModel");
+            //     },
+            //     error: function (err) { }
+            // });
 
             //Usage Classes
             var oJSONModel3 = new JSONModel();
@@ -255,27 +290,28 @@ sap.ui.define([
             });
 
             //get UoM
-            var oJSONModel4 = new JSONModel();
-            oSHModel.read("/UOMSet", {
-                success: function (oData, oResponse) {
-                    oJSONModel4.setData(oData);
-                    oJSONModel2.setSizeLimit(9999);
-                    oView.setModel(oJSONModel4, "UOMModel");
-                    oView.setModel(oJSONModel4, "UOMGMCModel");
-                },
-                error: function (err) { }
-            });
+            // var oJSONModel4 = new JSONModel();
+            // oSHModel.read("/UOMSet", {
+            //     success: function (oData, oResponse) {
+            //         oJSONModel4.setData(oData);
+            //         oJSONModel4.setSizeLimit(9999);
+            //         oView.setModel(oJSONModel4, "UOMModel");
+            //         oView.setModel(oJSONModel4, "UOMGMCModel");
+                   
+            //     },
+            //     error: function (err) { }
+            // });
 
             //Process Codes
-            var oJSONModel5 = new JSONModel();
-            oSHModel.read("/ProcessCodeSet", {
-                success: function (oData, oResponse) {
-                    oJSONModel5.setData(oData);
-                    oJSONModel5.setSizeLimit(9999);
-                    oView.setModel(oJSONModel5, "ProcessCodeModel");
-                },
-                error: function (err) { }
-            });
+            // var oJSONModel5 = new JSONModel();
+            // oSHModel.read("/ProcessCodeSet", {
+            //     success: function (oData, oResponse) {
+            //         oJSONModel5.setData(oData);
+            //         oJSONModel5.setSizeLimit(9999);
+            //         oView.setModel(oJSONModel5, "ProcessCodeModel");
+            //     },
+            //     error: function (err) { }
+            // });
 
             //get Material Types
             var oJSONModel6 = new JSONModel();
@@ -364,6 +400,79 @@ sap.ui.define([
                 },
                 error: function (err) { }
             });
+        },
+
+        //use this method in Version.controller.js if user decide to refresh the browser
+        getReUseSearchHelps: function (that) {
+            var oView = that.getView();
+
+            var oModel = that.getOwnerComponent().getModel();
+            var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
+            oSHModel.setUseBatch(false);
+            oModel.setHeaders({
+                sbu: that._sbu
+            });
+
+            oSHModel.setHeaders({
+                sbu: that._sbu
+            });
+
+            //get Attributes
+            var oJSONModel1 = new JSONModel();
+            oSHModel.setHeaders({
+                dispgrp: "STYINFO"
+            });
+            oSHModel.read("/AttribTypeSet", {
+                success: function (oData, oResponse) {
+                    oJSONModel1.setData(oData);
+                    oJSONModel1.setSizeLimit(9999);
+                    oView.setModel(oJSONModel1, "AttribTypeModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/AttribTypeModel",oData);
+                },
+                error: function (err) { }
+            });
+
+           
+            //get Attribute Codes
+            var oJSONModel2 = new JSONModel();
+            oSHModel.read("/AttribCode2Set", {
+                success: function (oData, oResponse) {
+                    oJSONModel2.setData(oData);
+                    oJSONModel2.setSizeLimit(9999);
+                    oView.setModel(oJSONModel2, "AttribCdModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/AttribCdModel",oData);
+                    
+                },
+                error: function (err) { }
+            });
+
+            //get UoM
+            var oJSONModel7 = new JSONModel();
+            oSHModel.read("/UOMSet", {
+                success: function (oData, oResponse) {
+                    oJSONModel7.setData(oData);
+                    oJSONModel7.setSizeLimit(9999);
+                    oView.setModel(oJSONModel7, "UOMModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/UOMModel",oData);
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/UOMGMCModel",oData);
+                },
+                error: function (err) { }
+            });
+
+             //Process Codes
+             var oJSONModel3 = new JSONModel();
+             oSHModel.read("/ProcessCodeSet", {
+                 success: function (oData, oResponse) {
+                     oJSONModel3.setData(oData);
+                     oJSONModel3.setSizeLimit(9999);
+                     oView.setModel(oJSONModel3, "ProcessCodeModel");
+                     that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/ProcessCodeModel",oData);
+                 },
+                 error: function (err) { }
+             });
+
+
+            
         },
 
         onExport: function (oEvent) {

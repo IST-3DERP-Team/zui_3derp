@@ -71,9 +71,9 @@ sap.ui.define([
                     verno: this._version                  
                 });
                 oModel.read(entitySet,  {
-                    urlParameters: {
-                        "$filter": "Matno eq " + ''
-                    },
+                    // urlParameters: {
+                    //     "$filter": "Matno eq ''"
+                    // },
                     success: function(oData, oResponse) {
                         console.log('StyleMaterialListSet',oData);
                         //var result =oData;
@@ -128,7 +128,7 @@ sap.ui.define([
                 var oData = oTableModel.getData();
                 var oSelected = this.getView().byId("materialListTable").getSelectedIndices();
                 var oJSONModel = new JSONModel();
-
+                console.log(oData);
                 if(oSelected.length > 0) {
                     var oEntry = {
                         Styleno: this._styleNo,

@@ -76,9 +76,9 @@ sap.ui.define([
 
                 });
 
-                if (this.isSearch) {
-                    this.getColumns("SEARCH");
-                }
+                // if (this.isSearch) {
+                //     this.getColumns("SEARCH");
+                // }
                 console.log("after rendering");
             },
 

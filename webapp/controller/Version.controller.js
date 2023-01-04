@@ -49,6 +49,18 @@ sap.ui.define([
 
                 //Load Search Helps
                 Utils.getVersionSearchHelps(this);
+                var lookUpData = this.getOwnerComponent().getModel("LOOKUP_MODEL").getData();
+                console.log(lookUpData.AttribTypeModel);
+                
+                if(lookUpData.AttribTypeModel == undefined){
+                    Utils.getReUseSearchHelps(this);
+                    lookUpData = this.getOwnerComponent().getModel("LOOKUP_MODEL").getData();
+                }
+                this.getView().setModel(new JSONModel(lookUpData.AttribTypeModel), "AttribTypeModel");
+                this.getView().setModel(new JSONModel(lookUpData.AttribCdModel), "AttribCdModel");
+                this.getView().setModel(new JSONModel(lookUpData.UOMModel), "UOMModel");
+                this.getView().setModel(new JSONModel(lookUpData.UOMGMCModel), "UOMGMCModel");
+                this.getView().setModel(new JSONModel(lookUpData.ProcessCodeModel), "ProcessCodeModel");
 
                 //Get Data
                 this.getHeaderData(); //get style version header data
@@ -58,7 +70,9 @@ sap.ui.define([
                 this.cancelVersionAttrEdit();
                 this.cancelMaterialListEdit();
                 this.cancelBOMbyGMCEdit();
-                this.cancelBOMbyUVEdit();                
+                this.cancelBOMbyUVEdit();
+                
+               
             },
 
             setChangeStatus: function(changed) {
@@ -83,6 +97,7 @@ sap.ui.define([
                 var oJSONModel = new JSONModel();
                 var oView = this.getView();
                 var entitySet = "/StyleDetailSet('" + this._styleNo + "')"
+                oModel.setUseBatch(false);
 
                 Common.openLoadingDialog(that);
 
@@ -127,7 +142,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         oTable.bindRows("DataModel>/results");
-                        oTable.setVisibleRowCount(oData.results.length);
+                        //oTable.setVisibleRowCount(oData.results.length);
                         //oTable.attachPaste();
                     },
                     error: function () { }
@@ -420,6 +435,7 @@ sap.ui.define([
                 });
                 oModel.read("/StyleBOMGMCSet", {
                     success: function (oData, oResponse) {
+                        console.log("StyleBOMGMCSet",oData)
                         rowData = oData.results;
                         var oJSONModel = new JSONModel();
                         oJSONModel.setData({
@@ -429,7 +445,7 @@ sap.ui.define([
 
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length);
-                        //oTable.attachPaste();
+                        oTable.attachPaste();
 
                         if(blnGetComponentInd) {
                             me.onSaveBOMbyGMC(oGetComponentInd);
@@ -1744,7 +1760,7 @@ sap.ui.define([
                 var oData = oModel.getProperty('/results');
                 oData.push({});
                 oTable.getBinding("rows").refresh();
-                oTable.setVisibleRowCount(oData.length);
+                //oTable.setVisibleRowCount(oData.length);
 
                 if(tabName === "bomGMCTable") {
                     this.setTabReadEditMode(true,"BOMbyGMCEditModeModel");

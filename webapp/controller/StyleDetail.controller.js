@@ -43,6 +43,15 @@ sap.ui.define([
                         that.onNavBack();
                     }
                 }
+                var lookUpModel={
+                    AttribCdModel:[],
+                    AttribTypeModel:[],
+                    ProcessCodeModel:[],
+                    UOMModel:[],
+                    UOMGMCModel:[]
+                }
+                
+                this.getOwnerComponent().getModel("LOOKUP_MODEL").setData(lookUpModel);
 
 
                 //Initialize translations
@@ -52,6 +61,16 @@ sap.ui.define([
             onExit: function() {
                 sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = this._fBackButton;
             },
+
+            // onAfterRendering: function () {
+            //     //double click event
+            //     console.log("onAfterRendering");
+            //     Utils.getStyleSearchHelps(this);
+            //     Utils.getAttributesSearchHelps(this);
+            //     Utils.getProcessAttributes(this);
+               
+            //     console.log("onAfterRendering");
+            // },
 
             _routePatternMatched: function (oEvent) {
                 Common.openLoadingDialog(that);
@@ -273,7 +292,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         // var oldData = oData;
                         // me._headerData = JSON.parse(JSON.stringify(oData));
-                        console.log(oData);
+                        //console.log(oData);
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "headerData");
                         Common.closeLoadingDialog(that);
@@ -322,6 +341,8 @@ sap.ui.define([
                 data.editMode = true;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "HeaderEditModeModel");
+
+                Utils.getStyleSearchHelps(this);
             },
 
             setHeaderReadMode: function () {
@@ -556,7 +577,7 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        console.log(oData);
+                        //console.log(oData);
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
@@ -577,6 +598,8 @@ sap.ui.define([
                 data.editMode = true;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "GenAttrEditModeModel");
+
+                Utils.getAttributesSearchHelps(this);
             },
 
             cancelGeneralAttrEdit: function () {
@@ -757,7 +780,7 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        console.log(oData);
+                        //console.log(oData);
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
@@ -1162,6 +1185,8 @@ sap.ui.define([
                 data.editMode = true;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "ProcessEditModeModel");
+
+                Utils.getProcessAttributes(this);
             },
 
             cancelProcessEdit: function () {

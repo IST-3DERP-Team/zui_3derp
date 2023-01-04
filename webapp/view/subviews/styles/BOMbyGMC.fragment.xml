@@ -9,7 +9,7 @@
         <Button text="{i18n>GetComponents}" tooltip="{i18n>Getstylecomponents}" press="onGetComponent" visible="{BOMbyGMCEditModeModel>/editMode}"/>
         <Button text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{BOMbyGMCEditModeModel>/editMode}"/>
         <Button icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>SaveBOMitems}" press="onSaveBOMbyGMC" visible="{BOMbyGMCEditModeModel>/editMode}"/>
-        <Button icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLineBOM" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? false : true }">
+        <Button icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLineBOM" visible="true">
             <customData>
                 <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
@@ -33,7 +33,7 @@
     <!-- <c:DynamicTreeTable id="bomGMCTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['BOMSTYLE']}}"
         selectionMode="{= ${BOMbyGMCEditModeModel>/editMode} === true ? 'MultiToggle' : 'None' }">
     </c:DynamicTreeTable> -->
-    <uiT:Table
+    <!-- <uiT:Table
          id="bomGMCTable" 
          class="sapUiTinyMarginBottom sapUiTinyMarginBegin sapUiTinyMarginEnd" 
          rows="{path:'DataModel>/results'}"
@@ -44,16 +44,16 @@
             </uiT:layoutData>
          
           
-    </uiT:Table>
-    <!-- <ScrollContainer height="400px" vertical="true">
+    </uiT:Table> -->
+    <!-- <ScrollContainer height="400px" vertical="true">-->
         <c:DynamicTable id="bomGMCTable" class="sapUiSizeCompact" rows="{path:'DataModel>/results'}" visibleRowCountMode="Auto"
-            selectionMode="MultiToggle" width="300%">
+            selectionMode="MultiToggle" >
             <c:layoutData>
                 <FlexItemData growFactor="1" baseSize="0%" />
             </c:layoutData>
         </c:DynamicTable>
          
-    </ScrollContainer> -->
+    <!-- </ScrollContainer>  -->
     </VBox>
     
 </core:FragmentDefinition>    

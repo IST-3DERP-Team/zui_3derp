@@ -165,7 +165,11 @@
                     "defaultCountMode": "Inline",
                     "refreshAfterChange": false
                 }
+            },
+            "LOOKUP_MODEL": {
+                "type": "sap.ui.model.json.JSONModel"
             }
+
         },
         "resources": {
             "css": [
