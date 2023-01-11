@@ -260,7 +260,7 @@ sap.ui.define([
                 var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
                     target: {
                         semanticObject: "ZSO_IO2",
-                        action: "display&/RouteIODetail/" + this._iono + "/" + this._sbu + "/" + this._styleNo
+                        action: "display&/RouteIODetail/" + this._iono + "/" + this._sbu + "/" + this._styleNo +"/itfSTYLE"
                     }
 
                 })) || ""; // generate the Hash to display style

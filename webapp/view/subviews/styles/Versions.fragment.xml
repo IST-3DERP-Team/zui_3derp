@@ -59,13 +59,13 @@
                         </t:template>
                     </t:Column>
                     <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">
-                        <Label text="{i18n>Description}"/>
+                        <Label text="{i18n>DescriptionEN}"/>
                         <t:template>
                             <Input value="{DataModel>Desc1}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="15rem" filterProperty="Desc2" sortProperty="Desc2">
-                        <Label text="{i18n>Description}"/>
+                        <Label text="{i18n>DescriptionCN}"/>
                         <t:template>
                             <Input value="{DataModel>Desc2}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange"/>
                         </t:template>
