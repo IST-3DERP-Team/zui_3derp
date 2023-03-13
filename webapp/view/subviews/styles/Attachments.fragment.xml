@@ -8,7 +8,7 @@
     xmlns:t="sap.ui.table">
     <!-- <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiSizeCompact"> -->
     <!-- <ScrollContainer width="100%" height="auto" horizontal="true" vertical="true" focusable="true">   -->
-    <VBox fitContainer="true" width="80%" height="200px" class="sapUiTinyMargin">
+    <VBox fitContainer="true" width="80%" height="200px" class="sapUiTinyMargin styleAttachments">
         <Toolbar height="2rem" style="Clear">
             <Label text="" />
             <ToolbarSpacer />

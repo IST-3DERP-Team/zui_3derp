@@ -148,7 +148,7 @@ sap.ui.define([
                 //Attachments
                 this.bindUploadCollection();
                 this.getView().getModel("FileModel").refresh();
-
+                this.setFilesEditMode();
                 Common.closeLoadingDialog(that);
             },
 
@@ -783,7 +783,7 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        // console.log(oData);
+                        console.log("get colors");
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
@@ -822,14 +822,89 @@ sap.ui.define([
                 return await promise;
             },
 
-            setColorEditMode: function () {
+            setColorCreateMode: async function () { 
+                this._bomColors = [];
+                this._bomColors = await this.getBOMCOlor(this);
+
+                var oTable = this.getView().byId("colorsTable");
+
+                if (this._bomColors.length > 0) {
+                    var oTableModel = oTable.getModel("DataModel");
+                    var oData = oTableModel.getData();
+
+                    for (var i = 0; i < oData.results.length; i++) { 
+                        if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
+                            oTable.getRows()[i].getCells().forEach(cell => {
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    cell.setProperty("editable", false);
+                                }
+                            });
+                        }
+                        else {
+                            oTable.getRows()[i].getCells().forEach(cell => {
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    cell.setProperty("editable", true);
+                                }
+                            });
+                        }
+                    }
+                }
+
                 //set colors table editable
                 var oJSONModel = new JSONModel();
                 var data = {};
-                this._colorChanged = false;
                 data.editMode = true;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "ColorEditModeModel");
+                this.byId("btnAddColor").setVisible(true);
+            },
+
+            setColorEditMode: async function () { 
+                this._bomColors = [];
+                this._bomColors = await this.getBOMCOlor(this);
+
+                var oTable = this.getView().byId("colorsTable");
+                var noEdit = 0;
+                var bProceed = true;
+
+                if (this._bomColors.length > 0) {
+                    var oTableModel = oTable.getModel("DataModel");
+                    var oData = oTableModel.getData();
+
+                    for (var i = 0; i < oData.results.length; i++) { 
+                        if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
+                            noEdit++;
+                            oTable.getRows()[i].getCells().forEach(cell => {
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    cell.setProperty("editable", false);
+                                }
+                            });
+                        }
+                        else {
+                            oTable.getRows()[i].getCells().forEach(cell => {
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    cell.setProperty("editable", true);
+                                }
+                            });
+                        }
+                    }
+
+                    if (oData.results.length === noEdit) {
+                        bProceed = false;
+                        MessageBox.information("Color/s already used in BOM.")
+                    }
+                }
+
+                if (bProceed) {
+                    //set colors table editable
+                    var oJSONModel = new JSONModel();
+                    var data = {};
+                    this._colorChanged = false;
+                    data.editMode = true;
+                    oJSONModel.setData(data);
+                    this.getView().setModel(oJSONModel, "ColorEditModeModel");
+                    this.byId("btnAddColor").setVisible(false);
+                }
             },
 
             setColorReadMode: function () {
@@ -872,6 +947,18 @@ sap.ui.define([
                 }
                 var oMsgStrip = that.getView().byId('ColorsMessageStrip');
                 oMsgStrip.setVisible(false);
+
+                var oTable = this.getView().byId("colorsTable");
+
+                oTable.getRows().forEach(row => {
+                    row.getCells().forEach(cell => {
+                        if (cell.getBindingInfo("value") !== undefined) {
+                            cell.setProperty("editable", false);
+                        }
+                    });
+                });
+
+                this.byId("btnAddColor").setVisible(true);
             },
 
             onColorChange: function () {
@@ -967,9 +1054,6 @@ sap.ui.define([
                             oMsgStrip.setText(errorMsg);
                         }
                     });
-
-
-
                 }
             },
 
@@ -1753,6 +1837,7 @@ sap.ui.define([
             },
 
             onAddFile: function () {
+                console.log("upload")
                 //open the file select dialog
                 var oUploadCollection = this.getView().byId('UploadCollection');
                 oUploadCollection.openFileDialog();
@@ -2423,13 +2508,11 @@ sap.ui.define([
                 oTable.getBinding("rows").refresh();
                 //oTable.setVisibleRowCount(oData.length);
 
-
-
                 if (tabName === "generalTable") {
                     this.setGeneralAttrEditMode();
                     this.onGeneralAttrChange();
                 } else if (tabName === "colorsTable") {
-                    this.setColorEditMode();
+                    this.setColorCreateMode();
                     this.onColorChange();
                 }
             },
@@ -2522,6 +2605,20 @@ sap.ui.define([
                 data.editMode = false;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, editModelName);
+
+                if (editModelName === "ColorEditModeModel") {
+                    var oTable = this.getView().byId("colorsTable");
+
+                    oTable.getRows().forEach(row => {
+                        row.getCells().forEach(cell => {
+                            if (cell.getBindingInfo("value") !== undefined) {
+                                cell.setProperty("editable", false);
+                            }
+                        });
+                    })
+
+                    this.byId("btnAddColor").setVisible(true);
+                }
             },
 
             pad: Common.pad

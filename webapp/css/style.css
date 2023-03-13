@@ -90,3 +90,7 @@ for header.fragment
     max-width: 100%;
     overflow: hidden;
 }
+
+.styleAttachments .sapUiFup {
+    display: none !important;
+}
