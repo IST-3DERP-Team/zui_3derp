@@ -5,12 +5,13 @@ sap.ui.define([
     "../js/Constants",
     "../js/Utils",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/core/routing/History"
+    "sap/ui/core/routing/History",
+    "sap/m/MessageBox"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, Constants, Utils, JSONModel, History) {
+    function (Controller, Filter, Common, Constants, Utils, JSONModel, History, MessageBox) {
         "use strict";
 
         var that;
@@ -616,19 +617,18 @@ sap.ui.define([
                 if (!this._BOMbyGMCChanged) { //check if data changed
                     Common.showMessage(this._i18n.getText('t7'));
                 } else {
-
                     //build headers and payload
                     var oData = oTableModel.getData();
                     var oEntry = {
                         Styleno: this._styleNo,
                         GMCToItems: []
                     }
+
                     for (var i = 0; i < oData.results.length; i++) {
                         item = that.addBOMItem(oData.results[i]);
                         oEntry.GMCToItems.push(item);
                     };
                     //Common.openLoadingDialog(that);
-
                     path = "/BOMGMCSet";
 
                     oModel.setHeaders({
@@ -658,6 +658,7 @@ sap.ui.define([
                                 // }
 
                             }
+
                             if (noOfHasColor == 0) {
                                 oMsgStrip.setVisible(true);
                                 oMsgStrip.setText("At least one color is required.");
@@ -750,7 +751,6 @@ sap.ui.define([
                     });
                 }
             },
-
 
             onSaveGetComponents: function (oGetComponentInd) {
                 //on save of BOM by GMC 
@@ -966,7 +966,10 @@ sap.ui.define([
                 var oTableModel = this.getView().byId("bomGMCTable").getModel("DataModel");
                 var oData = oTableModel.getData();
                 var item = {};
-
+                console.log(oData)
+                var oMsgStrip = this.getView().byId('BOMbyGMCMessageStrip');
+                oMsgStrip.setVisible(false);
+                
                 //01/10/2023 add BOMGMCColorToItems parameter
                 var oEntry2 = {
                     STYLENO: this._styleNo,
@@ -982,6 +985,7 @@ sap.ui.define([
                         let noOfHasColor = 0;
                         for (var j = 0; j < me._colors.length; j++) {
                             var color = me._colors[j];
+                            console.log(color)
                             //add items with color description only 
                             if (oData.results[i][color.Attribcd] != "" && oData.results[i][color.Attribcd] != undefined) {
                                 item = {
@@ -1000,7 +1004,7 @@ sap.ui.define([
 
                                 };
                                 oEntry2.GMCToItems.push(item);
-
+                                console.log(item)
                                 noOfHasColor++;
                             }
                         }
@@ -1818,21 +1822,27 @@ sap.ui.define([
             },
 
             addLineBOM: function (oEvent) {
-                //add lines to BOM by GMC table
-                var oButton = oEvent.getSource();
-                var tabName = oButton.data('TableName')
-                var oTable = this.getView().byId(tabName);
-                var oModel = this.getView().byId(tabName).getModel("DataModel");
-                var oData = oModel.getProperty('/results');
-                oData.push({});
-                oTable.getBinding("rows").refresh();
-                //oTable.setVisibleRowCount(oData.length);
-
-                if (tabName === "bomGMCTable") {
-                    this.setTabReadEditMode(true, "BOMbyGMCEditModeModel");
-                    this.onBOMbyGMCChange();
+                // console.log(this.getOwnerComponent().getModel("COLOR_MODEL").getData())
+                
+                if (this.getOwnerComponent().getModel("COLOR_MODEL").getData().items.length === 0) {
+                    MessageBox.information("No colors found.")
                 }
+                else {
+                    //add lines to BOM by GMC table
+                    var oButton = oEvent.getSource();
+                    var tabName = oButton.data('TableName')
+                    var oTable = this.getView().byId(tabName);
+                    var oModel = this.getView().byId(tabName).getModel("DataModel");
+                    var oData = oModel.getProperty('/results');
+                    oData.push({});
+                    oTable.getBinding("rows").refresh();
+                    //oTable.setVisibleRowCount(oData.length);
 
+                    if (tabName === "bomGMCTable") {
+                        this.setTabReadEditMode(true, "BOMbyGMCEditModeModel");
+                        this.onBOMbyGMCChange();
+                    }
+                }
             },
 
             //******************************************* */

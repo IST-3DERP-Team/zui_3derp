@@ -11,11 +11,11 @@
 
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
-            <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveversions}" press="onSaveVersions" visible="{VersionEditModeModel>/editMode}"/>
-            <Button type="Ghost" icon="sap-icon://add-document" text="{i18n>NewVersion}" tooltip="{i18n>Addnewversion}" press="onCreateNewVersion" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }"/>                                    
-            <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editversions}" press="setVersionEditMode" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }"/>
-            <Button type="Ghost" icon="sap-icon://delete" text="{i18n>Delete}" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }" tooltip="{i18n>Deleteselectedversions}" press="onDeleteVersion"/>
-            <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelVersionEdit" visible="{= ${VersionEditModeModel>/editMode} === true ? true : false }"/>
+            <Button type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveversions}" press="onSaveVersions" visible="{VersionEditModeModel>/editMode}"/>
+            <Button type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewversion}" press="onCreateNewVersion" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }"/>                                    
+            <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editversions}" press="setVersionEditMode" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }"/>
+            <Button type="Ghost" icon="sap-icon://delete" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }" tooltip="{i18n>Deleteselectedversions}" press="onDeleteVersion"/>
+            <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelVersionEdit" visible="{= ${VersionEditModeModel>/editMode} === true ? true : false }"/>
         </Toolbar>
 
         <MessageStrip id="VersionsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>
