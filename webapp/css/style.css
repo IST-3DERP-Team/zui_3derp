@@ -90,3 +90,7 @@ for header.fragment
     max-width: 100%;
     overflow: hidden;
 }
+
+.requiredField {
+    color: red !important;
+}

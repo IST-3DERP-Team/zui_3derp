@@ -458,12 +458,51 @@ sap.ui.define([
             //******************************************* */
 
             onCopyMode: function () {
+                //on click of copy button, prompt immediately the copy style dialog
+                var oTable = this.getView().byId("styleDynTable");
+                
+                var selected = oTable.getSelectedIndices();
+                var oTmpSelected = [];
+                selected.forEach(item => {
+                    oTmpSelected.push(oTable.getBinding("rows").aIndices[item])
+                })
+                selected = oTmpSelected;
+                var aData = oTable.getModel().getData().rows;
+                console.log(aData[selected])
+
+                var oModel = new JSONModel();
+                oModel.setData({
+                    "STYLENO": aData[selected].STYLENO,
+                    "STYLECD": aData[selected].STYLECD,
+                    "SEASONCD": aData[selected].SEASONCD,
+                    "DESC1": aData[selected].DESC1,
+                    versions: []
+                });
+
+                that.getFiltersData(); //load the search help
+                that.getVersionsTable(aData[selected].STYLENO); //get versions of selected styleno
+
+                var oView = that.getView();
+                oView.setModel(oModel, "CopyModel") //set the copy model
+
+                //open the copy style dialog
+                if (!that._CopyStyleDialog) {
+                    that._CopyStyleDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CopyStyle", that);
+                    that.getView().addDependent(that._CopyStyleDialog);
+                }
+                jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
+                that._CopyStyleDialog.addStyleClass("sapUiSizeCompact");
+                that._CopyStyleDialog.open();
+                
+                //ncjoaquin 03/09/22023 comment. do not show anymore the copy button
                 //show copy buttons
+                /*
                 var oTable = this.getView().byId("styleDynTable");
                 var oCopyColumn = oTable.getColumns()[1];
                 var visible = oCopyColumn.getVisible();
                 var newVisible = ((visible === true) ? false : true);
                 oCopyColumn.setVisible(newVisible);
+                */
             },
 
             onCopyStyle: function (oEvent) {
