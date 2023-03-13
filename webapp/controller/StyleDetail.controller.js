@@ -875,6 +875,7 @@ sap.ui.define([
 
                     for (var i = 0; i < oData.results.length; i++) { 
                         if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
+                            console.log("1")
                             oTable.getRows()[i].getCells().forEach(cell => {
                                 if (cell.getBindingInfo("value") !== undefined) {
                                     cell.setProperty("editable", false);
@@ -889,6 +890,15 @@ sap.ui.define([
                             });
                         }
                     }
+                }
+                else {
+                    oTable.getRows().forEach(row => {
+                        row.getCells().forEach(cell => {
+                            if (cell.getBindingInfo("value") !== undefined) {
+                                cell.setProperty("editable", true);
+                            }
+                        });
+                    });
                 }
 
                 //set colors table editable
