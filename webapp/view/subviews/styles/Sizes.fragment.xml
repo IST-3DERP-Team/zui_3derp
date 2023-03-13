@@ -9,9 +9,9 @@
     <VBox fitContainer="true" width="80%" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
-            <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Savesizeattributes}" press="onSaveSizeTable" visible="{SizeEditModeModel>/editMode}" />
-            <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editsizeattributes}" press="setSizeEditMode" visible="{= ${SizeEditModeModel>/editMode} === true ? false : true }" />
-            <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelSizeEdit" visible="{= ${SizeEditModeModel>/editMode} === true ? true : false }" />
+            <Button type="Ghost" icon="sap-icon://save" tooltip="{i18n>Savesizeattributes}" press="onSaveSizeTable" visible="{SizeEditModeModel>/editMode}" />
+            <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editsizeattributes}" press="setSizeEditMode" visible="{= ${SizeEditModeModel>/editMode} === true ? false : true }" />
+            <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelSizeEdit" visible="{= ${SizeEditModeModel>/editMode} === true ? true : false }" />
         </Toolbar>
 
         <MessageStrip id="SizesMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
@@ -25,22 +25,22 @@
                     <Text text="{DataModel>Attribseq}" />
                 </t:template>
             </t:Column>
-                <t:Column width="11rem" filterProperty="Attribgrp">
+                <!-- <t:Column width="11rem" filterProperty="Attribgrp">
                     <Label text="{i18n>SizeRange}" />
                     <t:template>
                         <Input value="{DataModel>Attribgrp}" editable="false" />
                     </t:template>
-                </t:Column>
+                </t:Column> -->
                 <t:Column width="11rem" filterProperty="Attribcd">
                     <Label text="{i18n>SizeCode}" />
                     <t:template>
                         <Input value="{DataModel>Attribcd}" editable="false" />
                     </t:template>
                 </t:Column>
-                <t:Column width="11rem" sortProperty="Baseind">
+                <t:Column width="11rem" sortProperty="Baseind" hAlign="Center">
                     <Label text="{i18n>BaseInd}" />
                     <t:template>
-                        <CheckBox selected="{DataModel>Baseind}" editable="{SizeEditModeModel>/editMode}" select="onSizeChange" />
+                        <CheckBox selected="{DataModel>Baseind}" editable="{SizeEditModeModel>/editMode}" select="onSizeChange"  />
                     </t:template>
                 </t:Column>
             </c:columns>

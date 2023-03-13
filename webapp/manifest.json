@@ -168,6 +168,9 @@
             },
             "LOOKUP_MODEL": {
                 "type": "sap.ui.model.json.JSONModel"
+            },
+            "COLOR_MODEL": {
+                "type": "sap.ui.model.json.JSONModel"
             }
 
         },

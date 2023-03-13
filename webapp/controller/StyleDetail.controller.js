@@ -7,12 +7,13 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     'jquery.sap.global',
     'sap/ui/core/routing/HashChanger',
-    "sap/ui/core/routing/History"
+    "sap/ui/core/routing/History",
+    "sap/m/MessageBox"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, Constants, Utils, JSONModel, jQuery, HashChanger, History) {
+    function (Controller, Filter, Common, Constants, Utils, JSONModel, jQuery, HashChanger, History, MessageBox) {
         "use strict";
 
         var that;
@@ -52,7 +53,7 @@ sap.ui.define([
                 }
                 
                 this.getOwnerComponent().getModel("LOOKUP_MODEL").setData(lookUpModel);
-
+                this.getOwnerComponent().getModel("COLOR_MODEL").setData({ items: [] });
 
                 //Initialize translations
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
@@ -577,7 +578,7 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        //console.log(oData);
+                        // console.log(oData);
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
@@ -691,6 +692,7 @@ sap.ui.define([
                             Common.showMessage(me._i18n.getText('t4'));
                             Utils.getProcessAttributes(me); //need to reload available attribute types for process tables
                             me.setTabReadMode("GenAttrEditModeModel");
+                            me.getGeneralTable();
                         },
                         error: function (err) {
                             //show error messages
@@ -735,7 +737,7 @@ sap.ui.define([
                         var attrcd = oData.results[selected[i]].Attribcd;
 
                         var entitySet = "/StyleAttributesGeneralSet(Styleno='" + that._styleNo + "',Attribtyp='" + attrtype + "',Attribcd='" + attrcd + "')";
-
+                        console.log(entitySet)
                         oModel.remove(entitySet, {
                             groupId: "group1",
                             changeSetId: "changeSetId1",
@@ -767,6 +769,7 @@ sap.ui.define([
 
             getColorsTable: function () {
                 //selection of color attributes table
+                var me = this;
                 var oTable = this.getView().byId("colorsTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
@@ -780,17 +783,43 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        //console.log(oData);
+                        // console.log(oData);
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
                         // oTable.attachPaste(); //for copy-paste
                         Common.closeLoadingDialog(that);
+                        me.getOwnerComponent().getModel("COLOR_MODEL").setProperty("/items", oData.results);
                     },
                     error: function () {
                         Common.closeLoadingDialog(that);
                     }
                 })
+            },
+
+            getBOMCOlor: async (me) => {
+                var oModel = me.getOwnerComponent().getModel();
+                var retData = [];
+
+                var promise = new Promise((resolve, reject) => {
+                    oModel.setHeaders({
+                        STYLENO: me._styleNo
+                    });
+
+                    oModel.read("/BOMColorSet", {
+                        success: function (oData, oResponse) {
+                            retData = oData.results;
+                            resolve(retData);
+                            Common.closeLoadingDialog(that);
+                        },
+                        error: function (err) {
+                            Common.closeLoadingDialog(that);
+                            resolve(retData);
+                        }
+                    });
+                })
+
+                return await promise;
             },
 
             setColorEditMode: function () {
@@ -886,7 +915,7 @@ sap.ui.define([
                         };
                         oEntry.AttributesToItems.push(item);
                     };
-                    console.log(oEntry)
+                    // console.log(oEntry)
 
                     var hasDuplicateColorCd = false;
                     oData.results.map(v => v.Attribcd.toLowerCase()).sort().sort((a, b) => {
@@ -917,6 +946,7 @@ sap.ui.define([
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
+                    
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oData, oResponse) {
@@ -927,6 +957,7 @@ sap.ui.define([
                             Utils.getProcessAttributes(me);
                             //me.setColorReadMode();
                             me.setTabReadMode("ColorEditModeModel");
+                            me.getColorsTable();
                         },
                         error: function (err) {
                             Common.closeLoadingDialog(me);
@@ -955,7 +986,7 @@ sap.ui.define([
                 var oTable = this.getView().byId("colorsTable");
                 var oTableModel = oTable.getModel("DataModel");
                 var oData = oTableModel.getData();
-                var selected = oTable.getSelectedIndices();
+                var selected = oTable.getSelectedIndices();                
 
                 oModel.setUseBatch(true);
                 oModel.setDeferredGroups(["group1"]);
@@ -964,27 +995,32 @@ sap.ui.define([
                 // this._ConfirmDeleteColor.close();
 
                 if (selected.length > 0) {
+                    selected.sort((a, b) => -1);
                     //call delete method for each selected lines
-                    for (var i = 0; i < selected.length; i++) {
-
+                    for (var i = (selected.length - 1); i >= 0; i--) {
                         var attrtype = Constants.COLOR;
                         var attrcd = oData.results[selected[i]].Attribcd;
 
                         var entitySet = "/StyleAttributesColorSet(Styleno='" + that._styleNo + "',Attribtype='" + attrtype + "',Attribcd='" + attrcd + "')";
 
-                        oModel.remove(entitySet, {
-                            groupId: "group1",
-                            changeSetId: "changeSetId1",
-                            method: "DELETE",
-                            success: function (data, oResponse) {
-                            },
-                            error: function () {
-                            }
-                        });
-                        oModel.submitChanges({
-                            groupId: "group1"
-                        });
-                        oModel.setRefreshAfterChange(true);
+                        if (this._bomColors.length > 0 && this._bomColors.filter(fItem => fItem.COLOR === attrcd).length === 0) {
+                            oModel.remove(entitySet, {
+                                groupId: "group1",
+                                changeSetId: "changeSetId1",
+                                method: "DELETE",
+                                success: function (data, oResponse) {
+                                },
+                                error: function () {
+                                }
+                            });
+                            oModel.submitChanges({
+                                groupId: "group1"
+                            });
+                            oModel.setRefreshAfterChange(true);
+                        }
+                        else {
+                            selected.splice(i, 1);
+                        }
                     }
 
                     //remove deleted lines from the table
@@ -993,6 +1029,8 @@ sap.ui.define([
                     })
                     oTableModel.setData(oData);
                     oTable.clearSelection();
+                    // this.getColorsTable();
+
                 }
             },
 
@@ -2420,19 +2458,55 @@ sap.ui.define([
                 this.onProcessChange();
             },
 
-            onDeleteTableItems: function (oTableName, oFragmentName, oDialog) {
+            onDeleteTableItems: async function (oTableName, oFragmentName, oDialog) {
                 var oTable = this.getView().byId(oTableName);
                 var selected = oTable.getSelectedIndices();
+                var bProceed = true;
+                var noEdit = 0;
+                var noEditMsg = "Color ";
+                var editMsg = "Color ";
+
                 if (selected.length > 0) {
-                    if (!oDialog) {
-                        oDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog." + oFragmentName, this);
-                        this.getView().addDependent(oDialog);
+                    if (oTableName === "colorsTable") {
+                        this._bomColors = [];
+                        this._bomColors = await this.getBOMCOlor(this);
+
+                        if (this._bomColors.length > 0) {
+                            var oTableModel = oTable.getModel("DataModel");
+                            var oData = oTableModel.getData();
+
+                            for (var i = 0; i < selected.length; i++) { 
+                                if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[selected[i]].Attribcd).length > 0) {
+                                    noEdit++;
+                                    noEditMsg = noEditMsg + oData.results[selected[i]].Attribcd + ", ";
+                                }
+                                else { editMsg = editMsg + oData.results[selected[i]].Attribcd + ", "; }
+                            }
+
+                            if (selected.length === noEdit) {
+                                bProceed = false;
+                                MessageBox.information("Selected color/s already used in BOM.")
+                            }
+                        }
                     }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    oDialog.addStyleClass("sapUiSizeCompact");
-                    oDialog.open();
+
+                    if (bProceed) {
+                        if (!oDialog) {
+                            oDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog." + oFragmentName, this);
+                            this.getView().addDependent(oDialog);
+                        }
+    
+                        jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
+                        oDialog.addStyleClass("sapUiSizeCompact");
+                        oDialog.open();
+
+                        if (oTableName === "colorsTable" && noEdit > 0 && selected.length !== noEdit) {
+                            oDialog.getContent()[0].getContent()[0].setProperty("text", noEditMsg.substring(0, noEditMsg.length - 2) + " already used in BOM.\r\n" + editMsg.substring(0, editMsg.length - 2) + " can be deleted.\r\n" + "Confirm delete color" + editMsg.substring(0, editMsg.length - 2).replace("Color","") + "?");
+                        }
+                    }
                 } else {
-                    Common.showMessage(this._i18n.getText('t8'))
+                    MessageBox.information(this._i18n.getText('t8'));
+                    // Common.showMessage(this._i18n.getText('t8'))
                 }
             },
 
