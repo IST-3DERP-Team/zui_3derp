@@ -271,6 +271,7 @@ sap.ui.define([
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
+                    console.log(JSON.stringify(oEntry));
                     //call create deep method for Create Material  
                     oModel.create(path, oEntry, {
                         method: "POST",

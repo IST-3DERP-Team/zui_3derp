@@ -94,3 +94,7 @@ for header.fragment
 .styleAttachments .sapUiFup {
     display: none !important;
 }
+
+.requiredField {
+    color: red !important;
+}

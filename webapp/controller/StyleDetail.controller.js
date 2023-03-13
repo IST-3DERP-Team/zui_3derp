@@ -104,6 +104,7 @@ sap.ui.define([
                     //create new - only header is editable at first
                     this.setHeaderEditMode();
                     this.setDetailVisible(false);
+                    this.setReqField("header", true);
 
                 } else {
                     //existing style, get the style data
@@ -166,6 +167,40 @@ sap.ui.define([
                 try {
                     sap.ushell.Container.setDirtyFlag(changed);
                 } catch (err) { }
+            },
+
+            setReqField(pType, pEditable) {
+                if (pType == "header") {
+                    var fields = ["feSTYLECD","feSTYLECAT", "fePRODTYP", "feDESC1", "feSALESGRP", "feSEASONCD", "feCUSTGRP", "feSOLDTOCUST", "feSIZEGRP", "feUOM"];
+
+                    fields.forEach(id => {
+                        if (pEditable) {
+                                this.byId(id).setLabel("*" + this.byId(id).getLabel());
+                                this.byId(id)._oLabel.addStyleClass("requiredField");
+                        } else {
+                            //console.log(this.byId(id).getLabel())
+                            if (this.byId(id).getLabel() != null) {
+                                this.byId(id).setLabel(this.byId(id).getLabel().replaceAll("*", ""));
+                                this.byId(id)._oLabel.removeStyleClass("requiredField");
+                            }
+                        }
+                    })
+                } else {
+                    var oTable = this.byId(pType);
+
+                    oTable.getColumns().forEach((col, idx) => {
+                        if (col.getLabel().getText().includes("*")) {
+                            col.getLabel().setText(col.getLabel().getText().replaceAll("*", ""));
+                        }
+
+                        this._aColumns[pType].filter(item => item.label === col.getLabel().getText())
+                            .forEach(ci => {
+                                if (ci.required) {
+                                    col.getLabel().removeStyleClass("requiredField");
+                                }
+                            })
+                    })
+                }
             },
 
             setDetailVisible: function (bool) {
@@ -344,6 +379,8 @@ sap.ui.define([
                 this.getView().setModel(oJSONModel, "HeaderEditModeModel");
 
                 Utils.getStyleSearchHelps(this);
+
+                this.setReqField("header", true);
             },
 
             setHeaderReadMode: function () {
@@ -369,6 +406,8 @@ sap.ui.define([
                 } else {
                     this.closeHeaderEdit();
                 }
+
+                this.setReqField("header", false);
             },
 
             closeHeaderEdit: function () {
@@ -450,9 +489,10 @@ sap.ui.define([
                                 me._headerChanged = false;
                                 me.setChangeStatus(false);
                                 me.setDetailVisible(true);
-                                Common.showMessage(me._i18n.getText('t4'));
                                 //me.setHeaderReadMode();
                                 me.setTabReadMode("HeaderEditModeModel");
+                                me.setReqField("header", false);
+                                Common.showMessage(me._i18n.getText('t4'));
 
                                 //from IO module create new Style
                                 // var param = {};
@@ -499,6 +539,7 @@ sap.ui.define([
                                 me._headerChanged = false;
                                 me.setChangeStatus(false);
                                 me.setTabReadMode("HeaderEditModeModel");
+                                me.setReqField("header", false);
                                 Common.showMessage(me._i18n.getText('t4'));
                             },
                             error: function (err, oMessage) {

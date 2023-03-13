@@ -1,4 +1,4 @@
-sap.ui.define([
+    sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/model/json/JSONModel",
     "sap/ui/export/Spreadsheet",
