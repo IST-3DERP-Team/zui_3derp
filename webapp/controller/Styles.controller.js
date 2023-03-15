@@ -5,12 +5,13 @@ sap.ui.define([
     "../js/Utils",
     "sap/ui/model/json/JSONModel",
     "sap/ui/export/Spreadsheet",
-    "../control/DynamicTable"
+    "../control/DynamicTable",
+    "sap/ui/core/routing/HashChanger"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Common, Constants, Utils, JSONModel, Spreadsheet, control) {
+    function (Controller, Common, Constants, Utils, JSONModel, Spreadsheet, control, HashChanger) {
         "use strict";
 
         var that;
@@ -62,6 +63,18 @@ sap.ui.define([
                 };
                 this.byId("styleDynTable").addEventDelegate(oDelegateKeyUp);
                 console.log("init");
+
+                this.getAppAction();
+            },
+
+            getAppAction: async function() {
+                if (sap.ushell.Container !== undefined) {
+                    const fullHash = new HashChanger().getHash(); 
+                    const urlParsing = await sap.ushell.Container.getServiceAsync("URLParsing");
+                    const shellHash = urlParsing.parseShellHash(fullHash); 
+                    console.log(shellHash);
+                    console.log(shellHash.action);
+                }
             },
 
             onAfterRendering: function () {

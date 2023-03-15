@@ -2,15 +2,15 @@
     <Toolbar height="3rem" style="Clear">
         <Label text="{i18n>VersionAttributes}" />
         <ToolbarSpacer />
-        <Button icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveversionattributes}" press="onSaveVersionAttrTable" visible="{VersionAttrEditModeModel>/editMode}" />
-        <Button icon="sap-icon://add" press="addLine" tooltip="{i18n>Addnewline}" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? false : true }">
+        <Button id="btnVersionSave" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveversionattributes}" press="onSaveVersionAttrTable" visible="{VersionAttrEditModeModel>/editMode}" />
+        <Button id="btnVersionAdd" icon="sap-icon://add" press="addLine" tooltip="{i18n>Addnewline}" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? false : true }">
             <customData>
                 <core:CustomData key="TableName" value="versionAttrTable" />
             </customData>
         </Button>
-        <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editversionattributes}" press="setVersionAttrEditMode" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? false : true }" />
-        <Button type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteVersionAttr" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? false : true }" />
-        <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelVersionAttrEdit" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? true : false }" />
+        <Button id="btnVersionEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editversionattributes}" press="setVersionAttrEditMode" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? false : true }" />
+        <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteVersionAttr" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? false : true }" />
+        <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelVersionAttrEdit" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? true : false }" />
     </Toolbar>
 
     <MessageStrip id="VersionAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
@@ -54,6 +54,7 @@
                             valueHelpRequest="onAttrCodesValueHelp"
                             suggestionItems="{path:'AttribCdModel>/results', templateShareable: false}"
                             value="{DataModel>Attribcd}"
+                            
                         >
                             <suggestionItems>
                                 <core:ListItem text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}" />

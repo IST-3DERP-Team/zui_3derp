@@ -17,7 +17,7 @@ sap.ui.define([
         "use strict";
 
         var that;
-
+        
         return Controller.extend("zui3derp.controller.StyleDetail", {
 
             onInit: function () {
@@ -63,15 +63,21 @@ sap.ui.define([
                 sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = this._fBackButton;
             },
 
-            // onAfterRendering: function () {
-            //     //double click event
-            //     console.log("onAfterRendering");
-            //     Utils.getStyleSearchHelps(this);
-            //     Utils.getAttributesSearchHelps(this);
-            //     Utils.getProcessAttributes(this);
-               
-            //     console.log("onAfterRendering");
-            // },
+            onAfterRendering: function () {
+                //double click event
+                // console.log("onAfterRendering");
+                // Utils.getStyleSearchHelps(this);
+                // Utils.getAttributesSearchHelps(this);
+                // Utils.getProcessAttributes(this);
+                var oModel = new JSONModel();
+                var oTable = this.getView().byId("versionsTable");
+                oTable.setModel(oModel);
+                oTable.attachBrowserEvent('dblclick', function (e) {
+                    e.preventDefault();
+                    that.onRouteVersion(); //navigate to RouteVersion page
+
+                });
+            },
 
             _routePatternMatched: function (oEvent) {
                 Common.openLoadingDialog(that);
@@ -104,7 +110,7 @@ sap.ui.define([
                     //create new - only header is editable at first
                     this.setHeaderEditMode();
                     this.setDetailVisible(false);
-                    this.setReqField("header", true);
+                    //this.setReqField("header", true);
 
                 } else {
                     //existing style, get the style data
@@ -381,6 +387,8 @@ sap.ui.define([
                 Utils.getStyleSearchHelps(this);
 
                 this.setReqField("header", true);
+                this.disableOtherTabs("detailPanel");
+                this.setDtlsEnableButton(false);
             },
 
             setHeaderReadMode: function () {
@@ -408,6 +416,8 @@ sap.ui.define([
                 }
 
                 this.setReqField("header", false);
+                this.enableOtherTabs("detailPanel");
+                this.setDtlsEnableButton(true);
             },
 
             closeHeaderEdit: function () {
@@ -530,6 +540,7 @@ sap.ui.define([
                         oModel.setHeaders({
                             sbu: this._sbu
                         });
+                        console.log(oEntry);
                         oModel.update(path, oEntry, {
                             method: "PUT",
                             success: function (data, oResponse) {
@@ -642,6 +653,8 @@ sap.ui.define([
                 this.getView().setModel(oJSONModel, "GenAttrEditModeModel");
 
                 Utils.getAttributesSearchHelps(this);
+
+                this.disableOtherTabs("detailPanel");
             },
 
             cancelGeneralAttrEdit: function () {
@@ -657,6 +670,8 @@ sap.ui.define([
                 } else {
                     this.closeGeneralAttrEdit();
                 }
+
+                this.setDtlsEnableButton(true);
             },
 
             closeGeneralAttrEdit: function () {
@@ -946,6 +961,8 @@ sap.ui.define([
                     this.getView().setModel(oJSONModel, "ColorEditModeModel");
                     this.byId("btnAddColor").setVisible(false);
                 }
+
+                this.disableOtherTabs("detailPanel");
             },
 
             setColorReadMode: function () {
@@ -971,6 +988,8 @@ sap.ui.define([
                 } else {
                     this.closeColorsEdit();
                 }
+
+                this.setDtlsEnableButton(true);
             },
 
             closeColorsEdit: function () {
@@ -999,7 +1018,7 @@ sap.ui.define([
                     });
                 });
 
-                this.byId("btnAddColor").setVisible(true);
+                this.byId("btnColorAdd").setVisible(true);
             },
 
             onColorChange: function () {
@@ -1198,6 +1217,8 @@ sap.ui.define([
                 data.editMode = true;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "SizeEditModeModel");
+
+                this.disableOtherTabs("detailPanel");
             },
 
             cancelSizeEdit: function () {
@@ -1213,6 +1234,8 @@ sap.ui.define([
                 } else {
                     this.closeSizeEdit();
                 }
+
+                this.setDtlsEnableButton(true);
             },
 
             closeSizeEdit: function () {
@@ -1365,6 +1388,8 @@ sap.ui.define([
                 } else {
                     this.closeProcessEdit();
                 }
+
+                this.setDtlsEnableButton(true);
             },
 
             closeProcessEdit: function () {
@@ -1415,7 +1440,8 @@ sap.ui.define([
                             "Styleno": this._styleNo,
                             "Seqno": oData.results[i].Seqno,
                             "Processcd": oData.results[i].Processcd,
-                            "Leadtime": oData.results[i].Leadtime,
+                            "Leadtm": oData.results[i].Leadtm,
+                            // "Leadtime": oData.results[i].Leadtime,
                             "Attribtyp": oData.results[i].Attribtyp,
                             "Attribcd": oData.results[i].Attribcd,
                             "Vastyp": oData.results[i].Vastyp
@@ -1561,6 +1587,28 @@ sap.ui.define([
                     sbu: that._sbu,
                     version: version
                 });
+            },
+
+            onRouteVersion: function (oEvent) {
+                var oTable = this.getView().byId("versionsTable");
+                var selected = oTable.getSelectedIndices();
+                var oTmpSelected = [];
+                selected.forEach(item => {
+                    oTmpSelected.push(oTable.getBinding("rows").aIndices[item])
+                })
+                selected = oTmpSelected;
+                var oTableModel = this.getView().byId("versionsTable").getModel("DataModel");
+                var oData = oTableModel.getData();
+               
+                var verno = oData.results[selected].Verno;
+
+                that._router.navTo("RouteVersion", {
+                    styleno: that._styleNo,
+                    sbu: that._sbu,
+                    version: verno
+                });
+
+              
             },
 
             onCreateNewVersion: function () {
@@ -2213,6 +2261,13 @@ sap.ui.define([
                 orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
                 andFilter.push(new sap.ui.model.Filter(orFilter, false));
                 evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+
+                 //filter customers by customer group
+                 var custGrp = this.getView().byId("CUSTGRP").getValue(); //get customer group value
+                 this._customersHelpDialog.getBinding("items").filter([new Filter(
+                    "Custgrp",
+                    sap.ui.model.FilterOperator.EQ, custGrp
+                )]);
             },
 
             _customersValueHelpClose: function (evt) {
@@ -2660,6 +2715,60 @@ sap.ui.define([
 
                     this.byId("btnAddColor").setVisible(true);
                 }
+            },
+
+            setDtlsEnableButton(pEnable) {
+                //General Attribute
+                this.byId("btnGenAttrSave").setEnabled(pEnable);
+                this.byId("btnGenAttrEdit").setEnabled(pEnable);
+                this.byId("btnGenAttrDelete").setEnabled(pEnable);
+                this.byId("btnGenAttrAdd").setEnabled(pEnable);
+                this.byId("btnGenAttrCancel").setEnabled(pEnable);
+               
+                //Color
+                this.byId("btnColorSave").setEnabled(pEnable);
+                this.byId("btnColorEdit").setEnabled(pEnable);
+                this.byId("btnColorDelete").setEnabled(pEnable);
+                this.byId("btnColorAdd").setEnabled(pEnable);
+                this.byId("btnColorCancel").setEnabled(pEnable);
+
+                //Size
+                this.byId("btnSizeSave").setEnabled(pEnable);
+                this.byId("btnSizeEdit").setEnabled(pEnable);
+                this.byId("btnSizeCancel").setEnabled(pEnable);
+
+                //Process
+                this.byId("btnProcessSave").setEnabled(pEnable);
+                this.byId("btnProcessEdit").setEnabled(pEnable);
+                this.byId("btnProcessCancel").setEnabled(pEnable);
+                this.byId("btnProcessAdd").setEnabled(pEnable);
+                this.byId("btnProcessDelete").setEnabled(pEnable);
+
+                //Version
+                this.byId("btnVersionSave").setEnabled(pEnable);
+                this.byId("btnVersionEdit").setEnabled(pEnable);
+                this.byId("btnVersionDelete").setEnabled(pEnable);
+                this.byId("btnVersionAdd").setEnabled(pEnable);
+                this.byId("btnVersionCancel").setEnabled(pEnable);
+
+                //Attachment
+                this.byId("btnAttachmentDelete").setEnabled(pEnable);
+                this.byId("btnAttachmentAdd").setEnabled(pEnable);
+               
+
+            },
+
+            disableOtherTabs: function (tabName) {
+                var oIconTabBar = this.byId(tabName);
+                oIconTabBar.getItems().filter(item => item.getProperty("key") !== oIconTabBar.getSelectedKey())
+                    .forEach(item => item.setProperty("enabled", false));
+            },
+
+            enableOtherTabs: function (tabName) {
+                var oIconTabBar = this.byId(tabName);
+                oIconTabBar.getItems().forEach(item => {
+                    item.setProperty("enabled", true)
+                });
             },
 
             pad: Common.pad

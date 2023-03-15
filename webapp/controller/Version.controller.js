@@ -2050,7 +2050,7 @@ sap.ui.define([
                 //open GMV value help
                 var sInputValue = oEvent.getSource().getValue();
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
-                var matType = oData.getProperty('MATTYP'); //get Material Type
+                that.materialType = oData.getProperty('MATTYP'); //get Material Type
                 that.inputId = oEvent.getSource().getId(); //get input field id
 
                 var oTable = that.getView().byId("bomGMCTable");
@@ -2072,10 +2072,10 @@ sap.ui.define([
                     that.getView().addDependent(that._GMCValueHelpDialog);
                 }
                 //filter GMC by Material Type
-                if (matType !== undefined && matType !== '') {
+                if (that.materialType !== undefined && that.materialType !== '') {
                     that._GMCValueHelpDialog.getBinding("items").filter([new Filter(
                         "Mattyp",
-                        sap.ui.model.FilterOperator.EQ, matType
+                        sap.ui.model.FilterOperator.EQ, that.materialType
                     )]);
                 }
                 that._GMCValueHelpDialog.open(sInputValue);
@@ -2089,6 +2089,14 @@ sap.ui.define([
                 orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
                 andFilter.push(new sap.ui.model.Filter(orFilter, false));
                 evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+
+                //add filter GMC by Material Type
+                if (that.materialType !== undefined && that.materialType !== '') {
+                    that._GMCValueHelpDialog.getBinding("items").filter([new Filter(
+                        "Mattyp",
+                        sap.ui.model.FilterOperator.EQ, that.materialType
+                    )]);
+                }
             },
 
             _GMCValueHelpClose: function (evt) {
@@ -2200,6 +2208,19 @@ sap.ui.define([
                 //open Vendor value help
                 var sInputValue = oEvent.getSource().getValue();
                 that.inputId = oEvent.getSource().getId(); //get input field id
+
+                var oTable = that.getView().byId("materialListTable");
+                var oColumns = oTable.getColumns();
+
+                //Get input field id of Currency
+                for (var i = 0; i < oColumns.length; i++) {
+                    var name = oColumns[i].getFilterProperty();
+                    console.log(name)
+                    if (name === "Currencycd") {
+                        that.currency = oEvent.getSource().getParent().mAggregations.cells[i].getId();
+                    }
+                }
+
                 if (!that._vendorValueHelpDialog) {
                     that._vendorValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.Vendors", that);
                     that.getView().addDependent(that._vendorValueHelpDialog);
@@ -2225,6 +2246,10 @@ sap.ui.define([
                     var input = sap.ui.getCore().byId(that.inputId);
                     input.setValue(oSelectedItem.getTitle()); //set input field id selected Vendor
                     that.onMaterialListChange();
+
+                    var oCurrency = oSelectedItem.data('Waers'); //get the Base UOM of GMC
+                    var currencyInput = sap.ui.getCore().byId(that.currency);
+                    currencyInput.setValue(oCurrency); //set the Baseuom
                 }
                 evt.getSource().getBinding("items").filter([]);
             },

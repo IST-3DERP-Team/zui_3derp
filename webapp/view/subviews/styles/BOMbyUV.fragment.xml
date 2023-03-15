@@ -11,9 +11,9 @@
         </HBox>
         <Button icon="sap-icon://synchronize" tooltip="Refresh data" press="onRefresh"/>
         <ToolbarSpacer />
-        <Button icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>SaveBOMUVitems}" press="onSaveBOMbyUV" visible="{BOMbyUVEditModeModel>/editMode}"/>
-        <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>EditBOMUVitems}" press="setBOMbyUVEditMode" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? false : true }"/>
-        <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelBOMbyUVEdit" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? true : false }"/>
+        <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMUVitems}" press="onSaveBOMbyUV" visible="{BOMbyUVEditModeModel>/editMode}"/>
+        <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMUVitems}" press="setBOMbyUVEditMode" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? false : true }"/>
+        <Button type="Ghost" icon="sap-icon://decline"  tooltip="{i18n>Canceledit}" press="cancelBOMbyUVEdit" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? true : false }"/>
         <Button icon="sap-icon://excel-attachment" press="onExport" tooltip="Download spreadsheet">
             <customData>
             <core:CustomData key="TableName" value="bomUVTable"/>

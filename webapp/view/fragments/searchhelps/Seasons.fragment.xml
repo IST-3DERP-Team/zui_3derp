@@ -1,6 +1,7 @@
 <core:FragmentDefinition
 	xmlns="sap.m"
-	xmlns:core="sap.ui.core">
+	xmlns:core="sap.ui.core"
+	xmlns:t="sap.ui.table">
 	<SelectDialog
 		title="{i18n>SelectSeason}"
 		class="sapUiPopupWithPadding"
@@ -8,6 +9,22 @@
         search="_seasonsGroupValueHelpSearch"
 		confirm="_seasonsGroupValueHelpClose"
 		cancel="_seasonsGroupValueHelpClose">
-		<StandardListItem title="{SeasonsModel>Seasoncd}" description="{SeasonsModel>Desc1}"/>
+		<!-- <StandardListItem title="{SeasonsModel>Seasoncd}" description="{SeasonsModel>Desc1}"/> -->
+		 <t:Table  rows="{SeasonsModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" selectionMode="Single" visibleRowCountMode="Auto">
+            <t:Column width="5rem" filterProperty="Seasoncd" sortProperty="Seasoncd">
+                <Label text="{i18n>SEQNO}" />
+                <t:template>
+                    <Text text="{SeasonsModel>Seasoncd}" />
+                </t:template>
+            </t:Column>
+            <t:Column width="7rem" filterProperty="Desc1" sortProperty="Desc1">
+                <Label text="{i18n>MATTYP}" />
+                <t:template>
+                    <Text text="{SeasonsModel>Desc1}" />
+                </t:template>
+            </t:Column>
+           
+			</t:Table>
+			
 	</SelectDialog>
 </core:FragmentDefinition>

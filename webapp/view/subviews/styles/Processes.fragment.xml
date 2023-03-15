@@ -10,15 +10,15 @@
 <VBox fitContainer="true" width="80%" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer/>
-            <Button type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveprocess}" press="onSaveProcessTable" visible="{ProcessEditModeModel>/editMode}"/>
-            <Button type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addProcessLine" visible="{= ${ProcessEditModeModel>/editMode} === true ? false : true }">
+            <Button id="btnProcessSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveprocess}" press="onSaveProcessTable" visible="{ProcessEditModeModel>/editMode}"/>
+            <Button id="btnProcessAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addProcessLine" visible="{= ${ProcessEditModeModel>/editMode} === true ? false : true }">
                 <customData>
                     <core:CustomData key="TableName" value="processesTable"/>
                 </customData>
             </Button>
-             <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editprocess}" press="setProcessEditMode" visible="{= ${ProcessEditModeModel>/editMode} === true ? false : true }"/>
-            <Button type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedprocess}" press="onDeleteProcess" visible="{= ${ProcessEditModeModel>/editMode} === true ? false : true }"/>
-            <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelProcessEdit" visible="{= ${ProcessEditModeModel>/editMode} === true ? true : false }"/>
+             <Button id="btnProcessEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editprocess}" press="setProcessEditMode" visible="{= ${ProcessEditModeModel>/editMode} === true ? false : true }"/>
+            <Button id="btnProcessDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedprocess}" press="onDeleteProcess" visible="{= ${ProcessEditModeModel>/editMode} === true ? false : true }"/>
+            <Button id="btnProcessCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelProcessEdit" visible="{= ${ProcessEditModeModel>/editMode} === true ? true : false }"/>
         </Toolbar>
 
          
@@ -62,7 +62,8 @@
                         <t:Column width="11rem" filterProperty="Leadtime">
                             <Label text="{i18n>LeadTime}" />
                             <t:template>
-                                <Input value="{DataModel>Leadtime}" type="Number" editable="{ProcessEditModeModel>/editMode}" 
+                            <!-- change Leadtime column name to Leadtm -->
+                                <Input value="{DataModel>Leadtm}" type="Number" editable="{ProcessEditModeModel>/editMode}" 
                                     change="onProcessChange" liveChange="onProcessChange"/>
                             </t:template>
                         </t:Column>
