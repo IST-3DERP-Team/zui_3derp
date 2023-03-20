@@ -25,7 +25,7 @@
             <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" 
                 selectionMode="MultiToggle" visibleRowCountMode="Fixed" class="sapUiSizeCompact" selectionBehavior="Row" >
                 <c:columns>
-                    <t:Column width="5rem"   filterProperty="Verno" sortProperty="Verno">
+                    <!-- <t:Column width="5rem"   filterProperty="Verno" sortProperty="Verno">
                         <Label text="{i18n>Manage}"/>
                         <t:template>
                             <Button icon="sap-icon://detail-view" press="onSelectVersion">
@@ -34,7 +34,7 @@
                             </customData>
                             </Button>
                         </t:template>
-                    </t:Column>
+                    </t:Column> -->
                     <t:Column width="5rem"   filterProperty="Verno" sortProperty="Verno" hAlign="End">
                         <Label text="{i18n>Version}"/>
                         <t:template>
