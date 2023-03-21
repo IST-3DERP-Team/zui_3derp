@@ -45,6 +45,7 @@ sap.ui.define([
                 this._BOMbyGMCChanged = false;
                 this._BOMbyUVChanged = false;
                 this._materialListChanged = false;
+                this._bomuvconfig = [];
 
                 this.setChangeStatus(false);
 
@@ -385,7 +386,6 @@ sap.ui.define([
                 //get dynamic columns of BOM by GMC
                 oModel.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
-                        console.log(Constants.BOMGMC, oData);
                         oData.results.forEach((column) => {
                             columnData.push({
                                 "ColumnName": column.ColumnName,
@@ -437,7 +437,6 @@ sap.ui.define([
                 });
                 oModel.read("/StyleBOMGMCSet", {
                     success: function (oData, oResponse) {
-                        console.log("StyleBOMGMCSet", oData)
                         oData.results.forEach(item => {
                             item.BOMSTYLVER = item.BOMSTYLVER === "0" ? "" : item.BOMSTYLVER;
                         })
@@ -718,7 +717,7 @@ sap.ui.define([
                             if (oEntry.UVToItems.length > 0) {
 
                                 path = "/BOMUVSet";
-
+                                console.log(oEntry)
                                 oModel.setHeaders({
                                     sbu: me._sbu
                                 });
@@ -1077,10 +1076,16 @@ sap.ui.define([
                     pivotArray = me._sizes;
                 }
 
+                // var pivotArray2 = jQuery.extend(true, [], pivotArray);
+
+                // pivotArray = pivotArray.sort((a, b) => (a.Attribcd > b.Attribcd ? 1 : -1))
+                // pivotArray.forEach(item => item.Attribcd = item.Attribcd.replace("/","-"))
+                // console.log(pivotArray)
                 //get dynamic columns of BOM by UV
                 oModelUV.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
                         var columns = oData.results;
+                        
                         var pivotRow;
                         //find the column to pivot
                         for (var i = 0; i < columns.length; i++) {
@@ -1122,6 +1127,16 @@ sap.ui.define([
                         Common.closeLoadingDialog(that);
                     }
                 });
+
+                oModelUV.setHeaders({
+                    sbu: this._sbu
+                });
+                oModelUV.read("/BOMUVConfigSet", {
+                    success: function (oData, oResponse) {
+                        me._bomuvconfig = oData.results;
+                    },
+                    error: function (err) { }
+                });                
             },
 
             getbomUVTableData: function (columnData, pivot) {
@@ -1143,27 +1158,35 @@ sap.ui.define([
                         //Get unique items of BOM by UV
                         var unique = rowData.filter((rowData, index, self) =>
                             index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS)));
-
+                        
                         //For every unique item
                         for (var i = 0; i < unique.length; i++) {
-
                             //Set the pivot column for each unique item
                             for (var j = 0; j < rowData.length; j++) {
                                 if (rowData[j].DESC1 !== "") {
                                     if (unique[i].GMC === rowData[j].GMC && unique[i].PARTCD === rowData[j].PARTCD && unique[i].MATTYPCLS === rowData[j].MATTYPCLS) {
                                         for (var k = 0; k < pivot.length; k++) {
                                             var colname = pivot[k].Attribcd;
+
                                             if (rowData[j].COLOR === colname) {
                                                 unique[i][colname] = rowData[j].DESC1;
                                             } else if (rowData[j].SZE === colname) {
+                                                // console.log(colname)
+                                                // console.log(rowData[j].DESC1)
                                                 unique[i][colname] = rowData[j].DESC1;
+                                                // console.log(unique[i][colname])
                                             }
                                         }
                                     }
                                 }
+
+                                // console.log(rowData[j])
                             }
                         }
-
+                        // Object.keys(unique[0]).forEach(key => {
+                        //     unique.map(val => val[key.replace("/","-")] = val[key])
+                        // })
+                        // console.log(unique)
                         //set the table columns/rows
                         rowData = oData.results;
                         var oJSONModel = new JSONModel();
@@ -1185,7 +1208,7 @@ sap.ui.define([
                             });
                         });
                         oTable.bindRows("DataModel>/results");
-
+                        
                         Common.closeLoadingDialog(that);
                     },
                     error: function (err) {
@@ -1212,6 +1235,46 @@ sap.ui.define([
                 data.editMode = true;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "BOMbyUVEditModeModel");
+
+                var bomuvconfig = this._bomuvconfig.filter(fItem => fItem.MATTYP !== '');
+                var oTable = this.getView().byId("bomUVTable");
+                oTable.getRows().forEach(row => {
+                    var oConsump, oWastage;
+                    var vUsgcls = "", vMattypcls = "";
+
+                    row.getCells().forEach(cell => {
+                        // console.log(cell);
+                        if (cell.getBindingInfo("value") !== undefined) {
+                            if (cell.getBindingInfo("value").parts[0].path === "USGCLS") {
+                                vUsgcls = cell.getValue();
+                            }
+                            else if (cell.getBindingInfo("value").parts[0].path === "CONSUMP") {
+                                oConsump = cell;
+                                oConsump.setEditable(false);
+                            }
+                            else if (cell.getBindingInfo("value").parts[0].path === "WASTAGE") {
+                                oWastage = cell;
+                                oWastage.setEditable(false);
+                            }
+                        }
+                        else if (cell.getBindingInfo("text") !== undefined) {
+                            if (cell.getBindingInfo("text").parts[0].path === "MATTYPCLS") {
+                                vMattypcls = cell.getText();
+                            }
+                        }
+                    })
+
+                    bomuvconfig.filter(fItem => fItem.UV === vUsgcls && fItem.MATTYP === vMattypcls).forEach(item => {
+                        if (item.FIELD === "CONSUMP" && oConsump) {
+                            oConsump.setEditable(true);
+                        }
+                        else if (item.FIELD === "WASTAGE" && oWastage) {
+                            oWastage.setEditable(true);
+                        }
+                    })                    
+                })
+
+                console.log(oTable.getModel("DataModel").getData().results)
             },
 
             cancelBOMbyUVEdit: function () {
@@ -1445,7 +1508,6 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        console.log("StyleMaterialListSet", oData)
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length);
@@ -1594,6 +1656,7 @@ sap.ui.define([
 
             columnTemplate: function (type, column) {
                 //set the column template based on gynamic fields
+                var me = this;
                 var columnName = column.ColumnName;
                 var columnType = column.ColumnType;
                 var editModeCond, changeFunction, liveChangeFunction;
