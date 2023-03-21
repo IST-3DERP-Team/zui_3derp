@@ -482,7 +482,7 @@ sap.ui.define([
                 selected = oTmpSelected;
                 var aData = oTable.getModel().getData().rows;
                 console.log(aData[selected])
-
+                that._styleNo = aData[selected].STYLENO; 
                 var oModel = new JSONModel();
                 oModel.setData({
                     "STYLENO": aData[selected].STYLENO,

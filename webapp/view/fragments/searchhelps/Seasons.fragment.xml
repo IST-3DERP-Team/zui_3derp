@@ -9,8 +9,8 @@
         search="_seasonsGroupValueHelpSearch"
 		confirm="_seasonsGroupValueHelpClose"
 		cancel="_seasonsGroupValueHelpClose">
-		<!-- <StandardListItem title="{SeasonsModel>Seasoncd}" description="{SeasonsModel>Desc1}"/> -->
-		 <t:Table  rows="{SeasonsModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" selectionMode="Single" visibleRowCountMode="Auto">
+		<StandardListItem title="{SeasonsModel>Seasoncd}" description="{SeasonsModel>Desc1}"/>
+		 <!-- <t:Table  rows="{SeasonsModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" selectionMode="Single" visibleRowCountMode="Auto">
             <t:Column width="5rem" filterProperty="Seasoncd" sortProperty="Seasoncd">
                 <Label text="{i18n>SEQNO}" />
                 <t:template>
@@ -24,7 +24,7 @@
                 </t:template>
             </t:Column>
            
-			</t:Table>
+			</t:Table> -->
 			
 	</SelectDialog>
 </core:FragmentDefinition>
