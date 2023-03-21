@@ -970,9 +970,9 @@ sap.ui.define([
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "ColorEditModeModel");
                     this.byId("btnAddColor").setVisible(false);
-                }
 
-                this.disableOtherTabs("detailPanel");
+                    this.disableOtherTabs("detailPanel");
+                }
             },
 
             setColorReadMode: function () {
@@ -1600,25 +1600,28 @@ sap.ui.define([
             },
 
             onRouteVersion: function (oEvent) {
-                var oTable = this.getView().byId("versionsTable");
-                var selected = oTable.getSelectedIndices();
-                var oTmpSelected = [];
-                selected.forEach(item => {
-                    oTmpSelected.push(oTable.getBinding("rows").aIndices[item])
-                })
-                selected = oTmpSelected;
-                var oTableModel = this.getView().byId("versionsTable").getModel("DataModel");
-                var oData = oTableModel.getData();
-               
-                var verno = oData.results[selected].Verno;
-
-                that._router.navTo("RouteVersion", {
-                    styleno: that._styleNo,
-                    sbu: that._sbu,
-                    version: verno
-                });
-
-              
+                if (this.getOwnerComponent().getModel("COLOR_MODEL").getData().items.length === 0) {
+                    MessageBox.information("No colors found.")
+                }
+                else {
+                    var oTable = this.getView().byId("versionsTable");
+                    var selected = oTable.getSelectedIndices();
+                    var oTmpSelected = [];
+                    selected.forEach(item => {
+                        oTmpSelected.push(oTable.getBinding("rows").aIndices[item])
+                    })
+                    selected = oTmpSelected;
+                    var oTableModel = this.getView().byId("versionsTable").getModel("DataModel");
+                    var oData = oTableModel.getData();
+                   
+                    var verno = oData.results[selected].Verno;
+    
+                    that._router.navTo("RouteVersion", {
+                        styleno: that._styleNo,
+                        sbu: that._sbu,
+                        version: verno
+                    });
+                }             
             },
 
             onCreateNewVersion: function () {
@@ -1955,7 +1958,7 @@ sap.ui.define([
                 }
                 jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
                 this._UploadFileDialog.addStyleClass("sapUiSizeCompact");
-                this._UploadFileDialog.open();
+                this._UploadFileDialog.open();                
             },
 
             onStartUploadFile: function () {
