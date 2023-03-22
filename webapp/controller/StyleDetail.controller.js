@@ -129,6 +129,8 @@ sap.ui.define([
 
                 this.getAppAction();
 
+                this.getIOs();
+                
                 if (this._styleNo === Constants.NEW) {
                     //create new - only header is editable at first
                     this.setHeaderEditMode();
@@ -179,6 +181,7 @@ sap.ui.define([
                 this.bindUploadCollection();
                 this.getView().getModel("FileModel").refresh();
                 this.setFilesEditMode();
+
                 Common.closeLoadingDialog(that);
                 console.log("route")
                 //this.getAppAction();
@@ -401,29 +404,63 @@ sap.ui.define([
                 });
             },
 
-            setHeaderEditMode: function () {
-                if (this._styleNo != Constants.NEW)
-                {
-                    //lock style
-                    //this.lockStyle();
+            setHeaderEditMode: function () {   
+                if (this._styleNo === Constants.NEW) {
+                    //unlock editable fields of style header
+                    var oJSONModel = new JSONModel();
+                    var data = {};
+                    this._headerChanged = false;
+                    data.editMode = true;
+                    oJSONModel.setData(data);
+                    this.getView().setModel(oJSONModel, "HeaderEditModeModel");
+
+                    Utils.getStyleSearchHelps(this);
+
+                    this.setReqField("header", true);
+                    this.disableOtherTabs("detailPanel");
+                    this.setDtlsEnableButton(false);                    
                 }
-
-                //unlock editable fields of style header
-                var oJSONModel = new JSONModel();
-                var data = {};
-                this._headerChanged = false;
-                data.editMode = true;
-                oJSONModel.setData(data);
-                this.getView().setModel(oJSONModel, "HeaderEditModeModel");
-
-                Utils.getStyleSearchHelps(this);
-
-                this.setControlEditMode("HeaderEditModeModel", true)
-                this.setReqField("HeaderEditModeModel", true);
-                this.disableOtherTabs("detailPanel");
-                this.setDtlsEnableButton(false);
-
-
+                else {
+                    if (this.getView().getModel("IOData").getData().filter(fItem => fItem.WITHORDERDTL === "X").length > 0) {
+                        MessageBox.information("Header info editing not allowed.\r\nStyle already used in IO with order details.");
+                    }
+                    else if (this.getView().getModel("IOData").getData().filter(fItem => fItem.WITHBOMSIZEUV === "X").length > 0) {
+                        MessageBox.information("Header info editing not allowed.\r\nStyle already used in IO and BOM by GMC has ASUV/SUV already.");
+                    }
+                    else {
+                        //unlock editable fields of style header
+                        var oJSONModel = new JSONModel();
+                        var data = {};
+                        this._headerChanged = false;
+                        data.editMode = true;
+                        oJSONModel.setData(data);
+                        this.getView().setModel(oJSONModel, "HeaderEditModeModel");
+    
+                        Utils.getStyleSearchHelps(this);
+    
+                        this.setReqField("header", true);
+                        this.disableOtherTabs("detailPanel");
+                        this.setDtlsEnableButton(false);
+    
+                        if (this.getView().getModel("IOData").getData().length > 0) {
+                            MessageBox.information("Only size group can be edited.\r\nStyle already used in IO.");
+    
+                            this.byId("STYLECD").setEnabled(false);
+                            this.byId("PRODTYP").setEnabled(false);
+                            this.byId("STYLECAT").setEnabled(false);
+                            this.byId("CUSTPRDTYP").setEnabled(false);
+                            this.byId("DESC1").setEnabled(false);
+                            this.byId("SALESGRP").setEnabled(false);
+                            this.byId("PRODGRP").setEnabled(false);
+                            this.byId("STYLEGRP").setEnabled(false);
+                            this.byId("SEASONCD").setEnabled(false);
+                            this.byId("CUSTGRP").setEnabled(false);
+                            this.byId("SOLDTOCUST").setEnabled(false);
+                            this.byId("UOM").setEnabled(false);
+                            this.byId("REMARKS1").setEnabled(false);
+                        }
+                    }
+                }
             },
 
             setHeaderReadMode: function () {
@@ -475,6 +512,20 @@ sap.ui.define([
                 this.setReqField("HeaderEditModeModel", false);
                 this.enableOtherTabs("detailPanel");
                 this.setDtlsEnableButton(true);
+
+                this.byId("STYLECD").setEnabled(true);
+                this.byId("PRODTYP").setEnabled(true);
+                this.byId("STYLECAT").setEnabled(true);
+                this.byId("CUSTPRDTYP").setEnabled(true);
+                this.byId("DESC1").setEnabled(true);
+                this.byId("SALESGRP").setEnabled(true);
+                this.byId("PRODGRP").setEnabled(true);
+                this.byId("STYLEGRP").setEnabled(true);
+                this.byId("SEASONCD").setEnabled(true);
+                this.byId("CUSTGRP").setEnabled(true);
+                this.byId("SOLDTOCUST").setEnabled(true);
+                this.byId("UOM").setEnabled(true);
+                this.byId("REMARKS1").setEnabled(true);
             },
 
             onHeaderChange: function () {
@@ -1714,25 +1765,28 @@ sap.ui.define([
             },
 
             onRouteVersion: function (oEvent) {
-                var oTable = this.getView().byId("versionsTable");
-                var selected = oTable.getSelectedIndices();
-                var oTmpSelected = [];
-                selected.forEach(item => {
-                    oTmpSelected.push(oTable.getBinding("rows").aIndices[item])
-                })
-                selected = oTmpSelected;
-                var oTableModel = this.getView().byId("versionsTable").getModel("DataModel");
-                var oData = oTableModel.getData();
-
-                var verno = oData.results[selected].Verno;
-
-                that._router.navTo("RouteVersion", {
-                    styleno: that._styleNo,
-                    sbu: that._sbu,
-                    version: verno
-                });
-
-
+                if (this.getOwnerComponent().getModel("COLOR_MODEL").getData().items.length === 0) {
+                    MessageBox.information("No colors found.")
+                }
+                else {
+                    var oTable = this.getView().byId("versionsTable");
+                    var selected = oTable.getSelectedIndices();
+                    var oTmpSelected = [];
+                    selected.forEach(item => {
+                        oTmpSelected.push(oTable.getBinding("rows").aIndices[item])
+                    })
+                    selected = oTmpSelected;
+                    var oTableModel = this.getView().byId("versionsTable").getModel("DataModel");
+                    var oData = oTableModel.getData();
+                   
+                    var verno = oData.results[selected].Verno;
+    
+                    that._router.navTo("RouteVersion", {
+                        styleno: that._styleNo,
+                        sbu: that._sbu,
+                        version: verno
+                    });
+                }             
             },
 
             onCreateNewVersion: function () {
@@ -1779,6 +1833,8 @@ sap.ui.define([
                         me._NewVerionDialog.close();
                         Common.closeLoadingDialog(that);
                         Common.showMessage(me._i18n.getText('t4'));
+
+                        if (oCurrent) { me.getHeaderData();  }
 
                         this.enableOtherTabs("detailPanel");
                         this.byId("btnHdrEdit").setEnabled(true);
@@ -2088,7 +2144,7 @@ sap.ui.define([
                 }
                 jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
                 this._UploadFileDialog.addStyleClass("sapUiSizeCompact");
-                this._UploadFileDialog.open();
+                this._UploadFileDialog.open();                
             },
 
             onStartUploadFile: function () {
@@ -3173,6 +3229,27 @@ sap.ui.define([
                 oIconTabBar.getItems().forEach(item => {
                     item.setProperty("enabled", true)
                 });
+            },
+
+            getIOs: function() {
+                var me = this;
+                var oData = [];
+                var oModel = this.getOwnerComponent().getModel();
+                console.log("getIOs");
+                // this.getView().setModel(new JSONModel(oData), "IOData");
+
+                oModel.read('/IOSet', {
+                    urlParameters: {
+                        "$filter": "STYLENO eq '" + this._styleNo + "'"
+                    },
+                    success: function (oData) {
+                        // console.log(oData)
+                        me.getView().setModel(new JSONModel(oData.results), "IOData");
+                        // me.getView().getModel("IOData").setProperty("/", oData.results);
+                        // console.log(me.getView().getModel("IOData").getData())
+                    },
+                    error: function (err) { }
+                })                             
             },
 
             pad: Common.pad

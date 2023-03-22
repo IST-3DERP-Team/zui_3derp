@@ -4,12 +4,13 @@ sap.ui.define([
     "../js/Common",
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/routing/History",
-    "../js/Constants"
+    "../js/Constants",
+    "sap/m/MessageBox"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, JSONModel, History, Constants) {
+    function (Controller, Filter, Common, JSONModel, History, Constants, MessageBox) {
         "use strict";
 
         var that;
@@ -75,9 +76,11 @@ sap.ui.define([
                     //     "$filter": "Matno eq ''"
                     // },
                     success: function(oData, oResponse) {
-                        console.log('StyleMaterialListSet',oData);
-                        //var result =oData;
-                        //result=result.filter(a => a.Matno == "");
+                        // console.log('StyleMaterialListSet',oData);
+                        var result = oData.results;
+                        result=result.filter(a => a.Matno === "");
+                        oData.results = result;
+
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length);
@@ -128,7 +131,7 @@ sap.ui.define([
                 var oData = oTableModel.getData();
                 var oSelected = this.getView().byId("materialListTable").getSelectedIndices();
                 var oJSONModel = new JSONModel();
-                console.log(oData);
+
                 if(oSelected.length > 0) {
                     var oEntry = {
                         Styleno: this._styleNo,
@@ -175,8 +178,11 @@ sap.ui.define([
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function(oDataReturn, oResponse) {
+                            console.log(oDataReturn)
                             //assign the materials based on the return
                             var oReturnItems = oDataReturn.MatListToItems.results;
+                            var bAssigned = false;
+
                             for (var i = 0; i < oData.results.length; i++) {
                                 var seqno = oData.results[i].Seqno;
                                 var item = oReturnItems.find((result) => result.Seqno === seqno);
@@ -184,23 +190,35 @@ sap.ui.define([
                                     try {
                                         if(item.Matno !== "") {
                                             oData.results[i].Matno = item.Matno;
+                                            bAssigned = true;
                                         }
                                     } catch(err) {}
                                 }
                             }
-                            oJSONModel.setData(oData);
-                            oTable.setModel(oJSONModel, "DataModel");
+
+                            if (bAssigned) {
+                                oJSONModel.setData(oData);
+                                oTable.setModel(oJSONModel, "DataModel");    
+                                me.onMaterialListChange(); 
+                                me.onSaveMaterialList();                            
+                                // MessageBox.information(me._i18n.getText('t4'));
+                                // Common.showMessage(me._i18n.getText('t4'));
+                            }
+                            else {
+                                MessageBox.information("No matching material no. found.");
+                            }
+
                             Common.closeLoadingDialog(me);
-                            me.onMaterialListChange();
-                            Common.showMessage(me._i18n.getText('t4'));
                         },
                         error: function(err) {
                             Common.closeLoadingDialog(that);
-                            Common.showMessage(me._i18n.getText('t5'));
+                            // Common.showMessage(me._i18n.getText('t5'));
+                            MessageBox.information(me._i18n.getText('t5'));
                         }
                     });
                 } else {
-                    Common.showMessage(this._i18n.getText('t10'));
+                    // Common.showMessage(this._i18n.getText('t10'));
+                    MessageBox.information(me._i18n.getText('t10'));
                 }
             },
 
@@ -292,20 +310,22 @@ sap.ui.define([
                             oJSONModel.setData(oData);
                             oTable.setModel(oJSONModel, "DataModel");
                             Common.closeLoadingDialog(that);
-                            me.onMaterialListChange();
+                            me.onMaterialListChange(); 
                             me.onSaveMaterialList();
                         },
                         error: function(err) {
                             Common.closeLoadingDialog(that);
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            oMsgStrip.setVisible(true);
-                            oMsgStrip.setText(errorMsg);
-                            Common.showMessage(me._i18n.getText('t5'));
+                            // oMsgStrip.setVisible(true);
+                            // oMsgStrip.setText(errorMsg);
+                            // Common.showMessage(me._i18n.getText('t5'));
+                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
                         }
                     });
 
                 } else {
-                    Common.showMessage(this._i18n.getText('t10'));
+                    // Common.showMessage(this._i18n.getText('t10'));
+                    MessageBox.information(this._i18n.getText('t10'));
                 }
             },
 
@@ -323,7 +343,8 @@ sap.ui.define([
                 var path;
 
                 if (!this._materialListChanged) {
-                    Common.showMessage(this._i18n.getText('t7'));
+                    // Common.showMessage(this._i18n.getText('t7'));
+                    MessageBox.information(this._i18n.getText('t7'));
                 } else {
                     //build header and payload
                     var oData = oTableModel.getData();
@@ -365,20 +386,22 @@ sap.ui.define([
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
-                    console.log(JSON.stringify(oEntry));
+                    // console.log(JSON.stringify(oEntry));
                     //call create deep method to save assigned or created materials
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function(oData, oResponse) {
-                            me.getMaterialList();
+                            // me.getMaterialList();
                             Common.closeLoadingDialog(that);
-                            Common.showMessage(me._i18n.getText('t4'));
+                            // Common.showMessage(me._i18n.getText('t4'));
+                            MessageBox.information(me._i18n.getText('t4'));
                             me._materialListChanged = false;
                             me.setChangeStatus(false);
                         },
                         error: function(err) {
                             Common.closeLoadingDialog(that);
-                            Common.showMessage(me._i18n.getText('t5'));
+                            // Common.showMessage(me._i18n.getText('t5'));
+                            MessageBox.information(me._i18n.getText('t5'));
                         }
                     });
                 }
