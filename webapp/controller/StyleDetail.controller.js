@@ -17,6 +17,7 @@ sap.ui.define([
         "use strict";
 
         var that;
+        var _promiseResult;
 
         return Controller.extend("zui3derp.controller.StyleDetail", {
 
@@ -130,7 +131,7 @@ sap.ui.define([
                 this.getAppAction();
 
                 this.getIOs();
-                
+
                 if (this._styleNo === Constants.NEW) {
                     //create new - only header is editable at first
                     this.setHeaderEditMode();
@@ -139,7 +140,7 @@ sap.ui.define([
 
                 } else {
                     //existing style, get the style data
-                    this.cancelHeaderEdit();
+                    //this.cancelHeaderEdit();
                     this.setDetailVisible(true); //make detail section visible
                     this.getGeneralTable(); //get general attributes
                     this.getSizesTable(); //get sizes
@@ -188,12 +189,31 @@ sap.ui.define([
             },
 
             closeEditModes: function () {
-                this.cancelGeneralAttrEdit();
-                this.cancelColorsEdit();
-                this.cancelSizeEdit();
-                this.cancelProcessEdit();
-                this.cancelVersionEdit();
-                this.cancelFilesEdit();
+                //this.cancelGeneralAttrEdit();
+                //this.cancelColorsEdit();
+                //this.cancelSizeEdit();
+                //this.cancelProcessEdit();
+                //this.cancelVersionEdit();
+                //this.cancelFilesEdit();
+
+                var oJSONModel = new JSONModel();
+                var data = {};
+                that._headerChanged = false;
+                that._generalAttrChanged = false;
+                that._colorChanged = false;
+                that._sizeChanged = false;
+                that._processChanged = false;
+                that._versionChanged = false;
+
+                that.setChangeStatus(false);
+                data.editMode = false;
+                oJSONModel.setData(data);
+                that.getView().setModel(oJSONModel, "HeaderEditModeModel");
+                that.getView().setModel(oJSONModel, "GenAttrEditModeModel");
+                that.getView().setModel(oJSONModel, "ColorEditModeModel");
+                that.getView().setModel(oJSONModel, "SizeEditModeModel");
+                that.getView().setModel(oJSONModel, "ProcessEditModeModel");
+                that.getView().setModel(oJSONModel, "VersionEditModeModel");
             },
 
             setChangeStatus: function (changed) {
@@ -260,7 +280,7 @@ sap.ui.define([
                             "Salesgrp": oData.Salesgrp,
                             "Seasoncd": oData.Seasoncd,
                             "Uom": oData.Baseuom,
-                            "Soldtocust":oData.Soldtocust
+                            "Soldtocust": oData.Soldtocust
                         }
 
                         oJSONModel.setData(ioData);
@@ -404,7 +424,7 @@ sap.ui.define([
                 });
             },
 
-            setHeaderEditMode: function () {   
+            setHeaderEditMode: async function () {
                 if (this._styleNo === Constants.NEW) {
                     //unlock editable fields of style header
                     var oJSONModel = new JSONModel();
@@ -416,10 +436,10 @@ sap.ui.define([
 
                     Utils.getStyleSearchHelps(this);
 
-                    this.setControlEditMode("HeaderEditModeModel",true);
+                    this.setControlEditMode("HeaderEditModeModel", true);
                     this.setReqField("HeaderEditModeModel", true);
                     this.disableOtherTabs("detailPanel");
-                    this.setDtlsEnableButton(false);                    
+                    this.setDtlsEnableButton(false);
                 }
                 else {
                     if (this.getView().getModel("IOData").getData().filter(fItem => fItem.WITHORDERDTL === "X").length > 0) {
@@ -429,39 +449,44 @@ sap.ui.define([
                         MessageBox.information("Header info editing not allowed.\r\nStyle already used in IO and BOM by GMC has ASUV/SUV already.");
                     }
                     else {
-                        var result = this.lockStyle("X");
-                        
+                        const result = await this.lockStyle("X");
                         console.log(result);
-                        //unlock editable fields of style header
-                        var oJSONModel = new JSONModel();
-                        var data = {};
-                        this._headerChanged = false;
-                        data.editMode = true;
-                        oJSONModel.setData(data);
-                        this.getView().setModel(oJSONModel, "HeaderEditModeModel");
-    
-                        Utils.getStyleSearchHelps(this);
-                        this.setControlEditMode("HeaderEditModeModel",true);
-                        this.setReqField("HeaderEditModeModel", true);
-                        this.disableOtherTabs("detailPanel");
-                        this.setDtlsEnableButton(false);
-    
-                        if (this.getView().getModel("IOData").getData().length > 0) {
-                            MessageBox.information("Only size group can be edited.\r\nStyle already used in IO.");
-    
-                            this.byId("STYLECD").setEnabled(false);
-                            this.byId("PRODTYP").setEnabled(false);
-                            this.byId("STYLECAT").setEnabled(false);
-                            this.byId("CUSTPRDTYP").setEnabled(false);
-                            this.byId("DESC1").setEnabled(false);
-                            this.byId("SALESGRP").setEnabled(false);
-                            this.byId("PRODGRP").setEnabled(false);
-                            this.byId("STYLEGRP").setEnabled(false);
-                            this.byId("SEASONCD").setEnabled(false);
-                            this.byId("CUSTGRP").setEnabled(false);
-                            this.byId("SOLDTOCUST").setEnabled(false);
-                            this.byId("UOM").setEnabled(false);
-                            this.byId("REMARKS1").setEnabled(false);
+                        if (result.severity === "error") {
+                            MessageBox.warning(result.message);
+                        }
+                        else {
+
+                            //unlock editable fields of style header
+                            var oJSONModel = new JSONModel();
+                            var data = {};
+                            this._headerChanged = false;
+                            data.editMode = true;
+                            oJSONModel.setData(data);
+                            this.getView().setModel(oJSONModel, "HeaderEditModeModel");
+
+                            Utils.getStyleSearchHelps(this);
+                            this.setControlEditMode("HeaderEditModeModel", true);
+                            this.setReqField("HeaderEditModeModel", true);
+                            this.disableOtherTabs("detailPanel");
+                            this.setDtlsEnableButton(false);
+
+                            if (this.getView().getModel("IOData").getData().length > 0) {
+                                MessageBox.information("Only size group can be edited.\r\nStyle already used in IO.");
+
+                                this.byId("STYLECD").setEnabled(false);
+                                this.byId("PRODTYP").setEnabled(false);
+                                this.byId("STYLECAT").setEnabled(false);
+                                this.byId("CUSTPRDTYP").setEnabled(false);
+                                this.byId("DESC1").setEnabled(false);
+                                this.byId("SALESGRP").setEnabled(false);
+                                this.byId("PRODGRP").setEnabled(false);
+                                this.byId("STYLEGRP").setEnabled(false);
+                                this.byId("SEASONCD").setEnabled(false);
+                                this.byId("CUSTGRP").setEnabled(false);
+                                this.byId("SOLDTOCUST").setEnabled(false);
+                                this.byId("UOM").setEnabled(false);
+                                this.byId("REMARKS1").setEnabled(false);
+                            }
                         }
                     }
                 }
@@ -511,11 +536,12 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 //hide controls
-                this.setControlEditMode("HeaderEditModeModel", false)
+                //this.setControlEditMode("HeaderEditModeModel", false)
                 //set required header fields
-                this.setReqField("HeaderEditModeModel", false);
-                this.enableOtherTabs("detailPanel");
-                this.setDtlsEnableButton(true);
+                //this.setReqField("HeaderEditModeModel", false);
+                //this.enableOtherTabs("detailPanel");
+                //this.setDtlsEnableButton(true);
+                this.setTabReadMode("HeaderEditModeModel");
 
                 this.byId("STYLECD").setEnabled(true);
                 this.byId("PRODTYP").setEnabled(true);
@@ -602,6 +628,8 @@ sap.ui.define([
                                 // me.setDtlsEnableButton(true);
 
                                 Common.showMessage(me._i18n.getText('t4'));
+                                //unlock style
+                                //me.lockStyle("O");
 
                                 //from IO module create new Style
                                 // var param = {};
@@ -654,6 +682,9 @@ sap.ui.define([
                                 // me.enableOtherTabs("detailPanel");
                                 // me.setDtlsEnableButton(true);
                                 Common.showMessage(me._i18n.getText('t4'));
+                                //unlock style
+                                //me.lockStyle("O");
+
                             },
                             error: function (err, oMessage) {
                                 //show message strip on error
@@ -745,20 +776,26 @@ sap.ui.define([
                 })
             },
 
-            setGeneralAttrEditMode: function () {
-                //set general attributes table edit mode
-                var oJSONModel = new JSONModel();
-                var data = {};
-                this._generalAttrChanged = true;
-                data.editMode = true;
-                oJSONModel.setData(data);
-                this.getView().setModel(oJSONModel, "GenAttrEditModeModel");
+            setGeneralAttrEditMode: async function () {
+                const result = await this.lockStyle("X");
+                if (result.severity === "error") {
+                    MessageBox.warning(result.message);
+                }
+                else {
+                    //set general attributes table edit mode
+                    var oJSONModel = new JSONModel();
+                    var data = {};
+                    this._generalAttrChanged = true;
+                    data.editMode = true;
+                    oJSONModel.setData(data);
+                    this.getView().setModel(oJSONModel, "GenAttrEditModeModel");
 
-                Utils.getAttributesSearchHelps(this);
-                this.setControlEditMode("GenAttrEditModeModel", true);
-                this.disableOtherTabs("detailPanel");
-                this.byId("btnHdrEdit").setEnabled(false);
-                this.byId("btnHdrDelete").setEnabled(false);
+                    Utils.getAttributesSearchHelps(this);
+                    this.setControlEditMode("GenAttrEditModeModel", true);
+                    this.disableOtherTabs("detailPanel");
+                    this.byId("btnHdrEdit").setEnabled(false);
+                    this.byId("btnHdrDelete").setEnabled(false);
+                }
             },
 
             cancelGeneralAttrEdit: function () {
@@ -1029,24 +1066,30 @@ sap.ui.define([
                         });
                     });
                 }
+                const result = await this.lockStyle("X");
+                if (result.severity === "error") {
+                    MessageBox.warning(result.message);
+                }
+                else {
 
-                //set colors table editable
-                var oJSONModel = new JSONModel();
-                var data = {};
-                data.editMode = true;
-                oJSONModel.setData(data);
-                this.getView().setModel(oJSONModel, "ColorEditModeModel");
+                    //set colors table editable
+                    var oJSONModel = new JSONModel();
+                    var data = {};
+                    data.editMode = true;
+                    oJSONModel.setData(data);
+                    this.getView().setModel(oJSONModel, "ColorEditModeModel");
 
-                this.byId("btnColorAdd").setVisible(true);
-                this.byId("btnColorSave").setVisible(true);
-                this.byId("btnColorCancel").setVisible(true);
-                this.byId("btnColorEdit").setVisible(false);
-                this.byId("btnColorDelete").setVisible(false);
+                    this.byId("btnColorAdd").setVisible(true);
+                    this.byId("btnColorSave").setVisible(true);
+                    this.byId("btnColorCancel").setVisible(true);
+                    this.byId("btnColorEdit").setVisible(false);
+                    this.byId("btnColorDelete").setVisible(false);
 
 
-                this.disableOtherTabs("detailPanel");
-                this.byId("btnHdrEdit").setEnabled(false);
-                this.byId("btnHdrDelete").setEnabled(false);
+                    this.disableOtherTabs("detailPanel");
+                    this.byId("btnHdrEdit").setEnabled(false);
+                    this.byId("btnHdrDelete").setEnabled(false);
+                }
             },
 
             setColorEditMode: async function () {
@@ -1149,25 +1192,31 @@ sap.ui.define([
                 var oMsgStrip = that.getView().byId('ColorsMessageStrip');
                 oMsgStrip.setVisible(false);
 
-                var oTable = this.getView().byId("colorsTable");
+                this.setTabReadMode("ColorEditModeModel");
+                /*
+               var oTable = this.getView().byId("colorsTable");
 
-                oTable.getRows().forEach(row => {
-                    row.getCells().forEach(cell => {
-                        if (cell.getBindingInfo("value") !== undefined) {
-                            cell.setProperty("editable", false);
-                        }
-                    });
-                });
+               oTable.getRows().forEach(row => {
+                   row.getCells().forEach(cell => {
+                       if (cell.getBindingInfo("value") !== undefined) {
+                           cell.setProperty("editable", false);
+                       }
+                   });
+               });
 
-                this.byId("btnColorAdd").setVisible(true);
-                this.byId("btnColorSave").setVisible(false);
-                this.byId("btnColorCancel").setVisible(false);
-                this.byId("btnColorEdit").setVisible(true);
-                this.byId("btnColorDelete").setVisible(true);
 
-                this.enableOtherTabs("detailPanel");
-                this.byId("btnHdrEdit").setEnabled(true);
-                this.byId("btnHdrDelete").setEnabled(true);
+              
+               this.byId("btnColorAdd").setVisible(true);
+               this.byId("btnColorSave").setVisible(false);
+               this.byId("btnColorCancel").setVisible(false);
+               this.byId("btnColorEdit").setVisible(true);
+               this.byId("btnColorDelete").setVisible(true);
+
+               this.enableOtherTabs("detailPanel");
+               this.byId("btnHdrEdit").setEnabled(true);
+               this.byId("btnHdrDelete").setEnabled(true);
+               */
+
 
             },
 
@@ -1363,19 +1412,25 @@ sap.ui.define([
                 })
             },
 
-            setSizeEditMode: function () {
-                //set size table editable
-                var oJSONModel = new JSONModel();
-                var data = {};
-                this._sizeChanged = false;
-                data.editMode = true;
-                oJSONModel.setData(data);
-                this.getView().setModel(oJSONModel, "SizeEditModeModel");
+            setSizeEditMode: async function () {
+                const result = await this.lockStyle("X");
+                if (result.severity === "error") {
+                    MessageBox.warning(result.message);
+                }
+                else {
+                    //set size table editable
+                    var oJSONModel = new JSONModel();
+                    var data = {};
+                    this._sizeChanged = false;
+                    data.editMode = true;
+                    oJSONModel.setData(data);
+                    this.getView().setModel(oJSONModel, "SizeEditModeModel");
 
-                this.setControlEditMode("SizeEditModeModel", true);
-                this.disableOtherTabs("detailPanel");
-                this.byId("btnHdrEdit").setEnabled(false);
-                this.byId("btnHdrDelete").setEnabled(false);
+                    this.setControlEditMode("SizeEditModeModel", true);
+                    this.disableOtherTabs("detailPanel");
+                    this.byId("btnHdrEdit").setEnabled(false);
+                    this.byId("btnHdrDelete").setEnabled(false);
+                }
             },
 
             cancelSizeEdit: function () {
@@ -1529,20 +1584,26 @@ sap.ui.define([
                 })
             },
 
-            setProcessEditMode: function () {
-                //set edit mode processes table
-                var oJSONModel = new JSONModel();
-                var data = {};
-                this._processChanged = false;
-                data.editMode = true;
-                oJSONModel.setData(data);
-                this.getView().setModel(oJSONModel, "ProcessEditModeModel");
+            setProcessEditMode: async function () {
+                const result = await this.lockStyle("X");
+                if (result.severity === "error") {
+                    MessageBox.warning(result.message);
+                }
+                else {
+                    //set edit mode processes table
+                    var oJSONModel = new JSONModel();
+                    var data = {};
+                    this._processChanged = false;
+                    data.editMode = true;
+                    oJSONModel.setData(data);
+                    this.getView().setModel(oJSONModel, "ProcessEditModeModel");
 
-                Utils.getProcessAttributes(this);
-                this.setControlEditMode ("ProcessEditModeModel",true)
-                this.disableOtherTabs("detailPanel");
-                this.byId("btnHdrEdit").setEnabled(false);
-                this.byId("btnHdrDelete").setEnabled(false);
+                    Utils.getProcessAttributes(this);
+                    this.setControlEditMode("ProcessEditModeModel", true)
+                    this.disableOtherTabs("detailPanel");
+                    this.byId("btnHdrEdit").setEnabled(false);
+                    this.byId("btnHdrDelete").setEnabled(false);
+                }
             },
 
             cancelProcessEdit: function () {
@@ -1782,26 +1843,32 @@ sap.ui.define([
                     selected = oTmpSelected;
                     var oTableModel = this.getView().byId("versionsTable").getModel("DataModel");
                     var oData = oTableModel.getData();
-                   
+
                     var verno = oData.results[selected].Verno;
-    
+
                     that._router.navTo("RouteVersion", {
                         styleno: that._styleNo,
                         sbu: that._sbu,
                         version: verno
                     });
-                }             
+                }
             },
 
-            onCreateNewVersion: function () {
-                //open create new version dialog
-                if (!that._NewVerionDialog) {
-                    that._NewVerionDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CreateNewVersion", that);
-                    that.getView().addDependent(that._NewVerionDialog);
+            onCreateNewVersion: async function () {
+                const result = await this.lockStyle("X");
+                if (result.severity === "error") {
+                    MessageBox.warning(result.message);
                 }
-                jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
-                that._NewVerionDialog.addStyleClass("sapUiSizeCompact");
-                that._NewVerionDialog.open();
+                else {
+                    //open create new version dialog
+                    if (!that._NewVerionDialog) {
+                        that._NewVerionDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CreateNewVersion", that);
+                        that.getView().addDependent(that._NewVerionDialog);
+                    }
+                    jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
+                    that._NewVerionDialog.addStyleClass("sapUiSizeCompact");
+                    that._NewVerionDialog.open();
+                }
             },
 
             onSaveNewVersion: function () {
@@ -1838,7 +1905,7 @@ sap.ui.define([
                         Common.closeLoadingDialog(that);
                         Common.showMessage(me._i18n.getText('t4'));
 
-                        if (oCurrent) { me.getHeaderData();  }
+                        if (oCurrent) { me.getHeaderData(); }
 
                         this.enableOtherTabs("detailPanel");
                         this.byId("btnHdrEdit").setEnabled(true);
@@ -1851,19 +1918,25 @@ sap.ui.define([
                 });
             },
 
-            setVersionEditMode: function () {
-                //set edit mode of versions table
-                var oJSONModel = new JSONModel();
-                var data = {};
-                this._versionChanged = false;
-                data.editMode = true;
-                oJSONModel.setData(data);
-                this.getView().setModel(oJSONModel, "VersionEditModeModel");
+            setVersionEditMode: async function () {
+                const result = await this.lockStyle("X");
+                if (result.severity === "error") {
+                    MessageBox.warning(result.message);
+                }
+                else {
+                    //set edit mode of versions table
+                    var oJSONModel = new JSONModel();
+                    var data = {};
+                    this._versionChanged = false;
+                    data.editMode = true;
+                    oJSONModel.setData(data);
+                    this.getView().setModel(oJSONModel, "VersionEditModeModel");
 
-                this.setControlEditMode("VersionEditModeModel", true);
-                this.disableOtherTabs("detailPanel");
-                this.byId("btnHdrEdit").setEnabled(false);
-                this.byId("btnHdrDelete").setEnabled(false);
+                    this.setControlEditMode("VersionEditModeModel", true);
+                    this.disableOtherTabs("detailPanel");
+                    this.byId("btnHdrEdit").setEnabled(false);
+                    this.byId("btnHdrDelete").setEnabled(false);
+                }
             },
 
             cancelVersionEdit: function () {
@@ -2128,11 +2201,17 @@ sap.ui.define([
                 oUploadCollection.setMode(sap.m.ListMode.None);
             },
 
-            onAddFile: function () {
+            onAddFile: async function () {
                 console.log("upload")
-                //open the file select dialog
-                var oUploadCollection = this.getView().byId('UploadCollection');
-                oUploadCollection.openFileDialog();
+                const result = await this.lockStyle("X");
+                if (result.severity === "error") {
+                    MessageBox.warning(result.message);
+                }
+                else {
+                    //open the file select dialog
+                    var oUploadCollection = this.getView().byId('UploadCollection');
+                    oUploadCollection.openFileDialog();
+                }
             },
 
             onFileSelected: function () {
@@ -2148,7 +2227,7 @@ sap.ui.define([
                 }
                 jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
                 this._UploadFileDialog.addStyleClass("sapUiSizeCompact");
-                this._UploadFileDialog.open();                
+                this._UploadFileDialog.open();
             },
 
             onStartUploadFile: function () {
@@ -2158,6 +2237,9 @@ sap.ui.define([
                 var cFiles = oUploadCollection.getItems().length;
                 if (cFiles > 0) {
                     oUploadCollection.upload();
+                }
+                else {
+                    console.log("cancel")
                 }
             },
 
@@ -2796,7 +2878,7 @@ sap.ui.define([
             // Common Functions
             //******************************************* */
 
-            addLine: function (oEvent) {
+            addLine: async function (oEvent) {
                 //adding lines to tables via model
                 var oButton = oEvent.getSource();
                 var tabName = oButton.data('TableName')
@@ -2806,13 +2888,18 @@ sap.ui.define([
                 oData.push({});
                 oTable.getBinding("rows").refresh();
                 //oTable.setVisibleRowCount(oData.length);
-
-                if (tabName === "generalTable") {
-                    this.setGeneralAttrEditMode();
-                    this.onGeneralAttrChange();
-                } else if (tabName === "colorsTable") {
-                    this.setColorCreateMode();
-                    this.onColorChange();
+                const result = await this.lockStyle("X");
+                if (result.severity === "error") {
+                    MessageBox.warning(result.message);
+                }
+                else {
+                    if (tabName === "generalTable") {
+                        this.setGeneralAttrEditMode();
+                        this.onGeneralAttrChange();
+                    } else if (tabName === "colorsTable") {
+                        this.setColorCreateMode();
+                        this.onColorChange();
+                    }
                 }
             },
 
@@ -2910,30 +2997,36 @@ sap.ui.define([
                     this.setControlEditMode("HeaderEditModeModel", false);
                     this.enableOtherTabs("detailPanel");
                     this.setDtlsEnableButton(true);
+                    //unlock style
+                    this.lockStyle("O");
                 }
                 else if (editModelName === "GenAttrEditModeModel") {
-                    this.setControlEditMode("GenAttrEditModeModel",false);
+                    this.setControlEditMode("GenAttrEditModeModel", false);
                     this.enableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(true);
                     this.byId("btnHdrDelete").setEnabled(true);
+                    this.lockStyle("O");
                 }
                 else if (editModelName === "SizeEditModeModel") {
-                    this.setControlEditMode("SizeEditModeModel",false);
+                    this.setControlEditMode("SizeEditModeModel", false);
                     this.enableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(true);
                     this.byId("btnHdrDelete").setEnabled(true);
+                    this.lockStyle("O");
                 }
                 else if (editModelName === "ProcessEditModeModel") {
-                    this.setControlEditMode("ProcessEditModeModel",false);
+                    this.setControlEditMode("ProcessEditModeModel", false);
                     this.enableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(true);
                     this.byId("btnHdrDelete").setEnabled(true);
+                    this.lockStyle("O");
                 }
                 else if (editModelName === "VersionEditModeModel") {
-                    this.setControlEditMode("VersionEditModeModel",false);
+                    this.setControlEditMode("VersionEditModeModel", false);
                     this.enableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(true);
                     this.byId("btnHdrDelete").setEnabled(true);
+                    this.lockStyle("O");
                 }
 
                 else if (editModelName === "ColorEditModeModel") {
@@ -2952,6 +3045,10 @@ sap.ui.define([
                     this.byId("btnColorCancel").setVisible(false);
                     this.byId("btnColorEdit").setVisible(true);
                     this.byId("btnColorDelete").setVisible(true);
+                    this.enableOtherTabs("detailPanel");
+                    this.byId("btnHdrEdit").setEnabled(true);
+                    this.byId("btnHdrDelete").setEnabled(true);
+                    this.lockStyle("O");
                 }
             },
 
@@ -3006,7 +3103,7 @@ sap.ui.define([
                         this.byId("btnHdrSave").setVisible(pEditMode);
                         this.byId("btnHdrCancel").setVisible(pEditMode);
 
-                        if(this._iono != ' '){
+                        if (this._iono != ' ') {
                             this.byId("btnHdrApplyIO").setVisible(!pEditMode);
                         }
                     }
@@ -3020,7 +3117,7 @@ sap.ui.define([
                     }
                     else if (pModule === "SizeEditModeModel") {
                         this.byId("btnSizeEdit").setVisible(!pEditMode);
-                        
+
                         this.byId("btnSizeSave").setVisible(pEditMode);
                         this.byId("btnSizeCancel").setVisible(pEditMode);
                     }
@@ -3061,7 +3158,7 @@ sap.ui.define([
                     }
                     else if (pModule === "SizeEditModeModel") {
                         this.byId("btnSizeEdit").setVisible(!pEditMode);
-                        
+
                         this.byId("btnSizeSave").setVisible(pEditMode);
                         this.byId("btnSizeCancel").setVisible(pEditMode);
                     }
@@ -3125,17 +3222,24 @@ sap.ui.define([
 
             setControlAppAction(pChange) {
                 console.log(pChange, "action")
-                // Header
-                this.byId("btnHdrEdit").setVisible(pChange);
-                this.byId("btnHdrDelete").setVisible(pChange);
-
                 if (this._iono != ' ') {
-                    
-                    this.byId("btnHdrApplyIO").setVisible(pChange);
-                    this.byId("btnHdrDelete").setVisible(pChange);
+                    if (this._styleNo === Constants.NEW) {
+                        this.byId("btnHdrApplyIO").setVisible(false);
+                        this.byId("btnHdrDelete").setVisible(false);
+                        this.byId("btnHdrEdit").setVisible(false);
+                        this.byId("btnHdrDelete").setVisible(false);
+                    }
+                    else {
+                        this.byId("btnHdrEdit").setVisible(pChange);
+                        this.byId("btnHdrApplyIO").setVisible(pChange);
+                        this.byId("btnHdrDelete").setVisible(false);
+                    }
                 }
                 else {
-
+                    // Header
+                    this.byId("btnHdrEdit").setVisible(pChange);
+                    this.byId("btnHdrDelete").setVisible(pChange);
+                    this.byId("btnHdrApplyIO").setVisible(false);
                 }
 
                 //General Attribute
@@ -3191,45 +3295,41 @@ sap.ui.define([
 
             },
 
-            lockStyle :function(isLock){
+            lockStyle: async function (isLock) {
                 var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
-                
-                    var oParamLock = {
-                        StyleNo: this._styleNo,
-                        Lock: "X",
-                        N_ENQ: []
-                    }
 
+                var oParamLock = {
+                    StyleNo: this._styleNo,
+                    Lock: isLock === "X" ? "X" : "",
+                    N_ENQ: []
+                }
+                return new Promise((resolve, reject) => {
                     oModelLock.create("/ZERP_STYLHDR", oParamLock, {
                         method: "POST",
-                        success: function(data, oResponse) {
-                            console.log("Lock_ZERP_STYLHDR", data);
+                        success: function (data, oResponse) {
+                            console.log("success Lock_ZERP_STYLHDR", data);
                             _this.closeLoadingDialog();
-                            
-                            // if (data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S").length == 0) {
-                                
-                            // } else {
-                            //     var oFilter = data.N_LOCK_UNLOCK_DLVHDR_MSG.results.filter(x => x.Type != "S")[0];
-                            //     MessageBox.warning(oFilter.Message);
-                                
-                            // }
+
                         },
-                        error: function(err) {
+                        error: function (err) {
                             var response = JSON.parse(err.responseText);
                             var error = response.error.innererror.errordetails;
-                            var errSeverity = error[0].severity;
-                            if(errSeverity === "error")
-                            {
-                                MessageBox.error(error[0].message);
-                            }
-                            else{
+                            //var errSeverity = error[0].severity;
+                            console.log(error[0]);
+                            return resolve(error[0]);
+                            // if (errSeverity === "error") {
+                            //     MessageBox.warning(error[0].message);
+                            //     return  resolve(error[0]);
+                            // }
+                            // else {
+                            //     return resolve(error[0]);
+                            // }
 
-                            }
 
-                           
-                           
+
                         }
                     });
+                });
             },
 
             disableOtherTabs: function (tabName) {
@@ -3245,7 +3345,7 @@ sap.ui.define([
                 });
             },
 
-            getIOs: function() {
+            getIOs: function () {
                 var me = this;
                 var oData = [];
                 var oModel = this.getOwnerComponent().getModel();
@@ -3263,7 +3363,7 @@ sap.ui.define([
                         // console.log(me.getView().getModel("IOData").getData())
                     },
                     error: function (err) { }
-                })                             
+                })
             },
 
             pad: Common.pad
