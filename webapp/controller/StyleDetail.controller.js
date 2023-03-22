@@ -1710,6 +1710,8 @@ sap.ui.define([
                         me._NewVerionDialog.close();
                         Common.closeLoadingDialog(that);
                         Common.showMessage(me._i18n.getText('t4'));
+
+                        if (oCurrent) { me.getHeaderData();  }
                     },
                     error: function (err) {
                         Common.closeLoadingDialog(that);
