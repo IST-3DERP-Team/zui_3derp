@@ -416,7 +416,8 @@ sap.ui.define([
 
                     Utils.getStyleSearchHelps(this);
 
-                    this.setReqField("header", true);
+                    this.setControlEditMode("HeaderEditModeModel",true);
+                    this.setReqField("HeaderEditModeModel", true);
                     this.disableOtherTabs("detailPanel");
                     this.setDtlsEnableButton(false);                    
                 }
@@ -428,6 +429,9 @@ sap.ui.define([
                         MessageBox.information("Header info editing not allowed.\r\nStyle already used in IO and BOM by GMC has ASUV/SUV already.");
                     }
                     else {
+                        var result = this.lockStyle("X");
+                        
+                        console.log(result);
                         //unlock editable fields of style header
                         var oJSONModel = new JSONModel();
                         var data = {};
@@ -437,8 +441,8 @@ sap.ui.define([
                         this.getView().setModel(oJSONModel, "HeaderEditModeModel");
     
                         Utils.getStyleSearchHelps(this);
-    
-                        this.setReqField("header", true);
+                        this.setControlEditMode("HeaderEditModeModel",true);
+                        this.setReqField("HeaderEditModeModel", true);
                         this.disableOtherTabs("detailPanel");
                         this.setDtlsEnableButton(false);
     
@@ -3211,9 +3215,19 @@ sap.ui.define([
                             // }
                         },
                         error: function(err) {
-                            var error = err.responseText.error.innererror.errordetails
-                            MessageBox.error(error);
-                            _this.closeLoadingDialog();
+                            var response = JSON.parse(err.responseText);
+                            var error = response.error.innererror.errordetails;
+                            var errSeverity = error[0].severity;
+                            if(errSeverity === "error")
+                            {
+                                MessageBox.error(error[0].message);
+                            }
+                            else{
+
+                            }
+
+                           
+                           
                         }
                     });
             },
