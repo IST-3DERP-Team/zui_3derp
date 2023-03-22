@@ -8,11 +8,14 @@
                 <Title text="{i18n>StyleHeader}" />
 
                 <ToolbarSpacer />
-                  <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editstyleheader}" press="setHeaderEditMode" visible="{= ${HeaderEditModeModel>/editMode} === true ? false : true }" />
-                <Button type="Ghost" icon="sap-icon://save" tooltip="{i18n>Savestyleheader}" press="onSaveHeader" visible="{= ${HeaderEditModeModel>/editMode} === true ? true : false }" />
-                <Button type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deletestyleheader}" press="onDeleteStyle" visible="{= ${IO>/blnIOMod} === true ? false : ${HeaderEditModeModel>/editMode} === true ? false : true }" />
-                <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelHeaderEdit" visible="{= ${HeaderEditModeModel>/editMode} === true ? true : false }" />
-                <Button type="Ghost" icon="sap-icon://activate" text="{i18n>ApplytoIO}" tooltip="{i18n>ApplytoIO}" press="applyToIO" visible="{= ${IO>/blnIOMod} === true ?  ${HeaderEditModeModel>/editMode} === true ? false : true :false }" />
+                <!-- <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editstyleheader}" press="setHeaderEditMode" visible="{= ${HeaderEditModeModel>/editMode} === true ? false : true }" /> -->
+                <Button id="btnHdrEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editstyleheader}" press="setHeaderEditMode" visible="true" />
+                <Button id="btnHdrSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Savestyleheader}" press="onSaveHeader" visible="false" />
+                <!-- <Button id="btnHdrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deletestyleheader}" press="onDeleteStyle" visible="{= ${IO>/blnIOMod} === true ? false : ${HeaderEditModeModel>/editMode} === true ? false : true }" /> -->
+                <Button id="btnHdrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deletestyleheader}" press="onDeleteStyle" visible="true" />
+                <Button id="btnHdrCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelHeaderEdit" visible="false" />
+                <Button id="btnHdrApplyIO" type="Ghost" icon="sap-icon://activate" text="{i18n>ApplytoIO}" tooltip="{i18n>ApplytoIO}" press="applyToIO" visible="false" />
+                <!-- <Button id="btnHdrApplyIO" type="Ghost" icon="sap-icon://activate" text="{i18n>ApplytoIO}" tooltip="{i18n>ApplytoIO}" press="applyToIO" visible="{= ${IO>/blnIOMod} === true ?  ${HeaderEditModeModel>/editMode} === true ? false : true :false }" /> -->
                 <!-- </Toolbar> -->
             </OverflowToolbar>
         </headerToolbar>

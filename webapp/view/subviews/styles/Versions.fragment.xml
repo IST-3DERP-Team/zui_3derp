@@ -11,11 +11,11 @@
 
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
-            <Button id="btnVersionSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveversions}" press="onSaveVersions" visible="{VersionEditModeModel>/editMode}"/>
-            <Button id="btnVersionAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewversion}" press="onCreateNewVersion" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }"/>                                    
-            <Button id="btnVersionEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editversions}" press="setVersionEditMode" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }"/>
-            <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }" tooltip="{i18n>Deleteselectedversions}" press="onDeleteVersion"/>
-            <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelVersionEdit" visible="{= ${VersionEditModeModel>/editMode} === true ? true : false }"/>
+            <Button id="btnVersionSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveversions}" press="onSaveVersions" visible="false"/>
+            <Button id="btnVersionAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewversion}" press="onCreateNewVersion" visible="true"/>                                    
+            <Button id="btnVersionEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editversions}" press="setVersionEditMode" visible="true"/>
+            <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete"  tooltip="{i18n>Deleteselectedversions}" press="onDeleteVersion" visible="true"/>
+            <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelVersionEdit" visible="false"/>
         </Toolbar>
 
         <MessageStrip id="VersionsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>

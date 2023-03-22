@@ -16,6 +16,9 @@ sap.ui.define([
 
         var that;
         var styleNo;
+        // var dateFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({ pattern: "MM/dd/yyyy" });
+        var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({ pattern: "MM/dd/yyyy" });
+        var timeFormat = sap.ui.core.format.DateFormat.getTimeInstance({ pattern: "KK:mm:ss a" });
         //var isRender=false;
 
         return Controller.extend("zui3derp.controller.Styles", {
@@ -209,6 +212,19 @@ sap.ui.define([
                         oData.results.sort(function(a,b) {
                             return new Date(b.CREATEDDT) - new Date(a.CREATEDDT);
                         });
+
+                        oData.results.forEach(item => {
+
+                            // item.CREATEDDT = dateFormat.format(item.CREATEDDT);
+                            // item.UPDATEDDT = dateFormat.format(item.UPDATEDDT);
+                            //item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));
+                            if (item.CREATEDDT !== null) {
+                                item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));// + " " + timeFormat.format(new Date(item.CREATEDTM));
+                            }
+                            if (item.UPDATEDDT !== null) {
+                                item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));// + " " + timeFormat.format(new Date(item.UPDATEDTM));
+                            }
+                        })
 
                         oJSONDataModel.setData(oData);
                         me.getView().setModel(oJSONDataModel, "DataModel");

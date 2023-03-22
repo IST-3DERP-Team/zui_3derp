@@ -77,6 +77,15 @@
                     "annotations": [],
                     "localUri": "localService/ZGW_3DERP_IOSTYLE_SRV/metadata.xml"
                 }
+            },
+            "ZGW_3DERP_LOCK_SRV": {
+                "uri": "/sap/opu/odata/sap/ZGW_3DERP_LOCK_SRV/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "2.0",
+                    "annotations": [],
+                    "localUri": "localService/ZGW_3DERP_LOCK_SRV/metadata.xml"
+                }
             }
         }
     },
@@ -171,8 +180,16 @@
             },
             "COLOR_MODEL": {
                 "type": "sap.ui.model.json.JSONModel"
+            },
+            "ZGW_3DERP_LOCK_SRV": {
+                "dataSource": "ZGW_3DERP_LOCK_SRV",
+                "preload": true,
+                "settings": {
+                    "defaultBindingMode": "TwoWay",
+                    "defaultCountMode": "Inline",
+                    "refreshAfterChange": false
+                }
             }
-
         },
         "resources": {
             "css": [
@@ -193,7 +210,6 @@
                 "clearControlAggregation": false
             },
             "routes": [
-                 
                 {
                     "name": "RouteStyles",
                     "pattern": "",
@@ -254,7 +270,6 @@
                     "viewType": "XML",
                     "transition": "slide",
                     "clearControlAggregation": false,
-                    
                     "viewName": "StyleDetail"
                 },
                 "TargetVersion": {

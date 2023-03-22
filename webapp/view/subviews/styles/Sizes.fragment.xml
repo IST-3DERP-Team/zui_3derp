@@ -9,9 +9,9 @@
     <VBox fitContainer="true" width="80%" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
-            <Button id="btnSizeSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Savesizeattributes}" press="onSaveSizeTable" visible="{SizeEditModeModel>/editMode}" />
-            <Button id="btnSizeEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editsizeattributes}" press="setSizeEditMode" visible="{= ${SizeEditModeModel>/editMode} === true ? false : true }" />
-            <Button id="btnSizeCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelSizeEdit" visible="{= ${SizeEditModeModel>/editMode} === true ? true : false }" />
+            <Button id="btnSizeSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Savesizeattributes}" press="onSaveSizeTable" visible="false" />
+            <Button id="btnSizeEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editsizeattributes}" press="setSizeEditMode" visible="true" />
+            <Button id="btnSizeCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelSizeEdit" visible="false" />
         </Toolbar>
 
         <MessageStrip id="SizesMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
