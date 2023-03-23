@@ -178,9 +178,6 @@ sap.ui.define([
                 Utils.getStyleSearchHelps(this);
                 Utils.getAttributesSearchHelps(this);
                 Utils.getProcessAttributes(this);
-                //console.log(this.getView().getModel("AttribCdModel").getData());
-                //console.log(this.getView().getModel("SeasonsModel").getData());
-
 
                 //Attachments
                 this.bindUploadCollection();
@@ -386,46 +383,66 @@ sap.ui.define([
 
                 //read Style header data
                 var entitySet = "/StyleDetailSet('" + styleNo + "')"
-                await oModel.read(entitySet, {
-                    success: function (oData, oResponse) {
-                        // var oldData = oData;
-                        // me._headerData = JSON.parse(JSON.stringify(oData));
-                        //console.log(oData);
-                        oJSONModel.setData(oData);
-                        oView.setModel(oJSONModel, "headerData");
-                        Common.closeLoadingDialog(that);
-                        me.setChangeStatus(false);
-                    },
-                    error: function (err) {
-                        console.log(err);
-                        Common.closeLoadingDialog(that);
-                    }
-                })
-
-                if (this._styleNo === Constants.NEW) {
-                    //set default Style Catergory
-                    var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
-                    const filter = "SBU eq '" + this._sbu + "' and MODULE eq 'STYLE'";
-                    var me = this;
-                    await  oModel.read("/ZerpCheckSet", {
-                        urlParameters: {
-                            "$filter": filter
-                        },
+                new Promise((resolve, reject) => {
+                    oModel.read(entitySet, {
                         success: function (oData, oResponse) {
-                            console.log(oData);
-                            me.getView().getModel("headerData").setProperty("/Stylecat", oData.results[0].VALUE);
-                            //oJSONColumnsModel.setData(oData);
-                            //me.getView().setModel(oJSONColumnsModel, "DynColumns"); //set the view model
+                            // var oldData = oData;
+                            // me._headerData = JSON.parse(JSON.stringify(oData));
+                            //console.log(oData);
+                            oJSONModel.setData(oData);
+                            oView.setModel(oJSONModel, "headerData");
+
+                            if (me._styleNo === Constants.NEW) {
+                                //set default Style Catergory
+                                var oModel = me.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+                                const filter = "SBU eq '" + me._sbu + "' and MODULE eq 'STYLE'";
+
+                                oModel.read("/ZerpCheckSet", {
+                                    urlParameters: {
+                                        "$filter": filter
+                                    },
+                                    success: function (oData, oResponse) {
+                                        //console.log(oData);
+                                        me.getView().getModel("headerData").setProperty("/Stylecat", oData.results[0].VALUE);
+                                        resolve();
+                                    },
+                                    error: function (err) {
+                                        Common.closeLoadingDialog(that);
+                                    }
+                                });
+
+
+                                //set default Season
+                                var oSHModel = me.getOwnerComponent().getModel("SearchHelps");
+                                oSHModel.setHeaders({
+                                    sbu: me._sbu
+                                });
+                                oSHModel.read("/SeasonSet", {
+                                    success: function (oData, oResponse) {
+                                        //var season = this.getView().getModel("SeasonsModel").getData();
+                                        //console.log(JSON.stringify(oData.results));
+                                        oData.results.sort(function (a, b) {
+                                            return (b.Yr - a.Yr) || (b.Seq - a.Seq);
+                                        });
+                                        me.getView().getModel("headerData").setProperty("/Seasoncd", oData.results[0].Seasoncd);
+                                        
+                                    },
+                                    error: function (err) { }
+                                });
+
+                            }
+
+                            Common.closeLoadingDialog(that);
+                            me.setChangeStatus(false);
+                            resolve();
                         },
                         error: function (err) {
+                            console.log(err);
                             Common.closeLoadingDialog(that);
                         }
-                    });
+                    })
+                });
 
-                    //set default Season
-                    // console.log(this.getView().getModel("AttribCdModel").getData());
-                    //var season = this.getView().getModel("SeasonsModel").getData();
-                }
 
 
             },
@@ -2487,6 +2504,11 @@ sap.ui.define([
                     var input = this.byId(this.inputId);
                     input.setValue(oSelectedItem.getTitle()); //set input field selected value
                     this.onHeaderChange();
+
+                    //set default UOM
+                    const prodTyp = this.getView().getModel("ProdTypeModel").getData();
+                    const result =prodTyp.results.filter(item => item.ProdTyp===oSelectedItem.getTitle())
+                    this.getView().getModel("headerData").setProperty("/Uom", result[0].Uom);
                 }
                 evt.getSource().getBinding("items").filter([]);
             },
@@ -3400,24 +3422,26 @@ sap.ui.define([
             },
 
             getIOs: function () {
-                var me = this;
-                var oData = [];
-                var oModel = this.getOwnerComponent().getModel();
-                console.log("getIOs");
-                // this.getView().setModel(new JSONModel(oData), "IOData");
+                if (this._styleNo != Constants.NEW) {
+                    var me = this;
+                    var oData = [];
+                    var oModel = this.getOwnerComponent().getModel();
+                    console.log("getIOs");
+                    // this.getView().setModel(new JSONModel(oData), "IOData");
 
-                oModel.read('/IOSet', {
-                    urlParameters: {
-                        "$filter": "STYLENO eq '" + this._styleNo + "'"
-                    },
-                    success: function (oData) {
-                        // console.log(oData)
-                        me.getView().setModel(new JSONModel(oData.results), "IOData");
-                        // me.getView().getModel("IOData").setProperty("/", oData.results);
-                        // console.log(me.getView().getModel("IOData").getData())
-                    },
-                    error: function (err) { }
-                })
+                    oModel.read('/IOSet', {
+                        urlParameters: {
+                            "$filter": "STYLENO eq '" + this._styleNo + "'"
+                        },
+                        success: function (oData) {
+                            // console.log(oData)
+                            me.getView().setModel(new JSONModel(oData.results), "IOData");
+                            // me.getView().getModel("IOData").setProperty("/", oData.results);
+                            // console.log(me.getView().getModel("IOData").getData())
+                        },
+                        error: function (err) { }
+                    })
+                }
             },
 
             pad: Common.pad

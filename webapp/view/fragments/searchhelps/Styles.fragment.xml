@@ -8,7 +8,7 @@
 		search="_styleValueHelpSearch"
 		confirm="_styleValueHelpClose"
 		cancel="_styleValueHelpClose">
-		<StandardListItem title="{StylesModel>Desc1}" description="{StylesModel>Styleno}" 
+		<StandardListItem title="{StylesModel>Desc1}" descinfoription="{StylesModel>Styleno}" 
             info="Version {StylesModel>Verno}" 
             infoState="{= ${StylesModel>Currentver} === true ? 'Success' : 'Information' }">
             <customData>

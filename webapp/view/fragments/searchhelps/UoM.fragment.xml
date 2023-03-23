@@ -8,6 +8,6 @@
 		search="_uomValueHelpSearch"
 		confirm="_uomValueHelpClose"
 		cancel="_uomValueHelpClose">
-		<StandardListItem title="{UOMModel>Valunit}" description="{UOMModel>Desc1}"/>
+		<StandardListItem title="{UOMModel>Valunit}" info="{UOMModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

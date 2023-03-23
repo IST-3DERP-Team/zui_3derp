@@ -8,6 +8,7 @@
 		search="_prodTypeValueHelpSearch"
 		confirm="_prodTypeValueHelpClose"
 		cancel="_prodTypeValueHelpClose">
-		<StandardListItem title="{ProdTypeModel>ProdTyp}" description="{ProdTypeModel>Desc1}"/>
+		<StandardListItem title="{ProdTypeModel>ProdTyp}" info="{ProdTypeModel>Desc1}" />
+		<!-- <StandardListItem title="{ProdTypeModel>ProdTyp}" info="{ProdTypeModel>Desc1}" adaptTitleSize="true" wrapping="true" /> -->
 	</SelectDialog>
 </core:FragmentDefinition>

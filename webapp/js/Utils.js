@@ -29,6 +29,7 @@
             var oJSONModel0 = new JSONModel();
             oSHModel.read("/SeasonSet", {
                 success: function (oData, oResponse) {
+                    //console.log(JSON.stringify(oData.results));
                     oJSONModel0.setData(oData);
                     oJSONModel0.setSizeLimit(9999);
                     oView.setModel(oJSONModel0, "SeasonsModel");

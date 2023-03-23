@@ -8,6 +8,6 @@
 		search="_handleValueHelpSearch"
 		confirm="_handleValueHelpClose"
 		cancel="_handleValueHelpClose">
-		<StandardListItem title="{MaterialsModel>MatNo}" description="{MaterialsModel>DescEn}"/>
+		<StandardListItem title="{MaterialsModel>MatNo}" info="{MaterialsModel>DescEn}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

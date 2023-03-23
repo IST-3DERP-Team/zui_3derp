@@ -8,6 +8,6 @@
 		search="_customersValueHelpSearch"
 		confirm="_customersValueHelpClose"
 		cancel="_customersValueHelpClose">
-		<StandardListItem title="{CustomersModel>Custno}" description="{CustomersModel>Desc1}"/>
+		<StandardListItem title="{CustomersModel>Custno}" info="{CustomersModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>
