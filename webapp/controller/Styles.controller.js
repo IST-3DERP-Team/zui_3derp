@@ -70,14 +70,27 @@ sap.ui.define([
                 this.getAppAction();
             },
 
-            getAppAction: async function() {
+            getAppAction: async function () {
                 if (sap.ushell.Container !== undefined) {
-                    const fullHash = new HashChanger().getHash(); 
+                    const fullHash = new HashChanger().getHash();
                     const urlParsing = await sap.ushell.Container.getServiceAsync("URLParsing");
-                    const shellHash = urlParsing.parseShellHash(fullHash); 
-                    console.log(shellHash);
-                    console.log(shellHash.action);
+                    const shellHash = urlParsing.parseShellHash(fullHash);
+                    const sAction = shellHash.action;
+                    var bAppChange;
+
+                    if (sAction == "display") bAppChange = false;
+                    else bAppChange = true;
+                } else {
+                    bAppChange = true;
                 }
+
+                var oJSONModel = new JSONModel();
+                var oView = this.getView();
+                var data = {
+                    "appChange": bAppChange,
+                }
+                oJSONModel.setData(data);
+                oView.setModel(oJSONModel, "AppAction");
             },
 
             onAfterRendering: function () {
@@ -139,6 +152,7 @@ sap.ui.define([
                 });
                 this._Model.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
+                        console.log(oData);
                         oJSONColumnsModel.setData(oData);
                         me.oJSONModel.setData(oData);
                         me.getView().setModel(oJSONColumnsModel, "DynColumns"); //set the view model
@@ -167,7 +181,7 @@ sap.ui.define([
 
                 oModel.read("/ColumnsSet", {
                     success: function (oData, oResponse) {
-                        // console.log(oData);
+                        console.log(oData);
                         oJSONColumnsModel.setData(oData);
                         // me.oJSONModel.setData(oData);
                         me.getView().setModel(oJSONColumnsModel, "DynColumns"); //set the view model

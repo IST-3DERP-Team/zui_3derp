@@ -55,7 +55,7 @@
          <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="ATTRIBSEQ">
                 <Label text="{i18n>Seq}" />
                 <t:template>
-                    <Text id="AttrTypeSeq" text="{DataModel>Attribseq}" />
+                    <Text id="AttrTypeSeq" text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />
                 </t:template>
             </t:Column>
 
@@ -73,6 +73,7 @@
                         valueHelpRequest="onAttrTypesValueHelp"
                         suggestionItems="{path:'AttribTypeModel>/results',templateShareable: false}"
                         value="{DataModel>Attribtyp}"
+                        tooltip="{DataModel>Attribtyp}"
                     >
                         <suggestionItems>
                             <core:ListItem id="AttrTypeListItem" text="{AttribTypeModel>Attribtyp}" additionalText="{AttribTypeModel>Desc1}" />
@@ -94,6 +95,7 @@
                         valueHelpRequest="onAttrCodesValueHelp"
                         suggestionItems="{path:'AttribCdModel>/results',templateShareable: false}"
                         value="{DataModel>Attribcd}"
+                        tooltip="{DataModel>Attribcd}"
                     >
                         <suggestionItems>
                             <core:ListItem id="AttribcdListItem" text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}" />
@@ -104,19 +106,19 @@
             <t:Column name="DESC1" width="16rem" filterProperty="Desc1">
                 <Label text="{i18n>Description}" />
                 <t:template>
-                    <Text id="AttrCodeDesc" text="{DataModel>Desc1}" />
+                    <Text id="AttrCodeDesc" text="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" />
                 </t:template>
             </t:Column>
             <t:Column width="11rem" filterProperty="Attribval">
                 <Label text="{i18n>Value}" />
                 <t:template>
-                    <Input id="AttribValInput" type="Text" editable="{GenAttrEditModeModel>/editMode}" value="{DataModel>Attribval}" change="onGeneralAttrChange" liveChange="onGeneralAttrChange" />
+                    <Input id="AttribValInput" type="Text" editable="{GenAttrEditModeModel>/editMode}" value="{DataModel>Attribval}" change="onGeneralAttrChange" liveChange="onGeneralAttrChange" tooltip="{DataModel>Attribval}" />
                 </t:template>
             </t:Column>
             <t:Column name="UOM" width="5rem" filterProperty="Valunit">
                 <Label text="{i18n>UOM}" />
                 <t:template>
-                    <Text id="AttrValunit" text="{DataModel>Valunit}" />
+                    <Text id="AttrValunit" text="{DataModel>Valunit}" tooltip="{DataModel>Valunit}" />
                 </t:template>
             </t:Column>
         </t:columns>

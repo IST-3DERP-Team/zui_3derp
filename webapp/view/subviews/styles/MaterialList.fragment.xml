@@ -3,9 +3,9 @@
         <Toolbar height="3rem" style="Clear">
             <Label text="{i18n>MaterialList}" />
             <ToolbarSpacer />
-            <Button icon="sap-icon://bookmark" text="{i18n>AssignMaterialNo}" tooltip="{i18n>Assignmaterialnumbers}" press="onAssignMaterial" visible="{= ${MaterialListEditModeModel>/editMode} === true ? false : true }" />
+            <Button icon="sap-icon://bookmark" text="{i18n>AssignMaterialNo}" tooltip="{i18n>Assignmaterialnumbers}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
             <Button icon="sap-icon://save"  tooltip="{i18n>Savemateriallist}" press="onSaveMaterialList" visible="{MaterialListEditModeModel>/editMode}" />
-            <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editmateriallist}" press="setMaterialListEditMode" visible="{= ${MaterialListEditModeModel>/editMode} === true ? false : true }" />
+            <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editmateriallist}" press="setMaterialListEditMode" visible="{= ${AppAction>/appChange} === true ? ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
             <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelMaterialListEdit" visible="{= ${MaterialListEditModeModel>/editMode} === true ? true : false }" />
             <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">
                 <customData>
@@ -22,49 +22,49 @@
             <t:Column width="5rem" filterProperty="Seqno" sortProperty="Seqno">
                 <Label text="{i18n>SEQNO}" />
                 <t:template>
-                    <Text text="{DataModel>Seqno}" />
+                    <Text text="{DataModel>Seqno}" tooltip="{DataModel>Seqno}" />
                 </t:template>
             </t:Column>
             <t:Column width="7rem" filterProperty="Mattyp" sortProperty="Mattyp">
                 <Label text="{i18n>MATTYP}" />
                 <t:template>
-                    <Text text="{DataModel>Mattyp}" />
+                    <Text text="{DataModel>Mattyp}" tooltip="{DataModel>Mattyp}"/>
                 </t:template>
             </t:Column>
             <t:Column width="11rem" filterProperty="Matno" sortProperty="Matno">
                 <Label text="{i18n>MATNO}" />
                 <t:template>
-                    <Text text="{DataModel>Matno}" />
+                    <Text text="{DataModel>Matno}" tooltip="{DataModel>Matno}" />
                 </t:template>
             </t:Column>
             <t:Column width="7rem" filterProperty="Gmc" sortProperty="Gmc">
                 <Label text="{i18n>GMC}" />
                 <t:template>
-                    <Text text="{DataModel>Gmc}" />
+                    <Text text="{DataModel>Gmc}" tooltip="{DataModel>Gmc}" />
                 </t:template>
             </t:Column>
             <t:Column width="28rem" filterProperty="Gmcdesc" sortProperty="Gmcdesc">
                 <Label text="{i18n>GMCDESC}" />
                 <t:template>
-                    <Text text="{DataModel>Gmcdesc}" />
+                    <Text text="{DataModel>Gmcdesc}" tooltip = "{DataModel>Gmcdesc}"/>
                 </t:template>
             </t:Column>
             <t:Column width="24rem" filterProperty="Matdesc1" sortProperty="Matdesc1">
                 <Label text="{i18n>MATDESC1}" />
                 <t:template>
-                    <Input value="{DataModel>Matdesc1}" change="onMaterialListChange" editable="{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>Matno} === '' ? true : false : false }" />
+                    <Input value="{DataModel>Matdesc1}" tooltip="{DataModel>Matdesc1}" change="onMaterialListChange" editable="{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>Matno} === '' ? true : false : false }" />
                 </t:template>
             </t:Column>
             <t:Column width="7rem" filterProperty="Consump" sortProperty="Consump">
                 <Label text="{i18n>CONSUMP}" />
                 <t:template>
-                    <Input value="{DataModel>Consump}" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange" />
+                    <Input value="{DataModel>Consump}" tooltip="{DataModel>Consump}" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange" />
                 </t:template>
             </t:Column>
             <t:Column width="8rem" filterProperty="Uom" sortProperty="Uom">
                 <Label text="{i18n>UOM}" />
                 <t:template>
-                    <Text text="{DataModel>Uom}" />
+                    <Text text="{DataModel>Uom}" tooltip="{DataModel>Uom}" />
                 </t:template>
             </t:Column>
             <t:Column width="11rem" filterProperty="Supplytyp" sortProperty="Supplytyp">
@@ -80,6 +80,7 @@
                         suggestionItems="{path:'SupplyTypeModel>/results', templateShareable:false}"
                         value="{DataModel>Supplytyp}"
                         change="onMaterialListChange"
+                        tooltip="{DataModel>Supplytyp}"
                     >
                         <suggestionItems>
                             <core:ListItem text="{SupplyTypeModel>Supplytype}" additionalText="{SupplyTypeModel>Desc1}" />
@@ -100,7 +101,8 @@
                         suggestionItems="{path:'VendorModel>/results', templateShareable:false}"
                         value="{DataModel>Vendorcd}"
                         change="onMaterialListChange"
-                         liveChange="onMaterialListChange"
+                        liveChange="onMaterialListChange"
+                        tooltip="{DataModel>Vendorcd}"
                     >
                         <suggestionItems>
                             <core:ListItem text="{VendorModel>Lifnr}" additionalText="{VendorModel>Desc1}" />
@@ -121,6 +123,7 @@
                         suggestionItems="{path:'CurrencyModel>/results', templateShareable:false}"
                         value="{DataModel>Currencycd}"
                         change="onMaterialListChange"
+                        tooltip="{DataModel>Currencycd}"
                     >
                         <suggestionItems>
                             <core:ListItem text="{CurrencyModel>Waers}" additionalText="{CurrencyModel>Desc1}" />
@@ -131,7 +134,7 @@
             <t:Column width="11rem" filterProperty="Unitprice" sortProperty="Unitprice">
                 <Label text="{i18n>UnitPrice}" />
                 <t:template>
-                    <Input value="{DataModel>Unitprice}" type="Number" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange" />
+                    <Input value="{DataModel>Unitprice}"  tooltip="{DataModel>Unitprice}" type="Number" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange" />
                 </t:template>
             </t:Column>
             <t:Column width="11rem" filterProperty="Purgrp" sortProperty="Purgrp">
@@ -147,6 +150,7 @@
                         value="{DataModel>Purgrp}"
                         change="onMaterialListChange"
                         liveChange="onMaterialListChange"
+                        tooltip="{DataModel>Purgrp}"
                     >
                          <suggestionItems>
                             <core:ListItem id ="PurGroupListItem" text="{PurchGroupModel>Purgrp}" additionalText="{PurchGroupModel>Desc1}" />
@@ -167,6 +171,7 @@
                         suggestionItems="{path:'PurPlantModel>/results', templateShareable:false}"
                         value="{DataModel>Purplant}"
                         change="onMaterialListChange"
+                        tooltip="{DataModel>Purplant}"
                     >
                         <suggestionItems>
                             <core:ListItem text="{PurPlantModel>Plant}" additionalText="{PurPlantModel>Desc1}" />

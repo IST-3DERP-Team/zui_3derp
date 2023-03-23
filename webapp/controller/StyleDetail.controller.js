@@ -131,6 +131,7 @@ sap.ui.define([
                 this.getAppAction();
 
                 this.getIOs();
+                this.setReqField("HeaderEditModeModel", false);
 
                 if (this._styleNo === Constants.NEW) {
                     //create new - only header is editable at first
@@ -177,6 +178,9 @@ sap.ui.define([
                 Utils.getStyleSearchHelps(this);
                 Utils.getAttributesSearchHelps(this);
                 Utils.getProcessAttributes(this);
+                //console.log(this.getView().getModel("AttribCdModel").getData());
+                //console.log(this.getView().getModel("SeasonsModel").getData());
+
 
                 //Attachments
                 this.bindUploadCollection();
@@ -208,7 +212,10 @@ sap.ui.define([
                 that.setChangeStatus(false);
                 data.editMode = false;
                 oJSONModel.setData(data);
-                that.getView().setModel(oJSONModel, "HeaderEditModeModel");
+
+                if (this._styleNo !== Constants.NEW) {
+                    that.getView().setModel(oJSONModel, "HeaderEditModeModel");
+                }
                 that.getView().setModel(oJSONModel, "GenAttrEditModeModel");
                 that.getView().setModel(oJSONModel, "ColorEditModeModel");
                 that.getView().setModel(oJSONModel, "SizeEditModeModel");
@@ -368,7 +375,7 @@ sap.ui.define([
             // Style Header
             //******************************************* */
 
-            getHeaderData: function () {
+            getHeaderData: async function () {
                 var me = this;
                 var styleNo = this._styleNo;
                 var oModel = this.getOwnerComponent().getModel();
@@ -379,7 +386,7 @@ sap.ui.define([
 
                 //read Style header data
                 var entitySet = "/StyleDetailSet('" + styleNo + "')"
-                oModel.read(entitySet, {
+                await oModel.read(entitySet, {
                     success: function (oData, oResponse) {
                         // var oldData = oData;
                         // me._headerData = JSON.parse(JSON.stringify(oData));
@@ -394,6 +401,33 @@ sap.ui.define([
                         Common.closeLoadingDialog(that);
                     }
                 })
+
+                if (this._styleNo === Constants.NEW) {
+                    //set default Style Catergory
+                    var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+                    const filter = "SBU eq '" + this._sbu + "' and MODULE eq 'STYLE'";
+                    var me = this;
+                    await  oModel.read("/ZerpCheckSet", {
+                        urlParameters: {
+                            "$filter": filter
+                        },
+                        success: function (oData, oResponse) {
+                            console.log(oData);
+                            me.getView().getModel("headerData").setProperty("/Stylecat", oData.results[0].VALUE);
+                            //oJSONColumnsModel.setData(oData);
+                            //me.getView().setModel(oJSONColumnsModel, "DynColumns"); //set the view model
+                        },
+                        error: function (err) {
+                            Common.closeLoadingDialog(that);
+                        }
+                    });
+
+                    //set default Season
+                    // console.log(this.getView().getModel("AttribCdModel").getData());
+                    //var season = this.getView().getModel("SeasonsModel").getData();
+                }
+
+
             },
 
             getHeaderConfig: function () {
@@ -451,8 +485,8 @@ sap.ui.define([
                     else {
                         const result = await this.lockStyle("X");
                         console.log(result);
-                        if (result.severity === "error") {
-                            MessageBox.warning(result.message);
+                        if (result.Type != "S") {
+                            MessageBox.warning(result.Message);
                         }
                         else {
 
@@ -778,8 +812,8 @@ sap.ui.define([
 
             setGeneralAttrEditMode: async function () {
                 const result = await this.lockStyle("X");
-                if (result.severity === "error") {
-                    MessageBox.warning(result.message);
+                if (result.Type != "S") {
+                    MessageBox.warning(result.Message);
                 }
                 else {
                     //set general attributes table edit mode
@@ -1067,8 +1101,8 @@ sap.ui.define([
                     });
                 }
                 const result = await this.lockStyle("X");
-                if (result.severity === "error") {
-                    MessageBox.warning(result.message);
+                if (result.Type != "S") {
+                    MessageBox.warning(result.Message);
                 }
                 else {
 
@@ -1414,8 +1448,8 @@ sap.ui.define([
 
             setSizeEditMode: async function () {
                 const result = await this.lockStyle("X");
-                if (result.severity === "error") {
-                    MessageBox.warning(result.message);
+                if (result.Type != "S") {
+                    MessageBox.warning(result.Message);
                 }
                 else {
                     //set size table editable
@@ -1586,8 +1620,8 @@ sap.ui.define([
 
             setProcessEditMode: async function () {
                 const result = await this.lockStyle("X");
-                if (result.severity === "error") {
-                    MessageBox.warning(result.message);
+                if (result.Type != "S") {
+                    MessageBox.warning(result.Message);
                 }
                 else {
                     //set edit mode processes table
@@ -1856,8 +1890,8 @@ sap.ui.define([
 
             onCreateNewVersion: async function () {
                 const result = await this.lockStyle("X");
-                if (result.severity === "error") {
-                    MessageBox.warning(result.message);
+                if (result.Type != "S") {
+                    MessageBox.warning(result.Message);
                 }
                 else {
                     //open create new version dialog
@@ -1920,8 +1954,8 @@ sap.ui.define([
 
             setVersionEditMode: async function () {
                 const result = await this.lockStyle("X");
-                if (result.severity === "error") {
-                    MessageBox.warning(result.message);
+                if (result.Type != "S") {
+                    MessageBox.warning(result.Message);
                 }
                 else {
                     //set edit mode of versions table
@@ -2203,15 +2237,15 @@ sap.ui.define([
 
             onAddFile: async function () {
                 console.log("upload")
-                const result = await this.lockStyle("X");
-                if (result.severity === "error") {
-                    MessageBox.warning(result.message);
-                }
-                else {
-                    //open the file select dialog
-                    var oUploadCollection = this.getView().byId('UploadCollection');
-                    oUploadCollection.openFileDialog();
-                }
+                //const result = await this.lockStyle("X");
+                // if (result.severity === "error") {
+                //     MessageBox.warning(result.message);
+                // }
+                // else {
+                //open the file select dialog
+                var oUploadCollection = this.getView().byId('UploadCollection');
+                oUploadCollection.openFileDialog();
+                //}
             },
 
             onFileSelected: function () {
@@ -2889,8 +2923,8 @@ sap.ui.define([
                 oTable.getBinding("rows").refresh();
                 //oTable.setVisibleRowCount(oData.length);
                 const result = await this.lockStyle("X");
-                if (result.severity === "error") {
-                    MessageBox.warning(result.message);
+                if (result.Type != "S") {
+                    MessageBox.warning(result.Message);
                 }
                 else {
                     if (tabName === "generalTable") {
@@ -3236,10 +3270,18 @@ sap.ui.define([
                     }
                 }
                 else {
-                    // Header
-                    this.byId("btnHdrEdit").setVisible(pChange);
-                    this.byId("btnHdrDelete").setVisible(pChange);
-                    this.byId("btnHdrApplyIO").setVisible(false);
+                    if (this._styleNo === Constants.NEW) {
+                        this.byId("btnHdrDelete").setVisible(false);
+                        this.byId("btnHdrEdit").setVisible(false);
+                        this.byId("btnHdrDelete").setVisible(false);
+                    }
+                    else {
+                        this.byId("btnHdrEdit").setVisible(pChange);
+                        this.byId("btnHdrDelete").setVisible(pChange);
+                        this.byId("btnHdrApplyIO").setVisible(false);
+                    }
+
+
                 }
 
                 //General Attribute
@@ -3298,17 +3340,29 @@ sap.ui.define([
             lockStyle: async function (isLock) {
                 var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
 
+                // var oParamLock = {
+                //     StyleNo: this._styleNo,
+                //     Lock: isLock === "X" ? "X" : "",
+                //     N_ENQ: []
+                // }
                 var oParamLock = {
-                    StyleNo: this._styleNo,
-                    Lock: isLock === "X" ? "X" : "",
-                    N_ENQ: []
+                    STYLE_TAB: [{
+                        StyleNo: this._styleNo,
+                        Lock: isLock === "X" ? "X" : ""
+                    }
+                    ],
+                    Iv_Count: 300,
+                    STYLE_MSG: []
                 }
+                Common.openLoadingDialog(that);
                 return new Promise((resolve, reject) => {
                     oModelLock.create("/ZERP_STYLHDR", oParamLock, {
                         method: "POST",
                         success: function (data, oResponse) {
-                            console.log("success Lock_ZERP_STYLHDR", data);
-                            _this.closeLoadingDialog();
+                            console.log("success Lock_ZERP_STYLHDR", data.STYLE_MSG.results[0]);
+                            Common.closeLoadingDialog(that);
+                            return resolve(data.STYLE_MSG.results[0]);
+
 
                         },
                         error: function (err) {

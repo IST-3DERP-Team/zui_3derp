@@ -22,7 +22,7 @@
                  <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="ATTRIBSEQ">
                 <Label text="{i18n>Seq}" />
                 <t:template>
-                    <Text text="{DataModel>Attribseq}" />
+                    <Text text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />
                 </t:template>
             </t:Column>
                 <!-- <t:Column width="11rem" filterProperty="Attribgrp">
@@ -34,7 +34,7 @@
                 <t:Column width="11rem" filterProperty="Attribcd">
                     <Label text="{i18n>SizeCode}" />
                     <t:template>
-                        <Input value="{DataModel>Attribcd}" editable="false" />
+                        <Input value="{DataModel>Attribcd}" editable="false" tooltip="{DataModel>Attribcd}"  />
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" sortProperty="Baseind" hAlign="Center">

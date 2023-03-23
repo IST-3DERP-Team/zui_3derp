@@ -38,14 +38,14 @@
                     <t:Column width="5rem"   filterProperty="Verno" sortProperty="Verno" hAlign="End">
                         <Label text="{i18n>Version}"/>
                         <t:template>
-                            <Text text="{DataModel>Verno}"/>
+                            <Text text="{DataModel>Verno}" tooltip="{DataModel>Verno}"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
                         <Label text="{i18n>VersionStatus}" />
                         <t:template>
                             <tnt:InfoLabel id="il8" text="{= ${DataModel>Currentver} === true ? 'Current' : ' ' }" colorScheme="{= ${DataModel>Currentver} === true ? 8 : 7 }" displayOnly= "true"
-                                visible="{DataModel>Currentver}"/>
+                                visible="{DataModel>Currentver}" tooltip="{= ${DataModel>Currentver} === true ? 'Current' : ' ' }"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="8rem"   filterProperty="Verno" sortProperty="Verno"  visible="{VersionEditModeModel>/editMode}">
@@ -61,13 +61,13 @@
                     <t:Column width="15rem" filterProperty="Desc1" sortProperty="Desc1">
                         <Label text="{i18n>DescriptionEN}"/>
                         <t:template>
-                            <Input value="{DataModel>Desc1}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange"/>
+                            <Input value="{DataModel>Desc1}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange" tooltip="{DataModel>Desc1}"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="15rem" filterProperty="Desc2" sortProperty="Desc2">
                         <Label text="{i18n>DescriptionCN}"/>
                         <t:template>
-                            <Input value="{DataModel>Desc2}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange"/>
+                            <Input value="{DataModel>Desc2}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange" tooltip="{DataModel>Desc2}"/>
                         </t:template>
                     </t:Column>
                 </c:columns>
