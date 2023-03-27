@@ -951,7 +951,6 @@ sap.ui.define([
                 }
                 else {
                     //set general attributes table edit mode
-                    var oTable = this.getView().byId("generalTable");
                     var oJSONModel = new JSONModel();
                     var data = {};
                     this._generalAttrChanged = true;
@@ -964,38 +963,76 @@ sap.ui.define([
                     this.disableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(false);
                     this.byId("btnHdrDelete").setEnabled(false);
-                    
+                    this.setGeneralAttrEditModeControls();
+
                     var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
                     oMsgStrip.setVisible(false);
-                    
-                    for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
-                        var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
-                        var oRow = oTable.getRows()[iRowIndex];
-                        var vValTyp = oTable.getContextByIndex(i).getProperty("Valuetyp");
-                        var oCellCtrlValTyp = "";
-                    
-                        oRow.getCells().forEach(cell => {
-                            if (cell.getBindingInfo("value") !== undefined) {
-                                oCellCtrlValTyp = "value";
-                            }
-                            else if (cell.getBindingInfo("text") !== undefined) {
-                                oCellCtrlValTyp = "text";
-                            }
-                            else if (cell.getBindingInfo("selected") !== undefined) {
-                                oCellCtrlValTyp = "selected";
-                            }
-                            console.log(cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase())
-                            if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
-                                if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
-                                    cell.setEnabled(true);
-                                }
-                                else {
-                                    cell.setEnabled(false);
-                                }
-                            }
-                        })
-                    } 
                 }
+            },
+
+            setGeneralAttrEditModeControls: function() {
+                var oTable = this.getView().byId("generalTable");
+
+                for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                    var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
+                    var oRow = oTable.getRows()[iRowIndex];
+                    var vAttrTyp = oTable.getContextByIndex(i).getProperty("Attribtyp");
+                    var vValTyp = oTable.getContextByIndex(i).getProperty("Valuetyp");
+                    var oCellCtrlValTyp = "";
+
+                    oRow.getCells().forEach(cell => {
+                        if (cell.getBindingInfo("value") !== undefined) {
+                            oCellCtrlValTyp = "value";
+                        }
+                        else if (cell.getBindingInfo("text") !== undefined) {
+                            oCellCtrlValTyp = "text";
+                        }
+                        else if (cell.getBindingInfo("selected") !== undefined) {
+                            oCellCtrlValTyp = "selected";
+                        }
+                        
+                        if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
+                            console.log(cell)
+                            if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
+                                cell.setEnabled(true);
+
+                                if (vValTyp === "NUMVALUE") {
+                                    cell.setType(sap.m.InputType.Number);
+                                }
+                                else if (vValTyp === "STRVAL") {
+                                    cell.setType(sap.m.InputType.Text);
+                                }
+                            }
+                            else {
+                                cell.setEnabled(false);
+                            }
+                        }
+                        else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "VALUNIT") {
+                            if (vValTyp === "NUMVALUE") {
+                                cell.setEnabled(true);
+                            }
+                            else {
+                                cell.setEnabled(false);
+                            }
+                        }
+                        else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBCD") {
+                            if (this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttrTyp).length > 0 && vAttrTyp !== "" && vAttrTyp !== undefined) {
+                                cell.setEnabled(true);
+                            }
+                            else {
+                                cell.setEnabled(false);
+                            }
+                        }
+                        else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "CASVERIND") {
+                            if (vAttrTyp !== "" && vAttrTyp !== undefined) {
+                                cell.setEnabled(true);
+                            }
+                            else {
+                                cell.setEnabled(false);
+                            }
+                        }
+                    })
+                } 
             },
 
             cancelGeneralAttrEdit: function () {
@@ -1036,9 +1073,43 @@ sap.ui.define([
                 // this.byId("btnHdrDelete").setEnabled(true);
             },
 
-            onGeneralAttrChange: function () {
+            onGeneralAttrChange: function (oEvent) {
                 this._generalAttrChanged = true;
                 this.setChangeStatus(true);
+
+                if (oEvent !== undefined) {
+                    var oSource = oEvent.getSource();
+
+                    if (oSource.getBindingInfo("value") !== undefined) {
+                        var sRowPath = oEvent.getSource().getBindingInfo("value").binding.oContext.sPath;
+                        var vColPath = oSource.getBindingInfo("value").parts[0].path;
+
+                        if (vColPath.toUpperCase() === "ATTRIBTYP") {
+                            this.setGeneralAttrEditModeControls();
+    
+                            if (oEvent.getParameter("value") === "") {
+                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", "");
+                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
+                            }
+                        }
+                        else if (vColPath.toUpperCase() === "ATTRIBCD") {   
+                            if (oEvent.getParameter("value") === "") {
+                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
+                            }
+                            else {
+                                this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oEvent.getParameter("value")).forEach(item => {
+                                    this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
+
+                                    var iRowIndex = +sRowPath.replace("/results/","");
+
+                                    if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp") === "NUMVALUE") {
+                                        this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
+                                    }
+                                })                                
+                            }
+                        }
+                    }
+                }
             },
 
             onSaveGeneralTable: function () {
@@ -2978,6 +3049,8 @@ sap.ui.define([
                     this.onGeneralAttrChange();
                 }
                 evt.getSource().getBinding("items").filter([]);
+
+                this.setGeneralAttrEditModeControls();
             },
 
             onAttrCodesValueHelp: function (oEvent) {
@@ -2988,17 +3061,40 @@ sap.ui.define([
                 this.inputId = oEvent.getSource().getId(); //get the id of the input field
 
                 //get the id of input field of description and uom
-                var oTable = that.getView().byId("generalTable");
-                var oColumns = oTable.getColumns();
-                for (var i = 0; i < oColumns.length; i++) {
-                    var name = oColumns[i].getName();
-                    if (name === 'DESC1') {
+                // var oTable = that.getView().byId("generalTable");
+                // var oColumns = oTable.getColumns();
+                // for (var i = 0; i < oColumns.length; i++) {
+                //     var name = oColumns[i].getName();
+                //     if (name === 'DESC1') {
+                //         this.descId = oEvent.getSource().getParent().mAggregations.cells[i].getId();
+                //         console.log(oEvent.getSource().getParent().mAggregations)
+                //     }
+                //     if (name === 'UOM') {
+                //         this.attribUom = oEvent.getSource().getParent().mAggregations.cells[i].getId();
+                //     }
+                // }
+
+                for (var i = 0; i < oEvent.getSource().getParent().mAggregations.cells.length; i++) {
+                    var oCellCtrlValTyp = "";
+
+                    if (oEvent.getSource().getParent().mAggregations.cells[i].getBindingInfo("value") !== undefined) {
+                        oCellCtrlValTyp = "value";
+                    }
+                    else if (oEvent.getSource().getParent().mAggregations.cells[i].getBindingInfo("text") !== undefined) {
+                        oCellCtrlValTyp = "text";
+                    }
+                    else if (oEvent.getSource().getParent().mAggregations.cells[i].getBindingInfo("selected") !== undefined) {
+                        oCellCtrlValTyp = "selected";
+                    }
+
+                    if (oEvent.getSource().getParent().mAggregations.cells[i].getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "DESC1") {
                         this.descId = oEvent.getSource().getParent().mAggregations.cells[i].getId();
                     }
-                    if (name === 'UOM') {
+                    else if (oEvent.getSource().getParent().mAggregations.cells[i].getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "VALUNIT") {
                         this.attribUom = oEvent.getSource().getParent().mAggregations.cells[i].getId();
                     }
                 }
+
                 //open dialog
                 if (!this._attrCodesValueHelpDialog) {
                     this._attrCodesValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.AttributeCodes", this);
@@ -3031,9 +3127,13 @@ sap.ui.define([
                     this.onGeneralAttrChange();
                     var descText = this.byId(this.descId);
                     descText.setText(oSelectedItem.getDescription()); //set the description
-                    var uom = oSelectedItem.data('Uom');
-                    var attribUom = this.byId(this.attribUom);
-                    attribUom.setText(uom); //set the uom
+
+                    var iRowIndex = +this.byId(this.inputId).getBindingInfo("value").binding.oContext.sPath.replace("/results/","");
+                    if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp") === "NUMVALUE") {
+                        var uom = oSelectedItem.data('Uom');
+                        var attribUom = this.byId(this.attribUom);
+                        attribUom.setValue(uom); //set the uom
+                    }
                 }
                 evt.getSource().getBinding("items").filter([]);
             },
@@ -3342,6 +3442,16 @@ sap.ui.define([
                     this.lockStyle("O");
                 }
                 else if (editModelName === "GenAttrEditModeModel") {
+                    var oTable = this.getView().byId("generalTable");
+
+                    oTable.getRows().forEach(row => {
+                        row.getCells().forEach(cell => {
+                            if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                                cell.setProperty("enabled", true);
+                            }
+                        });
+                    })
+
                     this.setControlEditMode("GenAttrEditModeModel", false);
                     this.enableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(true);

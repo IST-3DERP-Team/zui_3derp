@@ -119,7 +119,8 @@
             <t:Column name="UOM" width="5rem" filterProperty="Valunit" sortProperty="Valunit">
                 <Text text="{ddtext>/ATTRIBVALUNIT}" />
                 <t:template>
-                    <Text id="AttrValunit" text="{DataModel>Valunit}" tooltip="{DataModel>Valunit}" />
+                    <Input id="AttribValUnitInput" type="Text" editable="{GenAttrEditModeModel>/editMode}" value="{DataModel>Valunit}" change="onGeneralAttrChange" liveChange="onGeneralAttrChange" tooltip="{DataModel>Valunit}" />
+                    <!-- <Text id="AttrValunit" text="{DataModel>Valunit}" tooltip="{DataModel>Valunit}" /> -->
                 </t:template>
             </t:Column>
             <t:Column width="10rem" filterProperty="Casverind" sortProperty="Casverind" hAlign="Center">
