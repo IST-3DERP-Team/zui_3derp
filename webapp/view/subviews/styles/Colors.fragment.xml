@@ -33,19 +33,19 @@
                         <Text text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />
                     </t:template>
                 </t:Column>
+                <t:Column width="11rem" filterProperty="Desc1">
+                    <Label text="{i18n>Description}" />
+                    <t:template>
+                        <Input value="{DataModel>Desc1}" editable="false" change="onColorChange" liveChange="onColorChange" tooltip="{DataModel>Desc1}" />
+                    </t:template>
+                </t:Column>
                 <t:Column width="7rem" filterProperty="Sortseq">
                     <Label text="{i18n>SortSeq}" />
                     <t:template>
                         <!-- <HBox class="sapUiResponsiveContentPadding">
                                     <Label required="true"/> -->
-                        <Input id="ColorIdInput" value="{DataModel>Sortseq}" editable="false" valueStateText="Required" change="onColorChange" liveChange="onGeneralAttrChange" maxLength="2" tooltip="{DataModel>Attribcd}" />
+                        <Input id="ColorIdInput" value="{DataModel>Sortseq}" editable="false" valueStateText="Required" change="onColorChange" liveChange="onGeneralAttrChange" maxLength="2" tooltip="{DataModel>Sortseq}" />
                         <!-- </HBox>                         -->
-                    </t:template>
-                </t:Column>
-                <t:Column width="11rem" filterProperty="Desc1">
-                    <Label text="{i18n>Description}" />
-                    <t:template>
-                        <Input value="{DataModel>Desc1}" editable="false" change="onColorChange" liveChange="onColorChange" tooltip="{DataModel>Desc1}" />
                     </t:template>
                 </t:Column>
             </c:columns>

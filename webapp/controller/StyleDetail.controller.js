@@ -76,7 +76,7 @@ sap.ui.define([
                     const shellHash = urlParsing.parseShellHash(fullHash);
                     const sAction = shellHash.action;
                     var bAppChange;
-
+                    console.log("dito")
                     if (sAction == "display") bAppChange = false;
                     else bAppChange = true;
                 } else {
