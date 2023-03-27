@@ -17,6 +17,7 @@ sap.ui.define([
         "use strict";
 
         var that;
+        var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({ pattern: "MM/dd/yyyy" });
         
         return Controller.extend("zui3derp.controller.StyleDetail", {
 
@@ -81,7 +82,6 @@ sap.ui.define([
 
             _routePatternMatched: function (oEvent) {
                 Common.openLoadingDialog(that);
-
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get Style from route pattern
                 this._sbu = oEvent.getParameter("arguments").sbu; //get SBU from route pattern
                 this._iono = oEvent.getParameter("arguments").iono; //get IONO from route pattern
@@ -106,7 +106,7 @@ sap.ui.define([
                 oJSONModel.setData(data);
                 oView.setModel(oJSONModel, "IO");
 
-                this.getIOs();
+                this.getIOs(false);
                 
                 if (this._styleNo === Constants.NEW) {
                     //create new - only header is editable at first
@@ -122,8 +122,6 @@ sap.ui.define([
                     this.getSizesTable(); //get sizes
                     this.getProcessesTable(); //get process
                     this.getVersionsTable(); //get versions
-
-
                 }
 
                 //close all edit modes
@@ -158,6 +156,15 @@ sap.ui.define([
                 this.bindUploadCollection();
                 this.getView().getModel("FileModel").refresh();
                 this.setFilesEditMode();
+                this.getCaptionMsgs();
+
+                var cIconTabBar = this.getView().byId("detailPanel");
+                if (this.getOwnerComponent().getModel("UI_MODEL").getData().fromScreen === "VERSION") {
+                    cIconTabBar.setSelectedKey("version");
+                }
+                else {
+                    cIconTabBar.setSelectedKey("genAttrib");
+                }
 
                 Common.closeLoadingDialog(that);
             },
@@ -317,6 +324,50 @@ sap.ui.define([
                 });
             },
 
+            getCaptionMsgs: function() {
+                var me = this;
+                var oDDTextParam = [], oDDTextResult = {};
+                var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+
+                oDDTextParam.push({CODE: "COPY"}); 
+
+                oDDTextParam.push({CODE: "IONO"});
+                oDDTextParam.push({CODE: "IODESC"});
+                oDDTextParam.push({CODE: "IOTYPE"});
+                oDDTextParam.push({CODE: "SALESGRP"});
+                oDDTextParam.push({CODE: "SEASONCD"});
+                oDDTextParam.push({CODE: "PRODPLANT"});
+                oDDTextParam.push({CODE: "STATUSCD"});
+                oDDTextParam.push({CODE: "VERNO"});  
+                oDDTextParam.push({CODE: "CREATEDBY"});  
+                oDDTextParam.push({CODE: "CREATEDDT"});  
+                oDDTextParam.push({CODE: "IOLIST"}); 
+
+                oDDTextParam.push({CODE: "ATTRIBSEQ"}); 
+                oDDTextParam.push({CODE: "ATTRIBTYP"});
+                oDDTextParam.push({CODE: "ATTRIBCD"});  
+                oDDTextParam.push({CODE: "DESC"});  
+                oDDTextParam.push({CODE: "ATTRIBVAL"});  
+                oDDTextParam.push({CODE: "ATTRIBVALUNIT"}); 
+                oDDTextParam.push({CODE: "CASVERIND"}); 
+
+                oDDTextParam.push({CODE: "INFO_INPUT_REQD_FIELDS"}); 
+                oDDTextParam.push({CODE: "INFO_NO_DATA_EDIT"}); 
+                oDDTextParam.push({CODE: "INFO_NO_SEL_RECORD_TO_PROC"}); 
+                
+                oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam  }, {
+                    method: "POST",
+                    success: function(oData, oResponse) {        
+                        oData.CaptionMsgItems.results.forEach(item => {
+                            oDDTextResult[item.CODE] = item.TEXT;
+                        })
+
+                        me.getView().setModel(new JSONModel(oDDTextResult), "ddtext");
+                        me.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").setData({text: oDDTextResult})
+                    },
+                    error: function(err) { }
+                });
+            },
 
             //******************************************* */
             // Style Header
@@ -676,10 +727,15 @@ sap.ui.define([
 
             getGeneralTable: function () {
                 //Get general attributes data
+                var me = this;
                 var oTable = this.getView().byId("generalTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oTable = this.getView().byId("generalTable");
+                var oReqAttr = [];
+                var bProceed = true;
+                var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
+                oMsgStrip.setVisible(false);
 
                 Common.openLoadingDialog(that);
 
@@ -690,12 +746,74 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        // console.log(oData);
+                        console.log(oData)
+                        
+                        oData.results.forEach((item, index) => {
+                            item.Casverind = item.Casverind === "X" ? true : false;
+
+                            if (index === 0) item.ACTIVE = "X";
+                            else item.ACTIVE = "";
+                        });
+
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
-                        //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
-                        // oTable.onAttachPaste(); //for copy-paste
                         Common.closeLoadingDialog(that);
+
+                        // oModel.read("/AttributesConfigSet", {
+                        //     success: function (oDataConfig, oResponse) {
+                        //         // me._attributesconfig = oDataConfig.results;
+
+                        //         oData.results.forEach((item, index) => {
+                        //             item.Casverind = item.Casverind === "X" ? true : false;
+                        //             item.Property = "";
+
+                        //             oDataConfig.results.filter(fItem => fItem.TYPE === item.Attribtyp).forEach(e => {
+                        //                 item.Property = e.PROP;
+
+                        //                 if (e.PROP === "M") { 
+                        //                     if (oReqAttr.findIndex(val => val === item.Attribtyp) < 0) { oReqAttr.push(item.Attribtyp); }
+                        //                 }
+                        //             });
+        
+                        //             if (index === 0) item.ACTIVE = "X";
+                        //             else item.ACTIVE = "";
+                        //         });
+
+                        //         oDataConfig.results.forEach(item => {
+                        //             if (item.PROP === "M") {
+                        //                 if (oReqAttr.findIndex(val => val === item.Attribtyp) < 0) { oReqAttr.push(item.Attribtyp); }
+                        //             }
+
+                        //             if (oData.results.filter(fItem => fItem.Attribtyp === item.TYPE).length === 0) {
+                        //                 bProceed = false;
+                        //             }
+                        //         })
+
+                        //         oJSONModel.setData(oData);
+                        //         oTable.setModel(oJSONModel, "DataModel");
+                        //         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
+                        //         // oTable.onAttachPaste(); //for copy-paste
+                        //         Common.closeLoadingDialog(that);
+                        //         me._attributesconfig = oReqAttr;
+
+                        //         if (!bProceed) {
+                        //             oMsgStrip.setVisible(true);
+                        //             // sMessage = sMessage.substring(0, sMessage.length - 2)
+                        //             oMsgStrip.setText("Attribute Type/s is required: " + oReqAttr.join(", ") + ". Insert record on these attributes to be able to work with other style details.");
+                        //             me.disableOtherTabs("detailPanel");
+                        //         }
+
+                        //         // if (oData.results.filter(fItem => fItem.Attribval === "" && fItem.Property === "M").length > 0) {
+                        //         //     oMsgStrip.setVisible(true);
+                        //         //     // sMessage = sMessage.substring(0, sMessage.length - 2)
+                        //         //     oMsgStrip.setText("Attribute Code/Value is required for Attribute Type: " + oReqAttr.join(", ") + ". Enter value on these attributes to be able to work with other style details.");
+                        //         //     me.disableOtherTabs("detailPanel");
+                        //         // }
+                        //     },
+                        //     error: function (err) { 
+                        //         Common.closeLoadingDialog(that);
+                        //     }
+                        // }); 
                     },
                     error: function () {
                         Common.closeLoadingDialog(that);
@@ -705,6 +823,7 @@ sap.ui.define([
 
             setGeneralAttrEditMode: function () {
                 //set general attributes table edit mode
+                var oTable = this.getView().byId("generalTable");
                 var oJSONModel = new JSONModel();
                 var data = {};
                 this._generalAttrChanged = true;
@@ -715,6 +834,37 @@ sap.ui.define([
                 Utils.getAttributesSearchHelps(this);
 
                 this.disableOtherTabs("detailPanel");
+
+                var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
+                oMsgStrip.setVisible(false);
+
+                // for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                //     var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
+                //     var oRow = oTable.getRows()[iRowIndex];
+                //     var vValTyp = oTable.getContextByIndex(i).getProperty("Valuetyp");
+                //     var oCellCtrlValTyp = "";
+
+                //     oRow.getCells().forEach(cell => {
+                //         if (cell.getBindingInfo("value") !== undefined) {
+                //             oCellCtrlValTyp = "value";
+                //         }
+                //         else if (cell.getBindingInfo("text") !== undefined) {
+                //             oCellCtrlValTyp = "text";
+                //         }
+                //         else if (cell.getBindingInfo("selected") !== undefined) {
+                //             oCellCtrlValTyp = "selected";
+                //         }
+                //         console.log(cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase())
+                //         if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
+                //             if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
+                //                 cell.setEnabled(true);
+                //             }
+                //             else {
+                //                 cell.setEnabled(false);
+                //             }
+                //         }
+                //     })
+                // }               
             },
 
             cancelGeneralAttrEdit: function () {
@@ -749,6 +899,7 @@ sap.ui.define([
                 }
                 var oMsgStrip = that.getView().byId('GeneralAttrMessageStrip');
                 oMsgStrip.setVisible(false);
+                this.enableOtherTabs("detailPanel");
             },
 
             onGeneralAttrChange: function () {
@@ -762,11 +913,12 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oTableModel = this.getView().byId("generalTable").getModel("DataModel");
                 var path;
+                var bProceed = true;
 
                 //initialize message strip
                 var oMsgStrip = this.getView().byId('GeneralAttrMessageStrip');
                 oMsgStrip.setVisible(false);
-
+                console.log(this._attributesconfig)
                 if (!this._generalAttrChanged) { //check if data is changed
                     Common.showMessage(this._i18n.getText('t7'));
                 } else {
@@ -778,48 +930,60 @@ sap.ui.define([
                         AttributesToItems: []
                     }
                     for (var i = 0; i < oData.results.length; i++) {
-                        var item = {
-                            "Styleno": this._styleNo,
-                            "Attribtyp": oData.results[i].Attribtyp,
-                            "Attribcd": oData.results[i].Attribcd,
-                            "Baseind": false,
-                            "Desc1": oData.results[i].Desc1,
-                            "Valuetyp": "STRVAL",
-                            "Attribval": oData.results[i].Attribval,
-                            "Attribseq": oData.results[i].Attribseq
-                        };
-
-                        oEntry.AttributesToItems.push(item);
+                        console.log(oData.results[i].Attribtyp, oData.results[i].Attribcd, oData.results[i].Attribval)
+                        if (this._attributesconfig.filter(fItem => fItem === oData.results[i].Attribtyp && (oData.results[i].Attribcd === "" || oData.results[i].Attribval === "")).length > 0) {
+                            bProceed = false;
+                        }
+                        else {
+                            var item = {
+                                "Styleno": this._styleNo,
+                                "Attribtyp": oData.results[i].Attribtyp,
+                                "Attribcd": oData.results[i].Attribcd,
+                                "Baseind": false,
+                                "Desc1": oData.results[i].Desc1,
+                                "Valuetyp": "STRVAL",
+                                "Attribval": oData.results[i].Attribval,
+                                "Attribseq": oData.results[i].Attribseq,
+                                "Casverind": (oData.results[i].Casverind === true ? "X" : "")
+                            };
+    
+                            oEntry.AttributesToItems.push(item);
+                        }
                     };
 
-                    Common.openLoadingDialog(that);
+                    if (bProceed) {
+                        Common.openLoadingDialog(that);
 
-                    //call deep entity create method 
-                    path = "/AttributesGeneralSet";
-                    oModel.setHeaders({
-                        sbu: this._sbu
-                    });
-                    oModel.create(path, oEntry, {
-                        method: "POST",
-                        success: function (oData, oResponse) {
-                            Common.closeLoadingDialog(that);
-                            me._generalAttrChanged = false;
-                            me.setChangeStatus(false);
-                            Common.showMessage(me._i18n.getText('t4'));
-                            Utils.getProcessAttributes(me); //need to reload available attribute types for process tables
-                            me.setTabReadMode("GenAttrEditModeModel");
-                            me.getGeneralTable();
-                        },
-                        error: function (err) {
-                            //show error messages
-                            Common.closeLoadingDialog(that);
-                            var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            oMsgStrip.setVisible(true);
-                            oMsgStrip.setText(errorMsg);
-                            Common.showMessage(me._i18n.getText('t5'));
-                        }
-                    });
-
+                        //call deep entity create method 
+                        path = "/AttributesGeneralSet";
+                        oModel.setHeaders({
+                            sbu: this._sbu
+                        });
+                        oModel.create(path, oEntry, {
+                            method: "POST",
+                            success: function (oData, oResponse) {
+                                Common.closeLoadingDialog(that);
+                                me._generalAttrChanged = false;
+                                me.setChangeStatus(false);
+                                Common.showMessage(me._i18n.getText('t4'));
+                                Utils.getProcessAttributes(me); //need to reload available attribute types for process tables
+                                me.setTabReadMode("GenAttrEditModeModel");
+                                me.enableOtherTabs("detailPanel");
+                                me.getGeneralTable();
+                            },
+                            error: function (err) {
+                                //show error messages
+                                Common.closeLoadingDialog(that);
+                                var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                oMsgStrip.setVisible(true);
+                                oMsgStrip.setText(errorMsg);
+                                Common.showMessage(me._i18n.getText('t5'));
+                            }
+                        });
+                    }
+                    else {
+                        MessageBox.information("Attribute Code and Value are required for the following Attribute Type:\r\n-" + this._attributesconfig.join("\r\n-"))
+                    }
                 }
             },
 
@@ -899,7 +1063,13 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        console.log("get colors");
+                        // console.log("get colors", oData.results);
+                        if (oData.results.length === 0) { me.disableTabItem("detailPanel","version"); }
+
+                        // if (oData.results.filter(fItem => fItem.Sortseq === "0").length === oData.results.length) {
+                        //     oData.results.forEach(item => item.Sortseq = item.Attribseq);
+                        // }
+
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
@@ -982,7 +1152,7 @@ sap.ui.define([
                 data.editMode = true;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "ColorEditModeModel");
-                this.byId("btnAddColor").setVisible(true);
+                this.byId("btnColorAdd").setVisible(true);
             },
 
             setColorEditMode: async function () { 
@@ -990,19 +1160,27 @@ sap.ui.define([
                 this._bomColors = await this.getBOMCOlor(this);
 
                 var oTable = this.getView().byId("colorsTable");
-                var noEdit = 0;
+                var oTableModel = oTable.getModel("DataModel");
+                var oData = oTableModel.getData();
                 var bProceed = true;
+                var noEdit= 0;
 
-                if (this._bomColors.length > 0) {
-                    var oTableModel = oTable.getModel("DataModel");
-                    var oData = oTableModel.getData();
-
+                if (oData.results.length === 0) {
+                    MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_NO_DATA_EDIT"]);
+                    bProceed = false;
+                }
+                else {
                     for (var i = 0; i < oData.results.length; i++) { 
                         if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
                             noEdit++;
                             oTable.getRows()[i].getCells().forEach(cell => {
                                 if (cell.getBindingInfo("value") !== undefined) {
-                                    cell.setProperty("editable", false);
+                                    if (cell.getBindingInfo("value").parts[0].path === "Sortseq") {
+                                        cell.setProperty("editable", true);
+                                    }
+                                    else {
+                                        cell.setProperty("editable", false);
+                                    }
                                 }
                             });
                         }
@@ -1015,11 +1193,11 @@ sap.ui.define([
                         }
                     }
 
-                    if (oData.results.length === noEdit) {
-                        bProceed = false;
-                        MessageBox.information("Color/s already used in BOM.")
-                    }
-                }
+                    // if (oData.results.length === noEdit) {
+                    //     bProceed = false;
+                    //     MessageBox.information("Color/s already used in BOM.")
+                    // }
+                }                
 
                 if (bProceed) {
                     //set colors table editable
@@ -1029,7 +1207,7 @@ sap.ui.define([
                     data.editMode = true;
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "ColorEditModeModel");
-                    this.byId("btnAddColor").setVisible(false);
+                    this.byId("btnColorAdd").setVisible(false);
 
                     this.disableOtherTabs("detailPanel");
                 }
@@ -1089,6 +1267,7 @@ sap.ui.define([
                 });
 
                 this.byId("btnColorAdd").setVisible(true);
+                this.enableOtherTabs("detailPanel");
             },
 
             onColorChange: function () {
@@ -1128,22 +1307,23 @@ sap.ui.define([
                             "Baseind": false,
                             "Desc1": oData.results[i].Desc1,
                             "Valuetyp": "STRVAL",
-                            "Attribseq": oData.results[i].Attribseq
+                            "Attribseq": oData.results[i].Attribseq,
+                            "Sortseq": oData.results[i].Sortseq
                         };
                         oEntry.AttributesToItems.push(item);
                     };
-                    // console.log(oEntry)
 
-                    var hasDuplicateColorCd = false;
-                    oData.results.map(v => v.Attribcd.toLowerCase()).sort().sort((a, b) => {
-                        if (a == b) hasDuplicateColorCd = true
-                    })
-                    if (hasDuplicateColorCd) {
-                        //Common.showMessage("Duplicate color is not allow");
-                        oMsgStrip.setVisible(true);
-                        oMsgStrip.setText("Duplicate Color is not allowed");
-                        return;
-                    }
+                    // color code = seq, auto-generated, should not have a duplicate value
+                    // var hasDuplicateColorCd = false;
+                    // oData.results.map(v => v.Attribcd.toLowerCase()).sort().sort((a, b) => {
+                    //     if (a == b) hasDuplicateColorCd = true
+                    // })
+                    // if (hasDuplicateColorCd) {
+                    //     //Common.showMessage("Duplicate color is not allow");
+                    //     oMsgStrip.setVisible(true);
+                    //     oMsgStrip.setText("Duplicate Color is not allowed");
+                    //     return;
+                    // }
 
                     var hasDuplicateColorDesc = false;
                     oData.results.map(v => v.Desc1.toLowerCase()).sort().sort((a, b) => {
@@ -1163,7 +1343,7 @@ sap.ui.define([
                     oModel.setHeaders({
                         sbu: this._sbu
                     });
-                    
+
                     oModel.create(path, oEntry, {
                         method: "POST",
                         success: function (oData, oResponse) {
@@ -1175,6 +1355,7 @@ sap.ui.define([
                             //me.setColorReadMode();
                             me.setTabReadMode("ColorEditModeModel");
                             me.getColorsTable();
+                            me.enableOtherTabs("detailPanel");
                         },
                         error: function (err) {
                             Common.closeLoadingDialog(me);
@@ -1217,7 +1398,7 @@ sap.ui.define([
 
                         var entitySet = "/StyleAttributesColorSet(Styleno='" + that._styleNo + "',Attribtype='" + attrtype + "',Attribcd='" + attrcd + "')";
 
-                        if (this._bomColors.length > 0 && this._bomColors.filter(fItem => fItem.COLOR === attrcd).length === 0) {
+                        if (this._bomColors.filter(fItem => fItem.COLOR === attrcd).length === 0) {
                             oModel.remove(entitySet, {
                                 groupId: "group1",
                                 changeSetId: "changeSetId1",
@@ -1241,6 +1422,7 @@ sap.ui.define([
                     oData.results = oData.results.filter(function (value, index) {
                         return selected.indexOf(index) == -1;
                     })
+                    
                     oTableModel.setData(oData);
                     oTable.clearSelection();
                     // this.getColorsTable();
@@ -1254,6 +1436,7 @@ sap.ui.define([
 
             getSizesTable: function () {
                 //select size attributes
+                var me = this;
                 var oTable = this.getView().byId("sizesTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
@@ -1269,6 +1452,8 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
+                        if (oData.results.length === 0) { me.disableTabItem("detailPanel","version"); }
+
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         Common.closeLoadingDialog(that);
@@ -1718,7 +1903,7 @@ sap.ui.define([
                     "Currentver": oCurrent
                 };
                 oModel.setHeaders({
-                    sbu: this._sbu
+                    sbu: this._sbu                    
                 });
                 //call create method of style version
                 oModel.create(path, oEntry, {
@@ -1902,26 +2087,37 @@ sap.ui.define([
                 oEvent.getSource().getParent().close();
 
                 if (selected.length > 0) {
+                    selected.sort((a, b) => -1);
+
                     //call delete method for each item selected
                     for (var i = 0; i < selected.length; i++) {
                         var verno = oData.results[selected[i]].Verno;
                         verno = this.pad(verno, 3);
 
                         var entitySet = "/StyleVersionSet(Styleno='" + that._styleNo + "',Verno='" + verno + "')";
-                        oModel.remove(entitySet, {
-                            groupId: "group1",
-                            changeSetId: "changeSetId1",
-                            method: "DELETE",
-                            success: function (data, oResponse) { },
-                            error: function () { }
-                        });
+                        var oDataIO = this.byId("ioTable").getModel("DataModel").getData().results;
 
-                        oModel.submitChanges({
-                            groupId: "group1"
-                        });
-                        oModel.setRefreshAfterChange(true);
+                        if (oDataIO.filter(fItem => (+fItem.VERNO) === (+oData.results[selected[i]].Verno)).length === 0 && !oData.results[selected[i]].Currentver) {
+                            console.log(verno)
+                            oModel.remove(entitySet, {
+                                groupId: "group1",
+                                changeSetId: "changeSetId1",
+                                method: "DELETE",
+                                success: function (data, oResponse) { },
+                                error: function () { }
+                            });
+    
+                            oModel.submitChanges({
+                                groupId: "group1"
+                            });
+
+                            oModel.setRefreshAfterChange(true);
+                        }
+                        else {
+                            selected.splice(i, 1);
+                        }
                     }
-
+                    
                     oData.results = oData.results.filter(function (value, index) {
                         return selected.indexOf(index) == -1;
                     })
@@ -1931,6 +2127,62 @@ sap.ui.define([
                 }
             },
 
+            onCopyVersion: function(oEvent) {
+                var oModel = this.getOwnerComponent().getModel();
+
+                //get selected items to coy
+                var oTable = this.getView().byId("versionsTable");
+                var oTableModel = oTable.getModel("DataModel");
+                var oData = oTableModel.getData();
+                var selected = oTable.getSelectedIndices();
+
+                oModel.setUseBatch(true);
+                oModel.setDeferredGroups(["group1"]);
+
+                if (selected.length > 0) {
+                    Common.openLoadingDialog(that);
+
+                    //call create method for each item selected
+                    for (var i = 0; i < selected.length; i++) {
+                        var path = "/StyleVersionSet";
+                        var oEntry = {
+                            "Styleno": this._styleNo,
+                            "Verno": "",
+                            "Desc1": oData.results[selected[i]].Desc1 + "_Copy",
+                            "Desc2": oData.results[selected[i]].Desc2,
+                            "Currentver": false
+                        };
+
+                        oModel.setHeaders({
+                            sbu: this._sbu,
+                            type: "COPY"
+                        });
+
+                        //call create method of style version
+                        oModel.create(path, oEntry, {
+                            groupId: "group1",
+                            changeSetId: "changeSetId1",
+                            method: "POST",
+                            success: function (oData, oResponse) { },
+                            error: function () { }
+                        });
+
+                        oModel.submitChanges({
+                            groupId: "group1"
+                        });
+
+                        oModel.setRefreshAfterChange(true);
+                    }
+
+                    console.log("refresh table");
+                    this.getVersionsTable();
+                    Common.closeLoadingDialog(that);
+                }
+                else {
+                    MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_NO_SEL_RECORD_TO_PROC"])
+                }
+            },
+            
             //******************************************* */
             // Attachments
             //******************************************* */
@@ -2717,8 +2969,8 @@ sap.ui.define([
                 var selected = oTable.getSelectedIndices();
                 var bProceed = true;
                 var noEdit = 0;
-                var noEditMsg = "Color ";
-                var editMsg = "Color ";
+                var noEditMsg = "";
+                var editMsg = "";
 
                 if (selected.length > 0) {
                     if (oTableName === "colorsTable") {
@@ -2728,6 +2980,8 @@ sap.ui.define([
                         if (this._bomColors.length > 0) {
                             var oTableModel = oTable.getModel("DataModel");
                             var oData = oTableModel.getData();
+                            noEditMsg = "Color ";
+                            editMsg = "Color ";
 
                             for (var i = 0; i < selected.length; i++) { 
                                 if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[selected[i]].Attribcd).length > 0) {
@@ -2739,8 +2993,34 @@ sap.ui.define([
 
                             if (selected.length === noEdit) {
                                 bProceed = false;
-                                MessageBox.information("Selected color/s already used in BOM.")
+                                MessageBox.information("No record to delete.\r\nSelected color/s already used in BOM.")
                             }
+                        }
+                    }
+                    else if (oTableName === "versionsTable") {
+                        var oDataIO = this.byId("ioTable").getModel("DataModel").getData().results;
+                        var oTableModel = oTable.getModel("DataModel");
+                        var oData = oTableModel.getData();
+                        var sMessage = "", sAddtlMessage = "";
+                        noEditMsg = "Version ";
+                        editMsg = "Version ";
+
+                        for (var i = 0; i < selected.length; i++) { 
+                            if (oData.results[selected[i]].Currentver) { 
+                                noEdit++;
+                                sAddtlMessage = "Deletion of current version not allowed.\r\n";
+                            }
+                            else if (oDataIO.filter(fItem => (+fItem.VERNO) === (+oData.results[selected[i]].Verno)).length > 0) {
+                                noEdit++;
+                                noEditMsg = noEditMsg + oData.results[selected[i]].Verno + ", ";
+                                sMessage = "No record to delete.\r\nSelected version/s already used in IO.\r\n" 
+                            }
+                            else { editMsg = editMsg + oData.results[selected[i]].Verno + ", "; }
+                        }
+
+                        if (selected.length === noEdit) {
+                            bProceed = false;
+                            MessageBox.information(sMessage + sAddtlMessage);
                         }
                     }
 
@@ -2756,6 +3036,12 @@ sap.ui.define([
 
                         if (oTableName === "colorsTable" && noEdit > 0 && selected.length !== noEdit) {
                             oDialog.getContent()[0].getContent()[0].setProperty("text", noEditMsg.substring(0, noEditMsg.length - 2) + " already used in BOM.\r\n" + editMsg.substring(0, editMsg.length - 2) + " can be deleted.\r\n" + "Confirm delete color" + editMsg.substring(0, editMsg.length - 2).replace("Color","") + "?");
+                        }
+                        else if (oTableName === "versionsTable" && noEdit > 0 && selected.length !== noEdit) {
+                            if (noEditMsg === "Version ") noEditMsg = sAddtlMessage;
+                            else noEditMsg = noEditMsg.substring(0, noEditMsg.length - 2) + " already used in IO.\r\n" + sAddtlMessage;
+
+                            oDialog.getContent()[0].getContent()[0].setProperty("text", noEditMsg + editMsg.substring(0, editMsg.length - 2) + " can be deleted.\r\n" + "Confirm delete version" + editMsg.substring(0, editMsg.length - 2).replace("Version","") + "?");
                         }
                     }
                 } else {
@@ -2788,7 +3074,7 @@ sap.ui.define([
                         });
                     })
 
-                    this.byId("btnAddColor").setVisible(true);
+                    this.byId("btnColorAdd").setVisible(true);
                 }
             },
 
@@ -2833,6 +3119,12 @@ sap.ui.define([
 
             },
 
+            disableTabItem: function (tabName, itemName) {
+                var oIconTabBar = this.byId(tabName);
+                oIconTabBar.getItems().filter(item => item.getProperty("key") === itemName)
+                    .forEach(item => item.setProperty("enabled", false));
+            },
+
             disableOtherTabs: function (tabName) {
                 var oIconTabBar = this.byId(tabName);
                 oIconTabBar.getItems().filter(item => item.getProperty("key") !== oIconTabBar.getSelectedKey())
@@ -2844,26 +3136,53 @@ sap.ui.define([
                 oIconTabBar.getItems().forEach(item => {
                     item.setProperty("enabled", true)
                 });
+
+                if (this.byId("colorsTable").getModel("DataModel") !== undefined && this.byId("colorsTable").getModel("DataModel").getData().results.length === 0) { this.disableTabItem("detailPanel","version"); }
+                if (this.byId("sizesTable").getModel("DataModel") !== undefined && this.byId("sizesTable").getModel("DataModel").getData().results.length === 0) { this.disableTabItem("detailPanel","version"); }
             },
 
-            getIOs: function() {
+            onRefresh: function(oEvent) {
+                var oButton = oEvent.getSource();
+                var tabName = oButton.data('TableName')
+
+                if (tabName === "ioTable") {
+                    this.getIOs(true);
+                }
+            },
+
+            //******************************************* */
+            // IO List
+            //******************************************* */
+            getIOs: function(showProgress) {
                 var me = this;
-                var oData = [];
                 var oModel = this.getOwnerComponent().getModel();
-                console.log("getIOs");
-                // this.getView().setModel(new JSONModel(oData), "IOData");
+                var oTable = this.byId("ioTable");
+
+                if (showProgress) { Common.openLoadingDialog(this); }
 
                 oModel.read('/IOSet', {
                     urlParameters: {
                         "$filter": "STYLENO eq '" + this._styleNo + "'"
                     },
                     success: function (oData) {
-                        // console.log(oData)
+                        if (oData.results.length > 0) {
+                            oData.results.forEach((item, index) => {  
+                                if (item.CREATEDDT !== null)
+                                    item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));
+    
+                                if (index === 0) item.ACTIVE = "X";
+                                else item.ACTIVE = "";
+                            });
+                        }
+
                         me.getView().setModel(new JSONModel(oData.results), "IOData");
-                        // me.getView().getModel("IOData").setProperty("/", oData.results);
-                        // console.log(me.getView().getModel("IOData").getData())
+                        oTable.setModel(new JSONModel(oData), "DataModel");
+                        
+                        if (showProgress) { Common.closeLoadingDialog(me); }
                     },
-                    error: function (err) { }
+                    error: function (err) {
+                        if (showProgress) { Common.closeLoadingDialog(me); }
+                    }
                 })                             
             },
 

@@ -65,6 +65,10 @@ sap.ui.define([
                 console.log("init");
 
                 this.getAppAction();
+
+                this.getOwnerComponent().getModel("UI_MODEL").setData({
+                    fromScreen: "MAIN"
+                })
             },
 
             getAppAction: async function() {
@@ -433,6 +437,8 @@ sap.ui.define([
             },
 
             navToDetail: function (styleNo, sbu) {
+                this.getOwnerComponent().getModel("UI_MODEL").setProperty("/fromScreen", "MAIN");
+
                 //route to detail page
                 that._router.navTo("RouteStyleDetail", {
                     styleno: styleNo,

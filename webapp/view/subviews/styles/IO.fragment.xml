@@ -1,0 +1,103 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+    <!-- <Panel expandable="true" expanded="false" width="80%" class="sapUiSizeCompact">
+
+        <headerToolbar>
+            <Toolbar height="2rem" style="Clear">
+                <Label text="{i18n>Colors}" />
+            </Toolbar>
+        </headerToolbar> -->
+    <VBox fitContainer="true" class="sapUiTinyMargin">
+        <Toolbar height="2rem" style="Clear">
+            <ToolbarSpacer />
+            <Button id="btnIORefresh" type="Ghost" icon="sap-icon://refresh" tooltip="{i18n>Refresh}" press="onRefresh" visible="true">
+                <customData>
+                    <core:CustomData key="TableName" value="ioTable" />
+                </customData>
+            </Button>
+        </Toolbar>
+
+        <!-- <MessageStrip id="IOMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" /> -->
+
+        <!-- Color Attributes Table -->
+        <!-- <ScrollContainer height="100%" vertical="true"> {= ${ColorEditModeModel>/editMode} === true ? 'None' : 'MultiToggle' }-->
+        <c:DynamicTable id="ioTable" 
+            rows="{DataModel>/results}" 
+            enableColumnReordering="true" 
+            enableColumnFreeze="true"
+            showColumnVisibilityMenu="true"
+            visibleRowCountMode="Auto" 
+            class="sapUiSizeCompact" 
+            selectionMode="None" 
+            sort="onSorted"
+            filter="onFilter">
+            <c:columns>
+                <t:Column name="IONO" width="8rem" filterProperty="IONO" sortProperty="IONO">
+                    <Label text="{ddtext>/IONO}" />
+                    <t:template>
+                        <Text text="{DataModel>IONO}" />
+                    </t:template>
+                </t:Column>
+                <t:Column width="15rem" filterProperty="IODESC" sortProperty="IODESC">
+                    <Label text="{ddtext>/IODESC}" />
+                    <t:template>
+                        <Text text="{DataModel>IODESC}" />
+                    </t:template>
+                </t:Column>
+                <t:Column width="8rem" filterProperty="IOTYPE" sortProperty="IOTYPE">
+                    <Label text="{ddtext>/IOTYPE}" />
+                    <t:template>
+                        <Text text="{DataModel>IOTYPE}" />
+                    </t:template>
+                </t:Column>
+                <t:Column width="8rem" filterProperty="SALESGRP" sortProperty="SALESGRP">
+                    <Label text="{ddtext>/SALESGRP}" />
+                    <t:template>
+                        <Text text="{DataModel>SALESGRP}" />
+                    </t:template>
+                </t:Column>
+                <t:Column width="8rem" filterProperty="SEASONCD" sortProperty="SEASONCD">
+                    <Label text="{ddtext>/SEASONCD}" />
+                    <t:template>
+                        <Text text="{DataModel>SEASONCD}" />
+                    </t:template>
+                </t:Column>
+                <t:Column width="8rem" filterProperty="PRODPLANT" sortProperty="PRODPLANT">
+                    <Label text="{ddtext>/PRODPLANT}" />
+                    <t:template>
+                        <Text text="{DataModel>PRODPLANT}" />
+                    </t:template>
+                </t:Column>
+                <t:Column width="8rem" filterProperty="STATUSCD" sortProperty="STATUSCD">
+                    <Label text="{ddtext>/STATUSCD}" />
+                    <t:template>
+                        <Text text="{DataModel>STATUSCD}" />
+                    </t:template>
+                </t:Column>
+                <t:Column width="8rem" filterProperty="VERNO" sortProperty="VERNO">
+                    <Label text="{ddtext>/VERNO}" />
+                    <t:template>
+                        <Text text="{DataModel>VERNO}" />
+                    </t:template>
+                </t:Column>
+                <t:Column width="10rem" filterProperty="CREATEDBY" sortProperty="CREATEDBY">
+                    <Label text="{ddtext>/CREATEDBY}" />
+                    <t:template>
+                        <Text text="{DataModel>CREATEDBY}" />
+                    </t:template>
+                </t:Column>
+                <t:Column width="8rem" filterProperty="CREATEDDT" sortProperty="CREATEDDT">
+                    <Label text="{ddtext>/CREATEDDT}" />
+                    <t:template>
+                        <Text text="{DataModel>CREATEDDT}" />
+                    </t:template>
+                </t:Column>
+            </c:columns>
+            <c:layoutData>
+                <FlexItemData growFactor="1" baseSize="0%" />
+            </c:layoutData>
+        </c:DynamicTable>
+        <!-- </ScrollContainer> -->
+    </VBox>
+
+    <!-- </Panel> -->
+</core:FragmentDefinition>

@@ -7,7 +7,7 @@
                 <Label text="{i18n>Processes}" />
             </Toolbar>
         </headerToolbar> -->
-<VBox fitContainer="true" width="80%" class="sapUiTinyMargin">
+<VBox fitContainer="true" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer/>
             <Button id="btnProcessSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveprocess}" press="onSaveProcessTable" visible="{ProcessEditModeModel>/editMode}"/>

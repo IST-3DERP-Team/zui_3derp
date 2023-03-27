@@ -74,6 +74,7 @@ sap.ui.define([
                 this.cancelBOMbyGMCEdit();
                 this.cancelBOMbyUVEdit();
 
+                this.getOwnerComponent().getModel("UI_MODEL").setProperty("/fromScreen", "VERSION");
             },
 
             setChangeStatus: function (changed) {
@@ -342,6 +343,8 @@ sap.ui.define([
                 });
                 oModel.read("/StyleAttributesColorSet", {
                     success: function (oData, oResponse) {
+                        oData.results.sort((a,b) => (a.Sortseq > b.Sortseq ? 1 : -1));
+                        console.log(oData.results)
                         me._colors = oData.results;
                         me.getSizes();
                     },
@@ -1321,8 +1324,6 @@ sap.ui.define([
                         }
                     })                    
                 })
-
-                console.log(oTable.getModel("DataModel").getData().results)
             },
 
             cancelBOMbyUVEdit: function () {

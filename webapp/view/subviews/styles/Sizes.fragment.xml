@@ -6,7 +6,7 @@
                 <Label text="{i18n>Sizes}" />
             </Toolbar>
         </headerToolbar> -->
-    <VBox fitContainer="true" width="80%" class="sapUiTinyMargin">
+    <VBox fitContainer="true" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
             <Button id="btnSizeSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Savesizeattributes}" press="onSaveSizeTable" visible="{SizeEditModeModel>/editMode}" />

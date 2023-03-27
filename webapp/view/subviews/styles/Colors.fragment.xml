@@ -6,7 +6,7 @@
                 <Label text="{i18n>Colors}" />
             </Toolbar>
         </headerToolbar> -->
-    <VBox fitContainer="true" width="80%" class="sapUiTinyMargin">
+    <VBox fitContainer="true" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
             <Button id="btnColorAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="true">
@@ -27,18 +27,18 @@
         <c:DynamicTable id="colorsTable" rows="{DataModel>/results}" enableColumnReordering="false" visibleRowCountMode="Auto" class="sapUiSizeCompact" selectionMode="MultiToggle" sort="onSorted"
             filter="onFilter">
             <c:columns>
-                <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="ATTRIBSEQ">
-                    <Label text="{i18n>Seq}" />
+                <t:Column name="ATTRIBSEQ" width="7rem" filterProperty="Attribseq">
+                    <Label text="{i18n>ColorCode}" />
                     <t:template>
                         <Text text="{DataModel>Attribseq}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="11rem" filterProperty="Attribcd">
-                    <Label text="{i18n>ColorCode}" />
+                <t:Column width="7rem" filterProperty="Sortseq">
+                    <Label text="{i18n>SortSeq}" />
                     <t:template>
                         <!-- <HBox class="sapUiResponsiveContentPadding">
                                     <Label required="true"/> -->
-                        <Input id="ColorIdInput" value="{DataModel>Attribcd}" editable="false" valueStateText="Required" change="onColorChange" liveChange="onGeneralAttrChange" />
+                        <Input id="ColorIdInput" value="{DataModel>Sortseq}" editable="false" valueStateText="Required" change="onColorChange" liveChange="onGeneralAttrChange" maxLength="2" />
                         <!-- </HBox>                         -->
                     </t:template>
                 </t:Column>

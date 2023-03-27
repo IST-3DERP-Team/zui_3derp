@@ -1,6 +1,6 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-     <VBox fitContainer="true" width="80%" class="sapUiTinyMargin">
+     <VBox fitContainer="true" class="sapUiTinyMargin">
     <!-- <Panel expandable="false" expanded="true" width="100%" class="sapUiNoContentPadding sapUiSizeCompact">
     
         <headerToolbar>
@@ -15,6 +15,7 @@
             <Button id="btnVersionAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewversion}" press="onCreateNewVersion" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }"/>                                    
             <Button id="btnVersionEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editversions}" press="setVersionEditMode" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }"/>
             <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }" tooltip="{i18n>Deleteselectedversions}" press="onDeleteVersion"/>
+            <Button id="btnVersionCopy" type="Ghost" icon="sap-icon://copy" tooltip="{ddtext>/COPY}" press="onCopyVersion" visible="{= ${VersionEditModeModel>/editMode} === true ? false : true }"/>                                    
             <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelVersionEdit" visible="{= ${VersionEditModeModel>/editMode} === true ? true : false }"/>
         </Toolbar>
 

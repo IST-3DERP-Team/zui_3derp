@@ -84,6 +84,12 @@
                         <IconTabFilter  key ="attachment" icon="sap-icon://attachment" text="{i18n>Attachments}" tooltip="{i18n>Manageattachments}">
                             <core:Fragment fragmentName="zui3derp.view.subviews.styles.Attachments" type="XML" />
                         </IconTabFilter>
+
+                        <!-- IO LIST -->
+                        <IconTabFilter  key ="io" icon="sap-icon://list" text="{ddtext>/IOLIST}" tooltip="{ddtext>/IOLIST}">
+                            <core:Fragment fragmentName="zui3derp.view.subviews.styles.IO" type="XML" />
+                        </IconTabFilter>
+
                     </items>
                     <layoutData>
                         <FlexItemData growFactor="1" baseSize="0%" />
