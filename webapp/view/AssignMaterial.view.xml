@@ -22,25 +22,25 @@
                     <t:Column width="8rem"  filterProperty="Attribtyp" sortProperty="Attribtyp">
                         <Label text="GMC"/>
                         <t:template>
-                            <Text text="{DataModel>Gmc}"/>
+                            <Text text="{DataModel>Gmc}" tooltip="{DataModel>Gmc}"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="30rem"  filterProperty="Attribtyp" sortProperty="Attribtyp">
                         <Label text="GMC Desc"/>
                         <t:template>
-                            <Text text="{DataModel>Gmcdesc}"/>
+                            <Text text="{DataModel>Gmcdesc}" tooltip="{DataModel>Gmcdesc}"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="30rem"  filterProperty="Attribtyp" sortProperty="Attribtyp">
                         <Label text="Additional Description"/>
                         <t:template>
-                            <Text text="{DataModel>Matdesc1}"/>
+                            <Text text="{DataModel>Matdesc1}" tooltip="{DataModel>Matdesc1}"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="5rem"  filterProperty="Attribtyp" sortProperty="Attribtyp">
                         <Label text="UOM"/>
                         <t:template>
-                            <Text text="{DataModel>Entryuom}"/>
+                            <Text text="{DataModel>Entryuom}" tooltip="{DataModel>Entryuom}"/>
                         </t:template>
                     </t:Column>
                     <t:Column width="18rem"  filterProperty="Attribtyp" sortProperty="Attribtyp">
@@ -48,7 +48,7 @@
                         <t:template>
                             <Input id="productInput" type="Text" placeholder="Select Material ..." showSuggestion="true" showValueHelp="true"
                                 valueHelpRequest="onMaterialValueHelp" suggestionItems="{path:'MaterialsModel>/results', templateShareable: false }" value="{DataModel>Matno}"   
-                                change="onMaterialListChange" liveChange="onMaterialListChange">
+                                change="onMaterialListChange" liveChange="onMaterialListChange" tooltip="{DataModel>Matno}"  >
                                 <suggestionItems>
                                     <core:Item text="{MaterialsModel>MatNo}" />
                                 </suggestionItems>

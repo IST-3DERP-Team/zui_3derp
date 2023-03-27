@@ -8,6 +8,6 @@
 		search="_supplyTypeValueHelpSearch"
 		confirm="_supplyTypeValueHelpClose"
 		cancel="_supplyTypeValueHelpClose">
-		<StandardListItem title="{SupplyTypeModel>Supplytype}" description="{SupplyTypeModel>Desc1}"/>
+		<StandardListItem title="{SupplyTypeModel>Supplytype}" info="{SupplyTypeModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

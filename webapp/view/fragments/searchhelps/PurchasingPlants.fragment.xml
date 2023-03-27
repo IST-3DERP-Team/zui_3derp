@@ -8,6 +8,6 @@
 		search="_purPlantValueHelpSearch"
 		confirm="_purPlantValueHelpClose"
 		cancel="_purPlantValueHelpClose">
-		<StandardListItem title="{PurPlantModel>Plant}" description="{PurPlantModel>Desc1}"/>
+		<StandardListItem title="{PurPlantModel>Plant}" info="{PurPlantModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

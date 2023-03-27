@@ -8,6 +8,6 @@
 		search="_processesValueHelpSearch"
 		confirm="_processesValueHelpClose"
 		cancel="_processesValueHelpClose">
-		<StandardListItem title="{ProcessCodeModel>ProcessCd}" description="{ProcessCodeModel>Desc1}"/>
+		<StandardListItem title="{ProcessCodeModel>ProcessCd}" info="{ProcessCodeModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

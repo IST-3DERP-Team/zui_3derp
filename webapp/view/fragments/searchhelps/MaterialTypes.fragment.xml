@@ -8,6 +8,6 @@
 		search="_matTypeValueHelpSearch"
 		confirm="_matTypeValueHelpClose"
 		cancel="_matTypeValueHelpClose">
-		<StandardListItem title="{MatTypeModel>Mattype}" description="{MatTypeModel>Desc1}"/>
+		<StandardListItem title="{MatTypeModel>Mattype}" info="{MatTypeModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

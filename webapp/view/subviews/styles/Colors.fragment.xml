@@ -14,10 +14,10 @@
                     <core:CustomData key="TableName" value="colorsTable" />
                 </customData>
             </Button>
-            <Button id="btnColorSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Savecolorattributes}" press="onSaveColorTable" visible="{= ${ColorEditModeModel>/editMode} === true ? true : false }" />
-            <Button id="btnColorEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editcolorattributes}" press="setColorEditMode" visible="{= ${ColorEditModeModel>/editMode} === true ? false : true }" />
-            <Button id="btnColorDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedcolors}" press="onDeleteColor" visible="{= ${ColorEditModeModel>/editMode} === true ? false : true }" />
-            <Button id="btnColorCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelColorsEdit" visible="{= ${ColorEditModeModel>/editMode} === true ? true : false }" />
+            <Button id="btnColorSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Savecolorattributes}" press="onSaveColorTable" visible="false" />
+            <Button id="btnColorEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editcolorattributes}" press="setColorEditMode" visible="true" />
+            <Button id="btnColorDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedcolors}" press="onDeleteColor" visible="true" />
+            <Button id="btnColorCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelColorsEdit" visible="false" />
         </Toolbar>
 
         <MessageStrip id="ColorsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
@@ -30,7 +30,7 @@
                 <t:Column name="ATTRIBSEQ" width="7rem" filterProperty="Attribseq">
                     <Label text="{i18n>ColorCode}" />
                     <t:template>
-                        <Text text="{DataModel>Attribseq}" />
+                        <Text text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />
                     </t:template>
                 </t:Column>
                 <t:Column width="7rem" filterProperty="Sortseq">
@@ -38,14 +38,14 @@
                     <t:template>
                         <!-- <HBox class="sapUiResponsiveContentPadding">
                                     <Label required="true"/> -->
-                        <Input id="ColorIdInput" value="{DataModel>Sortseq}" editable="false" valueStateText="Required" change="onColorChange" liveChange="onGeneralAttrChange" maxLength="2" />
+                        <Input id="ColorIdInput" value="{DataModel>Sortseq}" editable="false" valueStateText="Required" change="onColorChange" liveChange="onGeneralAttrChange" maxLength="2" tooltip="{DataModel>Attribcd}" />
                         <!-- </HBox>                         -->
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Desc1">
                     <Label text="{i18n>Description}" />
                     <t:template>
-                        <Input value="{DataModel>Desc1}" editable="false" change="onColorChange" liveChange="onColorChange" />
+                        <Input value="{DataModel>Desc1}" editable="false" change="onColorChange" liveChange="onColorChange" tooltip="{DataModel>Desc1}" />
                     </t:template>
                 </t:Column>
             </c:columns>

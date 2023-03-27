@@ -8,6 +8,6 @@
 		search="_custGroupValueHelpSearch"
 		confirm="_custGroupValueHelpClose"
 		cancel="_custGroupValueHelpClose">
-		<StandardListItem title="{CustGroupModel>CustGrp}" description="{CustGroupModel>Desc1}"/>
+		<StandardListItem title="{CustGroupModel>CustGrp}" info="{CustGroupModel>Desc1}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

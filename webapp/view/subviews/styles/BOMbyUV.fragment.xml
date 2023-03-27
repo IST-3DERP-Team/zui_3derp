@@ -12,7 +12,7 @@
         <Button icon="sap-icon://synchronize" tooltip="Refresh data" press="onRefresh"/>
         <ToolbarSpacer />
         <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMUVitems}" press="onSaveBOMbyUV" visible="{BOMbyUVEditModeModel>/editMode}"/>
-        <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMUVitems}" press="setBOMbyUVEditMode" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? false : true }"/>
+        <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMUVitems}" press="setBOMbyUVEditMode" visible="{= ${AppAction>/appChange} === true ? ${BOMbyUVEditModeModel>/editMode} === true ? false : true :false }"/>
         <Button type="Ghost" icon="sap-icon://decline"  tooltip="{i18n>Canceledit}" press="cancelBOMbyUVEdit" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? true : false }"/>
         <Button icon="sap-icon://excel-attachment" press="onExport" tooltip="Download spreadsheet">
             <customData>

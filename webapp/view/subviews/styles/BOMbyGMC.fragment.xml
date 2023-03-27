@@ -6,16 +6,16 @@
         <Label text="{i18n>BOMbyGMC}"/>
         <Button icon="sap-icon://synchronize" press="onRefresh"/>
         <ToolbarSpacer />
-        <Button text="{i18n>GetComponents}" tooltip="{i18n>Getstylecomponents}" press="onGetComponent" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? false : true }"/>
-        <Button text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? false : true }"/>
-         <Button icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLineBOM" visible="true">
+        <Button text="{i18n>GetComponents}" tooltip="{i18n>Getstylecomponents}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
+        <Button text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+         <Button icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLineBOM" visible="{= ${AppAction>/appChange} === true ? true : false}">
             <customData>
                 <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
         </Button>
         <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMitems}" press="onSaveBOMbyGMC" visible="{BOMbyGMCEditModeModel>/editMode}"/>
-        <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMitems}" press="setBOMbyGMCEditMode" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? false : true }"/>
-         <Button icon="sap-icon://delete" tooltip="{i18n>DeleteselectedBOMitems}" press="onDeleteBOMItems" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? false : true }"/>
+        <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMitems}" press="setBOMbyGMCEditMode" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+         <Button icon="sap-icon://delete" tooltip="{i18n>DeleteselectedBOMitems}" press="onDeleteBOMItems" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
         <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelBOMbyGMCEdit" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? true : false }"/>
         <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">
             <customData>

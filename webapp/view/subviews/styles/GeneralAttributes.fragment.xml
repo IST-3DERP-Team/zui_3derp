@@ -11,15 +11,15 @@
 
     <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
-            <Button id="btnGenAttrSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveattributes}" press="onSaveGeneralTable" visible="{= ${GenAttrEditModeModel>/editMode} === true ? true : false }" />
-            <Button id="btnGenAttrAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="{= ${GenAttrEditModeModel>/editMode} === true ? false : true }">
+            <Button id="btnGenAttrSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveattributes}" press="onSaveGeneralTable" visible="false" />
+            <Button id="btnGenAttrAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="true">
                 <customData>
                     <core:CustomData key="TableName" value="generalTable" />
                 </customData>
             </Button>
-            <Button id="btnGenAttrEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editattributes}" press="setGeneralAttrEditMode" visible="{= ${GenAttrEditModeModel>/editMode} === true ? false : true }" />
-            <Button id="btnGenAttrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteGeneralAttr" visible="{= ${GenAttrEditModeModel>/editMode} === true ? false : true }" />
-            <Button id="btnGenAttrCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelGeneralAttrEdit" visible="{= ${GenAttrEditModeModel>/editMode} === true ? true : false }" />
+            <Button id="btnGenAttrEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editattributes}" press="setGeneralAttrEditMode" visible="true" />
+            <Button id="btnGenAttrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteGeneralAttr" visible="true" />
+            <Button id="btnGenAttrCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelGeneralAttrEdit" visible="false" />
         </Toolbar>
 
     <!-- General Attributes Table -->
@@ -49,7 +49,7 @@
                     </customData>
                 </Button>
                 <Button type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteGeneralAttr" visible="{GenAttrEditModeModel>/editMode}" />
-                <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editattributes}" press="setGeneralAttrEditMode" visible="{= ${GenAttrEditModeModel>/editMode} === true ? false : true }" />
+                <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editattributes}" press="setGeneralAttrEditMode" visible="true" />
                 <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelGeneralAttrEdit" visible="{= ${GenAttrEditModeModel>/editMode} === true ? true : false }" />
             </Toolbar>
         </t:extension> -->
@@ -57,7 +57,7 @@
             <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="Attribseq" sortProperty="Attribseq" visible="false">
                 <Text text="{ddtext>/ATTRIBSEQ}" />
                 <t:template>
-                    <Text id="AttrTypeSeq" text="{DataModel>Attribseq}" />
+                    <Text id="AttrTypeSeq" text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />
                 </t:template>
             </t:Column>
             <t:Column width="8rem" filterProperty="Attribtyp" sortProperty="Attribtyp">
@@ -74,6 +74,7 @@
                         valueHelpRequest="onAttrTypesValueHelp"
                         suggestionItems="{path:'AttribTypeModel>/results',templateShareable: false}"
                         value="{DataModel>Attribtyp}"
+                        tooltip="{DataModel>Attribtyp}"
                     >
                         <suggestionItems>
                             <core:ListItem id="AttrTypeListItem" text="{AttribTypeModel>Attribtyp}" additionalText="{AttribTypeModel>Desc1}" />
@@ -95,6 +96,7 @@
                         valueHelpRequest="onAttrCodesValueHelp"
                         suggestionItems="{path:'AttribCdModel>/results',templateShareable: false}"
                         value="{DataModel>Attribcd}"
+                        tooltip="{DataModel>Attribcd}"
                     >
                         <suggestionItems>
                             <core:ListItem id="AttribcdListItem" text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}" />
@@ -105,19 +107,19 @@
             <t:Column name="DESC1" width="16rem" filterProperty="Desc1" sortProperty="Desc1">
                 <Text text="{ddtext>/DESC}" />
                 <t:template>
-                    <Text id="AttrCodeDesc" text="{DataModel>Desc1}" />
+                    <Text id="AttrCodeDesc" text="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" />
                 </t:template>
             </t:Column>
             <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">
                 <Text text="{ddtext>/ATTRIBVAL}" />
                 <t:template>
-                    <Input id="AttribValInput" type="Text" editable="{GenAttrEditModeModel>/editMode}" value="{DataModel>Attribval}" change="onGeneralAttrChange" liveChange="onGeneralAttrChange" />
+                    <Input id="AttribValInput" type="Text" editable="{GenAttrEditModeModel>/editMode}" value="{DataModel>Attribval}" change="onGeneralAttrChange" liveChange="onGeneralAttrChange" tooltip="{DataModel>Attribval}" />
                 </t:template>
             </t:Column>
             <t:Column name="UOM" width="5rem" filterProperty="Valunit" sortProperty="Valunit">
                 <Text text="{ddtext>/ATTRIBVALUNIT}" />
                 <t:template>
-                    <Text id="AttrValunit" text="{DataModel>Valunit}" />
+                    <Text id="AttrValunit" text="{DataModel>Valunit}" tooltip="{DataModel>Valunit}" />
                 </t:template>
             </t:Column>
             <t:Column width="10rem" filterProperty="Casverind" sortProperty="Casverind" hAlign="Center">

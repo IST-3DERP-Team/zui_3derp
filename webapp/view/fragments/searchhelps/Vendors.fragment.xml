@@ -8,7 +8,7 @@
 		search="_vendorValueHelpSearch"
 		confirm="_vendorValueHelpClose"
 		cancel="_vendorValueHelpClose">
-		<StandardListItem title="{VendorModel>Lifnr}" description="{VendorModel>Desc1}">
+		<StandardListItem title="{VendorModel>Lifnr}" info="{VendorModel>Desc1}">
 			<customData>
 				<core:CustomData key="Waers" value="{VendorModel>Waers}"/>
             </customData>

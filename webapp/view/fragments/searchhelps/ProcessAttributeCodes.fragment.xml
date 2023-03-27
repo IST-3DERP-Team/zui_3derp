@@ -8,6 +8,6 @@
 		search="_processAttrCodesValueHelpSearch"
 		confirm="_processAttrCodesValueHelpClose"
 		cancel="_processAttrCodesValueHelpClose">
-		<StandardListItem title="{ProcessAttribCodeModel>Attribcd}" description="{ProcessAttribCodeModel>Desc2}"/>
+		<StandardListItem title="{ProcessAttribCodeModel>Attribcd}" info="{ProcessAttribCodeModel>Desc2}"/>
 	</SelectDialog>
 </core:FragmentDefinition>
