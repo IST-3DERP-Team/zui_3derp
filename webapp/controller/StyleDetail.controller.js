@@ -968,33 +968,33 @@ sap.ui.define([
                     var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
                     oMsgStrip.setVisible(false);
                     
-                    // for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
-                    //     var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
-                    //     var oRow = oTable.getRows()[iRowIndex];
-                    //     var vValTyp = oTable.getContextByIndex(i).getProperty("Valuetyp");
-                    //     var oCellCtrlValTyp = "";
+                    for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                        var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
+                        var oRow = oTable.getRows()[iRowIndex];
+                        var vValTyp = oTable.getContextByIndex(i).getProperty("Valuetyp");
+                        var oCellCtrlValTyp = "";
                     
-                    //     oRow.getCells().forEach(cell => {
-                    //         if (cell.getBindingInfo("value") !== undefined) {
-                    //             oCellCtrlValTyp = "value";
-                    //         }
-                    //         else if (cell.getBindingInfo("text") !== undefined) {
-                    //             oCellCtrlValTyp = "text";
-                    //         }
-                    //         else if (cell.getBindingInfo("selected") !== undefined) {
-                    //             oCellCtrlValTyp = "selected";
-                    //         }
-                    //         console.log(cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase())
-                    //         if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
-                    //             if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
-                    //                 cell.setEnabled(true);
-                    //             }
-                    //             else {
-                    //                 cell.setEnabled(false);
-                    //             }
-                    //         }
-                    //     })
-                    // } 
+                        oRow.getCells().forEach(cell => {
+                            if (cell.getBindingInfo("value") !== undefined) {
+                                oCellCtrlValTyp = "value";
+                            }
+                            else if (cell.getBindingInfo("text") !== undefined) {
+                                oCellCtrlValTyp = "text";
+                            }
+                            else if (cell.getBindingInfo("selected") !== undefined) {
+                                oCellCtrlValTyp = "selected";
+                            }
+                            console.log(cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase())
+                            if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
+                                if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
+                                    cell.setEnabled(true);
+                                }
+                                else {
+                                    cell.setEnabled(false);
+                                }
+                            }
+                        })
+                    } 
                 }
             },
 
@@ -1203,6 +1203,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         // console.log("get colors", oData.results);
                         if (oData.results.length === 0) { me.disableTabItem("detailPanel","version"); }
+                        else { me.enableTabItem("detailPanel","version"); }
 
                         // if (oData.results.filter(fItem => fItem.Sortseq === "0").length === oData.results.length) {
                         //     oData.results.forEach(item => item.Sortseq = item.Attribseq);
@@ -1604,6 +1605,8 @@ sap.ui.define([
                     
                     oTableModel.setData(oData);
                     oTable.clearSelection();
+
+                    if (oData.results.length === 0) { this.disableTabItem("detailPanel","version"); }
                     // this.getColorsTable();
 
                 }
@@ -1632,6 +1635,7 @@ sap.ui.define([
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
                         if (oData.results.length === 0) { me.disableTabItem("detailPanel","version"); }
+                        else { me.enableTabItem("detailPanel","version"); }
 
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
@@ -3428,6 +3432,12 @@ sap.ui.define([
                 this.byId("btnAttachmentAdd").setEnabled(pEnable);
 
 
+            },
+            
+            enableTabItem: function (tabName, itemName) {
+                var oIconTabBar = this.byId(tabName);
+                oIconTabBar.getItems().filter(item => item.getProperty("key") === itemName)
+                    .forEach(item => item.setProperty("enabled", true));
             },
 
             disableTabItem: function (tabName, itemName) {
