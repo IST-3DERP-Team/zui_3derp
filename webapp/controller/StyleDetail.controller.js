@@ -1763,19 +1763,22 @@ sap.ui.define([
                                             me.applyToIO();
                                         }
 
-                            me.enableOtherTabs("detailPanel");
-                            me.byId("btnHdrEdit").setEnabled(true);
-                            me.byId("btnHdrDelete").setEnabled(true);
+                                        me.enableOtherTabs("detailPanel");
+                                        me.byId("btnHdrEdit").setEnabled(true);
+                                        me.byId("btnHdrDelete").setEnabled(true);
 
-                            MessageBox.information(me._i18n.getText('t4'));
-                        },
-                        error: function (err) {
-                            Common.closeLoadingDialog(me);
-                            // Common.showMessage(me._i18n.getText('t5'));
-                            var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            // oMsgStrip.setVisible(true);
-                            // oMsgStrip.setText(errorMsg);
-                            MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                        MessageBox.information(me._i18n.getText('t4'));
+                                    },
+                                    error: function (err) {
+                                        Common.closeLoadingDialog(me);
+                                        // Common.showMessage(me._i18n.getText('t5'));
+                                        var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                        // oMsgStrip.setVisible(true);
+                                        // oMsgStrip.setText(errorMsg);
+                                        MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                    }
+                                });
+                            }
                         }
                     });
                 }
@@ -2665,8 +2668,7 @@ sap.ui.define([
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // //oMsgStrip.setVisible(true);
                             //             //oMsgStrip.setText(errorMsg);
-                            MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
-                                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                        MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
                                     }
                                 });
                             }
@@ -4144,7 +4146,7 @@ sap.ui.define([
                         this.byId("btnHdrCancel").setVisible(pEditMode);
 
                         if (this._iono != ' ') {
-                            this.byId("btnHdrApplyIO").setVisible(!pEditMode);
+                            //this.byId("btnHdrApplyIO").setVisible(!pEditMode);
                         }
                     }
                     else if (pModule === "GenAttrEditModeModel") {
@@ -4245,14 +4247,14 @@ sap.ui.define([
                 console.log(pChange, "action")
                 if (this._iono != ' ') {
                     if (this._styleNo === Constants.NEW) {
-                        this.byId("btnHdrApplyIO").setVisible(false);
+                        //this.byId("btnHdrApplyIO").setVisible(false);
                         this.byId("btnHdrDelete").setVisible(false);
                         this.byId("btnHdrEdit").setVisible(false);
                         this.byId("btnHdrDelete").setVisible(false);
                     }
                     else {
                         this.byId("btnHdrEdit").setVisible(pChange);
-                        this.byId("btnHdrApplyIO").setVisible(pChange);
+                        //this.byId("btnHdrApplyIO").setVisible(pChange);
                         this.byId("btnHdrDelete").setVisible(false);
                     }
                 }
@@ -4260,12 +4262,13 @@ sap.ui.define([
                     if (this._styleNo === Constants.NEW) {
                         this.byId("btnHdrDelete").setVisible(false);
                         this.byId("btnHdrEdit").setVisible(false);
-                        this.byId("btnHdrDelete").setVisible(false);
+                        this.byId("btnHdrClose").setVisible(false);
                     }
                     else {
                         this.byId("btnHdrEdit").setVisible(pChange);
                         this.byId("btnHdrDelete").setVisible(pChange);
-                        this.byId("btnHdrApplyIO").setVisible(false);
+                        this.byId("btnHdrClose").setVisible(pChange);
+                        //this.byId("btnHdrApplyIO").setVisible(false);
                     }
 
 
@@ -4473,4 +4476,4 @@ sap.ui.define([
 
             pad: Common.pad
         });
-    });
+});

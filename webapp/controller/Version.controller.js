@@ -2319,6 +2319,22 @@ sap.ui.define([
                             this.setBOMbyGMCEditModeControls();
                         }
                     }
+                     //mark as required field
+                     var oTable = this.getView().byId("bomGMCTable");
+                     var oColumnsModel = this.getView().getModel("bombByGMCColumns");
+                     var oColumnsData = oColumnsModel.getProperty('/');
+                     oTable.getColumns().forEach((col, idx) => {
+                         //console.log(col);
+                         oColumnsData.filter(item => item.ColumnName === col.sId.split("-")[1])
+                             .forEach(ci => {
+                                 if (ci.Editable) {
+                                     if (ci.Mandatory) {
+                                         col.getLabel().addStyleClass("sapMLabelRequired");
+                                     }
+                                 }
+                             });
+
+                     });
                 }
             },
 
