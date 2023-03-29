@@ -9,10 +9,10 @@
                 <core:ListItem key="{UsageClassModel>Usgcls}" text="{UsageClassModel>Ucdesc1}" additionalText="{UsageClassModel>Usgcls}"/>
             </ComboBox>
         </HBox>
-        <Button icon="sap-icon://synchronize" tooltip="Refresh data" press="onRefresh"/>
         <ToolbarSpacer />
-        <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMUVitems}" press="onSaveBOMbyUV" visible="{BOMbyUVEditModeModel>/editMode}"/>
         <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMUVitems}" press="setBOMbyUVEditMode" visible="{= ${AppAction>/appChange} === true ? ${BOMbyUVEditModeModel>/editMode} === true ? false : true :false }"/>
+        <Button icon="sap-icon://synchronize" tooltip="Refresh data" press="onRefresh"/>
+        <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMUVitems}" press="onSaveBOMbyUV" visible="{BOMbyUVEditModeModel>/editMode}"/>
         <Button type="Ghost" icon="sap-icon://decline"  tooltip="{i18n>Canceledit}" press="cancelBOMbyUVEdit" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? true : false }"/>
         <Button icon="sap-icon://excel-attachment" press="onExport" tooltip="Download spreadsheet">
             <customData>
@@ -28,8 +28,13 @@
     
     <!-- BOM by UV Table -->
     <!-- <ScrollContainer height="400px" vertical="true"> -->
-        <c:DynamicTable id="bomUVTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" 
-            selectionMode="Single" visibleRowCountMode="Auto" >
+        <c:DynamicTable id="bomUVTable" 
+            class="sapUiSizeCompact" 
+            enableColumnReordering="true" 
+            enableColumnFreeze="true"
+            showColumnVisibilityMenu="true"
+            selectionMode="Single" 
+            visibleRowCountMode="Auto" >
             <c:layoutData>
                 <FlexItemData growFactor="1" baseSize="0%" />
             </c:layoutData>

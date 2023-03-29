@@ -7,18 +7,23 @@
         </headerToolbar> -->
    <VBox fitContainer="true" class="sapUiTinyMargin">
     <MessageStrip id="GeneralAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiTinyMarginBottom" type="Error" visible="false" />
-    <MessageStrip id="GeneralAttrInfoMessageStrip" text="" showIcon="true" showCloseButton="false" class="sapUiTinyMarginBottom" type="Info" visible="false" />
+    <MessageStrip id="GeneralAttrInfoMessageStrip" text="" showIcon="true" showCloseButton="false" class="sapUiTinyMarginBottom" visible="false" />
 
     <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
-            <Button id="btnGenAttrSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveattributes}" press="onSaveGeneralTable" visible="false" />
             <Button id="btnGenAttrAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="true">
+                <customData>
+                    <core:CustomData key="TableName" value="generalTable" />
+                </customData>
+            </Button>
+            <Button id="btnGenAttrRemoveRow" type="Ghost" icon="sap-icon://less" tooltip="{i18n>Removenewline}" press="removeNewLine" visible="false">
                 <customData>
                     <core:CustomData key="TableName" value="generalTable" />
                 </customData>
             </Button>
             <Button id="btnGenAttrEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editattributes}" press="setGeneralAttrEditMode" visible="true" />
             <Button id="btnGenAttrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteGeneralAttr" visible="true" />
+            <Button id="btnGenAttrSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveattributes}" press="onSaveGeneralTable" visible="false" />
             <Button id="btnGenAttrCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelGeneralAttrEdit" visible="false" />
         </Toolbar>
 

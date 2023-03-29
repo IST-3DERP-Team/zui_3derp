@@ -117,6 +117,7 @@ sap.ui.define([
                 this._sizeChanged = false;
                 this._processChanged = false;
                 this._versionChanged = false;
+                this._dataMode = "READ";
 
                 this.setChangeStatus(false);
                 //set blnIOMod to true if route from IO
@@ -403,6 +404,7 @@ sap.ui.define([
                 oDDTextParam.push({CODE: "INFO_INPUT_REQD_FIELDS"}); 
                 oDDTextParam.push({CODE: "INFO_NO_DATA_EDIT"}); 
                 oDDTextParam.push({CODE: "INFO_NO_SEL_RECORD_TO_PROC"}); 
+                oDDTextParam.push({CODE: "INFO_NO_RECORD_TO_REMOVE"}); 
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam  }, {
                     method: "POST",
@@ -643,6 +645,7 @@ sap.ui.define([
                 //this.enableOtherTabs("detailPanel");
                 //this.setDtlsEnableButton(true);
                 this.setTabReadMode("HeaderEditModeModel");
+                this.generalAttrDataCheck();
 
                 this.byId("STYLECD").setEnabled(true);
                 this.byId("PRODTYP").setEnabled(true);
@@ -782,6 +785,7 @@ sap.ui.define([
                                 // me.setReqField("HeaderEditModeModel", false);
                                 // me.enableOtherTabs("detailPanel");
                                 // me.setDtlsEnableButton(true);
+                                me.generalAttrDataCheck();
                                 Common.showMessage(me._i18n.getText('t4'));
                                 //unlock style
                                 //me.lockStyle("O");
@@ -854,7 +858,6 @@ sap.ui.define([
                 var oTable = this.getView().byId("generalTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
-                var oTable = this.getView().byId("generalTable");
                 var oReqAttr = [];
                 var bProceed = true;
                 var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
@@ -868,75 +871,90 @@ sap.ui.define([
                     sbu: this._sbu
                 });
                 oModel.read(entitySet, {
-                    success: function (oData, oResponse) {
-                        console.log(oData)
-                        
-                        oData.results.forEach((item, index) => {
-                            item.Casverind = item.Casverind === "X" ? true : false;
+                    success: function (oData, oResponse) {                       
+                        // oData.results.forEach((item, index) => {
+                        //     item.Casverind = item.Casverind === "X" ? true : false;
 
-                            if (index === 0) item.ACTIVE = "X";
-                            else item.ACTIVE = "";
-                        });
+                        //     if (index === 0) item.ACTIVE = "X";
+                        //     else item.ACTIVE = "";
+                        // });
 
-                        oJSONModel.setData(oData);
-                        oTable.setModel(oJSONModel, "DataModel");
-                        Common.closeLoadingDialog(that);
+                        // oJSONModel.setData(oData);
+                        // oTable.setModel(oJSONModel, "DataModel");
+                        // Common.closeLoadingDialog(that);
 
-                        // oModel.read("/AttributesConfigSet", {
-                        //     success: function (oDataConfig, oResponse) {
-                        //         // me._attributesconfig = oDataConfig.results;
+                        oModel.read("/AttributesConfigSet", {
+                            success: function (oDataConfig, oResponse) {
+                                // me._attributesconfig = oDataConfig.results;
+                                var sMessage = "";
 
-                        //         oData.results.forEach((item, index) => {
-                        //             item.Casverind = item.Casverind === "X" ? true : false;
-                        //             item.Property = "";
+                                oData.results.forEach((item, index) => {
+                                    item.Casverind = item.Casverind === "X" ? true : false;
+                                    item.Property = "";
 
-                        //             oDataConfig.results.filter(fItem => fItem.TYPE === item.Attribtyp).forEach(e => {
-                        //                 item.Property = e.PROP;
-
-                        //                 if (e.PROP === "M") { 
-                        //                     if (oReqAttr.findIndex(val => val === item.Attribtyp) < 0) { oReqAttr.push(item.Attribtyp); }
-                        //                 }
-                        //             });
+                                    oDataConfig.results.filter(fItem => fItem.TYPE === item.Attribtyp).forEach(e => {
+                                        if (e.PROP === "M") {
+                                            if (oReqAttr.findIndex(val => val.TYPE === e.TYPE) < 0) {
+                                                if (me.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === e.TYPE).length > 0 && item.Attribcd === "") {
+                                                    sMessage += "Attribute code is required for type " + e.TYPE + ".\r\n";
+                                                }
+                                            }
+                                            
+                                            if (e.CODE === item.Attribcd) {
+                                                item.Property = e.PROP;
+    
+                                                if (oReqAttr.findIndex(val => val.TYPE === e.TYPE && val.CODE === e.CODE) < 0) { 
+                                                    oReqAttr.push({TYPE: e.TYPE, CODE: e.CODE}); 
+    
+                                                    if (item.Valuetyp.toUpperCase() === "STRVAL" && item.Attribval === "") {
+                                                        sMessage += "Attribute value is required for type/code " + e.TYPE + "/" + e.CODE + ".\r\n";
+                                                    }
+                                                    else if (item.Valuetyp.toUpperCase() === "NUMVALUE" && (item.Attribval === "" || item.Valunit === "")) {
+                                                        sMessage += "Attribute value and UOM is required for type/code " + e.TYPE + "/" + e.CODE + ".\r\n";
+                                                    }
+                                                }
+                                            }
+                                            else if (e.CODE === "") { 
+                                                item.Property = e.PROP;
+    
+                                                if (oReqAttr.findIndex(val => val.TYPE === e.TYPE) < 0) { 
+                                                    oReqAttr.push({TYPE: e.TYPE, CODE: ""});     
+                                                    if (item.Valuetyp.toUpperCase() === "STRVAL" && item.Attribval === "") {
+                                                        sMessage += "Attribute value is required for type " + e.TYPE + ".\r\n";
+                                                    }
+                                                    else if (item.Valuetyp.toUpperCase() === "NUMVALUE" && (item.Attribval === "" || item.Valunit === "")) {
+                                                        sMessage += "Attribute value and UOM is required for type " + e.TYPE + ".\r\n";
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
         
-                        //             if (index === 0) item.ACTIVE = "X";
-                        //             else item.ACTIVE = "";
-                        //         });
+                                    if (index === 0) item.ACTIVE = "X";
+                                    else item.ACTIVE = "";
+                                });
 
-                        //         oDataConfig.results.forEach(item => {
-                        //             if (item.PROP === "M") {
-                        //                 if (oReqAttr.findIndex(val => val === item.Attribtyp) < 0) { oReqAttr.push(item.Attribtyp); }
-                        //             }
+                                oJSONModel.setData(oData);
+                                oTable.setModel(oJSONModel, "DataModel");
+                                //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
+                                // oTable.onAttachPaste(); //for copy-paste
+                                Common.closeLoadingDialog(that);
+                                me._attributesconfig = oReqAttr;
 
-                        //             if (oData.results.filter(fItem => fItem.Attribtyp === item.TYPE).length === 0) {
-                        //                 bProceed = false;
-                        //             }
-                        //         })
-
-                        //         oJSONModel.setData(oData);
-                        //         oTable.setModel(oJSONModel, "DataModel");
-                        //         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
-                        //         // oTable.onAttachPaste(); //for copy-paste
-                        //         Common.closeLoadingDialog(that);
-                        //         me._attributesconfig = oReqAttr;
-
-                        //         if (!bProceed) {
-                        //             oMsgStrip.setVisible(true);
-                        //             // sMessage = sMessage.substring(0, sMessage.length - 2)
-                        //             oMsgStrip.setText("Attribute Type/s is required: " + oReqAttr.join(", ") + ". Insert record on these attributes to be able to work with other style details.");
-                        //             me.disableOtherTabs("detailPanel");
-                        //         }
-
-                        //         // if (oData.results.filter(fItem => fItem.Attribval === "" && fItem.Property === "M").length > 0) {
-                        //         //     oMsgStrip.setVisible(true);
-                        //         //     // sMessage = sMessage.substring(0, sMessage.length - 2)
-                        //         //     oMsgStrip.setText("Attribute Code/Value is required for Attribute Type: " + oReqAttr.join(", ") + ". Enter value on these attributes to be able to work with other style details.");
-                        //         //     me.disableOtherTabs("detailPanel");
-                        //         // }
-                        //     },
-                        //     error: function (err) { 
-                        //         Common.closeLoadingDialog(that);
-                        //     }
-                        // }); 
+                                if (sMessage !== "") {
+                                    oMsgStrip.setVisible(true);
+                                    oMsgStrip.setText(sMessage + "Enter value on these attributes to be able to work with other style details.");
+                                    me.disableOtherTabs("detailPanel");
+                                }
+                                else { 
+                                    me.enableOtherTabs("detailPanel"); 
+                                    me.enableVersionItemTab();
+                                }
+                            },
+                            error: function (err) { 
+                                Common.closeLoadingDialog(that);
+                            }
+                        }); 
                     },
                     error: function () {
                         Common.closeLoadingDialog(that);
@@ -971,68 +989,83 @@ sap.ui.define([
             },
 
             setGeneralAttrEditModeControls: function() {
+                //update to base on binding indices
                 var oTable = this.getView().byId("generalTable");
 
-                for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
-                    var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
-                    var oRow = oTable.getRows()[iRowIndex];
-                    var vAttrTyp = oTable.getContextByIndex(i).getProperty("Attribtyp");
-                    var vValTyp = oTable.getContextByIndex(i).getProperty("Valuetyp");
-                    var oCellCtrlValTyp = "";
-
-                    oRow.getCells().forEach(cell => {
-                        if (cell.getBindingInfo("value") !== undefined) {
-                            oCellCtrlValTyp = "value";
-                        }
-                        else if (cell.getBindingInfo("text") !== undefined) {
-                            oCellCtrlValTyp = "text";
-                        }
-                        else if (cell.getBindingInfo("selected") !== undefined) {
-                            oCellCtrlValTyp = "selected";
-                        }
-                        
-                        if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
-                            console.log(cell)
-                            if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
-                                cell.setEnabled(true);
-
-                                if (vValTyp === "NUMVALUE") {
-                                    cell.setType(sap.m.InputType.Number);
-                                }
-                                else if (vValTyp === "STRVAL") {
-                                    cell.setType(sap.m.InputType.Text);
+                setTimeout(() => {
+                    for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                        var iRowIndex = oTable.getBinding("rows").aIndices[i];
+    
+                        // var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
+                        var oRow = oTable.getRows()[iRowIndex];
+                        var vAttrTyp = oTable.getContextByIndex(iRowIndex).getProperty("Attribtyp");
+                        var vValTyp = oTable.getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase();
+                        var bNew = oTable.getContextByIndex(iRowIndex).getProperty("NEW");                    
+                        var oCellCtrlValTyp = "";
+    
+                        oRow.getCells().forEach(cell => {
+                            if ((bNew === undefined || !bNew) && this._dataMode === "NEW") {
+                                if (cell.getBindingInfo("text") === undefined) {
+                                    cell.setEnabled(false);
                                 }
                             }
                             else {
-                                cell.setEnabled(false);
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    oCellCtrlValTyp = "value";
+                                }
+                                else if (cell.getBindingInfo("text") !== undefined) {
+                                    oCellCtrlValTyp = "text";
+                                }
+                                else if (cell.getBindingInfo("selected") !== undefined) {
+                                    oCellCtrlValTyp = "selected";
+                                }
+                                
+                                if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBTYP") {
+                                    cell.setEnabled(true);
+                                }
+                                else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
+                                    if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
+                                        cell.setEnabled(true);
+        
+                                        if (vValTyp === "NUMVALUE") {
+                                            cell.setType(sap.m.InputType.Number);
+                                        }
+                                        else if (vValTyp === "STRVAL") {
+                                            cell.setType(sap.m.InputType.Text);
+                                        }
+                                    }
+                                    else {
+                                        cell.setEnabled(false);
+                                    }
+                                }
+                                else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "VALUNIT") {
+                                    if (vValTyp === "NUMVALUE") {
+                                        cell.setEnabled(true);
+                                    }
+                                    else {
+                                        cell.setEnabled(false);
+                                    }
+                                }
+                                else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBCD") {
+                                    if (this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttrTyp).length > 0 && vAttrTyp !== "" && vAttrTyp !== undefined) {
+                                        cell.setEnabled(true);
+                                    }
+                                    else {
+                                        cell.setEnabled(false);
+                                    }
+                                }
+                                else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "CASVERIND") {
+                                    if (vAttrTyp !== "" && vAttrTyp !== undefined) {
+                                        cell.setEnabled(true);
+                                    }
+                                    else {
+                                        cell.setEnabled(false);
+                                    }
+                                }
                             }
-                        }
-                        else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "VALUNIT") {
-                            if (vValTyp === "NUMVALUE") {
-                                cell.setEnabled(true);
-                            }
-                            else {
-                                cell.setEnabled(false);
-                            }
-                        }
-                        else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBCD") {
-                            if (this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttrTyp).length > 0 && vAttrTyp !== "" && vAttrTyp !== undefined) {
-                                cell.setEnabled(true);
-                            }
-                            else {
-                                cell.setEnabled(false);
-                            }
-                        }
-                        else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "CASVERIND") {
-                            if (vAttrTyp !== "" && vAttrTyp !== undefined) {
-                                cell.setEnabled(true);
-                            }
-                            else {
-                                cell.setEnabled(false);
-                            }
-                        }
-                    })
-                } 
+                        })
+                    }                     
+                }, 100);
             },
 
             cancelGeneralAttrEdit: function () {
@@ -1102,7 +1135,7 @@ sap.ui.define([
 
                                     var iRowIndex = +sRowPath.replace("/results/","");
 
-                                    if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp") === "NUMVALUE") {
+                                    if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
                                         this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
                                     }
                                 })                                
@@ -1118,16 +1151,16 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oTableModel = this.getView().byId("generalTable").getModel("DataModel");
                 var path;
-                var bProceed = true;
 
                 //initialize message strip
                 var oMsgStrip = this.getView().byId('GeneralAttrMessageStrip');
                 oMsgStrip.setVisible(false);
-                console.log(this._attributesconfig)
+
                 if (!this._generalAttrChanged) { //check if data is changed
-                    Common.showMessage(this._i18n.getText('t7'));
+                    MessageBox.information(this._i18n.getText('t7'));                    
                 } else {
                     //get table data and build the payload
+                    var sMessage = "";
                     var oData = oTableModel.getData();
                     var oEntry = {
                         Styleno: this._styleNo,
@@ -1135,30 +1168,57 @@ sap.ui.define([
                         AttributesToItems: []
                     }
                     for (var i = 0; i < oData.results.length; i++) {
-                        // console.log(oData.results[i].Attribtyp, oData.results[i].Attribcd, oData.results[i].Attribval)
-                        // if (this._attributesconfig.filter(fItem => fItem === oData.results[i].Attribtyp && (oData.results[i].Attribcd === "" || oData.results[i].Attribval === "")).length > 0) {
-                        //     bProceed = false;
-                        // }
-                        // else {
+                        var bProceed = true;
+
+                        if (oData.results[i].Property === "M") {
+                            if (me.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === oData.results[i].Attribtyp).length > 0 && oData.results[i].Attribcd === "") {
+                                bProceed = false;
+                                sMessage += "Attribute code is required for type " + oData.results[i].Attribtyp + ".\r\n";
+                            }
+
+                            if (oData.results[i].Valuetyp.toUpperCase() === "STRVAL" && oData.results[i].Attribval === "") {
+                                bProceed = false;
+                                
+                                if (oData.results[i].Attribcd !== "") {
+                                    sMessage += "Attribute value is required for type/code " + oData.results[i].Attribtyp + "/" + oData.results[i].Attribcd + ".\r\n";
+                                }
+                                else {
+                                    sMessage += "Attribute value is required for type " + oData.results[i].Attribtyp + ".\r\n";
+                                }
+                            }
+                            else if (oData.results[i].Valuetyp.toUpperCase() === "NUMVALUE" && (oData.results[i].Attribval === "" || oData.results[i].Valunit === "")) {
+                                bProceed = false;
+
+                                if (oData.results[i].Attribcd !== "") {
+                                    sMessage += "Attribute value and UOM is required for type/code " + oData.results[i].Attribtyp + "/" + oData.results[i].Attribcd + ".\r\n";
+                                }
+                                else {
+                                    sMessage += "Attribute value and UOM is required for type " + oData.results[i].Attribtyp + ".\r\n";
+                                }
+                            }                            
+                        }
+                        
+                        if (bProceed) {
                             var item = {
                                 "Styleno": this._styleNo,
                                 "Attribtyp": oData.results[i].Attribtyp,
                                 "Attribcd": oData.results[i].Attribcd,
                                 "Baseind": false,
                                 "Desc1": oData.results[i].Desc1,
-                                "Valuetyp": "STRVAL",
+                                "Valuetyp": oData.results[i].Valuetyp,
                                 "Attribval": oData.results[i].Attribval,
+                                "Valunit": oData.results[i].Valunit,
                                 "Attribseq": oData.results[i].Attribseq,
                                 "Casverind": (oData.results[i].Casverind === true ? "X" : "")
                             };
     
                             oEntry.AttributesToItems.push(item);
-                        // }
+                        }
                     };
-
-                    if (bProceed) {
+                    
+                    if (sMessage === "") {
                         Common.openLoadingDialog(that);
-
+                        console.log(oEntry)
                         //call deep entity create method 
                         path = "/AttributesGeneralSet";
                         oModel.setHeaders({
@@ -1170,10 +1230,12 @@ sap.ui.define([
                                 Common.closeLoadingDialog(that);
                                 me._generalAttrChanged = false;
                                 me.setChangeStatus(false);
-                                Common.showMessage(me._i18n.getText('t4'));
+                                // Common.showMessage(me._i18n.getText('t4'));
                                 Utils.getProcessAttributes(me); //need to reload available attribute types for process tables
                                 me.setTabReadMode("GenAttrEditModeModel");
                                 me.getGeneralTable();
+
+                                MessageBox.information(me._i18n.getText('t4'));
 
                                 // me.setControlEditMode("GenAttrEditModeModel",false);
                                 // me.enableOtherTabs("detailPanel");
@@ -1184,15 +1246,16 @@ sap.ui.define([
                                 //show error messages
                                 Common.closeLoadingDialog(that);
                                 var errorMsg = JSON.parse(err.responseText).error.message.value;
-                                oMsgStrip.setVisible(true);
-                                oMsgStrip.setText(errorMsg);
-                                Common.showMessage(me._i18n.getText('t5'));
+                                // oMsgStrip.setVisible(true);
+                                // oMsgStrip.setText(errorMsg);
+                                // Common.showMessage(me._i18n.getText('t5'));
+                                MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
                             }
                         });
                     }
-                    // else {
-                    //     MessageBox.information("Attribute Code and Value are required for the following Attribute Type:\r\n-" + this._attributesconfig.join("\r\n-"))
-                    // }
+                    else {
+                        MessageBox.information(sMessage);
+                    }
                 }
             },
 
@@ -1220,36 +1283,84 @@ sap.ui.define([
 
                 if (selected.length > 0) {
                     //call delete method for each selected line
-                    for (var i = 0; i < selected.length; i++) {
+                    selected.sort((a, b) => -1);
 
+                    for (var i = 0; i < selected.length; i++) {
+                        var vProp = oData.results[selected[i]].Property;
                         var attrtype = oData.results[selected[i]].Attribtyp;
                         var attrcd = oData.results[selected[i]].Attribcd;
-
                         var entitySet = "/StyleAttributesGeneralSet(Styleno='" + that._styleNo + "',Attribtyp='" + attrtype + "',Attribcd='" + attrcd + "')";
-                        console.log(entitySet)
-                        oModel.remove(entitySet, {
-                            groupId: "group1",
-                            changeSetId: "changeSetId1",
-                            method: "DELETE",
-                            success: function (data, oResponse) {
-                            },
-                            error: function () {
-                            }
-                        });
 
-                        oModel.submitChanges({
-                            groupId: "group1"
-                        });
-                        oModel.setRefreshAfterChange(true);
+                        if (vProp !== "M") {
+                            oModel.remove(entitySet, {
+                                groupId: "group1",
+                                changeSetId: "changeSetId1",
+                                method: "DELETE",
+                                success: function (data, oResponse) {
+                                },
+                                error: function () {
+                                }
+                            });
+    
+                            oModel.submitChanges({
+                                groupId: "group1"
+                            });
+                            oModel.setRefreshAfterChange(true);                            
+                        }
+                        else {
+                            selected.splice(i, 1);
+                        }
                     }
 
                     //remove the deleted lines from the table
                     oData.results = oData.results.filter(function (value, index) {
                         return selected.indexOf(index) == -1;
                     })
+
                     oTableModel.setData(oData);
                     oTable.clearSelection();
                 }
+            },
+
+            generalAttrDataCheck: function() {
+                var me = this;
+                var sMessage = "";
+                var oTable = this.getView().byId("generalTable");
+                var oData = oTable.getModel("DataModel").getData();
+                var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
+                oMsgStrip.setVisible(false);
+
+                oData.results.forEach((item, index) => {
+                    if (item.Property === "M") {
+                        if (me.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === item.Attribtyp).length > 0 && item.Attribcd === "") {
+                            sMessage += "Attribute code is required for type " + item.Attribtyp + ".\r\n";
+                        }
+
+                        if (item.Valuetyp.toUpperCase() === "STRVAL" && item.Attribval === "") {                           
+                            if (item.Attribcd !== "") {
+                                sMessage += "Attribute value is required for type/code " + item.Attribtyp + "/" + item.Attribcd + ".\r\n";
+                            }
+                            else {
+                                sMessage += "Attribute value is required for type " + item.Attribtyp + ".\r\n";
+                            }
+                        }
+                        else if (item.Valuetyp.toUpperCase() === "NUMVALUE" && (item.Attribval === "" || item.Valunit === "")) {
+                            if (item.Attribcd !== "") {
+                                sMessage += "Attribute value and UOM is required for type/code " + item.Attribtyp + "/" + item.Attribcd + ".\r\n";
+                            }
+                            else {
+                                sMessage += "Attribute value and UOM is required for type " + item.Attribtyp + ".\r\n";
+                            }
+                        }                        
+                    }
+                });
+                
+                if (sMessage !== "") {
+                    oMsgStrip.setVisible(true);
+                    oMsgStrip.setText(sMessage + "Enter value on these attributes to be able to work with other style details.");
+                    this.disableOtherTabs("detailPanel");
+                }
+                else { this.enableOtherTabs("detailPanel"); }
             },
 
             //******************************************* */
@@ -1262,7 +1373,6 @@ sap.ui.define([
                 var oTable = this.getView().byId("colorsTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
-                var oTable = this.getView().byId("colorsTable");
 
                 Common.openLoadingDialog(that);
 
@@ -1272,13 +1382,13 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        // console.log("get colors", oData.results);
-                        if (oData.results.length === 0) { me.disableTabItem("detailPanel","version"); }
-                        else { me.enableTabItem("detailPanel","version"); }
+                        me.enableVersionItemTab();
 
                         // if (oData.results.filter(fItem => fItem.Sortseq === "0").length === oData.results.length) {
                         //     oData.results.forEach(item => item.Sortseq = item.Attribseq);
                         // }
+
+                        oData.results.forEach(item => item.Attribseq = me.pad(item.Attribseq, 2));
 
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
@@ -1319,42 +1429,43 @@ sap.ui.define([
             },
 
             setColorCreateMode: async function () {
-                this._bomColors = [];
-                this._bomColors = await this.getBOMCOlor(this);
+                // this._bomColors = [];
+                // this._bomColors = await this.getBOMCOlor(this);
 
-                var oTable = this.getView().byId("colorsTable");
+                // var oTable = this.getView().byId("colorsTable");
 
-                if (this._bomColors.length > 0) {
-                    var oTableModel = oTable.getModel("DataModel");
-                    var oData = oTableModel.getData();
+                // if (this._bomColors.length > 0) {
+                //     var oTableModel = oTable.getModel("DataModel");
+                //     var oData = oTableModel.getData();
 
-                    for (var i = 0; i < oData.results.length; i++) {
-                        if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
-                            console.log("1")
-                            oTable.getRows()[i].getCells().forEach(cell => {
-                                if (cell.getBindingInfo("value") !== undefined) {
-                                    cell.setProperty("editable", false);
-                                }
-                            });
-                        }
-                        else {
-                            oTable.getRows()[i].getCells().forEach(cell => {
-                                if (cell.getBindingInfo("value") !== undefined) {
-                                    cell.setProperty("editable", true);
-                                }
-                            });
-                        }
-                    }
-                }
-                else {
-                    oTable.getRows().forEach(row => {
-                        row.getCells().forEach(cell => {
-                            if (cell.getBindingInfo("value") !== undefined) {
-                                cell.setProperty("editable", true);
-                            }
-                        });
-                    });
-                }
+                //     for (var i = 0; i < oData.results.length; i++) {
+                //         if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
+                //             console.log("1")
+                //             oTable.getRows()[i].getCells().forEach(cell => {
+                //                 if (cell.getBindingInfo("value") !== undefined) {
+                //                     cell.setProperty("editable", false);
+                //                 }
+                //             });
+                //         }
+                //         else {
+                //             oTable.getRows()[i].getCells().forEach(cell => {
+                //                 if (cell.getBindingInfo("value") !== undefined) {
+                //                     cell.setProperty("editable", true);
+                //                 }
+                //             });
+                //         }
+                //     }
+                // }
+                // else {
+                //     oTable.getRows().forEach(row => {
+                //         row.getCells().forEach(cell => {
+                //             if (cell.getBindingInfo("value") !== undefined) {
+                //                 cell.setProperty("editable", true);
+                //             }
+                //         });
+                //     });
+                // }
+
                 const result = await this.lockStyle("X");
                 if (result.Type != "S") {
                     MessageBox.warning(result.Message);
@@ -1369,6 +1480,7 @@ sap.ui.define([
                     this.getView().setModel(oJSONModel, "ColorEditModeModel");
 
                     this.byId("btnColorAdd").setVisible(true);
+                    this.byId("btnColorRemoveRow").setVisible(true);
                     this.byId("btnColorSave").setVisible(true);
                     this.byId("btnColorCancel").setVisible(true);
                     this.byId("btnColorEdit").setVisible(false);
@@ -1378,6 +1490,7 @@ sap.ui.define([
                     this.disableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(false);
                     this.byId("btnHdrDelete").setEnabled(false);
+                    this.setColorEditModeControls();
                 }
             },
 
@@ -1389,38 +1502,39 @@ sap.ui.define([
                 var oTableModel = oTable.getModel("DataModel");
                 var oData = oTableModel.getData();
                 var bProceed = true;
-                var noEdit= 0;
+                // var noEdit= 0;
 
                 if (oData.results.length === 0) {
                     MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_NO_DATA_EDIT"]);
                     bProceed = false;
                 }
                 else {
-                    var oTableModel = oTable.getModel("DataModel");
-                    var oData = oTableModel.getData();
+                    bProceed = true;
+                    // var oTableModel = oTable.getModel("DataModel");
+                    // var oData = oTableModel.getData();
 
-                    for (var i = 0; i < oData.results.length; i++) {
-                        if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
-                            noEdit++;
-                            oTable.getRows()[i].getCells().forEach(cell => {
-                                if (cell.getBindingInfo("value") !== undefined) {
-                                    if (cell.getBindingInfo("value").parts[0].path === "Sortseq") {
-                                        cell.setProperty("editable", true);
-                                    }
-                                    else {
-                                        cell.setProperty("editable", false);
-                                    }
-                                }
-                            });
-                        }
-                        else {
-                            oTable.getRows()[i].getCells().forEach(cell => {
-                                if (cell.getBindingInfo("value") !== undefined) {
-                                    cell.setProperty("editable", true);
-                                }
-                            });
-                        }
-                    }
+                    // for (var i = 0; i < oData.results.length; i++) {
+                    //     if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
+                    //         // noEdit++;
+                    //         oTable.getRows()[i].getCells().forEach(cell => {
+                    //             if (cell.getBindingInfo("value") !== undefined) {
+                    //                 if (cell.getBindingInfo("value").parts[0].path === "Sortseq") {
+                    //                     cell.setProperty("editable", true);
+                    //                 }
+                    //                 else {
+                    //                     cell.setProperty("editable", false);
+                    //                 }
+                    //             }
+                    //         });
+                    //     }
+                    //     else {
+                    //         oTable.getRows()[i].getCells().forEach(cell => {
+                    //             if (cell.getBindingInfo("value") !== undefined) {
+                    //                 cell.setProperty("editable", true);
+                    //             }
+                    //         });
+                    //     }
+                    // }
 
                     // if (oData.results.length === noEdit) {
                     //     bProceed = false;
@@ -1445,6 +1559,7 @@ sap.ui.define([
                     this.disableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(false);
                     this.byId("btnHdrDelete").setEnabled(false);
+                    this.setColorEditModeControls();
                 }
 
 
@@ -1537,7 +1652,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._colorChanged) { //check if there are changes to colors table
-                    Common.showMessage(this._i18n.getText('t7'));
+                    MessageBox.information(this._i18n.getText('t7'));
                 } else {
 
                     //build the headers and payload
@@ -1579,8 +1694,9 @@ sap.ui.define([
                     })
                     if (hasDuplicateColorDesc) {
                         //Common.showMessage("Duplicate color is not allow");
-                        oMsgStrip.setVisible(true);
-                        oMsgStrip.setText("Duplicate Description is not allowed");
+                        // oMsgStrip.setVisible(true);
+                        // oMsgStrip.setText("Duplicate Description is not allowed");
+                        MessageBox.information("Duplicate Description is not allowed");
                         return;
                     }
 
@@ -1597,8 +1713,7 @@ sap.ui.define([
                         success: function (oData, oResponse) {
                             Common.closeLoadingDialog(me);
                             me._colorChanged = false;
-                            me.setChangeStatus(false);
-                            Common.showMessage(me._i18n.getText('t4'));
+                            me.setChangeStatus(false);                            
                             Utils.getProcessAttributes(me);
                             //me.setColorReadMode();
                             me.setTabReadMode("ColorEditModeModel");
@@ -1607,13 +1722,16 @@ sap.ui.define([
                             me.enableOtherTabs("detailPanel");
                             me.byId("btnHdrEdit").setEnabled(true);
                             me.byId("btnHdrDelete").setEnabled(true);
+
+                            MessageBox.information(me._i18n.getText('t4'));
                         },
                         error: function (err) {
                             Common.closeLoadingDialog(me);
-                            Common.showMessage(me._i18n.getText('t5'));
+                            // Common.showMessage(me._i18n.getText('t5'));
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            oMsgStrip.setVisible(true);
-                            oMsgStrip.setText(errorMsg);
+                            // oMsgStrip.setVisible(true);
+                            // oMsgStrip.setText(errorMsg);
+                            MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
                         }
                     });
                 }
@@ -1646,7 +1764,6 @@ sap.ui.define([
                     for (var i = (selected.length - 1); i >= 0; i--) {
                         var attrtype = Constants.COLOR;
                         var attrcd = oData.results[selected[i]].Attribcd;
-
                         var entitySet = "/StyleAttributesColorSet(Styleno='" + that._styleNo + "',Attribtype='" + attrtype + "',Attribcd='" + attrcd + "')";
 
                         if (this._bomColors.filter(fItem => fItem.COLOR === attrcd).length === 0) {
@@ -1683,6 +1800,60 @@ sap.ui.define([
                 }
             },
 
+            setColorEditModeControls: async function() {
+                //update to base on binding indices
+                var oTable = this.getView().byId("colorsTable");
+
+                if (this._dataMode !== "NEW") {
+                    this._bomColors = [];
+                    this._bomColors = await this.getBOMCOlor(this);    
+                }
+
+                setTimeout(() => {
+                    for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                        var iRowIndex = oTable.getBinding("rows").aIndices[i];
+                        var oRow = oTable.getRows()[iRowIndex];
+                        var vAttribcd = oTable.getContextByIndex(iRowIndex).getProperty("Attribcd");                    
+                        var bNew = oTable.getContextByIndex(iRowIndex).getProperty("NEW");                    
+                        var oCellCtrlValTyp = "";
+    
+                        oRow.getCells().forEach(cell => {
+                            if ((bNew === undefined || !bNew) && this._dataMode === "NEW") {
+                                if (cell.getBindingInfo("text") === undefined) {
+                                    cell.setEnabled(false);
+                                }
+                            }
+                            else {
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    oCellCtrlValTyp = "value";
+
+                                    if (this._dataMode === "NEW") { cell.setEnabled(true) }
+                                }
+                                else if (cell.getBindingInfo("text") !== undefined) {
+                                    oCellCtrlValTyp = "text";
+                                }
+                                else if (cell.getBindingInfo("selected") !== undefined) {
+                                    oCellCtrlValTyp = "selected";
+
+                                    if (this._dataMode === "NEW") { cell.setEnabled(true) }
+                                }
+                                
+                                if (this._dataMode !== "NEW") {
+                                    if (this._bomColors.filter(fItem => fItem.COLOR === vAttribcd).length > 0) {
+                                        if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() !== "SORTSEQ" && oCellCtrlValTyp !== "text") {
+                                            cell.setEnabled(false);
+                                        }
+                                    }
+                                    else {
+                                        cell.setEnabled(true);
+                                    }
+                                }
+                            }
+                        })
+                    }                     
+                }, 100);
+            },
+
             //******************************************* */
             // Sizes Attribute
             //******************************************* */
@@ -1705,11 +1876,9 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        if (oData.results.length === 0) { me.disableTabItem("detailPanel","version"); }
-                        else { me.enableTabItem("detailPanel","version"); }
-
+                        me.enableVersionItemTab();
                         oJSONModel.setData(oData);
-                        oTable.setModel(oJSONModel, "DataModel");
+                        oTable.setModel(oJSONModel, "DataModel");                        
                         Common.closeLoadingDialog(that);
                     },
                     error: function () {
@@ -1797,7 +1966,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._sizeChanged) { //check if there are changes 
-                    Common.showMessage(this._i18n.getText('t7'));
+                    MessageBox.information(this._i18n.getText('t7'));
                 } else {
                     //build header and payload
                     var oData = oTableModel.getData();
@@ -1824,7 +1993,7 @@ sap.ui.define([
                     };
 
                     if (lv_baseindctr > 1) { //do not allow multiple base indicator
-                        Common.showMessage(this._i18n.getText('t9'));
+                        MessageBox.information(this._i18n.getText('t9'));
                     } else {
                         Common.openLoadingDialog(that);
                         //call create deep method of size attirbutes
@@ -1839,8 +2008,8 @@ sap.ui.define([
                                 me.setChangeStatus(false);
                                 Common.closeLoadingDialog(me);
                                 me.setTabReadMode("SizeEditModeModel");
-                                Common.showMessage(me._i18n.getText('t4'));
                                 Utils.getProcessAttributes(me);
+                                MessageBox.information(me._i18n.getText('t4'));
 
                                 // this.enableOtherTabs("detailPanel");
                                 // this.byId("btnHdrEdit").setEnabled(true);
@@ -1848,10 +2017,11 @@ sap.ui.define([
                             },
                             error: function (err) {
                                 Common.closeLoadingDialog(me);
-                                Common.showMessage(me._i18n.getText('t5'));
+                                // Common.showMessage(me._i18n.getText('t5'));
                                 var errorMsg = JSON.parse(err.responseText).error.message.value;
-                                oMsgStrip.setVisible(true);
-                                oMsgStrip.setText(errorMsg);
+                                // oMsgStrip.setVisible(true);
+                                // oMsgStrip.setText(errorMsg);
+                                MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
                             }
                         });
                     }
@@ -1867,7 +2037,6 @@ sap.ui.define([
                 var oTable = this.getView().byId("processesTable");
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
-                var oTable = this.getView().byId("processesTable");
 
                 Common.openLoadingDialog(that);
 
@@ -1909,6 +2078,7 @@ sap.ui.define([
                     this.disableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(false);
                     this.byId("btnHdrDelete").setEnabled(false);
+                    this.setProcessEditModeControls();
                 }
             },
 
@@ -1968,7 +2138,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._processChanged) { //check changed data
-                    Common.showMessage(this._i18n.getText('t7'));
+                    MessageBox.information(this._i18n.getText('t7'));
                 } else {
                     //build header and payload
                     var oData = oTableModel.getData();
@@ -2003,7 +2173,7 @@ sap.ui.define([
                             me._processChanged = false;
                             me.setChangeStatus(false);
                             me.setTabReadMode("ProcessEditModeModel");
-                            Common.showMessage(me._i18n.getText('t4'));
+                            MessageBox.information(me._i18n.getText('t4'));
 
                             // this.enableOtherTabs("detailPanel");
                             // this.byId("btnHdrEdit").setEnabled(true);
@@ -2011,10 +2181,11 @@ sap.ui.define([
                         },
                         error: function (err) {
                             Common.closeLoadingDialog(me);
-                            Common.showMessage(me._i18n.getText('t5'));
+                            // Common.showMessage(me._i18n.getText('t5'));
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            oMsgStrip.setVisible(true);
-                            oMsgStrip.setText(errorMsg);
+                            // oMsgStrip.setVisible(true);
+                            // oMsgStrip.setText(errorMsg);
+                            MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
                         }
                     });
                 }
@@ -2070,6 +2241,54 @@ sap.ui.define([
                     oTableModel.setData(oData);
                     oTable.clearSelection();
                 }
+            },
+
+            setProcessEditModeControls: function() {
+                //update to base on binding indices
+                var oTable = this.getView().byId("processesTable");
+
+                setTimeout(() => {
+                    for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                        var iRowIndex = oTable.getBinding("rows").aIndices[i];
+    
+                        // var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
+                        var oRow = oTable.getRows()[iRowIndex];
+                        var bNew = oTable.getContextByIndex(iRowIndex).getProperty("NEW");                    
+                        var oCellCtrlValTyp = "";
+
+                        oRow.getCells().forEach(cell => {
+                            if ((bNew === undefined || !bNew) && this._dataMode === "NEW") {
+                                if (cell.getBindingInfo("text") === undefined) {
+                                    cell.setEnabled(false);
+                                }
+                            }
+                            else {
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    oCellCtrlValTyp = "value";
+
+                                    if (this._dataMode === "NEW") { cell.setEnabled(true) }
+                                }
+                                else if (cell.getBindingInfo("text") !== undefined) {
+                                    oCellCtrlValTyp = "text";
+                                }
+                                else if (cell.getBindingInfo("selected") !== undefined) {
+                                    oCellCtrlValTyp = "selected";
+
+                                    if (this._dataMode === "NEW") { cell.setEnabled(true) }
+                                }
+                                
+                                if (this._dataMode !== "NEW") {
+                                    if (oCellCtrlValTyp !== "text") {
+                                        cell.setEnabled(true);
+                                    }
+                                    else {
+                                        cell.setEnabled(false);
+                                    }
+                                }
+                            }
+                        })
+                    }                     
+                }, 100);
             },
 
             //******************************************* */
@@ -2209,17 +2428,18 @@ sap.ui.define([
                         me.getVersionsTable();
                         me._NewVerionDialog.close();
                         Common.closeLoadingDialog(that);
-                        Common.showMessage(me._i18n.getText('t4'));
 
                         if (oCurrent) { me.getHeaderData(); }
 
                         this.enableOtherTabs("detailPanel");
                         this.byId("btnHdrEdit").setEnabled(true);
                         this.byId("btnHdrDelete").setEnabled(true);
+                        
+                        MessageBox.information(me._i18n.getText('t4'));
                     },
                     error: function (err) {
                         Common.closeLoadingDialog(that);
-                        Common.showMessage(me._i18n.getText('t5'));
+                        MessageBox.information(me._i18n.getText('t5'));
                     }
                 });
             },
@@ -2300,7 +2520,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._versionChanged) { //check if there changes
-                    Common.showMessage(this._i18n.getText('t7'));
+                    MessageBox.information(this._i18n.getText('t7'));
                 } else {
                     Common.openLoadingDialog(that);
 
@@ -2334,7 +2554,7 @@ sap.ui.define([
                             me._versionChanged = false;
                             me.setChangeStatus(false);
                             me.setTabReadMode("VersionEditModeModel");
-                            Common.showMessage(me._i18n.getText('t4'));
+                            MessageBox.information(me._i18n.getText('t4'));
 
                             // this.enableOtherTabs("detailPanel");
                             // this.byId("btnHdrEdit").setEnabled(true);
@@ -2342,10 +2562,11 @@ sap.ui.define([
                         },
                         error: function (err) {
                             Common.closeLoadingDialog(that);
-                            Common.showMessage(me._i18n.getText('t5'));
+                            // Common.showMessage(me._i18n.getText('t5'));
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            oMsgStrip.setVisible(true);
-                            oMsgStrip.setText(errorMsg);
+                            // oMsgStrip.setVisible(true);
+                            // oMsgStrip.setText(errorMsg);
+                            MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
                         }
                     });
                 }
@@ -3047,10 +3268,14 @@ sap.ui.define([
                     var input = this.byId(this.inputId);
                     input.setValue(oSelectedItem.getTitle()); //set value of input field
                     this.onGeneralAttrChange();
+
+                    var sRowPath = this.byId(this.inputId).getBindingInfo("value").binding.oContext.sPath;
+                    this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valuetyp", oSelectedItem.data('Valuetype'))
+    
+                    this.setGeneralAttrEditModeControls();
+                    console.log(this.byId("generalTable").getModel("DataModel").getData().results);
                 }
                 evt.getSource().getBinding("items").filter([]);
-
-                this.setGeneralAttrEditModeControls();
             },
 
             onAttrCodesValueHelp: function (oEvent) {
@@ -3129,7 +3354,7 @@ sap.ui.define([
                     descText.setText(oSelectedItem.getDescription()); //set the description
 
                     var iRowIndex = +this.byId(this.inputId).getBindingInfo("value").binding.oContext.sPath.replace("/results/","");
-                    if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp") === "NUMVALUE") {
+                    if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
                         var uom = oSelectedItem.data('Uom');
                         var attribUom = this.byId(this.attribUom);
                         attribUom.setValue(uom); //set the uom
@@ -3286,27 +3511,138 @@ sap.ui.define([
             //******************************************* */
 
             addLine: async function (oEvent) {
+                if (this._dataMode === "NEW") {
+                    this.addAnotherLine(oEvent);
+                }
+                else {
+                    //adding lines to tables via model
+                    this._dataMode = "NEW";
+                    var oButton = oEvent.getSource();
+                    var tabName = oButton.data('TableName')
+                    var oTable = this.getView().byId(tabName);
+                    var oModel = oTable.getModel("DataModel");
+                    var oData = oModel.getProperty('/results');
+                    oData.forEach(item => item.ACTIVE = "");
+                    var aNewRow = [];
+                    var length = oData.length;
+
+                    if (tabName === "generalTable") {
+                        aNewRow = [{
+                            NEW: true, 
+                            ACTIVE: "X",
+                            Attribcd: "",
+                            Attribtyp: "",
+                            Attribval: "",
+                            Casverind: false,
+                            Desc1: "",
+                            Valuetyp: "",
+                            Valunit: ""
+                        }];
+                    }
+                    else if (tabName === "colorsTable") {
+                        var lastSeqno = 0;
+
+                        if (length > 0) {
+                            lastSeqno = Math.max.apply(Math, oData.map(function(o) { return parseInt(o.Sortseq); }));
+                        }
+                        
+                        lastSeqno++;
+                        
+                        var seqno = lastSeqno.toString();
+
+                        aNewRow = [{
+                            NEW: true, 
+                            ACTIVE: "X",
+                            Sortseq: seqno
+                        }];
+                    }
+                    else {
+                        aNewRow = [{NEW: true, ACTIVE: "X"}];
+                    }
+                    
+                    var aDataAfterChange = aNewRow.concat(oData);
+                    oModel.setProperty('/results', aDataAfterChange);
+                    // oData.push({NEW: true});
+                    // oTable.getBinding("rows").refresh();
+                    //oTable.setVisibleRowCount(oData.length);
+                    const result = await this.lockStyle("X");
+                    if (result.Type != "S") {
+                        MessageBox.warning(result.Message);
+                    }
+                    else {
+                        if (tabName === "generalTable") {
+                            this.setGeneralAttrEditMode();
+                            this.onGeneralAttrChange();
+                        } else if (tabName === "colorsTable") {
+                            this.setColorCreateMode();
+                            this.onColorChange();
+                        } else if (tabName === "processesTable") {
+                            this.setProcessEditMode();
+                            this.onProcessChange();
+                        }
+                    }
+                }
+            },
+
+            addAnotherLine: function (oEvent) {
                 //adding lines to tables via model
                 var oButton = oEvent.getSource();
                 var tabName = oButton.data('TableName')
                 var oTable = this.getView().byId(tabName);
-                var oModel = this.getView().byId(tabName).getModel("DataModel");
+                var oModel = oTable.getModel("DataModel");
                 var oData = oModel.getProperty('/results');
-                oData.push({});
-                oTable.getBinding("rows").refresh();
-                //oTable.setVisibleRowCount(oData.length);
-                const result = await this.lockStyle("X");
-                if (result.Type != "S") {
-                    MessageBox.warning(result.Message);
+                oData.forEach(item => item.ACTIVE = "");
+                var aNewRow = [];
+                var length = oData.length;
+
+                if (tabName === "generalTable") {
+                    aNewRow = [{
+                        NEW: true, 
+                        ACTIVE: "X",
+                        Attribcd: "",
+                        Attribtyp: "",
+                        Attribval: "",
+                        Casverind: false,
+                        Desc1: "",
+                        Valuetyp: "",
+                        Valunit: ""
+                    }];
+                }
+                else if (tabName === "colorsTable") {
+                    var lastSeqno = 0;
+
+                    if (length > 0) {
+                        lastSeqno = Math.max.apply(Math, oData.map(function(o) { return parseInt(o.Sortseq); }));
+                    }
+                    
+                    lastSeqno++;
+                    
+                    var seqno = lastSeqno.toString();
+
+                    aNewRow = [{
+                        NEW: true, 
+                        ACTIVE: "X",
+                        Sortseq: seqno
+                    }];
                 }
                 else {
-                    if (tabName === "generalTable") {
-                        this.setGeneralAttrEditMode();
-                        this.onGeneralAttrChange();
-                    } else if (tabName === "colorsTable") {
-                        this.setColorCreateMode();
-                        this.onColorChange();
-                    }
+                    aNewRow = [{NEW: true, ACTIVE: "X"}];
+                }
+                
+                var aDataAfterChange = aNewRow.concat(oData);
+
+                oModel.setProperty('/results', aDataAfterChange);
+                // oTable.getBinding("rows").refresh();
+               
+                if (tabName === "generalTable") {
+                    this.setGeneralAttrEditModeControls();
+                    this.byId("btnGenAttrRemoveRow").setVisible(true);
+                } else if (tabName === "colorsTable") {
+                    this.setColorEditModeControls();
+                    this.byId("btnColorRemoveRow").setVisible(true);
+                } else if (tabName === "processesTable") {
+                    this.setProcessEditModeControls();
+                    this.byId("btnProcessRemoveRow").setVisible(true);
                 }
             },
 
@@ -3315,7 +3651,7 @@ sap.ui.define([
                 var oButton = oEvent.getSource();
                 var tabName = oButton.data('TableName')
                 var oTable = this.getView().byId(tabName);
-                var oModel = this.getView().byId(tabName).getModel("DataModel");
+                var oModel = oTable.getModel("DataModel");
                 var oData = oModel.getProperty('/results');
                 var length = oData.length;
                 var lastSeqno = 0;
@@ -3334,8 +3670,84 @@ sap.ui.define([
                 this.onProcessChange();
             },
 
+            removeNewLine: function(oEvent) {
+                var oButton = oEvent.getSource();
+                var tabName = oButton.data('TableName')
+                var oTable = this.getView().byId(tabName);
+                var oModel = oTable.getModel("DataModel");
+                var oData = oModel.getProperty('/results');
+                var oNewData = oData.filter(fItem => fItem.NEW === true);
+                var aSelIndices = oTable.getSelectedIndices();
+                var oTmpSelectedIndices = [];
+                var bProceed = false;
+
+                if (oNewData.length > 0) {
+                    if (aSelIndices.length > 0) {
+                        aSelIndices.forEach(item => {
+                            oTmpSelectedIndices.push(oTable.getBinding("rows").aIndices[item])
+                        })
+        
+                        aSelIndices = oTmpSelectedIndices;       
+                        aSelIndices.sort((a,b) => (a < b ? 1 : -1));
+
+                        aSelIndices.forEach((item, index) => {
+                            if (oData.at(item).NEW) {
+                                var idxToRemove = oData.indexOf(oData.at(item));
+
+                                oData.splice(idxToRemove, 1);
+                                bProceed = true;
+                            }
+                        })
+
+                        if (bProceed) {
+                            oModel.setProperty('/results', oData);
+                            oTable.clearSelection();
+
+                            if (tabName === "generalTable") { this.setGeneralAttrEditModeControls(); }
+                            else if (tabName === "colorsTable") { this.setColorEditModeControls(); }
+                            else if (tabName === "processesTable") { this.setProcessEditModeControls(); }
+                        }
+                        else {
+                            MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_SEL_RECORD_TO_REMOVE"])
+                        }
+                    }  
+                    else {
+                        var iIndexToActivate = -1;
+
+                        oData.forEach((item, index) => {
+                            if (item.ACTIVE === "X") {
+                                oData.splice(index, 1);
+                                oModel.setProperty('/results', oData);
+
+                                if (tabName === "generalTable") { this.setGeneralAttrEditModeControls(); }
+                                else if (tabName === "colorsTable") { this.setColorEditModeControls(); }
+                                else if (tabName === "processesTable") { this.setProcessEditModeControls(); }
+                            }
+                        })
+
+                        oData.forEach((item, index) => {
+                            if (item.NEW && iIndexToActivate === -1) {
+                                item.ACTIVE = "X";
+                                iIndexToActivate = index;
+                            }
+                        })
+                    }
+
+                    if (oData.filter(fItem => fItem.NEW === true).length === 0) {
+                        if (tabName === "generalTable") { this.byId("btnGenAttrRemoveRow").setVisible(false); }
+                        else if (tabName === "colorsTable") { this.byId("btnColorRemoveRow").setVisible(false); }
+                        else if (tabName === "processesTable") { this.byId("btnProcessRemoveRow").setVisible(false); }
+                    }
+                }
+                else {
+                    MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_NO_RECORD_TO_REMOVE"]);
+                }
+            },
+
             onDeleteTableItems: async function (oTableName, oFragmentName, oDialog) {
                 var oTable = this.getView().byId(oTableName);
+                var oTableModel = oTable.getModel("DataModel");
+                var oData = oTableModel.getData();                
                 var selected = oTable.getSelectedIndices();
                 var bProceed = true;
                 var noEdit = 0;
@@ -3348,8 +3760,6 @@ sap.ui.define([
                         this._bomColors = await this.getBOMCOlor(this);
 
                         if (this._bomColors.length > 0) {
-                            var oTableModel = oTable.getModel("DataModel");
-                            var oData = oTableModel.getData();
                             noEditMsg = "Color ";
                             editMsg = "Color ";
 
@@ -3369,8 +3779,6 @@ sap.ui.define([
                     }
                     else if (oTableName === "versionsTable") {
                         var oDataIO = this.byId("ioTable").getModel("DataModel").getData().results;
-                        var oTableModel = oTable.getModel("DataModel");
-                        var oData = oTableModel.getData();
                         var sMessage = "", sAddtlMessage = "";
                         noEditMsg = "Version ";
                         editMsg = "Version ";
@@ -3393,6 +3801,26 @@ sap.ui.define([
                             MessageBox.information(sMessage + sAddtlMessage);
                         }
                     }
+                    else if (oTableName === "generalTable") {
+                        for (var i = 0; i < selected.length; i++) {
+                            var vProp = oData.results[selected[i]].Property;
+                            var vType = oData.results[selected[i]].Attribtyp;
+                            var vCode = oData.results[selected[i]].Attribcd;
+
+                            if (vProp === "M") {
+                                noEdit++;
+                                noEditMsg += vType + "/" + vCode + ", ";
+                            }
+                            else {
+                                editMsg += vType + "/" + vCode + ", ";
+                            }
+                        }
+
+                        if (selected.length === noEdit) {
+                            bProceed = false;
+                            MessageBox.information("No record to delete.\r\nSelected attribute/s are mandatory.")
+                        }                            
+                    }
 
                     if (bProceed) {
                         if (!oDialog) {
@@ -3405,13 +3833,16 @@ sap.ui.define([
                         oDialog.open();
 
                         if (oTableName === "colorsTable" && noEdit > 0 && selected.length !== noEdit) {
-                            oDialog.getContent()[0].getContent()[0].setProperty("text", noEditMsg.substring(0, noEditMsg.length - 2) + " already used in BOM.\r\n" + editMsg.substring(0, editMsg.length - 2) + " can be deleted.\r\n" + "Confirm delete color" + editMsg.substring(0, editMsg.length - 2).replace("Color", "") + "?");
+                            oDialog.getContent()[0].getContent()[0].setProperty("text", noEditMsg.substring(0, noEditMsg.length - 2) + " already used in BOM.\r\n" + editMsg.substring(0, editMsg.length - 2) + " can be deleted.\r\n" + "Confirm delete color" + editMsg.substring(0, editMsg.length - 2).replace("Color", "") + "?\r\n\r\n");
                         }
                         else if (oTableName === "versionsTable" && noEdit > 0 && selected.length !== noEdit) {
                             if (noEditMsg === "Version ") noEditMsg = sAddtlMessage;
                             else noEditMsg = noEditMsg.substring(0, noEditMsg.length - 2) + " already used in IO.\r\n" + sAddtlMessage;
 
-                            oDialog.getContent()[0].getContent()[0].setProperty("text", noEditMsg + editMsg.substring(0, editMsg.length - 2) + " can be deleted.\r\n" + "Confirm delete version" + editMsg.substring(0, editMsg.length - 2).replace("Version","") + "?");
+                            oDialog.getContent()[0].getContent()[0].setProperty("text", noEditMsg + editMsg.substring(0, editMsg.length - 2) + " can be deleted.\r\n" + "Confirm delete version" + editMsg.substring(0, editMsg.length - 2).replace("Version","") + "?\r\n\r\n");
+                        }
+                        else if (oTableName === "generalTable" && noEdit > 0 && selected.length !== noEdit) {
+                            oDialog.getContent()[0].getContent()[0].setProperty("text", "Mandatory attribute " + noEditMsg.substring(0, noEditMsg.length - 2) + " cannot be deleted.\r\nAttribute " + editMsg.substring(0, editMsg.length - 2) + " can be deleted.\r\nConfirm delete " + editMsg.substring(0, editMsg.length - 2) + "?\r\n\r\n");   
                         }
                     }
                 } else {
@@ -3432,6 +3863,7 @@ sap.ui.define([
                 data.editMode = false;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, editModelName);
+                this._dataMode = "READ";
 
                 if (editModelName === "HeaderEditModeModel") {
                     this.setReqField("HeaderEditModeModel", false);
@@ -3466,6 +3898,16 @@ sap.ui.define([
                     this.lockStyle("O");
                 }
                 else if (editModelName === "ProcessEditModeModel") {
+                    var oTable = this.getView().byId("processesTable");
+
+                    oTable.getRows().forEach(row => {
+                        row.getCells().forEach(cell => {
+                            if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                                cell.setProperty("enabled", true);
+                            }
+                        });
+                    })
+
                     this.setControlEditMode("ProcessEditModeModel", false);
                     this.enableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(true);
@@ -3483,15 +3925,24 @@ sap.ui.define([
                 else if (editModelName === "ColorEditModeModel") {
                     var oTable = this.getView().byId("colorsTable");
 
+                    // oTable.getRows().forEach(row => {
+                    //     row.getCells().forEach(cell => {
+                    //         if (cell.getBindingInfo("value") !== undefined) {
+                    //             cell.setProperty("editable", false);
+                    //         }
+                    //     });
+                    // })
+
                     oTable.getRows().forEach(row => {
                         row.getCells().forEach(cell => {
-                            if (cell.getBindingInfo("value") !== undefined) {
-                                cell.setProperty("editable", false);
+                            if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                                cell.setProperty("enabled", true);
                             }
                         });
                     })
 
                     this.byId("btnColorAdd").setVisible(true);
+                    this.byId("btnColorRemoveRow").setVisible(false);
                     this.byId("btnColorSave").setVisible(false);
                     this.byId("btnColorCancel").setVisible(false);
                     this.byId("btnColorEdit").setVisible(true);
@@ -3573,8 +4024,16 @@ sap.ui.define([
                     else if (pModule === "GenAttrEditModeModel") {
                         this.byId("btnGenAttrEdit").setVisible(!pEditMode);
                         this.byId("btnGenAttrDelete").setVisible(!pEditMode);
-                        this.byId("btnGenAttrAdd").setVisible(!pEditMode);
 
+                        if (this._dataMode === "NEW") {
+                            this.byId("btnGenAttrAdd").setVisible(pEditMode);
+                            this.byId("btnGenAttrRemoveRow").setVisible(pEditMode);
+                        }
+                        else {
+                            this.byId("btnGenAttrAdd").setVisible(!pEditMode);
+                            this.byId("btnGenAttrRemoveRow").setVisible(!pEditMode);
+                        }
+                                                
                         this.byId("btnGenAttrSave").setVisible(pEditMode);
                         this.byId("btnGenAttrCancel").setVisible(pEditMode);
                     }
@@ -3587,7 +4046,16 @@ sap.ui.define([
                     else if (pModule === "ProcessEditModeModel") {
                         this.byId("btnProcessEdit").setVisible(!pEditMode);
                         this.byId("btnProcessDelete").setVisible(!pEditMode);
-                        this.byId("btnProcessAdd").setVisible(!pEditMode);
+                        // this.byId("btnProcessAdd").setVisible(!pEditMode);
+
+                        if (this._dataMode === "NEW") {
+                            this.byId("btnProcessAdd").setVisible(pEditMode);
+                            this.byId("btnProcessRemoveRow").setVisible(pEditMode);
+                        }
+                        else {
+                            this.byId("btnProcessAdd").setVisible(!pEditMode);
+                            this.byId("btnProcessRemoveRow").setVisible(!pEditMode);
+                        }
 
                         this.byId("btnProcessSave").setVisible(pEditMode);
                         this.byId("btnProcessCancel").setVisible(pEditMode);
@@ -3600,7 +4068,6 @@ sap.ui.define([
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
                     }
-
                 }
                 else {
                     if (pModule === "HeaderEditModeModel") {
@@ -3616,6 +4083,7 @@ sap.ui.define([
                         this.byId("btnGenAttrDelete").setVisible(!pEditMode);
                         this.byId("btnGenAttrAdd").setVisible(!pEditMode);
 
+                        this.byId("btnGenAttrRemoveRow").setVisible(pEditMode);
                         this.byId("btnGenAttrSave").setVisible(pEditMode);
                         this.byId("btnGenAttrCancel").setVisible(pEditMode);
                     }
@@ -3630,6 +4098,7 @@ sap.ui.define([
                         this.byId("btnProcessDelete").setVisible(!pEditMode);
                         this.byId("btnProcessAdd").setVisible(!pEditMode);
 
+                        this.byId("btnProcessRemoveRow").setVisible(pEditMode);
                         this.byId("btnProcessSave").setVisible(pEditMode);
                         this.byId("btnProcessCancel").setVisible(pEditMode);
                     }
@@ -3837,6 +4306,32 @@ sap.ui.define([
 
                 if (tabName === "ioTable") {
                     this.getIOs(true);
+                }
+            },
+
+            onSorted: function(oEvent) {
+                var oTable = oEvent.getSource();
+                var sTabId = oTable.sId.split("--")[oTable.sId.split("--").length - 1];
+                this._sActiveTableId = sTabId;
+
+                if (this._dataMode !== "READ") {
+                    if (sTabId === "generalTable") { this.setGeneralAttrEditModeControls(); }
+                    else if (sTabId === "colorsTable") { this.setColorEditModeControls(); }
+                    else if (sTabId === "processesTable") { this.setProcessEditModeControls(); }
+                }
+            },
+
+            enableVersionItemTab: function() {
+                var oDataColor = [], oDataSize = [];
+
+                if (this.getView().byId("colorsTable").getModel("DataModel") !== undefined) { oDataColor = this.getView().byId("colorsTable").getModel("DataModel").getData().results }
+                if (this.getView().byId("sizesTable").getModel("DataModel") !== undefined) { oDataSize = this.getView().byId("sizesTable").getModel("DataModel").getData().results }
+                
+                if (oDataColor.length === 0 || oDataSize.length === 0) {
+                    this.disableTabItem("detailPanel","version");
+                }
+                else {
+                    this.enableTabItem("detailPanel","version");
                 }
             },
 

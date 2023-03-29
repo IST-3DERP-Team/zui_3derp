@@ -8,6 +8,10 @@
 		search="_attrTypesValueHelpSearch"
 		confirm="_attrTypesValueHelpClose"
 		cancel="_attrTypesValueHelpClose">
-		<StandardListItem title="{AttribTypeModel>Attribtyp}" description="{AttribTypeModel>Desc1}"/>
+		<StandardListItem title="{AttribTypeModel>Attribtyp}" description="{AttribTypeModel>Desc1}">
+			<customData>
+				<core:CustomData key="Valuetype" value="{AttribTypeModel>Valuetype}"/>
+            </customData>
+		</StandardListItem>
 	</SelectDialog>
 </core:FragmentDefinition>

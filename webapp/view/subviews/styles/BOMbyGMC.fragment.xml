@@ -2,22 +2,27 @@
     xmlns:c="zui3derp.control" xmlns:uiT="sap.ui.table"  xmlns:layout="sap.ui.layout"  >
      
 <VBox fitContainer="true" >
-    <Toolbar height="3rem" style="Clear">
-        <Label text="{i18n>BOMbyGMC}"/>
-        <Button icon="sap-icon://synchronize" press="onRefresh"/>
+    <Toolbar height="2rem" style="Clear">
+        <!-- <Label text="{i18n>BOMbyGMC}"/> -->
         <ToolbarSpacer />
-        <Button text="{i18n>GetComponents}" tooltip="{i18n>Getstylecomponents}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
-        <Button text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
-         <Button icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLineBOM" visible="{= ${AppAction>/appChange} === true ? true : false}">
+        <Button id="btnBOMGMCAdd" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLineBOM" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>
                 <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
         </Button>
-        <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMitems}" press="onSaveBOMbyGMC" visible="{BOMbyGMCEditModeModel>/editMode}"/>
+        <Button id="btnBOMGMCRemoveRow" type="Ghost" icon="sap-icon://less" tooltip="{i18n>Removenewline}" press="removeNewLine" visible="false">
+            <customData>
+                <core:CustomData key="TableName" value="bomGMCTable" />
+            </customData>
+        </Button>        
         <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMitems}" press="setBOMbyGMCEditMode" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
-         <Button icon="sap-icon://delete" tooltip="{i18n>DeleteselectedBOMitems}" press="onDeleteBOMItems" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+        <Button icon="sap-icon://delete" tooltip="{i18n>DeleteselectedBOMitems}" press="onDeleteBOMItems" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+        <Button icon="sap-icon://synchronize" press="onRefresh" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+        <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMitems}" press="onSaveBOMbyGMC" visible="{BOMbyGMCEditModeModel>/editMode}"/>
         <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelBOMbyGMCEdit" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? true : false }"/>
-        <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">
+        <Button icon="sap-icon://cause" text="{i18n>GetComponents}" tooltip="{i18n>Getstylecomponents}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
+        <Button icon="sap-icon://process" text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+        <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>
             <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
@@ -46,7 +51,13 @@
           
     </uiT:Table> -->
     <!-- <ScrollContainer height="400px" vertical="true">-->
-        <c:DynamicTable id="bomGMCTable" class="sapUiSizeCompact" rows="{path:'DataModel>/results'}" visibleRowCountMode="Auto"
+        <c:DynamicTable id="bomGMCTable" 
+            class="sapUiSizeCompact" 
+            rows="{path:'DataModel>/results'}" 
+            visibleRowCountMode="Auto"
+            enableColumnReordering="true" 
+            enableColumnFreeze="true"
+            showColumnVisibilityMenu="true"
             selectionMode="MultiToggle" >
             <c:layoutData>
                 <FlexItemData growFactor="1" baseSize="0%" />
