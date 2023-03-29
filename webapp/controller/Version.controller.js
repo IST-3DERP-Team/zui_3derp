@@ -93,7 +93,6 @@ sap.ui.define([
                 this.getVersionsData(); //get versions data
 
                 //Close Edit Modes
-                this.closeEditModes();
                 // this.cancelVersionAttrEdit();
                 // this.cancelMaterialListEdit();
                 // this.cancelBOMbyGMCEdit();
@@ -101,6 +100,16 @@ sap.ui.define([
 
                 this.getAppAction();
 
+                var cIconTabBar = this.getView().byId("versionTabBar");
+                if (this.getOwnerComponent().getModel("UI_MODEL").getData().fromScreen === "ASSIGNMAT") {
+                    cIconTabBar.setSelectedKey("matListItemTab");
+                }
+                else {
+                    cIconTabBar.setSelectedKey("verAtrrItemTab");
+                }
+
+                this.closeEditModes();
+                this.getView().setModel(new JSONModel(this.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").getData().text), "ddtext");
             },
 
             closeEditModes: function () {
@@ -240,6 +249,17 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 this.lockStyleVer("O");
+                this.byId("btnVersionAttrRemoveRow").setVisible(false);
+                this._dataMode = "READ";
+
+                var oTable = this.getView().byId("versionAttrTable");
+                oTable.getRows().forEach(row => {
+                    row.getCells().forEach(cell => {
+                        if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                            cell.setProperty("enabled", true);
+                        }
+                    });
+                })
             },
 
             onVersionAttrChange: function () {
@@ -384,6 +404,54 @@ sap.ui.define([
                     oTableModel.setData(oData);
                     oTable.clearSelection();
                 }
+            },
+
+            setVersionAttrEditModeControls: function() {
+                //update to base on binding indices
+                var oTable = this.getView().byId("versionAttrTable");
+
+                setTimeout(() => {
+                    for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                        var iRowIndex = oTable.getBinding("rows").aIndices[i];
+    
+                        // var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
+                        var oRow = oTable.getRows()[iRowIndex];
+                        var bNew = oTable.getContextByIndex(iRowIndex).getProperty("NEW");                    
+                        var oCellCtrlValTyp = "";
+
+                        oRow.getCells().forEach(cell => {
+                            if ((bNew === undefined || !bNew) && this._dataMode === "NEW") {
+                                if (cell.getBindingInfo("text") === undefined) {
+                                    cell.setEnabled(false);
+                                }
+                            }
+                            else {
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    oCellCtrlValTyp = "value";
+
+                                    if (this._dataMode === "NEW") { cell.setEnabled(true) }
+                                }
+                                else if (cell.getBindingInfo("text") !== undefined) {
+                                    oCellCtrlValTyp = "text";
+                                }
+                                else if (cell.getBindingInfo("selected") !== undefined) {
+                                    oCellCtrlValTyp = "selected";
+
+                                    if (this._dataMode === "NEW") { cell.setEnabled(true) }
+                                }
+                                
+                                if (this._dataMode !== "NEW") {
+                                    if (oCellCtrlValTyp !== "text") {
+                                        cell.setEnabled(true);
+                                    }
+                                    else {
+                                        cell.setEnabled(false);
+                                    }
+                                }
+                            }
+                        })
+                    }                     
+                }, 100);
             },
 
             //******************************************* */
@@ -664,7 +732,19 @@ sap.ui.define([
                 }
                 var oMsgStrip = that.getView().byId('BOMbyGMCMessageStrip');
                 oMsgStrip.setVisible(false);
+                
                 this.lockStyleVer("O");
+                this.byId("btnBOMGMCRemoveRow").setVisible(false); 
+                this._dataMode = "READ";
+
+                var oTable = this.getView().byId("bomGMCTable");
+                oTable.getRows().forEach(row => {
+                    row.getCells().forEach(cell => {
+                        if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                            cell.setProperty("enabled", true);
+                        }
+                    });
+                })
 
                  //remove required field
                  var oTable = this.getView().byId("bomGMCTable");
@@ -1108,6 +1188,54 @@ sap.ui.define([
                 this._BOMbyGMCChanged = true;
                 this.onSaveBOMbyGMC(true);
                 blnGetComponentInd = true;
+            },
+
+            setBOMbyGMCEditModeControls: function() {
+                //update to base on binding indices
+                var oTable = this.getView().byId("bomGMCTable");
+
+                setTimeout(() => {
+                    for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                        var iRowIndex = oTable.getBinding("rows").aIndices[i];
+    
+                        // var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
+                        var oRow = oTable.getRows()[iRowIndex];
+                        var bNew = oTable.getContextByIndex(iRowIndex).getProperty("NEW");                    
+                        var oCellCtrlValTyp = "";
+
+                        oRow.getCells().forEach(cell => {
+                            if ((bNew === undefined || !bNew) && this._dataMode === "NEW") {
+                                if (cell.getBindingInfo("text") === undefined) {
+                                    cell.setEnabled(false);
+                                }
+                            }
+                            else {
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    oCellCtrlValTyp = "value";
+
+                                    if (this._dataMode === "NEW") { cell.setEnabled(true) }
+                                }
+                                else if (cell.getBindingInfo("text") !== undefined) {
+                                    oCellCtrlValTyp = "text";
+                                }
+                                else if (cell.getBindingInfo("selected") !== undefined) {
+                                    oCellCtrlValTyp = "selected";
+
+                                    if (this._dataMode === "NEW") { cell.setEnabled(true) }
+                                }
+                                
+                                if (this._dataMode !== "NEW") {
+                                    if (oCellCtrlValTyp !== "text") {
+                                        cell.setEnabled(true);
+                                    }
+                                    else {
+                                        cell.setEnabled(false);
+                                    }
+                                }
+                            }
+                        })
+                    }                     
+                }, 100);
             },
 
             //******************************************* */
@@ -1850,16 +1978,21 @@ sap.ui.define([
                 //addisng material button clicked, navigate to assign material page
                 var oData = this.byId("materialListTable").getModel("DataModel").getData().results;
 
-                if (oData.filter(fItem => fItem.Matno === "").length > 0) {
-                    var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-                    oRouter.navTo("RouteAssignMaterial", {
-                        styleno: this._styleNo,
-                        sbu: this._sbu,
-                        version: this._version
-                    });
+                if (oData.length > 0) {
+                    if (oData.filter(fItem => fItem.Matno === "").length > 0) {
+                        var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                        oRouter.navTo("RouteAssignMaterial", {
+                            styleno: this._styleNo,
+                            sbu: this._sbu,
+                            version: this._version
+                        });
+                    }
+                    else {
+                        MessageBox.information("No valid record for material no. creation.\r\nMaterial no assigned or deleted already.");
+                    }
                 }
                 else {
-                    MessageBox.information("No valid record for material no. creation.\r\nMaterial no assigned or deleted already.");
+                    MessageBox.information("No available record to process.");
                 }
             },
 
@@ -2100,45 +2233,174 @@ sap.ui.define([
             },
 
             addLine: function (oEvent) {
-                //add line to tables
+                if (this._dataMode === "NEW") {
+                    this.addAnotherLine(oEvent);
+                }
+                else {
+                    //add line to tables
+                    this._dataMode = "NEW";
+                    var oButton = oEvent.getSource();
+                    var tabName = oButton.data('TableName')
+                    var oTable = this.getView().byId(tabName);
+                    var oModel = oTable.getModel("DataModel");
+                    var oData = oModel.getProperty('/results');
+                    oData.forEach(item => item.ACTIVE = "");
+
+                    var aNewRow = [{NEW: true, ACTIVE: "X"}];
+                    var aDataAfterChange = aNewRow.concat(oData);
+                    oModel.setProperty('/results', aDataAfterChange);
+                    
+                    // oData.push({});
+                    // oTable.getBinding("rows").refresh();
+                    // oTable.setVisibleRowCount(oData.length);
+
+                    if (tabName === "versionAttrTable") {
+                        //this.setVersionAttrEditMode();
+                        this.setTabReadEditMode(true, "VersionAttrEditModeModel");
+                        this.onVersionAttrChange();
+                        this.setVersionAttrEditModeControls();
+                    }
+                }
+            },
+
+            addAnotherLine: function (oEvent) {
+                //adding lines to tables via model
                 var oButton = oEvent.getSource();
                 var tabName = oButton.data('TableName')
                 var oTable = this.getView().byId(tabName);
-                var oModel = this.getView().byId(tabName).getModel("DataModel");
+                var oModel = oTable.getModel("DataModel");
                 var oData = oModel.getProperty('/results');
-                oData.push({});
-                oTable.getBinding("rows").refresh();
-                oTable.setVisibleRowCount(oData.length);
+                oData.forEach(item => item.ACTIVE = "");
+                
+                var aNewRow = [{NEW: true, ACTIVE: "X"}];
+                var aDataAfterChange = aNewRow.concat(oData);
 
+                oModel.setProperty('/results', aDataAfterChange);
+                // oTable.getBinding("rows").refresh();
+               
                 if (tabName === "versionAttrTable") {
-                    //this.setVersionAttrEditMode();
-                    this.setTabReadEditMode(true, "VersionAttrEditModeModel");
-                    this.onVersionAttrChange();
-                }
-
+                    this.setVersionAttrEditModeControls();
+                    this.byId("btnVersionAttrRemoveRow").setVisible(true);
+                } 
+                else if (tabName === "bomGMCTable") {
+                    this.setBOMbyGMCEditModeControls();
+                    this.byId("btnBOMGMCRemoveRow").setVisible(true);
+                } 
             },
 
             addLineBOM: function (oEvent) {
-                // console.log(this.getOwnerComponent().getModel("COLOR_MODEL").getData())
-
                 if (this.getOwnerComponent().getModel("COLOR_MODEL").getData().items.length === 0) {
                     MessageBox.information("No colors found.")
                 }
                 else {
-                    //add lines to BOM by GMC table
-                    var oButton = oEvent.getSource();
-                    var tabName = oButton.data('TableName')
-                    var oTable = this.getView().byId(tabName);
-                    var oModel = this.getView().byId(tabName).getModel("DataModel");
-                    var oData = oModel.getProperty('/results');
-                    oData.push({});
-                    oTable.getBinding("rows").refresh();
-                    //oTable.setVisibleRowCount(oData.length);
-
-                    if (tabName === "bomGMCTable") {
-                        this.setTabReadEditMode(true, "BOMbyGMCEditModeModel");
-                        this.onBOMbyGMCChange();
+                    if (this._dataMode === "NEW") {
+                        this.addAnotherLine(oEvent);
                     }
+                    else {
+                        //add lines to BOM by GMC table
+                        this._dataMode = "NEW";
+                        var oButton = oEvent.getSource();
+                        var tabName = oButton.data('TableName')
+                        var oTable = this.getView().byId(tabName);
+                        var oModel = oTable.getModel("DataModel");
+                        var oData = oModel.getProperty('/results');
+                        oData.forEach(item => item.ACTIVE = "");
+
+                        var aNewRow = [{NEW: true, ACTIVE: "X"}];
+                        var aDataAfterChange = aNewRow.concat(oData);
+                        oModel.setProperty('/results', aDataAfterChange);
+                        // oData.push({});
+                        // oTable.getBinding("rows").refresh();
+                        //oTable.setVisibleRowCount(oData.length);
+
+                        if (tabName === "bomGMCTable") {
+                            this.setTabReadEditMode(true, "BOMbyGMCEditModeModel");
+                            this.onBOMbyGMCChange();
+                            this.setBOMbyGMCEditModeControls();
+                        }
+                    }
+                }
+            },
+
+            removeNewLine: function(oEvent) {
+                var oButton = oEvent.getSource();
+                var tabName = oButton.data('TableName')
+                var oTable = this.getView().byId(tabName);
+                var oModel = oTable.getModel("DataModel");
+                var oData = oModel.getProperty('/results');
+                var oNewData = oData.filter(fItem => fItem.NEW === true);
+                var aSelIndices = oTable.getSelectedIndices();
+                var oTmpSelectedIndices = [];
+                var bProceed = false;
+                console.log(oData)
+                if (oNewData.length > 0) {
+                    if (aSelIndices.length > 0) {
+                        aSelIndices.forEach(item => {
+                            oTmpSelectedIndices.push(oTable.getBinding("rows").aIndices[item])
+                        })
+        
+                        aSelIndices = oTmpSelectedIndices;       
+                        aSelIndices.sort((a,b) => (a < b ? 1 : -1));
+
+                        aSelIndices.forEach((item, index) => {
+                            if (oData.at(item).NEW) {
+                                var idxToRemove = oData.indexOf(oData.at(item));
+
+                                oData.splice(idxToRemove, 1);
+                                bProceed = true;
+                            }
+                        })
+
+                        if (bProceed) {
+                            oModel.setProperty('/results', oData);
+                            oTable.clearSelection();
+
+                            if (tabName === "versionAttrTable") { this.setVersionAttrEditModeControls(); }
+                            else if (tabName === "bomGMCTable") { this.setBOMbyGMCEditModeControls(); }
+                        }
+                        else {
+                            MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_SEL_RECORD_TO_REMOVE"])
+                        }
+                    }  
+                    else {
+                        var iIndexToActivate = -1;
+                        console.log(oData)
+                        oData.forEach((item, index) => {
+                            if (item.ACTIVE === "X") {
+                                oData.splice(index, 1);
+                                oModel.setProperty('/results', oData);
+
+                                if (tabName === "versionAttrTable") { this.setVersionAttrEditModeControls(); }
+                                else if (tabName === "bomGMCTable") { this.setBOMbyGMCEditModeControls(); }
+                            }
+                        })
+
+                        oData.forEach((item, index) => {
+                            if (item.NEW && iIndexToActivate === -1) {
+                                item.ACTIVE = "X";
+                                iIndexToActivate = index;
+                            }
+                        })
+                    }
+
+                    if (oData.filter(fItem => fItem.NEW === true).length === 0) {
+                        if (tabName === "generalTable") { this.byId("btnVersionAttrRemoveRow").setVisible(false); }
+                        else if (tabName === "bomGMCTable") { this.byId("btnBOMGMCRemoveRow").setVisible(false); }
+                    }
+                }
+                else {
+                    MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_NO_RECORD_TO_REMOVE"]);
+                }
+            },
+
+            onSorted: function(oEvent) {
+                var oTable = oEvent.getSource();
+                var sTabId = oTable.sId.split("--")[oTable.sId.split("--").length - 1];
+                this._sActiveTableId = sTabId;
+
+                if (this._dataMode !== "READ") {
+                    if (sTabId === "versionAttrTable") { this.setVersionAttrEditModeControls(); }
+                    else if (sTabId === "bomGMCTable") { this.setBOMbyGMCEditModeControls(); }
                 }
             },
 
@@ -2693,23 +2955,6 @@ sap.ui.define([
                 data.editMode = dataMode;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, editModelName);
-
-                 //mark as required field
-                 var oTable = this.getView().byId("bomGMCTable");
-                 var oColumnsModel = this.getView().getModel("bombByGMCColumns");
-                 var oColumnsData = oColumnsModel.getProperty('/');
-                 oTable.getColumns().forEach((col, idx) => {
-                     //console.log(col);
-                     oColumnsData.filter(item => item.ColumnName === col.sId.split("-")[1])
-                         .forEach(ci => {
-                             if (ci.Editable) {
-                                 if (ci.Mandatory) {
-                                     col.getLabel().addStyleClass("sapMLabelRequired");
-                                 }
-                             }
-                         });
-
-                 });
             },
 
             lockStyleVer: async function (isLock) {

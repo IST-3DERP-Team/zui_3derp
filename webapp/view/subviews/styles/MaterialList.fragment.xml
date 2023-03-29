@@ -1,11 +1,11 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
     <VBox fitContainer="true">
         <Toolbar height="3rem" style="Clear">
-            <Label text="{i18n>MaterialList}" />
+            <!-- <Label text="{i18n>MaterialList}" /> -->
             <ToolbarSpacer />
-            <Button icon="sap-icon://bookmark" text="{i18n>AssignMaterialNo}" tooltip="{i18n>Assignmaterialnumbers}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
-            <Button icon="sap-icon://save"  tooltip="{i18n>Savemateriallist}" press="onSaveMaterialList" visible="{MaterialListEditModeModel>/editMode}" />
             <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editmateriallist}" press="setMaterialListEditMode" visible="{= ${AppAction>/appChange} === true ? ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
+            <Button icon="sap-icon://multiselect-all" text="{i18n>AssignMaterialNo}" tooltip="{i18n>Assignmaterialnumbers}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
+            <Button icon="sap-icon://save"  tooltip="{i18n>Savemateriallist}" press="onSaveMaterialList" visible="{MaterialListEditModeModel>/editMode}" />
             <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelMaterialListEdit" visible="{= ${MaterialListEditModeModel>/editMode} === true ? true : false }" />
             <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">
                 <customData>
@@ -18,7 +18,14 @@
 
         <!-- Material List Table -->
         <!-- <ScrollContainer height="400px" vertical="true"> -->
-        <c:DynamicTable id="materialListTable" rows="{DataModel>/results}" class="sapUiSizeCompact" showColumnVisibilityMenu="true" selectionMode="Single" visibleRowCountMode="Auto">
+        <c:DynamicTable id="materialListTable" 
+            rows="{DataModel>/results}" 
+            class="sapUiSizeCompact" 
+            enableColumnReordering="true" 
+            enableColumnFreeze="true"
+            showColumnVisibilityMenu="true"
+            selectionMode="Single" 
+            visibleRowCountMode="Auto">
             <t:Column width="5rem" filterProperty="Seqno" sortProperty="Seqno">
                 <Label text="{i18n>SEQNO}" />
                 <t:template>

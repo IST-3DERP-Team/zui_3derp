@@ -2,7 +2,7 @@
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
 <VBox fitContainer="true" >
     <Toolbar height="3rem" style="Clear">
-        <Label text="{i18n>DetailedBOM}"/>
+        <!-- <Label text="{i18n>DetailedBOM}"/> -->
         <ToolbarSpacer />
         <Button icon="sap-icon://excel-attachment" press="onExport"  tooltip="{i18n>Downloadspreadsheet}">
             <customData>
@@ -12,8 +12,14 @@
     </Toolbar>
 
     <!-- Detailed BOM Tree Table -->
-    <t:TreeTable id="bomDetailedTable" class="sapUiSizeCompact" showColumnVisibilityMenu="true" rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}"
-        selectionMode="None" visibleRowCountMode="Auto">
+    <t:TreeTable id="bomDetailedTable" 
+        class="sapUiSizeCompact" 
+        enableColumnReordering="true" 
+        enableColumnFreeze="true"
+        showColumnVisibilityMenu="true"
+        rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}"
+        selectionMode="None" 
+        visibleRowCountMode="Auto">
         <t:Column width="10rem"  filterProperty="Bomitem" sortProperty="Bomitem">
             <Label text="{i18n>BOMITEM}"/>
             <t:template>

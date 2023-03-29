@@ -19,30 +19,30 @@
             <!-- OBJECT HEADER -->
             <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>Version}: {headerData>/SelectedVersion}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2" title="{headerData>/Stylecd}" />
 
-            <IconTabBar expandable="false" headerMode="Inline" upperCase="true" stretchContentHeight="true" class="sapUiResponsiveContentPadding">
+            <IconTabBar id="versionTabBar" expandable="false" headerMode="Inline" upperCase="true" stretchContentHeight="true" class="sapUiResponsiveContentPadding">
                 <items>
                     <!-- VERSION ATTRIBUTES -->
-                    <IconTabFilter text="{i18n>VersionAttributes}" tooltip="{i18n>VersionAttributes}">
+                    <IconTabFilter key="verAtrrItemTab" text="{i18n>VersionAttributes}" tooltip="{i18n>VersionAttributes}">
                         <core:Fragment fragmentName="zui3derp.view.subviews.styles.VersionAttributes" type="XML" />
                     </IconTabFilter>
 
                     <!-- BOM BY GMC -->
-                    <IconTabFilter text="{i18n>BOMbyGMC}" tooltip="{i18n>BOMbyGMC}">
+                    <IconTabFilter key="bomGMCItemTab" text="{i18n>BOMbyGMC}" tooltip="{i18n>BOMbyGMC}">
                         <core:Fragment fragmentName="zui3derp.view.subviews.styles.BOMbyGMC" type="XML" />
                     </IconTabFilter>
 
                     <!-- BOM BY UV -->
-                    <IconTabFilter text="{i18n>BOMbyUV}" tooltip="{i18n>BOMbyUV}">
+                    <IconTabFilter key="bomUVItemTab" text="{i18n>BOMbyUV}" tooltip="{i18n>BOMbyUV}">
                         <core:Fragment fragmentName="zui3derp.view.subviews.styles.BOMbyUV" type="XML" />
                     </IconTabFilter>
 
                     <!-- DETAILED BOM -->
-                    <IconTabFilter text="{i18n>DetailedBOM}" tooltip="{i18n>DetailedBOM}">
+                    <IconTabFilter key="dtldBOMItemTab" text="{i18n>DetailedBOM}" tooltip="{i18n>DetailedBOM}">
                         <core:Fragment fragmentName="zui3derp.view.subviews.styles.DetailedBOM" type="XML" />
                     </IconTabFilter>
 
                     <!-- MATERIAL LIST -->
-                    <IconTabFilter text="{i18n>MaterialList}" tooltip="{i18n>MaterialList}">
+                    <IconTabFilter key="matListItemTab" text="{i18n>MaterialList}" tooltip="{i18n>MaterialList}">
                         <core:Fragment fragmentName="zui3derp.view.subviews.styles.MaterialList" type="XML" />
                     </IconTabFilter>
                 </items>

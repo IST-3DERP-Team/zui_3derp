@@ -40,6 +40,8 @@ sap.ui.define([
                 //get data
                 this.getMaterialList();
                 this.getMaterials();
+
+                this.getOwnerComponent().getModel("UI_MODEL").setProperty("/fromScreen", "ASSIGNMAT");
             },
 
 

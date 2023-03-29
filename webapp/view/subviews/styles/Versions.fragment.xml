@@ -22,8 +22,15 @@
 
         <!-- Versions Table -->
         <!-- <ScrollContainer height="400px" vertical="true"> -->
-            <c:DynamicTable id="versionsTable" rows="{DataModel>/results}" enableColumnReordering="false" 
-                selectionMode="MultiToggle" visibleRowCountMode="Fixed" class="sapUiSizeCompact" selectionBehavior="Row" >
+            <c:DynamicTable id="versionsTable" 
+                rows="{DataModel>/results}" 
+                enableColumnReordering="true" 
+                enableColumnFreeze="true"
+                showColumnVisibilityMenu="true"
+                selectionMode="MultiToggle" 
+                visibleRowCountMode="Fixed" 
+                class="sapUiSizeCompact" 
+                selectionBehavior="Row" >
                 <c:columns>
                     <!-- <t:Column width="5rem"   filterProperty="Verno" sortProperty="Verno">
                         <Label text="{i18n>Manage}"/>
@@ -35,13 +42,13 @@
                             </Button>
                         </t:template>
                     </t:Column> -->
-                    <t:Column width="5rem"   filterProperty="Verno" sortProperty="Verno" hAlign="End">
+                    <t:Column width="5rem" filterProperty="Verno" sortProperty="Verno" hAlign="End">
                         <Label text="{i18n>Version}"/>
                         <t:template>
                             <Text text="{DataModel>Verno}" tooltip="{DataModel>Verno}"/>
                         </t:template>
                     </t:Column>
-                    <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
+                    <t:Column width="6rem" hAlign="Center" filterProperty="Currentver" sortProperty="Currentver">
                         <Label text="{i18n>VersionStatus}" />
                         <t:template>
                             <tnt:InfoLabel id="il8" text="{= ${DataModel>Currentver} === true ? 'Current' : ' ' }" colorScheme="{= ${DataModel>Currentver} === true ? 8 : 7 }" displayOnly= "true"
