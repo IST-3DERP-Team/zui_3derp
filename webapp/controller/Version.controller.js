@@ -2204,7 +2204,7 @@ sap.ui.define([
                 var oModel = oTable.getModel("DataModel");
                 var oData = oModel.getProperty('/results');
                 oData.forEach(item => item.ACTIVE = "");
-
+                
                 var aNewRow = [{NEW: true, ACTIVE: "X"}];
                 var aDataAfterChange = aNewRow.concat(oData);
 
