@@ -14,6 +14,7 @@
                 <!-- <Button id="btnHdrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deletestyleheader}" press="onDeleteStyle" visible="{= ${IO>/blnIOMod} === true ? false : ${HeaderEditModeModel>/editMode} === true ? false : true }" /> -->
                 <Button id="btnHdrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deletestyleheader}" press="onDeleteStyle" visible="true" />
                 <Button id="btnHdrCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelHeaderEdit" visible="false" />
+                <Button id="btnHdrClose" type="Ghost" icon="sap-icon://sys-cancel" tooltip="{i18n>Close}" press="closePage" visible="true" />
                 <Button id="btnHdrApplyIO" type="Ghost" icon="sap-icon://activate" text="{i18n>ApplytoIO}" tooltip="{i18n>ApplytoIO}" press="applyToIO" visible="false" />
                 <!-- <Button id="btnHdrApplyIO" type="Ghost" icon="sap-icon://activate" text="{i18n>ApplytoIO}" tooltip="{i18n>ApplytoIO}" press="applyToIO" visible="{= ${IO>/blnIOMod} === true ?  ${HeaderEditModeModel>/editMode} === true ? false : true :false }" /> -->
                 <!-- </Toolbar> -->

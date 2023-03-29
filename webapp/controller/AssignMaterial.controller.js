@@ -15,9 +15,9 @@ sap.ui.define([
 
         var that;
 
-        return Controller.extend("zui3derp.controller.AssignMaterial", {    
-            onInit: function(){
-                that = this;  
+        return Controller.extend("zui3derp.controller.AssignMaterial", {
+            onInit: function () {
+                that = this;
 
                 //Initialize Router
                 var oComponent = this.getOwnerComponent();
@@ -42,19 +42,19 @@ sap.ui.define([
                 this.getMaterials();
             },
 
-            
-            setChangeStatus: function(changed) {
+
+            setChangeStatus: function (changed) {
                 //set change flag
                 try {
                     sap.ushell.Container.setDirtyFlag(changed);
-                } catch(err) {}
+                } catch (err) { }
             },
 
             //******************************************* */
             // Material List
             //******************************************* */
 
-            getMaterialList:function(){
+            getMaterialList: function () {
                 //select Material List
                 var me = this;
 
@@ -66,19 +66,19 @@ sap.ui.define([
                 Common.openLoadingDialog(that);
 
                 var entitySet = "/StyleMaterialListSet"
-                
+
                 oModel.setHeaders({
                     styleno: this._styleNo,
-                    verno: this._version                  
+                    verno: this._version
                 });
-                oModel.read(entitySet,  {
+                oModel.read(entitySet, {
                     // urlParameters: {
                     //     "$filter": "Matno eq ''"
                     // },
-                    success: function(oData, oResponse) {
+                    success: function (oData, oResponse) {
                         // console.log('StyleMaterialListSet',oData);
                         var result = oData.results;
-                        result=result.filter(a => a.Matno === "");
+                        result = result.filter(a => a.Matno === "");
                         oData.results = result;
 
                         oJSONModel.setData(oData);
@@ -88,13 +88,13 @@ sap.ui.define([
                         Common.closeLoadingDialog(that);
                         me.setChangeStatus(false);
                     },
-                    error: function() { 
+                    error: function () {
                         Common.closeLoadingDialog(that);
                     }
                 })
             },
 
-            getMaterials: function() {
+            getMaterials: function () {
                 //get Materials for value help
                 var oView = this.getView();
                 var oSHModel = this.getOwnerComponent().getModel("SearchHelps");
@@ -103,14 +103,14 @@ sap.ui.define([
                 Common.openLoadingDialog(that);
 
                 var entitySet = "/MaterialNoSet"
-                
+
                 oSHModel.read(entitySet, {
-                    success: function(oData, oResponse) {
+                    success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "MaterialsModel");
                         Common.closeLoadingDialog(that);
                     },
-                    error: function() { 
+                    error: function () {
                         Common.closeLoadingDialog(that);
                     }
                 })
@@ -120,7 +120,7 @@ sap.ui.define([
             // Assign Automatic
             //******************************************* */
 
-            onAssignAutomatic: function() {
+            onAssignAutomatic: function () {
                 //Assign automatic clicked
                 var me = this;
 
@@ -132,12 +132,12 @@ sap.ui.define([
                 var oSelected = this.getView().byId("materialListTable").getSelectedIndices();
                 var oJSONModel = new JSONModel();
 
-                if(oSelected.length > 0) {
+                if (oSelected.length > 0) {
                     var oEntry = {
                         Styleno: this._styleNo,
                         Sbu: this._sbu,
                         Mode: "ASSIGN",
-                        MatListToItems: [ ]
+                        MatListToItems: []
                     }
 
                     //build header and payload for selected items
@@ -177,7 +177,7 @@ sap.ui.define([
                     //call create deep method to assign materials for selected items
                     oModel.create(path, oEntry, {
                         method: "POST",
-                        success: function(oDataReturn, oResponse) {
+                        success: function (oDataReturn, oResponse) {
                             console.log(oDataReturn)
                             //assign the materials based on the return
                             var oReturnItems = oDataReturn.MatListToItems.results;
@@ -186,21 +186,21 @@ sap.ui.define([
                             for (var i = 0; i < oData.results.length; i++) {
                                 var seqno = oData.results[i].Seqno;
                                 var item = oReturnItems.find((result) => result.Seqno === seqno);
-                                if(item !== undefined) {
+                                if (item !== undefined) {
                                     try {
-                                        if(item.Matno !== "") {
+                                        if (item.Matno !== "") {
                                             oData.results[i].Matno = item.Matno;
                                             bAssigned = true;
                                         }
-                                    } catch(err) {}
+                                    } catch (err) { }
                                 }
                             }
 
                             if (bAssigned) {
                                 oJSONModel.setData(oData);
-                                oTable.setModel(oJSONModel, "DataModel");    
-                                me.onMaterialListChange(); 
-                                me.onSaveMaterialList();                            
+                                oTable.setModel(oJSONModel, "DataModel");
+                                me.onMaterialListChange();
+                                me.onSaveMaterialList();
                                 // MessageBox.information(me._i18n.getText('t4'));
                                 // Common.showMessage(me._i18n.getText('t4'));
                             }
@@ -210,7 +210,7 @@ sap.ui.define([
 
                             Common.closeLoadingDialog(me);
                         },
-                        error: function(err) {
+                        error: function (err) {
                             Common.closeLoadingDialog(that);
                             // Common.showMessage(me._i18n.getText('t5'));
                             MessageBox.information(me._i18n.getText('t5'));
@@ -226,7 +226,7 @@ sap.ui.define([
             // Create Material
             //******************************************* */
 
-            onCreateMaterial: function() {
+            onCreateMaterial: function () {
                 //create material clicked
                 var me = this;
 
@@ -241,14 +241,14 @@ sap.ui.define([
                 var oMsgStrip = this.getView().byId('AssignMaterialMessageStrip');
                 oMsgStrip.setVisible(false);
 
-                if(oSelected.length > 0) {
+                if (oSelected.length > 0) {
 
                     //build headers and payload
                     var oEntry = {
                         Styleno: this._styleNo,
                         Sbu: this._sbu,
                         Mode: "CREATE",
-                        MatListToItems: [ ]
+                        MatListToItems: []
                     }
 
                     for (var i = 0; i < oSelected.length; i++) {
@@ -293,27 +293,27 @@ sap.ui.define([
                     //call create deep method for Create Material  
                     oModel.create(path, oEntry, {
                         method: "POST",
-                        success: function(oDataReturn, oResponse) {
+                        success: function (oDataReturn, oResponse) {
                             //assign the created materials
                             var oReturnItems = oDataReturn.MatListToItems.results;
                             for (var i = 0; i < oData.results.length; i++) {
                                 var seqno = oData.results[i].Seqno;
                                 var item = oReturnItems.find((result) => result.Seqno === seqno);
-                                if(item !== undefined) {
+                                if (item !== undefined) {
                                     try {
-                                        if(item.Matno !== "") {
+                                        if (item.Matno !== "") {
                                             oData.results[i].Matno = item.Matno;
                                         }
-                                    } catch(err) {}
+                                    } catch (err) { }
                                 }
                             }
                             oJSONModel.setData(oData);
                             oTable.setModel(oJSONModel, "DataModel");
                             Common.closeLoadingDialog(that);
-                            me.onMaterialListChange(); 
+                            me.onMaterialListChange();
                             me.onSaveMaterialList();
                         },
-                        error: function(err) {
+                        error: function (err) {
                             Common.closeLoadingDialog(that);
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
                             // oMsgStrip.setVisible(true);
@@ -335,7 +335,7 @@ sap.ui.define([
                 this.setChangeStatus(true);
             },
 
-            onSaveMaterialList: function() {
+            onSaveMaterialList: function () {
                 //save clicked
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
@@ -352,7 +352,7 @@ sap.ui.define([
                         Styleno: this._styleNo,
                         Sbu: this._sbu,
                         Mode: "",
-                        MatListToItems: [ ]
+                        MatListToItems: []
                     }
                     for (var i = 0; i < oData.results.length; i++) {
                         var item = {
@@ -379,29 +379,36 @@ sap.ui.define([
                         }
                         oEntry.MatListToItems.push(item);
                     };
-                    Common.openLoadingDialog(that);
+                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                        actions: ["Yes", "No"],
+                        onClose: function (sAction) {
+                            if (sAction === "Yes") {
+                                Common.openLoadingDialog(that);
 
-                    path = "/MaterialListSet";
+                                path = "/MaterialListSet";
 
-                    oModel.setHeaders({
-                        sbu: this._sbu
-                    });
-                    // console.log(JSON.stringify(oEntry));
-                    //call create deep method to save assigned or created materials
-                    oModel.create(path, oEntry, {
-                        method: "POST",
-                        success: function(oData, oResponse) {
-                            // me.getMaterialList();
-                            Common.closeLoadingDialog(that);
-                            // Common.showMessage(me._i18n.getText('t4'));
-                            MessageBox.information(me._i18n.getText('t4'));
-                            me._materialListChanged = false;
-                            me.setChangeStatus(false);
-                        },
-                        error: function(err) {
-                            Common.closeLoadingDialog(that);
-                            // Common.showMessage(me._i18n.getText('t5'));
-                            MessageBox.information(me._i18n.getText('t5'));
+                                oModel.setHeaders({
+                                    sbu: this._sbu
+                                });
+                                // console.log(JSON.stringify(oEntry));
+                                //call create deep method to save assigned or created materials
+                                oModel.create(path, oEntry, {
+                                    method: "POST",
+                                    success: function (oData, oResponse) {
+                                        // me.getMaterialList();
+                                        Common.closeLoadingDialog(that);
+                                        // Common.showMessage(me._i18n.getText('t4'));
+                                        MessageBox.information(me._i18n.getText('t4'));
+                                        me._materialListChanged = false;
+                                        me.setChangeStatus(false);
+                                    },
+                                    error: function (err) {
+                                        Common.closeLoadingDialog(that);
+                                        // Common.showMessage(me._i18n.getText('t5'));
+                                        MessageBox.information(me._i18n.getText('t5'));
+                                    }
+                                });
+                            }
                         }
                     });
                 }
@@ -411,7 +418,7 @@ sap.ui.define([
             // Search Helps
             //******************************************* */
 
-            onMaterialValueHelp : function (oEvent) {
+            onMaterialValueHelp: function (oEvent) {
                 //open Materials value help
                 var sInputValue = oEvent.getSource().getValue();
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
@@ -425,14 +432,14 @@ sap.ui.define([
                 this._valueHelpDialog.open(sInputValue);
             },
 
-            _handleValueHelpSearch : function (evt) {
+            _handleValueHelpSearch: function (evt) {
                 //search materials
                 var sValue = evt.getParameter("value");
                 var oFilter = new Filter("DescEn", sap.ui.model.FilterOperator.Contains, sValue);
                 evt.getSource().getBinding("items").filter([oFilter]);
             },
-    
-            _handleValueHelpClose : function (evt) {
+
+            _handleValueHelpClose: function (evt) {
                 //on select Material
                 var oSelectedItem = evt.getParameter("selectedItem");
                 if (oSelectedItem) {
