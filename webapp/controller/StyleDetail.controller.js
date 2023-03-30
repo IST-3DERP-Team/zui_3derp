@@ -2392,7 +2392,11 @@ sap.ui.define([
                     }
                     jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
                     that._NewVerionDialog.addStyleClass("sapUiSizeCompact");
+                    that._NewVerionDialog.setTitle("Create New Version");
                     that._NewVerionDialog.open();
+                    that._copyFrVer = "";
+                    sap.ui.getCore().byId("newVersionDesc1").setValue("");
+                    sap.ui.getCore().byId("newVersionDesc2").setValue("");                    
                 }
             },
 
@@ -2419,7 +2423,8 @@ sap.ui.define([
                     "Currentver": oCurrent
                 };
                 oModel.setHeaders({
-                    sbu: this._sbu                    
+                    sbu: this._sbu,
+                    copy: this._copyFrVer
                 });
                 //call create method of style version
                 oModel.create(path, oEntry, {
@@ -2640,7 +2645,6 @@ sap.ui.define([
                         var oDataIO = this.byId("ioTable").getModel("DataModel").getData().results;
 
                         if (oDataIO.filter(fItem => (+fItem.VERNO) === (+oData.results[selected[i]].Verno)).length === 0 && !oData.results[selected[i]].Currentver) {
-                            console.log(verno)
                             oModel.remove(entitySet, {
                                 groupId: "group1",
                                 changeSetId: "changeSetId1",
@@ -2669,59 +2673,53 @@ sap.ui.define([
                 }
             },
 
-            onCopyVersion: function(oEvent) {
-                var oModel = this.getOwnerComponent().getModel();
-
-                //get selected items to coy
+            onCopyVersion: async function(oEvent) {
                 var oTable = this.getView().byId("versionsTable");
-                var oTableModel = oTable.getModel("DataModel");
-                var oData = oTableModel.getData();
-                var selected = oTable.getSelectedIndices();
+                var oData = oTable.getModel("DataModel").getData().results;
+                var vVersion = "";
+                var bProceed = true;
 
-                oModel.setUseBatch(true);
-                oModel.setDeferredGroups(["group1"]);
-
-                if (selected.length > 0) {
-                    Common.openLoadingDialog(that);
-
-                    //call create method for each item selected
-                    for (var i = 0; i < selected.length; i++) {
-                        var path = "/StyleVersionSet";
-                        var oEntry = {
-                            "Styleno": this._styleNo,
-                            "Verno": "",
-                            "Desc1": oData.results[selected[i]].Desc1 + "_Copy",
-                            "Desc2": oData.results[selected[i]].Desc2,
-                            "Currentver": false
-                        };
-
-                        oModel.setHeaders({
-                            sbu: this._sbu,
-                            type: "COPY"
-                        });
-
-                        //call create method of style version
-                        oModel.create(path, oEntry, {
-                            groupId: "group1",
-                            changeSetId: "changeSetId1",
-                            method: "POST",
-                            success: function (oData, oResponse) { },
-                            error: function () { }
-                        });
-
-                        oModel.submitChanges({
-                            groupId: "group1"
-                        });
-
-                        oModel.setRefreshAfterChange(true);
-                    }
-
-                    console.log("refresh table");
-                    this.getVersionsTable();
-                    Common.closeLoadingDialog(that);
+                if (oData.length === 1) {
+                    vVersion = oData[0].Verno;                    
                 }
                 else {
-                    MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_NO_SEL_RECORD_TO_PROC"])
+                    var oSelectedIndices = oTable.getSelectedIndices();
+                    
+                    if (oSelectedIndices.length > 0) {
+                        if (oSelectedIndices.length === 1) {
+                            vVersion = oData.at(oTable.getBinding("rows").aIndices[oSelectedIndices[0]]).Verno;
+                        }
+                        else {
+                            MessageBox.information("Select only one version to copy from.")
+                            bProceed = false;
+                        }
+                    }
+                    else {
+                        MessageBox.information("Select version to copy from.")
+                        bProceed = false;
+                    }
+                }
+
+                if (bProceed) {
+                    const result = await this.lockStyle("X");
+
+                    if (result.Type != "S") {
+                        MessageBox.warning(result.Message);
+                    }
+                    else {
+                        //open create new version dialog
+                        if (!that._NewVerionDialog) {
+                            that._NewVerionDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CreateNewVersion", that);
+                            that.getView().addDependent(that._NewVerionDialog);
+                        }
+                        jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
+                        that._NewVerionDialog.addStyleClass("sapUiSizeCompact");
+                        that._NewVerionDialog.setTitle("Copy From Version " + vVersion);
+                        that._NewVerionDialog.open();
+                        that._copyFrVer = vVersion;
+                        sap.ui.getCore().byId("newVersionDesc1").setValue("");
+                        sap.ui.getCore().byId("newVersionDesc2").setValue("");
+                    }
                 }
             },
             
@@ -3985,6 +3983,7 @@ sap.ui.define([
                 this.byId("btnVersionSave").setEnabled(pEnable);
                 this.byId("btnVersionEdit").setEnabled(pEnable);
                 this.byId("btnVersionDelete").setEnabled(pEnable);
+                this.byId("btnVersionCopy").setEnabled(pEnable);
                 this.byId("btnVersionAdd").setEnabled(pEnable);
                 this.byId("btnVersionCancel").setEnabled(pEnable);
 
@@ -4064,6 +4063,7 @@ sap.ui.define([
                         this.byId("btnVersionEdit").setVisible(!pEditMode);
                         this.byId("btnVersionDelete").setVisible(!pEditMode);
                         this.byId("btnVersionAdd").setVisible(!pEditMode);
+                        this.byId("btnVersionCopy").setEnabled(!pEnable);
 
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
@@ -4106,6 +4106,7 @@ sap.ui.define([
                         this.byId("btnVersionEdit").setVisible(!pEditMode);
                         this.byId("btnVersionDelete").setVisible(!pEditMode);
                         this.byId("btnVersionAdd").setVisible(!pEditMode);
+                        this.byId("btnVersionCopy").setEnabled(!pEnable);
 
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
@@ -4142,6 +4143,7 @@ sap.ui.define([
                 this.byId("btnVersionSave").setEnabled(pEnable);
                 this.byId("btnVersionEdit").setEnabled(pEnable);
                 this.byId("btnVersionDelete").setEnabled(pEnable);
+                this.byId("btnVersionCopy").setEnabled(pEnable);
                 this.byId("btnVersionAdd").setEnabled(pEnable);
                 this.byId("btnVersionCancel").setEnabled(pEnable);
 
@@ -4212,6 +4214,7 @@ sap.ui.define([
                 this.byId("btnVersionEdit").setVisible(pChange);
                 this.byId("btnVersionDelete").setVisible(pChange);
                 this.byId("btnVersionAdd").setVisible(pChange);
+                this.byId("btnVersionCopy").setEnabled(pChange);
                 //this.byId("btnVersionSave").setVisible(pChange);
                 //this.byId("btnVersionCancel").setVisible(pChange);
 
