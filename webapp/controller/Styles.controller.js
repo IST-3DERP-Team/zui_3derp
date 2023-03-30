@@ -70,7 +70,8 @@ sap.ui.define([
                 this.getAppAction();
 
                 this.getOwnerComponent().getModel("UI_MODEL").setData({
-                    fromScreen: "MAIN"
+                    fromScreen: "MAIN",
+                    genAttrInfo: ""
                 })
             },
 

@@ -298,7 +298,8 @@ sap.ui.define([
                             "Attribcd": oData.results[i].Attribcd,
                             "Desc1": oData.results[i].Desc1,
                             "Attribval": oData.results[i].Attribval,
-                            "Valunit": oData.results[i].Valunit
+                            "Valunit": oData.results[i].Valunit,
+                            "Attribseq" : oData.results[i].Attribseq,
                         }
                         oEntry.VersionToItems.push(item);
                     };

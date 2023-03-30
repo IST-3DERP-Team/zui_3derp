@@ -870,9 +870,9 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oReqAttr = [];
-                var bProceed = true;
-                var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
-                oMsgStrip.setVisible(false);
+                // var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
+                // oMsgStrip.setVisible(false);
+                this._genAttrInfo = "";
 
                 Common.openLoadingDialog(that);
 
@@ -953,13 +953,17 @@ sap.ui.define([
                                 me._attributesconfig = oReqAttr;
 
                                 if (sMessage !== "") {
-                                    oMsgStrip.setVisible(true);
-                                    oMsgStrip.setText(sMessage + "Enter value on these attributes to be able to work with other style details.");
+                                    // oMsgStrip.setVisible(true);
+                                    // oMsgStrip.setText(sMessage + "Enter value on these attributes to be able to work with other style details.");
                                     me.disableOtherTabs("detailPanel");
+                                    me._genAttrInfo = sMessage + "Enter value on these attributes to be able to work with other style details.";
+                                    me.getOwnerComponent().getModel("UI_MODEL").setProperty("/genAttrInfo", me._genAttrInfo);
+                                    me.byId("iconGenAttrInfo").setVisible(true);
                                 }
-                                else { 
+                                else {
                                     me.enableOtherTabs("detailPanel"); 
                                     me.enableVersionItemTab();
+                                    me.byId("iconGenAttrInfo").setVisible(false);
                                 }
                             },
                             error: function (err) { 
@@ -1383,6 +1387,10 @@ sap.ui.define([
                     this.disableOtherTabs("detailPanel");
                 }
                 else { this.enableOtherTabs("detailPanel"); }
+            },
+
+            viewGenAttrInfo: function() {
+                MessageBox.information(this._genAttrInfo);
             },
 
             //******************************************* */
@@ -4088,6 +4096,7 @@ sap.ui.define([
                 this.byId("btnGenAttrDelete").setEnabled(pEnable);
                 this.byId("btnGenAttrAdd").setEnabled(pEnable);
                 this.byId("btnGenAttrCancel").setEnabled(pEnable);
+                // this.byId("iconGenAttrInfo").setVisible(pEnable);
 
                 //Color
                 this.byId("btnColorSave").setEnabled(pEnable);
@@ -4153,10 +4162,12 @@ sap.ui.define([
                     else if (pModule === "GenAttrEditModeModel") {
                         this.byId("btnGenAttrEdit").setVisible(!pEditMode);
                         this.byId("btnGenAttrDelete").setVisible(!pEditMode);
+                        // this.byId("iconGenAttrInfo").setVisible(!pEditMode);
 
                         if (this._dataMode === "NEW") {
                             this.byId("btnGenAttrAdd").setVisible(pEditMode);
                             this.byId("btnGenAttrRemoveRow").setVisible(pEditMode);
+                            this.byId("iconGenAttrInfo").setVisible(!pEditMode);
                         }
                         else {
                             this.byId("btnGenAttrAdd").setVisible(!pEditMode);
@@ -4213,6 +4224,7 @@ sap.ui.define([
                         this.byId("btnGenAttrEdit").setVisible(!pEditMode);
                         this.byId("btnGenAttrDelete").setVisible(!pEditMode);
                         this.byId("btnGenAttrAdd").setVisible(!pEditMode);
+                        // this.byId("iconGenAttrInfo").setVisible(!pEnable);
 
                         this.byId("btnGenAttrRemoveRow").setVisible(pEditMode);
                         this.byId("btnGenAttrSave").setVisible(pEditMode);
@@ -4280,6 +4292,7 @@ sap.ui.define([
                 this.byId("btnGenAttrEdit").setVisible(pChange);
                 this.byId("btnGenAttrDelete").setVisible(pChange);
                 this.byId("btnGenAttrAdd").setVisible(pChange);
+                // this.byId("iconGenAttrInfo").setVisible(pChange);
                 //this.byId("btnGenAttrSave").setVisible(pChange);
                 //this.byId("btnGenAttrCancel").setVisible(pChange);
 
