@@ -1,4 +1,4 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" >
     <!-- <Panel expandable="true" expanded="false" width="100%" class="sapUiSizeCompact">
         <headerToolbar>
             <Toolbar height="2rem" style="Clear">
@@ -10,17 +10,7 @@
     <MessageStrip id="GeneralAttrInfoMessageStrip" text="" showIcon="true" showCloseButton="false" class="sapUiTinyMarginBottom" visible="false" />
 
     <Toolbar height="2rem" style="Clear">
-            <core:Icon id="iconGenAttrInfo"
-                src="sap-icon://alert"
-                tooltip="{UI_MODEL>/genAttrInfo}"
-                class="size10 genAttrInfo"
-                color="#bb0000"
-                visible="false"
-                press="viewGenAttrInfo" >
-                <core:layoutData>
-                    <FlexItemData growFactor="1" />
-                </core:layoutData>
-            </core:Icon>    
+            <Button id="btnGenAttrInfo" type="Reject" icon="sap-icon://alert" text="Click or hover to show details" tooltip="{UI_MODEL>/genAttrInfo}" press="viewGenAttrInfo" visible="true" />
             <ToolbarSpacer />
             <Button id="btnGenAttrAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="true">
                 <customData>

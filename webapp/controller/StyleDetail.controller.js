@@ -958,12 +958,12 @@ sap.ui.define([
                                     me.disableOtherTabs("detailPanel");
                                     me._genAttrInfo = sMessage + "Enter value on these attributes to be able to work with other style details.";
                                     me.getOwnerComponent().getModel("UI_MODEL").setProperty("/genAttrInfo", me._genAttrInfo);
-                                    me.byId("iconGenAttrInfo").setVisible(true);
+                                    me.byId("btnGenAttrInfo").setVisible(true);
                                 }
                                 else {
                                     me.enableOtherTabs("detailPanel"); 
                                     me.enableVersionItemTab();
-                                    me.byId("iconGenAttrInfo").setVisible(false);
+                                    me.byId("btnGenAttrInfo").setVisible(false);
                                 }
                             },
                             error: function (err) { 
@@ -4167,7 +4167,7 @@ sap.ui.define([
                         if (this._dataMode === "NEW") {
                             this.byId("btnGenAttrAdd").setVisible(pEditMode);
                             this.byId("btnGenAttrRemoveRow").setVisible(pEditMode);
-                            this.byId("iconGenAttrInfo").setVisible(!pEditMode);
+                            this.byId("btnGenAttrInfo").setVisible(!pEditMode);
                         }
                         else {
                             this.byId("btnGenAttrAdd").setVisible(!pEditMode);
