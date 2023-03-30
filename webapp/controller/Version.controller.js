@@ -315,30 +315,37 @@ sap.ui.define([
                         return;
                     }
 
-                    Common.openLoadingDialog(that);
+                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                        actions: ["Yes", "No"],
+                        onClose: function (sAction) {
+                            if (sAction === "Yes") {
+                                Common.openLoadingDialog(that);
 
-                    path = "/VersionAttributesSet";
-                    oModel.setHeaders({
-                        sbu: this._sbu
-                    });
-                    //call create deep method for version attributes
-                    oModel.create(path, oEntry, {
-                        method: "POST",
-                        success: function (oData, oResponse) {
-                            me._versionAttrChanged = false;
-                            me.setChangeStatus(false);
-                            Common.closeLoadingDialog(me);
-                            me.setTabReadEditMode(false, "VersionAttrEditModeModel");
-                            // Common.showMessage(me._i18n.getText('t4'));
-                            MessageBox.information(me._i18n.getText('t4'));
-                        },
-                        error: function (err) {
-                            var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            // oMsgStrip.setVisible(true);
-                            // oMsgStrip.setText(errorMsg);
-                            Common.closeLoadingDialog(me);
-                            // Common.showMessage(me._i18n.getText('t5'));
-                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                path = "/VersionAttributesSet";
+                                oModel.setHeaders({
+                                    sbu: this._sbu
+                                });
+                                //call create deep method for version attributes
+                                oModel.create(path, oEntry, {
+                                    method: "POST",
+                                    success: function (oData, oResponse) {
+                                        me._versionAttrChanged = false;
+                                        me.setChangeStatus(false);
+                                        Common.closeLoadingDialog(me);
+                                        me.setTabReadEditMode(false, "VersionAttrEditModeModel");
+                                        // Common.showMessage(me._i18n.getText('t4'));
+                                        MessageBox.information(me._i18n.getText('t4'));
+                                    },
+                                    error: function (err) {
+                                        var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                        // oMsgStrip.setVisible(true);
+                                        // oMsgStrip.setText(errorMsg);
+                                        Common.closeLoadingDialog(me);
+                                        // Common.showMessage(me._i18n.getText('t5'));
+                                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                    }
+                                });
+                            }
                         }
                     });
 
@@ -460,7 +467,7 @@ sap.ui.define([
                 });
                 oModel.read("/StyleAttributesColorSet", {
                     success: function (oData, oResponse) {
-                        oData.results.sort((a,b) => (a.Sortseq > b.Sortseq ? 1 : -1));
+                        oData.results.sort((a, b) => (a.Sortseq > b.Sortseq ? 1 : -1));
                         console.log(oData.results)
                         me._colors = oData.results;
                         me.getSizes();
@@ -505,7 +512,7 @@ sap.ui.define([
                 });
 
                 Common.openLoadingDialog(that);
-
+                var oJSONColumnsModel = new JSONModel();
                 //get dynamic columns of BOM by GMC
                 oModel.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
@@ -519,6 +526,8 @@ sap.ui.define([
                                 "Visible": true
                             })
                         })
+                        oJSONColumnsModel.setData(oData.results);
+                        me.getView().setModel(oJSONColumnsModel, "bombByGMCColumns");
                         //pivot colors
                         me._colors.forEach((column) => {
                             columnData.push({
@@ -638,7 +647,8 @@ sap.ui.define([
                                 template: that.columnTemplate('GMC', column),
                                 sortProperty: column.ColumnName,
                                 filterProperty: column.ColumnName,
-                                width: that.getColumnSize(column)
+                                width: that.getColumnSize(column),
+                                id:"bomGMCTable" + "-" + column.ColumnName
                             });
                         });
 
@@ -671,6 +681,23 @@ sap.ui.define([
                         data.editMode = true;
                         oJSONModel.setData(data);
                         this.getView().setModel(oJSONModel, "BOMbyGMCEditModeModel");
+
+                         //mark as required field
+                        var oTable = this.getView().byId("bomGMCTable");
+                        var oColumnsModel = this.getView().getModel("bombByGMCColumns");
+                        var oColumnsData = oColumnsModel.getProperty('/');
+                        oTable.getColumns().forEach((col, idx) => {
+                            //console.log(col);
+                            oColumnsData.filter(item => item.ColumnName === col.sId.split("-")[1])
+                                .forEach(ci => {
+                                    if (ci.Editable) {
+                                        if (ci.Mandatory) {
+                                            col.getLabel().addStyleClass("sapMLabelRequired");
+                                        }
+                                    }
+                                });
+
+                        });
                     }
                 }
             },
@@ -718,6 +745,23 @@ sap.ui.define([
                         }
                     });
                 })
+
+                 //remove required field
+                 var oTable = this.getView().byId("bomGMCTable");
+                 var oColumnsModel = this.getView().getModel("bombByGMCColumns");
+                 var oColumnsData = oColumnsModel.getProperty('/');
+                 oTable.getColumns().forEach((col, idx) => {
+                     //console.log(col);
+                     oColumnsData.filter(item => item.ColumnName === col.sId.split("-")[1])
+                         .forEach(ci => {
+                             if (ci.Editable) {
+                                 if (ci.Mandatory) {
+                                     col.getLabel().removeStyleClass("sapMLabelRequired");
+                                 }
+                             }
+                         });
+
+                 });
             },
 
             onBOMbyGMCChange: function (oEvent) {
@@ -840,91 +884,98 @@ sap.ui.define([
                         }
                     };
 
-                    Common.openLoadingDialog(that);
-                    //call create deep method for BOM by GMC
-                    oModel.create(path, oEntry, {
-                        method: "POST",
-                        success: function (oDataRes, oResponse) {
-                            me._BOMbyGMCChanged = false;
-
-                            if (oGetComponentInd === true) {
-                                me.getbomGMCTable(true);
-                                me._BOMbyGMCChanged = true;
-                            } else {
-                                me.getbomGMCTable();
-                            }
-                            me.setTabReadEditMode(false, "BOMbyGMCEditModeModel")
-                            // Common.showMessage(me._i18n.getText('t4'));
-                            MessageBox.information(me._i18n.getText('t4'));
-
-                            //build the BOM by UV headers and payload - this is for the colors pivot
-                            var oEntry = {
-                                Styleno: me._styleNo,
-                                Verno: me._version,
-                                Usgcls: Constants.AUV,
-                                UVToItems: []
-                            }
-
-                            for (var i = 0; i < oData.results.length; i++) {
-                                //pivot colros only for AUV and ASUV
-                                if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
-                                    for (var j = 0; j < me._colors.length; j++) {
-
-                                        var color = me._colors[j];
-                                        item = {
-                                            "Styleno": me._styleNo,
-                                            "Verno": me._version,
-                                            "Gmc": oData.results[i].GMC,
-                                            "Partcd": oData.results[i].PARTCD,
-                                            "Usgcls": oData.results[i].USGCLS,
-                                            "Color": color.Attribcd,
-                                            "Mattyp": oData.results[i].MATTYP,
-                                            "Mattypcls": Constants.ZCOLR,
-                                            "Desc1": oData.results[i][color.Attribcd],
-                                            "Consump": oData.results[i].CONSUMP,
-                                            "Wastage": oData.results[i].WASTAGE
-                                        };
-                                        oEntry.UVToItems.push(item);
-                                    }
-                                }
-                            };
-
-                            if (oEntry.UVToItems.length > 0) {
-
-                                path = "/BOMUVSet";
-                                console.log(oEntry)
-                                oModel.setHeaders({
-                                    sbu: me._sbu
-                                });
-                                //call create deep method for BOM by UV 
+                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                        actions: ["Yes", "No"],
+                        onClose: function (sAction) {
+                            if (sAction === "Yes") {
+                                Common.openLoadingDialog(that);
+                                //call create deep method for BOM by GMC
                                 oModel.create(path, oEntry, {
                                     method: "POST",
-                                    success: function (oData, oResponse) {
-                                        me.getbomGMCTable();
+                                    success: function (oDataRes, oResponse) {
                                         me._BOMbyGMCChanged = false;
-                                        me.setChangeStatus(false);
-                                        me.lockStyleVer("O");
-                                        // MessageBox.information(me._i18n.getText('t4'));
+
+                                        if (oGetComponentInd === true) {
+                                            me.getbomGMCTable(true);
+                                            me._BOMbyGMCChanged = true;
+                                        } else {
+                                            me.getbomGMCTable();
+                                        }
+                                        me.setTabReadEditMode(false, "BOMbyGMCEditModeModel")
                                         // Common.showMessage(me._i18n.getText('t4'));
+                                        MessageBox.information(me._i18n.getText('t4'));
+
+                                        //build the BOM by UV headers and payload - this is for the colors pivot
+                                        var oEntry = {
+                                            Styleno: me._styleNo,
+                                            Verno: me._version,
+                                            Usgcls: Constants.AUV,
+                                            UVToItems: []
+                                        }
+
+                                        for (var i = 0; i < oData.results.length; i++) {
+                                            //pivot colros only for AUV and ASUV
+                                            if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
+                                                for (var j = 0; j < me._colors.length; j++) {
+
+                                                    var color = me._colors[j];
+                                                    item = {
+                                                        "Styleno": me._styleNo,
+                                                        "Verno": me._version,
+                                                        "Gmc": oData.results[i].GMC,
+                                                        "Partcd": oData.results[i].PARTCD,
+                                                        "Usgcls": oData.results[i].USGCLS,
+                                                        "Color": color.Attribcd,
+                                                        "Mattyp": oData.results[i].MATTYP,
+                                                        "Mattypcls": Constants.ZCOLR,
+                                                        "Desc1": oData.results[i][color.Attribcd],
+                                                        "Consump": oData.results[i].CONSUMP,
+                                                        "Wastage": oData.results[i].WASTAGE
+                                                    };
+                                                    oEntry.UVToItems.push(item);
+                                                }
+                                            }
+                                        };
+
+                                        if (oEntry.UVToItems.length > 0) {
+
+                                            path = "/BOMUVSet";
+                                            console.log(oEntry)
+                                            oModel.setHeaders({
+                                                sbu: me._sbu
+                                            });
+                                            //call create deep method for BOM by UV 
+                                            oModel.create(path, oEntry, {
+                                                method: "POST",
+                                                success: function (oData, oResponse) {
+                                                    me.getbomGMCTable();
+                                                    me._BOMbyGMCChanged = false;
+                                                    me.setChangeStatus(false);
+                                                    me.lockStyleVer("O");
+                                                    // MessageBox.information(me._i18n.getText('t4'));
+                                                    // Common.showMessage(me._i18n.getText('t4'));
+                                                },
+                                                error: function (err) {
+                                                    var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                                    // oMsgStrip.setVisible(true);
+                                                    // oMsgStrip.setText(errorMsg);
+                                                    // MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                                    // Common.showMessage(me._i18n.getText('t5'));
+                                                }
+                                            });
+                                        }
+                                        Common.closeLoadingDialog(that);
                                     },
                                     error: function (err) {
+                                        Common.closeLoadingDialog(that);
+                                        // Common.showMessage(me._i18n.getText('t5'));
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // oMsgStrip.setVisible(true);
                                         // oMsgStrip.setText(errorMsg);
-                                        // MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
-                                        // Common.showMessage(me._i18n.getText('t5'));
+                                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
                                     }
                                 });
                             }
-                            Common.closeLoadingDialog(that);
-                        },
-                        error: function (err) {
-                            Common.closeLoadingDialog(that);
-                            // Common.showMessage(me._i18n.getText('t5'));
-                            var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            // oMsgStrip.setVisible(true);
-                            // oMsgStrip.setText(errorMsg);
-                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
                         }
                     });
                 }
@@ -1440,7 +1491,8 @@ sap.ui.define([
                                 template: that.columnTemplate('UV', column),
                                 sortProperty: column.ColumnName,
                                 filterProperty: column.ColumnName,
-                                width: that.getColumnSize(column)
+                                width: that.getColumnSize(column),
+                                // id:"bomGMCTable" + "-" + column.ColumnName
                             });
                         });
                         oTable.bindRows("DataModel>/results");
@@ -1522,8 +1574,8 @@ sap.ui.define([
                         else if (item.FIELD === "WASTAGE" && oWastage) {
                             oWastage.setEditable(true);
                         }
-                    }) 
-                }               
+                    })
+                }
             },
 
             cancelBOMbyUVEdit: function () {
@@ -1627,32 +1679,40 @@ sap.ui.define([
                         }
                     };
 
-                    Common.openLoadingDialog(that);
+                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                        actions: ["Yes", "No"],
+                        onClose: function (sAction) {
+                            if (sAction === "Yes") {
+                                Common.openLoadingDialog(that);
 
-                    path = "/BOMUVSet";
+                                path = "/BOMUVSet";
 
-                    oModel.setHeaders({
-                        sbu: this._sbu
-                    });
-                    //call create deep method for BOM by UV
-                    oModel.create(path, oEntry, {
-                        method: "POST",
-                        success: function (oData, oResponse) {
-                            me.getbomGMCTable();
-                            me._BOMbyUVChanged = false;
-                            me.setChangeStatus(false);
-                            me.lockStyleVer("O");
-                            Common.closeLoadingDialog(that);
-                            // Common.showMessage(me._i18n.getText('t4'));
-                            MessageBox.information(me._i18n.getText('t4'));
-                        },
-                        error: function (err) {
-                            Common.closeLoadingDialog(that);
-                            // Common.showMessage(me._i18n.getText('t5'));
-                            var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            // oMsgStrip.setVisible(true);
-                            // oMsgStrip.setText(errorMsg);
-                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                oModel.setHeaders({
+                                    sbu: this._sbu
+                                });
+                                //call create deep method for BOM by UV
+                                oModel.create(path, oEntry, {
+                                    method: "POST",
+                                    success: function (oData, oResponse) {
+                                        me.getbomGMCTable();
+                                        me._BOMbyUVChanged = false;
+                                        me.setChangeStatus(false);
+                                        me.lockStyleVer("O");
+                                        me.setTabReadEditMode(false, "BOMbyUVEditModeModel")
+                                        Common.closeLoadingDialog(that);
+                                        // Common.showMessage(me._i18n.getText('t4'));
+                                        MessageBox.information(me._i18n.getText('t4'));
+                                    },
+                                    error: function (err) {
+                                        Common.closeLoadingDialog(that);
+                                        // Common.showMessage(me._i18n.getText('t5'));
+                                        var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                        // oMsgStrip.setVisible(true);
+                                        // oMsgStrip.setText(errorMsg);
+                                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                    }
+                                });
+                            }
                         }
                     });
                 }
@@ -1875,32 +1935,39 @@ sap.ui.define([
                         }
                         oEntry.MatListToItems.push(item);
                     };
-                    Common.openLoadingDialog(that);
+                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                        actions: ["Yes", "No"],
+                        onClose: function (sAction) {
+                            if (sAction === "Yes") {
+                                Common.openLoadingDialog(that);
 
-                    path = "/MaterialListSet";
-                    oModel.setHeaders({
-                        sbu: this._sbu
-                    });
-                    //call create deep method of Material list
-                    oModel.create(path, oEntry, {
-                        method: "POST",
-                        success: function (oData, oResponse) {
-                            me.getMaterialList();
-                            me._materialListChanged = false;
-                            me.setChangeStatus(false);
-                            me.setTabReadEditMode(false, "MaterialListEditModeModel");
-                            me.lockStyleVer("O");
-                            Common.closeLoadingDialog(me);
-                            // Common.showMessage(me._i18n.getText('t4'));
-                            MessageBox.information(me._i18n.getText('t4'));
-                        },
-                        error: function (err) {
-                            Common.closeLoadingDialog(me);
-                            // Common.showMessage(me._i18n.getText('t5'));
-                            var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            // oMsgStrip.setVisible(true);
-                            // oMsgStrip.setText(errorMsg);
-                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                path = "/MaterialListSet";
+                                oModel.setHeaders({
+                                    sbu: this._sbu
+                                });
+                                //call create deep method of Material list
+                                oModel.create(path, oEntry, {
+                                    method: "POST",
+                                    success: function (oData, oResponse) {
+                                        me.getMaterialList();
+                                        me._materialListChanged = false;
+                                        me.setChangeStatus(false);
+                                        me.setTabReadEditMode(false, "MaterialListEditModeModel");
+                                        me.lockStyleVer("O");
+                                        Common.closeLoadingDialog(me);
+                                        // Common.showMessage(me._i18n.getText('t4'));
+                                        MessageBox.information(me._i18n.getText('t4'));
+                                    },
+                                    error: function (err) {
+                                        Common.closeLoadingDialog(me);
+                                        // Common.showMessage(me._i18n.getText('t5'));
+                                        var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                        // oMsgStrip.setVisible(true);
+                                        // oMsgStrip.setText(errorMsg);
+                                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                    }
+                                });
+                            }
                         }
                     });
 
@@ -2252,6 +2319,22 @@ sap.ui.define([
                             this.setBOMbyGMCEditModeControls();
                         }
                     }
+                     //mark as required field
+                     var oTable = this.getView().byId("bomGMCTable");
+                     var oColumnsModel = this.getView().getModel("bombByGMCColumns");
+                     var oColumnsData = oColumnsModel.getProperty('/');
+                     oTable.getColumns().forEach((col, idx) => {
+                         //console.log(col);
+                         oColumnsData.filter(item => item.ColumnName === col.sId.split("-")[1])
+                             .forEach(ci => {
+                                 if (ci.Editable) {
+                                     if (ci.Mandatory) {
+                                         col.getLabel().addStyleClass("sapMLabelRequired");
+                                     }
+                                 }
+                             });
+
+                     });
                 }
             },
 
@@ -2888,45 +2971,6 @@ sap.ui.define([
                 data.editMode = dataMode;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, editModelName);
-
-                if (!dataMode) { this._dataMode = "READ"; }
-                
-                if (editModelName === "VersionAttrEditModeModel") {
-                    if (this._dataMode === "NEW") { 
-                        this.byId("btnVersionAttrAdd").setVisible(true); 
-                        this.byId("btnVersionAttrRemoveRow").setVisible(true); 
-                    }
-                    else { 
-                        this.byId("btnVersionAttrRemoveRow").setVisible(false); 
-
-                        var oTable = this.getView().byId("versionAttrTable");
-                        oTable.getRows().forEach(row => {
-                            row.getCells().forEach(cell => {
-                                if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
-                                    cell.setProperty("enabled", true);
-                                }
-                            });
-                        })
-                    }
-                }
-                else if (editModelName === "BOMbyGMCEditModeModel") {
-                    if (this._dataMode === "NEW") { 
-                        this.byId("btnBOMGMCAdd").setVisible(true); 
-                        this.byId("btnBOMGMCRemoveRow").setVisible(true); 
-                    }
-                    else { 
-                        this.byId("btnBOMGMCRemoveRow").setVisible(false); 
-
-                        var oTable = this.getView().byId("bomGMCTable");
-                        oTable.getRows().forEach(row => {
-                            row.getCells().forEach(cell => {
-                                if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
-                                    cell.setProperty("enabled", true);
-                                }
-                            });
-                        })
-                    }
-                }
             },
 
             lockStyleVer: async function (isLock) {

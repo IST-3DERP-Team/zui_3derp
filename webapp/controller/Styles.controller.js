@@ -201,7 +201,7 @@ sap.ui.define([
                             }
                         }
                         else {
-                            me.closeLoadingDialog();
+                            //me.closeLoadingDialog();
                             sap.m.MessageBox.information("No table layout retrieve.");
                         }
                     },
