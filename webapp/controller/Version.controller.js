@@ -2971,6 +2971,45 @@ sap.ui.define([
                 data.editMode = dataMode;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, editModelName);
+
+                if (!dataMode) { this._dataMode = "READ"; }
+                
+                if (editModelName === "VersionAttrEditModeModel") {
+                    if (this._dataMode === "NEW") { 
+                        this.byId("btnVersionAttrAdd").setVisible(true); 
+                        this.byId("btnVersionAttrRemoveRow").setVisible(true); 
+                    }
+                    else { 
+                        this.byId("btnVersionAttrRemoveRow").setVisible(false); 
+
+                        var oTable = this.getView().byId("versionAttrTable");
+                        oTable.getRows().forEach(row => {
+                            row.getCells().forEach(cell => {
+                                if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                                    cell.setProperty("enabled", true);
+                                }
+                            });
+                        })
+                    }
+                }
+                else if (editModelName === "BOMbyGMCEditModeModel") {
+                    if (this._dataMode === "NEW") { 
+                        this.byId("btnBOMGMCAdd").setVisible(true); 
+                        this.byId("btnBOMGMCRemoveRow").setVisible(true); 
+                    }
+                    else { 
+                        this.byId("btnBOMGMCRemoveRow").setVisible(false); 
+
+                        var oTable = this.getView().byId("bomGMCTable");
+                        oTable.getRows().forEach(row => {
+                            row.getCells().forEach(cell => {
+                                if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                                    cell.setProperty("enabled", true);
+                                }
+                            });
+                        })
+                    }
+                }                
             },
 
             lockStyleVer: async function (isLock) {

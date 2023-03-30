@@ -2136,7 +2136,6 @@ sap.ui.define([
                     //set edit mode processes table
                     var oJSONModel = new JSONModel();
                     var data = {};
-                    this._processChanged = false;
                     data.editMode = true;
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "ProcessEditModeModel");
@@ -2255,6 +2254,7 @@ sap.ui.define([
                                         me._processChanged = false;
                                         me.setChangeStatus(false);
                                         me.setTabReadMode("ProcessEditModeModel");
+                                        me.getProcessesTable();
                                         //Common.showMessage(me._i18n.getText('t4'));
                                         MessageBox.information(me._i18n.getText('t4'));
                                         //on save, execute apply to IO
@@ -3681,6 +3681,7 @@ sap.ui.define([
                             this.setColorCreateMode();
                             this.onColorChange();
                         } else if (tabName === "processesTable") {
+                            console.log("add process");
                             this.setProcessEditMode();
                             this.onProcessChange();
                         }
