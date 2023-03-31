@@ -71,7 +71,8 @@ sap.ui.define([
 
                 this.getOwnerComponent().getModel("UI_MODEL").setData({
                     fromScreen: "MAIN",
-                    genAttrInfo: ""
+                    genAttrInfo: "",
+                    dataMode: "READ"
                 })
             },
 

@@ -69,8 +69,9 @@ sap.ui.define([
                 this._BOMbyGMCChanged = false;
                 this._BOMbyUVChanged = false;
                 this._materialListChanged = false;
-                this._bomuvconfig = [];
-
+                this._bomuvconfig = [];                
+                this._dataMode = "READ";
+                this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "READ");
                 this.setChangeStatus(false);
 
                 //Load Search Helps
@@ -251,6 +252,7 @@ sap.ui.define([
                 this.lockStyleVer("O");
                 this.byId("btnVersionAttrRemoveRow").setVisible(false);
                 this._dataMode = "READ";
+                this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "READ");
 
                 var oTable = this.getView().byId("versionAttrTable");
                 oTable.getRows().forEach(row => {
@@ -682,7 +684,7 @@ sap.ui.define([
                         data.editMode = true;
                         oJSONModel.setData(data);
                         this.getView().setModel(oJSONModel, "BOMbyGMCEditModeModel");
-
+                        console.log(this._dataMode)
                          //mark as required field
                         var oTable = this.getView().byId("bomGMCTable");
                         var oColumnsModel = this.getView().getModel("bombByGMCColumns");
@@ -699,6 +701,10 @@ sap.ui.define([
                                 });
 
                         });
+
+                        this._dataMode = "EDIT";
+                        this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "EDIT");
+                        // this.setBOMbyGMCEditModeControls();
                     }
                 }
             },
@@ -737,6 +743,7 @@ sap.ui.define([
                 this.lockStyleVer("O");
                 this.byId("btnBOMGMCRemoveRow").setVisible(false); 
                 this._dataMode = "READ";
+                this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "READ");
 
                 var oTable = this.getView().byId("bomGMCTable");
                 oTable.getRows().forEach(row => {
@@ -769,7 +776,7 @@ sap.ui.define([
                 //set change flag for BOM by GMC
                 that._BOMbyGMCChanged = true;
                 that.setChangeStatus(true);
-
+                console.log("onBOMbyGMCChange")
                 //set the default Uom every change
                 try {
                     var oTable = that.getView().byId("bomGMCTable");
@@ -1198,11 +1205,8 @@ sap.ui.define([
                 setTimeout(() => {
                     for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
                         var iRowIndex = oTable.getBinding("rows").aIndices[i];
-    
-                        // var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
                         var oRow = oTable.getRows()[iRowIndex];
                         var bNew = oTable.getContextByIndex(iRowIndex).getProperty("NEW");                    
-                        var oCellCtrlValTyp = "";
 
                         oRow.getCells().forEach(cell => {
                             if ((bNew === undefined || !bNew) && this._dataMode === "NEW") {
@@ -1211,28 +1215,11 @@ sap.ui.define([
                                 }
                             }
                             else {
-                                if (cell.getBindingInfo("value") !== undefined) {
-                                    oCellCtrlValTyp = "value";
-
-                                    if (this._dataMode === "NEW") { cell.setEnabled(true) }
-                                }
-                                else if (cell.getBindingInfo("text") !== undefined) {
-                                    oCellCtrlValTyp = "text";
-                                }
-                                else if (cell.getBindingInfo("selected") !== undefined) {
-                                    oCellCtrlValTyp = "selected";
-
-                                    if (this._dataMode === "NEW") { cell.setEnabled(true) }
+                                if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                                    if (cell.getProperty("editable")) { cell.setEnabled(true) }
+                                    else { cell.setEnabled(false) }
                                 }
                                 
-                                if (this._dataMode !== "NEW") {
-                                    if (oCellCtrlValTyp !== "text") {
-                                        cell.setEnabled(true);
-                                    }
-                                    else {
-                                        cell.setEnabled(false);
-                                    }
-                                }
                             }
                         })
                     }                     
@@ -1532,9 +1519,10 @@ sap.ui.define([
 
                     var bomuvconfig = this._bomuvconfig.filter(fItem => fItem.MATTYP !== '');
                     var oTable = this.getView().byId("bomUVTable");
+                    var vUsgcls = "", vMattypcls = "";
+
                     oTable.getRows().forEach(row => {
                         var oConsump, oWastage;
-                        var vUsgcls = "", vMattypcls = "";
 
                         row.getCells().forEach(cell => {
                             // console.log(cell);
@@ -1576,6 +1564,10 @@ sap.ui.define([
                             oWastage.setEditable(true);
                         }
                     })
+
+                    this._dataMode = "EDIT"; 
+                    this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "EDIT");
+                    this.setBOMbyUVEditModeControls();
                 }
             },
 
@@ -1611,6 +1603,17 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 this.lockStyleVer("O");
+                this._dataMode = "READ"; 
+                this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "READ");
+
+                var oTable = this.getView().byId("bomUVTable");
+                oTable.getRows().forEach(row => {
+                    row.getCells().forEach(cell => {
+                        if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                            cell.setProperty("enabled", true);
+                        }
+                    });
+                })
             },
 
             onBOMbyUVChange: function () {
@@ -1717,6 +1720,25 @@ sap.ui.define([
                         }
                     });
                 }
+            },
+
+            setBOMbyUVEditModeControls: function() {
+                //update to base on binding indices
+                var oTable = this.getView().byId("bomUVTable");
+
+                setTimeout(() => {
+                    for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                        var iRowIndex = oTable.getBinding("rows").aIndices[i];
+                        var oRow = oTable.getRows()[iRowIndex];
+
+                        oRow.getCells().forEach(cell => {
+                            if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                                if (cell.getProperty("editable")) { cell.setEnabled(true) }
+                                else { cell.setEnabled(false) }
+                            }
+                        })
+                    }                     
+                }, 100);
             },
 
             //******************************************* */
@@ -1847,6 +1869,10 @@ sap.ui.define([
                     data.editMode = true;
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "MaterialListEditModeModel");
+
+                    this._dataMode = "EDIT"; 
+                    this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "EDIT");
+                    this.setMaterialListEditModeControls();
                 }
             },
 
@@ -1882,6 +1908,17 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 this.lockStyleVer("O");
+                this._dataMode = "READ"; 
+                this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "READ");
+
+                var oTable = this.getView().byId("materialListTable");
+                oTable.getRows().forEach(row => {
+                    row.getCells().forEach(cell => {
+                        if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                            cell.setProperty("enabled", true);
+                        }
+                    });
+                })
             },
 
             onMaterialListChange: function () {
@@ -1997,6 +2034,25 @@ sap.ui.define([
                 }
             },
 
+            setMaterialListEditModeControls: function() {
+                //update to base on binding indices
+                var oTable = this.getView().byId("materialListTable");
+
+                setTimeout(() => {
+                    for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                        var iRowIndex = oTable.getBinding("rows").aIndices[i];
+                        var oRow = oTable.getRows()[iRowIndex];
+
+                        oRow.getCells().forEach(cell => {
+                            if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                                if (cell.getProperty("editable")) { cell.setEnabled(true) }
+                                else { cell.setEnabled(false) }
+                            }
+                        })
+                    }                     
+                }, 100);
+            },
+
             //******************************************* */
             // BOM GMC / BOM UV Columns
             //******************************************* */
@@ -2027,6 +2083,7 @@ sap.ui.define([
                         change: changeFunction,
                         liveChange: changeFunction,
                         editable: "{= ${DataModel>USGCLS} === 'AUV' ? " + editModeCond + " : ${DataModel>USGCLS} === 'ASUV' ? " + editModeCond + " : false }",
+                        enabled: "{= ${UI_MODEL>/dataMode} === 'READ' ? true : ${DataModel>USGCLS} === 'AUV' ? " + editModeCond + " : ${DataModel>USGCLS} === 'ASUV' ? " + editModeCond + " : false  }",
                         visible: true,
                         tooltip: "{DataModel>" + columnName + "}"
                     });
@@ -2122,6 +2179,7 @@ sap.ui.define([
                             tooltip: "{DataModel>" + columnName + "}"
                         });
                     } else if (columnName === "BOMSTYLE") {
+                        console.log(this._dataMode)
                         //setting Style input with value help
                         oColumnTemplate = new sap.m.Input({
                             value: "{DataModel>" + columnName + "}",
@@ -2130,6 +2188,7 @@ sap.ui.define([
                             change: changeFunction,
                             liveChange: changeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? " + editModeCond + " : false  }" : false),
+                            enabled: ("{= ${UI_MODEL>/dataMode} === 'READ' ? true : ${DataModel>BOMITMTYP} === 'STY' ? " + editModeCond + " : false  }"),
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -2161,6 +2220,7 @@ sap.ui.define([
                             change: changeFunction,
                             liveChange: liveChangeFunction,
                             editable: false,
+                            enabled: ("{= ${UI_MODEL>/dataMode} === 'READ' ? true : false  }"),
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -2171,6 +2231,7 @@ sap.ui.define([
                             change: changeFunction,
                             liveChange: liveChangeFunction,
                             editable: false,
+                            enabled: ("{= ${UI_MODEL>/dataMode} === 'READ' ? true : false  }"),
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -2240,6 +2301,7 @@ sap.ui.define([
                 else {
                     //add line to tables
                     this._dataMode = "NEW";
+                    this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "NEW");
                     var oButton = oEvent.getSource();
                     var tabName = oButton.data('TableName')
                     var oTable = this.getView().byId(tabName);
@@ -2290,16 +2352,17 @@ sap.ui.define([
             },
 
             addLineBOM: function (oEvent) {
-                if (this.getOwnerComponent().getModel("COLOR_MODEL").getData().items.length === 0) {
-                    MessageBox.information("No colors found.")
-                }
-                else {
+                // if (this.getOwnerComponent().getModel("COLOR_MODEL").getData().items.length === 0) {
+                //     MessageBox.information("No colors found.")
+                // } else
+                // {
                     if (this._dataMode === "NEW") {
                         this.addAnotherLine(oEvent);
                     }
                     else {
                         //add lines to BOM by GMC table
                         this._dataMode = "NEW";
+                        this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "NEW");
                         var oButton = oEvent.getSource();
                         var tabName = oButton.data('TableName')
                         var oTable = this.getView().byId(tabName);
@@ -2307,7 +2370,10 @@ sap.ui.define([
                         var oData = oModel.getProperty('/results');
                         oData.forEach(item => item.ACTIVE = "");
 
-                        var aNewRow = [{NEW: true, ACTIVE: "X"}];
+                        var aNewRow = [{
+                            NEW: true, 
+                            ACTIVE: "X"
+                        }];
                         var aDataAfterChange = aNewRow.concat(oData);
                         oModel.setProperty('/results', aDataAfterChange);
                         // oData.push({});
@@ -2319,24 +2385,26 @@ sap.ui.define([
                             this.onBOMbyGMCChange();
                             this.setBOMbyGMCEditModeControls();
                         }
-                    }
-                     //mark as required field
-                     var oTable = this.getView().byId("bomGMCTable");
-                     var oColumnsModel = this.getView().getModel("bombByGMCColumns");
-                     var oColumnsData = oColumnsModel.getProperty('/');
-                     oTable.getColumns().forEach((col, idx) => {
-                         //console.log(col);
-                         oColumnsData.filter(item => item.ColumnName === col.sId.split("-")[1])
-                             .forEach(ci => {
-                                 if (ci.Editable) {
-                                     if (ci.Mandatory) {
-                                         col.getLabel().addStyleClass("sapMLabelRequired");
-                                     }
-                                 }
-                             });
 
-                     });
-                }
+                        console.log(this._dataMode)
+                    }
+                    //mark as required field
+                    var oTable = this.getView().byId("bomGMCTable");
+                    var oColumnsModel = this.getView().getModel("bombByGMCColumns");
+                    var oColumnsData = oColumnsModel.getProperty('/');
+                    oTable.getColumns().forEach((col, idx) => {
+                        //console.log(col);
+                        oColumnsData.filter(item => item.ColumnName === col.sId.split("-")[1])
+                            .forEach(ci => {
+                                if (ci.Editable) {
+                                    if (ci.Mandatory) {
+                                        col.getLabel().addStyleClass("sapMLabelRequired");
+                                    }
+                                }
+                            });
+
+                    });
+                // }
             },
 
             removeNewLine: function(oEvent) {
@@ -2418,6 +2486,8 @@ sap.ui.define([
                 if (this._dataMode !== "READ") {
                     if (sTabId === "versionAttrTable") { this.setVersionAttrEditModeControls(); }
                     else if (sTabId === "bomGMCTable") { this.setBOMbyGMCEditModeControls(); }
+                    else if (sTabId === "bomUVTable") { this.setBOMbyUVEditModeControls(); }
+                    else if (sTabId === "materialListTable") { this.setMaterialListEditModeControls(); }
                 }
             },
 
@@ -2973,7 +3043,10 @@ sap.ui.define([
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, editModelName);
 
-                if (!dataMode) { this._dataMode = "READ"; }
+                if (!dataMode) { 
+                    this._dataMode = "READ"; 
+                    this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "READ");
+                }
                 
                 if (editModelName === "VersionAttrEditModeModel") {
                     if (this._dataMode === "NEW") { 
@@ -3010,7 +3083,27 @@ sap.ui.define([
                             });
                         })
                     }
-                }                
+                }
+                else if (editModelName === "BOMbyUVEditModeModel") {
+                    var oTable = this.getView().byId("bomUVTable");
+                    oTable.getRows().forEach(row => {
+                        row.getCells().forEach(cell => {
+                            if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                                cell.setProperty("enabled", true);
+                            }
+                        });
+                    })                    
+                }
+                else if (editModelName === "MaterialListEditModeModel") {
+                    var oTable = this.getView().byId("materialListTable");
+                    oTable.getRows().forEach(row => {
+                        row.getCells().forEach(cell => {
+                            if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
+                                cell.setProperty("enabled", true);
+                            }
+                        });
+                    })                    
+                }
             },
 
             lockStyleVer: async function (isLock) {

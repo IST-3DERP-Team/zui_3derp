@@ -4204,7 +4204,7 @@ sap.ui.define([
                         this.byId("btnVersionEdit").setVisible(!pEditMode);
                         this.byId("btnVersionDelete").setVisible(!pEditMode);
                         this.byId("btnVersionAdd").setVisible(!pEditMode);
-                        this.byId("btnVersionCopy").setEnabled(!pEnable);
+                        this.byId("btnVersionCopy").setVisible(!pEditMode); 
 
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
@@ -4249,7 +4249,7 @@ sap.ui.define([
                         this.byId("btnVersionEdit").setVisible(!pEditMode);
                         this.byId("btnVersionDelete").setVisible(!pEditMode);
                         this.byId("btnVersionAdd").setVisible(!pEditMode);
-                        this.byId("btnVersionCopy").setEnabled(!pEnable);
+                        this.byId("btnVersionCopy").setVisible(!pEditMode);
 
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
@@ -4319,7 +4319,7 @@ sap.ui.define([
                 this.byId("btnVersionEdit").setVisible(pChange);
                 this.byId("btnVersionDelete").setVisible(pChange);
                 this.byId("btnVersionAdd").setVisible(pChange);
-                this.byId("btnVersionCopy").setEnabled(pChange);
+                this.byId("btnVersionCopy").setVisible(pChange);
                 //this.byId("btnVersionSave").setVisible(pChange);
                 //this.byId("btnVersionCancel").setVisible(pChange);
 

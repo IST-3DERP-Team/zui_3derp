@@ -10,7 +10,7 @@
     <MessageStrip id="GeneralAttrInfoMessageStrip" text="" showIcon="true" showCloseButton="false" class="sapUiTinyMarginBottom" visible="false" />
 
     <Toolbar height="2rem" style="Clear">
-            <Button id="btnGenAttrInfo" type="Reject" icon="sap-icon://alert" text="Click or hover to show details" tooltip="{UI_MODEL>/genAttrInfo}" press="viewGenAttrInfo" visible="true" />
+            <Button id="btnGenAttrInfo" type="Reject" icon="sap-icon://alert" text="Click or hover to show details" tooltip="{UI_MODEL>/genAttrInfo}" press="viewGenAttrInfo" visible="false" />
             <ToolbarSpacer />
             <Button id="btnGenAttrAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="true">
                 <customData>
