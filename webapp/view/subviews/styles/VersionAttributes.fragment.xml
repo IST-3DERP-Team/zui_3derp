@@ -80,7 +80,8 @@
                     <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
                         <Label text="{i18n>Description}" />
                         <t:template>
-                            <Input value="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange" liveChange="onVersionAttrChange" />
+                            <Text text="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" />
+                            <!-- <Input value="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange" liveChange="onVersionAttrChange" /> -->
                         </t:template>
                     </t:Column>
                     <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">

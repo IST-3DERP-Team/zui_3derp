@@ -41,7 +41,8 @@
                 <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
                     <Label text="{i18n>SizeCode}" />
                     <t:template>
-                        <Input value="{DataModel>Attribcd}" editable="false" tooltip="{DataModel>Attribcd}"  />
+                        <Text text="{DataModel>Attribcd}" tooltip="{DataModel>Attribcd}" />
+                        <!-- <Input value="{DataModel>Attribcd}" editable="false" tooltip="{DataModel>Attribcd}"  /> -->
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Baseind" sortProperty="Baseind" hAlign="Center">

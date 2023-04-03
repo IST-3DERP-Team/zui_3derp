@@ -103,3 +103,8 @@ for header.fragment
 .sapMLabelRequired::before {
     color: #c75858 !important;
 }
+
+.genAttrInfo {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}

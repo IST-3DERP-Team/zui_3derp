@@ -872,9 +872,9 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
                 var oReqAttr = [];
-                var bProceed = true;
-                var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
-                oMsgStrip.setVisible(false);
+                // var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
+                // oMsgStrip.setVisible(false);
+                this._genAttrInfo = "";
 
                 Common.openLoadingDialog(that);
 
@@ -955,13 +955,17 @@ sap.ui.define([
                                 me._attributesconfig = oReqAttr;
 
                                 if (sMessage !== "") {
-                                    oMsgStrip.setVisible(true);
-                                    oMsgStrip.setText(sMessage + "Enter value on these attributes to be able to work with other style details.");
+                                    // oMsgStrip.setVisible(true);
+                                    // oMsgStrip.setText(sMessage + "Enter value on these attributes to be able to work with other style details.");
                                     me.disableOtherTabs("detailPanel");
+                                    me._genAttrInfo = sMessage + "Enter value on these attributes to be able to work with other style details.";
+                                    me.getOwnerComponent().getModel("UI_MODEL").setProperty("/genAttrInfo", me._genAttrInfo);
+                                    me.byId("btnGenAttrInfo").setVisible(true);
                                 }
-                                else { 
+                                else {
                                     me.enableOtherTabs("detailPanel"); 
                                     me.enableVersionItemTab();
+                                    me.byId("btnGenAttrInfo").setVisible(false);
                                 }
                             },
                             error: function (err) { 
@@ -1391,6 +1395,10 @@ sap.ui.define([
                     this.disableOtherTabs("detailPanel");
                 }
                 else { this.enableOtherTabs("detailPanel"); }
+            },
+
+            viewGenAttrInfo: function() {
+                MessageBox.information(this._genAttrInfo);
             },
 
             //******************************************* */
@@ -2151,7 +2159,6 @@ sap.ui.define([
                     //set edit mode processes table
                     var oJSONModel = new JSONModel();
                     var data = {};
-                    this._processChanged = false;
                     data.editMode = true;
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "ProcessEditModeModel");
@@ -2270,6 +2277,8 @@ sap.ui.define([
                                         me._processChanged = false;
                                         me.setChangeStatus(false);
                                         me.setTabReadMode("ProcessEditModeModel");
+                                        me.getProcessesTable();
+                                        //Common.showMessage(me._i18n.getText('t4'));
                                         MessageBox.information(me._i18n.getText('t4'));
                                         //on save, execute apply to IO
                                         if(me._iono != ' '){
@@ -2492,7 +2501,11 @@ sap.ui.define([
                     }
                     jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
                     that._NewVerionDialog.addStyleClass("sapUiSizeCompact");
+                    that._NewVerionDialog.setTitle("Create New Version");
                     that._NewVerionDialog.open();
+                    that._copyFrVer = "";
+                    sap.ui.getCore().byId("newVersionDesc1").setValue("");
+                    sap.ui.getCore().byId("newVersionDesc2").setValue("");                    
                 }
             },
 
@@ -2523,7 +2536,8 @@ sap.ui.define([
                     onClose: function (sAction) {
                         if (sAction === "Yes") {
                 oModel.setHeaders({
-                    sbu: this._sbu
+                    sbu: this._sbu,
+                    copy: this._copyFrVer
                 });
                 //call create method of style version
                 oModel.create(path, oEntry, {
@@ -2759,7 +2773,6 @@ sap.ui.define([
                         var oDataIO = this.byId("ioTable").getModel("DataModel").getData().results;
 
                         if (oDataIO.filter(fItem => (+fItem.VERNO) === (+oData.results[selected[i]].Verno)).length === 0 && !oData.results[selected[i]].Currentver) {
-                            console.log(verno)
                             oModel.remove(entitySet, {
                                 groupId: "group1",
                                 changeSetId: "changeSetId1",
@@ -2788,59 +2801,54 @@ sap.ui.define([
                 }
             },
 
-            onCopyVersion: function (oEvent) {
-                var oModel = this.getOwnerComponent().getModel();
-
+            onCopyVersion: async function (oEvent) {
                 //get selected items to coy
                 var oTable = this.getView().byId("versionsTable");
-                var oTableModel = oTable.getModel("DataModel");
-                var oData = oTableModel.getData();
-                var selected = oTable.getSelectedIndices();
+                var oData = oTable.getModel("DataModel").getData().results;
+                var vVersion = "";
+                var bProceed = true;
 
-                oModel.setUseBatch(true);
-                oModel.setDeferredGroups(["group1"]);
-
-                if (selected.length > 0) {
-                    Common.openLoadingDialog(that);
-
-                    //call create method for each item selected
-                    for (var i = 0; i < selected.length; i++) {
-                        var path = "/StyleVersionSet";
-                        var oEntry = {
-                            "Styleno": this._styleNo,
-                            "Verno": "",
-                            "Desc1": oData.results[selected[i]].Desc1 + "_Copy",
-                            "Desc2": oData.results[selected[i]].Desc2,
-                            "Currentver": false
-                        };
-
-                        oModel.setHeaders({
-                            sbu: this._sbu,
-                            type: "COPY"
-                        });
-
-                        //call create method of style version
-                        oModel.create(path, oEntry, {
-                            groupId: "group1",
-                            changeSetId: "changeSetId1",
-                            method: "POST",
-                            success: function (oData, oResponse) { },
-                            error: function () { }
-                        });
-
-                        oModel.submitChanges({
-                            groupId: "group1"
-                        });
-
-                        oModel.setRefreshAfterChange(true);
-                    }
-
-                    console.log("refresh table");
-                    this.getVersionsTable();
-                    Common.closeLoadingDialog(that);
+                if (oData.length === 1) {
+                    vVersion = oData[0].Verno;                    
                 }
                 else {
-                    MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_NO_SEL_RECORD_TO_PROC"])
+                    var oSelectedIndices = oTable.getSelectedIndices();
+                    
+                    if (oSelectedIndices.length > 0) {
+                        if (oSelectedIndices.length === 1) {
+                            vVersion = oData.at(oTable.getBinding("rows").aIndices[oSelectedIndices[0]]).Verno;
+                        }
+                        else {
+                            MessageBox.information("Select only one version to copy from.")
+                            bProceed = false;
+                        }
+                    }
+                    else {
+                        MessageBox.information("Select version to copy from.")
+                        bProceed = false;
+                    }
+                }
+
+                if (bProceed) {
+                    const result = await this.lockStyle("X");
+
+                    if (result.Type != "S") {
+                        MessageBox.warning(result.Message);
+                    }
+                    else {
+                        //open create new version dialog
+                        if (!that._NewVerionDialog) {
+                            that._NewVerionDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CreateNewVersion", that);
+                            that.getView().addDependent(that._NewVerionDialog);
+                        }
+                        jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), that._LoadingDialog);
+                        that._NewVerionDialog.addStyleClass("sapUiSizeCompact");
+                        that._NewVerionDialog.setTitle("Copy From Version " + vVersion);
+                        that._NewVerionDialog.open();
+                        that._copyFrVer = vVersion;
+                        sap.ui.getCore().byId("newVersionDesc1").setValue("");
+                        sap.ui.getCore().byId("newVersionDesc2").setValue("");
+                    }
                 }
             },
 
@@ -3696,6 +3704,7 @@ sap.ui.define([
                             this.setColorCreateMode();
                             this.onColorChange();
                         } else if (tabName === "processesTable") {
+                            console.log("add process");
                             this.setProcessEditMode();
                             this.onProcessChange();
                         }
@@ -4110,6 +4119,7 @@ sap.ui.define([
                 this.byId("btnGenAttrDelete").setEnabled(pEnable);
                 this.byId("btnGenAttrAdd").setEnabled(pEnable);
                 this.byId("btnGenAttrCancel").setEnabled(pEnable);
+                // this.byId("iconGenAttrInfo").setVisible(pEnable);
 
                 //Color
                 this.byId("btnColorSave").setEnabled(pEnable);
@@ -4134,6 +4144,7 @@ sap.ui.define([
                 this.byId("btnVersionSave").setEnabled(pEnable);
                 this.byId("btnVersionEdit").setEnabled(pEnable);
                 this.byId("btnVersionDelete").setEnabled(pEnable);
+                this.byId("btnVersionCopy").setEnabled(pEnable);
                 this.byId("btnVersionAdd").setEnabled(pEnable);
                 this.byId("btnVersionCancel").setEnabled(pEnable);
 
@@ -4174,10 +4185,12 @@ sap.ui.define([
                     else if (pModule === "GenAttrEditModeModel") {
                         this.byId("btnGenAttrEdit").setVisible(!pEditMode);
                         this.byId("btnGenAttrDelete").setVisible(!pEditMode);
+                        // this.byId("iconGenAttrInfo").setVisible(!pEditMode);
 
                         if (this._dataMode === "NEW") {
                             this.byId("btnGenAttrAdd").setVisible(pEditMode);
                             this.byId("btnGenAttrRemoveRow").setVisible(pEditMode);
+                            this.byId("btnGenAttrInfo").setVisible(!pEditMode);
                         }
                         else {
                             this.byId("btnGenAttrAdd").setVisible(!pEditMode);
@@ -4214,6 +4227,7 @@ sap.ui.define([
                         this.byId("btnVersionEdit").setVisible(!pEditMode);
                         this.byId("btnVersionDelete").setVisible(!pEditMode);
                         this.byId("btnVersionAdd").setVisible(!pEditMode);
+                        this.byId("btnVersionCopy").setVisible(!pEditMode); 
 
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
@@ -4233,6 +4247,7 @@ sap.ui.define([
                         this.byId("btnGenAttrEdit").setVisible(!pEditMode);
                         this.byId("btnGenAttrDelete").setVisible(!pEditMode);
                         this.byId("btnGenAttrAdd").setVisible(!pEditMode);
+                        // this.byId("iconGenAttrInfo").setVisible(!pEnable);
 
                         this.byId("btnGenAttrRemoveRow").setVisible(pEditMode);
                         this.byId("btnGenAttrSave").setVisible(pEditMode);
@@ -4257,12 +4272,12 @@ sap.ui.define([
                         this.byId("btnVersionEdit").setVisible(!pEditMode);
                         this.byId("btnVersionDelete").setVisible(!pEditMode);
                         this.byId("btnVersionAdd").setVisible(!pEditMode);
+                        this.byId("btnVersionCopy").setVisible(!pEditMode);
 
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
                     }
-                }
-               
+                }               
             },
 
             setControlAppAction(pChange) {
@@ -4300,6 +4315,7 @@ sap.ui.define([
                 this.byId("btnGenAttrEdit").setVisible(pChange);
                 this.byId("btnGenAttrDelete").setVisible(pChange);
                 this.byId("btnGenAttrAdd").setVisible(pChange);
+                // this.byId("iconGenAttrInfo").setVisible(pChange);
                 //this.byId("btnGenAttrSave").setVisible(pChange);
                 //this.byId("btnGenAttrCancel").setVisible(pChange);
 
@@ -4326,6 +4342,7 @@ sap.ui.define([
                 this.byId("btnVersionEdit").setVisible(pChange);
                 this.byId("btnVersionDelete").setVisible(pChange);
                 this.byId("btnVersionAdd").setVisible(pChange);
+                this.byId("btnVersionCopy").setVisible(pChange);
                 //this.byId("btnVersionSave").setVisible(pChange);
                 //this.byId("btnVersionCancel").setVisible(pChange);
 
