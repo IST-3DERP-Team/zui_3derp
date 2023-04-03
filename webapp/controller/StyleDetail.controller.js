@@ -755,8 +755,10 @@ sap.ui.define([
                                             } catch (err) {
                                                 errorMsg = err.responseText;
                                             }
-                                            oMsgStrip.setVisible(true);
-                                            oMsgStrip.setText(errorMsg);
+                                            //oMsgStrip.setVisible(true);
+                                            //oMsgStrip.setText(errorMsg);
+                                            Common.closeLoadingDialog(that);
+                                            MessageBox.information(errorMsg);
                                         }
                                     });
                                 }
@@ -995,6 +997,15 @@ sap.ui.define([
                     this.byId("btnHdrClose").setEnabled(false);
 
                     this.setGeneralAttrEditModeControls();
+
+                     //mark as required fields
+                     var oTable = this.getView().byId("generalTable");
+                     oTable.getColumns().forEach((col, idx) => {
+                        console.log(col);
+                        const colProp = col.mProperties.filterProperty;
+                        if(colProp == "Attribtyp")
+                            col.getLabel().addStyleClass("sapMLabelRequired");
+                    });
 
                     var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
                     oMsgStrip.setVisible(false);
@@ -1247,13 +1258,10 @@ sap.ui.define([
                                             Common.closeLoadingDialog(that);
                                             me._generalAttrChanged = false;
                                             me.setChangeStatus(false);
-                                            // // Common.showMessage(me._i18n.getText('t4'));
-                                            MessageBox.information(me._i18n.getText('t4'));
                                             Utils.getProcessAttributes(me); //need to reload available attribute types for process tables
                                             me.setTabReadMode("GenAttrEditModeModel");
                                             me.getGeneralTable();
-
-                                MessageBox.information(me._i18n.getText('t4'));
+                                            MessageBox.information(me._i18n.getText('t4'));
 
                                             //on save, execute apply to IO
                                             if(me._iono != ' '){
@@ -1514,6 +1522,15 @@ sap.ui.define([
                     this.byId("btnHdrDelete").setEnabled(false);
                     this.byId("btnHdrClose").setEnabled(false);
                     this.setColorEditModeControls();
+
+                    //mark as required fields
+                    var oTable = this.getView().byId("colorsTable");
+                    oTable.getColumns().forEach((col, idx) => {
+                        //console.log(col);
+                        const colProp = col.mProperties.filterProperty;
+                        if(colProp == "Desc1" || colProp == "Sortseq")
+                            col.getLabel().addStyleClass("sapMLabelRequired");
+                    });
                 }
             },
 
@@ -1533,14 +1550,6 @@ sap.ui.define([
                 }
                 else {
                      
-                    //mark as required fields
-                    oTable.getColumns().forEach((col, idx) => {
-                        //console.log(col);
-                        const colProp = col.mProperties.filterProperty;
-                        if(colProp == "Desc1" || colProp == "Sortseq")
-                            col.getLabel().addStyleClass("sapMLabelRequired");
-                    });
-
                     bProceed = true;
                     // var oTableModel = oTable.getModel("DataModel");
                     // var oData = oTableModel.getData();
@@ -1593,6 +1602,14 @@ sap.ui.define([
                     this.byId("btnHdrDelete").setEnabled(false);
                     this.byId("btnHdrClose").setEnabled(false);
                     this.setColorEditModeControls();
+
+                     //mark as required fields
+                     oTable.getColumns().forEach((col, idx) => {
+                        //console.log(col);
+                        const colProp = col.mProperties.filterProperty;
+                        if(colProp == "Desc1" || colProp == "Sortseq")
+                            col.getLabel().addStyleClass("sapMLabelRequired");
+                    });
                 }
 
 
@@ -1751,8 +1768,6 @@ sap.ui.define([
                                         Common.closeLoadingDialog(me);
                                         me._colorChanged = false;
                                         me.setChangeStatus(false);
-                                        //Common.showMessage(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
                                         Utils.getProcessAttributes(me);
                                         //me.setColorReadMode();
                                         me.setTabReadMode("ColorEditModeModel");
@@ -2255,7 +2270,6 @@ sap.ui.define([
                                         me._processChanged = false;
                                         me.setChangeStatus(false);
                                         me.setTabReadMode("ProcessEditModeModel");
-                                        //Common.showMessage(me._i18n.getText('t4'));
                                         MessageBox.information(me._i18n.getText('t4'));
                                         //on save, execute apply to IO
                                         if(me._iono != ' '){
@@ -3995,6 +4009,14 @@ sap.ui.define([
                     this.byId("btnHdrDelete").setEnabled(true);
                     this.byId("btnHdrClose").setEnabled(true);
                     this.lockStyle("O");
+
+                    //remove required field
+                    oTable.getColumns().forEach((col, idx) => {
+                       console.log(col);
+                       const colProp = col.mProperties.filterProperty;
+                       if(colProp == "Attribtyp")
+                           col.getLabel().removeStyleClass("sapMLabelRequired");
+                   });
                 }
                 else if (editModelName === "SizeEditModeModel") {
                     this.setControlEditMode("SizeEditModeModel", false);
@@ -4023,7 +4045,7 @@ sap.ui.define([
                     this.lockStyle("O");
 
                     var oTable = this.getView().byId("processesTable");
-                    //mark as required field
+                    //remove required field
                     oTable.getColumns().forEach((col, idx) => {
                         console.log(col);
                         const colProp = col.mProperties.filterProperty;

@@ -17,8 +17,12 @@
       <content>
         <VBox fitContainer="true">
             <!-- OBJECT HEADER -->
-            <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>Version}: {headerData>/SelectedVersion}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2" title="{headerData>/Stylecd}" />
+           <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>Version}: {headerData>/SelectedVersion}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2" title="{headerData>/Stylecd}" > 
+       
+           </ObjectHeader> 
+            
 
+    	 
             <IconTabBar id="versionTabBar" expandable="false" headerMode="Inline" upperCase="true" stretchContentHeight="true" class="sapUiResponsiveContentPadding">
                 <items>
                     <!-- VERSION ATTRIBUTES -->

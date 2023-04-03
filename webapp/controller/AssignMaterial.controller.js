@@ -277,8 +277,9 @@ sap.ui.define([
                             "Matdesc1": oData.results[index].Matdesc1,
                             "Matdesc2": oData.results[index].Matdesc2,
                             "Deleted": " ",
-                            "Createdby": " ",
-                            "Createddt": " ",
+                            "Createdby": oData.results[index].Createdby,
+                            "Createddt": oData.results[index].Createddt,
+                            "Createdtm": oData.results[index].Createdtm,
                             "Updatedby": " ",
                             "Updateddt": " "
                         }
