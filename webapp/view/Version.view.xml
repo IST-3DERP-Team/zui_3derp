@@ -16,13 +16,131 @@
     <Page showHeader="false" title="Manage Version" showNavButton="true" navButtonPress="onNavBack" enableScrolling="true">
       <content>
         <VBox fitContainer="true">
-            <!-- OBJECT HEADER -->
-           <ObjectHeader id="objectHeader" responsive="true" fullScreenOptimized="true" intro="{i18n>Version}: {headerData>/SelectedVersion}" backgroundDesign="Solid" icon="sap-icon://blank-tag-2" title="{headerData>/Stylecd}" > 
-       
-           </ObjectHeader> 
-            
+            <!-- OBJECT HEADER intro="{i18n>Version}: {headerData>/SelectedVersion}" -->
+            <ObjectHeader 
+                id="objectHeader"
+                responsive="true" 
+                fullScreenOptimized="true" 
+                intro="{i18n>Version}: {headerData>/SelectedVersion}"
+                backgroundDesign="Solid" 
+                icon="sap-icon://blank-tag-2" 
+                title="{headerData>/Stylecd}" 
+                showTitleSelector="true"
+                titleSelectorPress="handleTitleSelectorPress"
+                titleSelectorTooltip="Select Version"
+               
+            > 
+             <!-- number="{headerData>/Statuscd}"
+                numberUnit="{i18n>Status}"
+                numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}" -->
+            <!-- <headerContainer>
+                <HeaderContainer scrollStep="200" id="container2">
+                    <f:Form id="StyleHeaderForm1" editable="true">
+                        <f:layout>
+                                <f:ResponsiveGridLayout columnsXL="4" columnsL="3" columnsM="3" singleContainerFullSize="false" />
+                        </f:layout>
+                        <f:formContainers>
+                            
 
-    	 
+                                     <f:FormContainer >
+                                <f:FormElement id="feVERSION" label="{i18n>VERSION}" visible="{= ${VisibleFieldsData>/SALESGRP} === true ? true : false }">
+                                    <f:fields>
+                                        <Input
+                                            id="VERSION"
+                                            type="Text"
+                                            showSuggestion="true"
+                                            showValueHelp="true"
+                                            editable="{HeaderEditModeModel>/editMode}"
+                                            valueStateText="Required"
+                                            valueHelpRequest="onSalesGroupValueHelp"
+                                            suggestionItems="{SalesGroupModel>/results}"
+                                            value="{headerData>/Salesgrp}"
+                                            change="onHeaderChange"
+                                            liveChange="onHeaderChange"
+                                            tooltip="{headerData>/Salesgrp}"
+                                        >
+                                            <suggestionItems>
+                                                <core:ListItem text="{SalesGroupModel>SalesGrp}" additionalText="{SalesGroupModel>Desc1}" />
+                                            </suggestionItems>
+                                        </Input>
+                                    </f:fields>
+                                </f:FormElement>
+                            </f:FormContainer>
+
+                        </f:formContainers>
+                                
+                    </f:Form>
+                </HeaderContainer>
+	        </headerContainer> -->
+           </ObjectHeader> 
+
+                <!-- <f:Form id="StyleHeaderForm2" editable="true">
+                    <f:layout>
+                        <f:ResponsiveGridLayout
+                    labelSpanXL="4"
+                    labelSpanL="4"
+                    labelSpanM="12"
+                    labelSpanS="12"
+                    adjustLabelSpan="false"
+                    emptySpanXL="0"
+                    emptySpanL="0"
+                    emptySpanM="0"
+                    emptySpanS="0"
+                    columnsXL="2"
+                    columnsL="2"
+                    columnsM="2"
+                    singleContainerFullSize="false" />
+                            
+                    </f:layout>
+                    <f:formContainers>
+                        <f:FormContainer class="sapUiContentPadding">
+                            <f:FormElement id="feSTYLECD" label="{i18n>STYLECD}" visible="{= ${VisibleFieldsData>/STYLECD} === true ? true : false }">
+                                <f:fields>
+                                    <Text id="STYLECD" text="{headerData>/Stylecd}" tooltip="{headerData>/Stylecd}"  />
+                                </f:fields>
+                            </f:FormElement>
+                        </f:FormContainer>
+
+                        
+                        <f:FormContainer>
+                            <f:FormElement id="feSALESGRP2" label="{i18n>SALESGRP}" visible="{= ${VisibleFieldsData>/SALESGRP} === true ? true : false }">
+                                <f:fields>
+                                    <Input
+                                        id="SALESGRP2"
+                                        type="Text"
+                                        showSuggestion="true"
+                                        showValueHelp="true"
+                                        editable="{HeaderEditModeModel>/editMode}"
+                                        valueStateText="Required"
+                                        valueHelpRequest="onSalesGroupValueHelp"
+                                        suggestionItems="{SalesGroupModel>/results}"
+                                        value="{headerData>/Salesgrp}"
+                                        change="onHeaderChange"
+                                        liveChange="onHeaderChange"
+                                        tooltip="{headerData>/Salesgrp}"
+                                    >
+                                        <suggestionItems>
+                                            <core:ListItem text="{SalesGroupModel>SalesGrp}" additionalText="{SalesGroupModel>Desc1}" />
+                                        </suggestionItems>
+                                    </Input>
+                                </f:fields>
+                            </f:FormElement>
+                        </f:FormContainer>
+                    </f:formContainers> 
+                </f:Form>-->
+                <!-- <TileContent footer="Hours since last Activity">
+                    <content>
+                        <NumericContent value="{headerData>/Stylecd}" adaptiveFontSize="true" icon="sap-icon://horizontal-bar-chart"/>
+                    </content>
+                </TileContent>
+                <NumericContent value="{headerData>/Stylecd}" formatterValue="true" adaptiveFontSize="true" valueColor="Good"  press="press" icon="sap-icon://line-charts" />
+                    <TileContent footer="New Notifications" class="sapUiSmallMargin">
+                    <FeedContent contentText="@@notify Great outcome of the Presentation today. The new functionality and the new design was well received."
+                        subheader="about 1 minute ago in Computer Market" value="{headerData>/Stylecd}" />
+                </TileContent> -->
+                 <!-- <HeaderContainer scrollStep="200" id="container1">
+            </HeaderContainer> -->
+
             <IconTabBar id="versionTabBar" expandable="false" headerMode="Inline" upperCase="true" stretchContentHeight="true" class="sapUiResponsiveContentPadding">
                 <items>
                     <!-- VERSION ATTRIBUTES -->

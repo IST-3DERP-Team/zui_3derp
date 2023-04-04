@@ -8,12 +8,13 @@ sap.ui.define([
     'jquery.sap.global',
     'sap/ui/core/routing/HashChanger',
     "sap/ui/core/routing/History",
-    "sap/m/MessageBox"
+    "sap/m/MessageBox",
+    "../js/TableValueHelp",
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, Constants, Utils, JSONModel, jQuery, HashChanger, History, MessageBox) {
+    function (Controller, Filter, Common, Constants, Utils, JSONModel, jQuery, HashChanger, History, MessageBox, TableValueHelp) {
         "use strict";
 
         var that;
@@ -25,6 +26,7 @@ sap.ui.define([
 
             onInit: function () {
                 that = this;
+                this._aColumns = {};
                 //Initialize router
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
@@ -57,6 +59,7 @@ sap.ui.define([
 
                 this.getOwnerComponent().getModel("LOOKUP_MODEL").setData(lookUpModel);
                 this.getOwnerComponent().getModel("COLOR_MODEL").setData({ items: [] });
+                this._tableValueHelp = TableValueHelp;
 
                 //this.getAppAction();
 
@@ -148,6 +151,10 @@ sap.ui.define([
                     this.getSizesTable(); //get sizes
                     this.getProcessesTable(); //get process
                     this.getVersionsTable(); //get versions
+                    setTimeout(() => {
+                        this.cancelHeaderEdit();
+                    }, 500);
+                    
                 }
 
                 //close all edit modes
@@ -525,6 +532,7 @@ sap.ui.define([
                         var JSONparse = JSON.parse(JSONdata);
                         oJSONModel.setData(JSONparse);
                         oView.setModel(oJSONModel, "VisibleFieldsData");
+                        me._aColumns["header"] = oData.results;
                     },
                     error: function (err) { }
                 });
@@ -555,6 +563,7 @@ sap.ui.define([
                         MessageBox.information("Header info editing not allowed.\r\nStyle already used in IO and BOM by GMC has ASUV/SUV already.");
                     }
                     else {
+                        // const result = await this.lockStyle("X");
                         const result = await this.lockStyle("X");
                         console.log(result);
                         if (result.Type != "S") {
@@ -3337,13 +3346,19 @@ sap.ui.define([
                 evt.getSource().getBinding("items").filter([]);
             },
 
-            onUomValueHelp: function () {
+            onUomValueHelp: function (evt) {
+                //separate function for header form value help
+                TableValueHelp.handleHdrValueHelp(evt, this);
+           
+                //temporary comment
                 //open uom value help
+                /*
                 if (!this._uomValueHelpDialog) {
                     this._uomValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.UoM", this);
                     this.getView().addDependent(this._uomValueHelpDialog);
                 }
                 this._uomValueHelpDialog.open();
+                */
             },
 
             _uomValueHelpSearch: function (evt) {
@@ -3998,6 +4013,9 @@ sap.ui.define([
                     this.setControlEditMode("HeaderEditModeModel", false);
                     this.enableOtherTabs("detailPanel");
                     this.setDtlsEnableButton(true);
+                    this.byId("btnHdrEdit").setEnabled(true);
+                    this.byId("btnHdrDelete").setEnabled(true);
+                    this.byId("btnHdrClose").setEnabled(true);
                     //unlock style
                     this.lockStyle("O");
                 }
@@ -4316,8 +4334,8 @@ sap.ui.define([
                 this.byId("btnGenAttrDelete").setVisible(pChange);
                 this.byId("btnGenAttrAdd").setVisible(pChange);
                 // this.byId("iconGenAttrInfo").setVisible(pChange);
-                //this.byId("btnGenAttrSave").setVisible(pChange);
-                //this.byId("btnGenAttrCancel").setVisible(pChange);
+                this.byId("btnGenAttrSave").setVisible(false);
+                this.byId("btnGenAttrCancel").setVisible(false);
 
                 //Color
                 this.byId("btnColorEdit").setVisible(pChange);

@@ -1,0 +1,15 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:t="sap.ui.table">
+	<SelectDialog
+	 	id="myPopover"
+		title="Select Version"
+		class="sapUiPopupWithPadding"
+		items="{VersionModel>/results}"
+        search="_versionValueHelpSearch" 
+		confirm="_versionValueHelpClose"
+		cancel="_versionValueHelpClose">
+		<StandardListItem title="{VersionModel>Verno}" description="{VersionModel>Statuscd}" info="{= ${VersionModel>Currentver} === true ? 'Current' : ' ' }"/>
+	</SelectDialog>
+</core:FragmentDefinition>

@@ -1,0 +1,28 @@
+{
+    "header": [
+        {"ColumnName": "UOM", 
+            "ValueHelp": {"show": true, "items": {"path": "UOMModel", "value": "Valunit", "text": "Desc1"},
+                "SuggestionItems": {"path": "UOMModel>/", "text": "{UOMModel>Valunit}", "additionalText": "{UOMModel>Desc1}", "maxSuggestionWidth": "500px"},
+                "columns": "tvh_compcostcd"
+            }
+        }
+         
+    ],
+    "tvh_compcostcd": [
+        {"ColumnName": "COSTCOMPCD", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": true, "Value": true},
+        {"ColumnName": "COMPDESC", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": false, "Value": false}
+    ],    
+    "tvh_companycd": [
+        {"ColumnName": "COMPANYCD", "DataType": "STRING", "ColumnWidth": "340px", "Visible": true, "Key": true, "Value": true}
+    ],
+    "tvh_plantcd": [
+        {"ColumnName": "PLANTCD", "DataType": "STRING", "ColumnWidth": "340px", "Visible": true, "Key": true, "Value": true}
+    ],
+    "tvh_salesterm": [
+        {"ColumnName": "INCO1", "DataType": "STRING", "ColumnWidth": "340px", "Visible": true, "Key": true, "Value": true}
+    ],
+    "tvh_statuscdcs": [
+        {"ColumnName": "STATUSCD", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": true, "Value": false},
+        {"ColumnName": "STATUSDESC", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": false, "Value": true}
+    ]
+}

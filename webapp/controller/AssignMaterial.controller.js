@@ -165,7 +165,10 @@ sap.ui.define([
                             "Purgrp": oData.results[index].Purgrp,
                             "Purplant": oData.results[index].Purplant,
                             "Matdesc1": oData.results[index].Matdesc1,
-                            "Matdesc2": oData.results[index].Matdesc2
+                            "Matdesc2": oData.results[index].Matdesc2,
+                            "Createdby": oData.results[index].Createdby,
+                            "Createddt": oData.results[index].Createddt,
+                            "Createdtm": oData.results[index].Createdtm,
                         }
                         oEntry.MatListToItems.push(item);
                     };
@@ -378,7 +381,10 @@ sap.ui.define([
                             "Purgrp": oData.results[i].Purgrp,
                             "Purplant": oData.results[i].Purplant,
                             "Matdesc1": oData.results[i].Matdesc1,
-                            "Matdesc2": oData.results[i].Matdesc2
+                            "Matdesc2": oData.results[i].Matdesc2,
+                            "Createdby": oData.results[i].Createdby,
+                            "Createddt": oData.results[i].Createddt,
+                            "Createdtm": oData.results[i].Createdtm,
                         }
                         oEntry.MatListToItems.push(item);
                     };

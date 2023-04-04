@@ -92,6 +92,7 @@ sap.ui.define([
                 //Get Data
                 this.getHeaderData(); //get style version header data
                 this.getVersionsData(); //get versions data
+                this.getVersionsTable();
 
                 //Close Edit Modes
                 // this.cancelVersionAttrEdit();
@@ -2491,6 +2492,32 @@ sap.ui.define([
                 }
             },
 
+            getVersionsTable: function () {
+                //get versions data of style
+                var oTable = this.getView().byId("versionsTable");
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new JSONModel();
+
+                Common.openLoadingDialog(that);
+
+                var entitySet = "/StyleVersionSet"
+                oModel.setHeaders({
+                    styleno: this._styleNo
+                });
+                oModel.read(entitySet, {
+                    success: function (oData, oResponse) {
+                        oJSONModel.setData(oData);
+                        that.getView().setModel(oJSONModel, "VersionModel");
+                        // that.getView().setModel("headerData").setProperty("/Statuscd","headerData");
+                        // oTable.attachPaste();
+                        Common.closeLoadingDialog(that);
+                    },
+                    error: function () {
+                        Common.closeLoadingDialog(that);
+                    }
+                })
+            },
+
             //******************************************* */
             // Search Helps
             //******************************************* */
@@ -2996,6 +3023,64 @@ sap.ui.define([
                     that.onMaterialListChange();
                 }
                 evt.getSource().getBinding("items").filter([]);
+            },
+
+            handleTitleSelectorPress: function (oEvent) {
+                var oSourceControl = oEvent.getSource(),
+                    oControlDomRef = oEvent.getParameter("domRef"),
+                    oView = this.getView();
+
+                    
+    
+                if (!this._pPopover) {
+                    this._pPopover = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.Versions", this);
+                    this._pPopover.attachSearch(this._versionValueHelpSearch);
+                    oView.addDependent(this._pPopover);
+                }
+               
+                this._pPopover.setModel(oSourceControl.getModel());
+                // this._pPopover.open(oControlDomRef);
+                this._pPopover.open();
+            },
+
+            _versionValueHelpSearch: function (evt) {
+                //search seasons
+                var sValue = evt.getParameter("value");
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("Verno", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+            },
+
+            _versionValueHelpClose: function (evt) {
+                //on select version
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    console.log(oSelectedItem.getTitle());
+                    const verno =oSelectedItem.getTitle();
+                    that._router.navTo("RouteVersion", {
+                        styleno: that._styleNo,
+                        sbu: that._sbu,
+                        version: verno
+                    });
+                    // var input = this.byId(this.inputId);
+                    // input.setValue(oSelectedItem.getTitle()); //set input field selected value
+                    // this.onHeaderChange();
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+
+            handleItemSelect: function (oEvent) {
+                var oItem = oEvent.getParameter("listItem"),
+                    oObjectHeader = this.byId("objectHeader");
+    
+                oObjectHeader.setTitle(oItem.getTitle());
+                oObjectHeader.setBindingContext(oItem.getBindingContext());
+    
+                // note: We don't need to chain to the _pPopover promise, since this event-handler
+                // is only called from within the loaded dialog itself.
+                this.byId("myPopover").close();
             },
 
             //******************************************* */
