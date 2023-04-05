@@ -1982,7 +1982,7 @@ sap.ui.define([
 
                                 path = "/MaterialListSet";
                                 oModel.setHeaders({
-                                    sbu: this._sbu
+                                    sbu: me._sbu //this._sbu
                                 });
                                 //call create deep method of Material list
                                 oModel.create(path, oEntry, {

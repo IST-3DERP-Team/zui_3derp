@@ -3348,17 +3348,17 @@ sap.ui.define([
 
             onUomValueHelp: function (evt) {
                 //separate function for header form value help
-                TableValueHelp.handleHdrValueHelp(evt, this);
+                //TableValueHelp.handleHdrValueHelp(evt, this);
            
                 //temporary comment
                 //open uom value help
-                /*
+                 
                 if (!this._uomValueHelpDialog) {
                     this._uomValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.UoM", this);
                     this.getView().addDependent(this._uomValueHelpDialog);
                 }
                 this._uomValueHelpDialog.open();
-                */
+                
             },
 
             _uomValueHelpSearch: function (evt) {
