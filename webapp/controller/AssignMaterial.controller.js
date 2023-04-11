@@ -397,7 +397,7 @@ sap.ui.define([
                                 path = "/MaterialListSet";
 
                                 oModel.setHeaders({
-                                    sbu: this._sbu
+                                    sbu: me._sbu //this._sbu
                                 });
                                 // console.log(JSON.stringify(oEntry));
                                 //call create deep method to save assigned or created materials
