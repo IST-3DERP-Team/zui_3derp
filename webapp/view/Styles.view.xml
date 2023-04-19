@@ -139,16 +139,21 @@
                                 <Title text="{i18n>style}" class="sapUiTinyMarginBegin" />
                             </HBox>
                             <ToolbarSpacer />
-                            <Button text="{i18n>New}" icon="sap-icon://add-document" tooltip="{i18n>Createnewstyle}" press="onCreateNewStyle" visible="{= ${AppAction>/appChange} === true ? true : false }" />
+                            <Button icon="sap-icon://add" tooltip="{i18n>Createnewstyle}" press="onCreateNewStyle" visible="{= ${AppAction>/appChange} === true ? true : false }" />
                             <Button icon="sap-icon://refresh" tooltip="Refresh" press="onRefresh" />
-                            <Button text="{i18n>Copy}" icon="sap-icon://copy" tooltip="{i18n>Copystylemode}" press="onCopyMode" visible="{= ${AppAction>/appChange} === true ? true : false }" />
+                            <Button icon="sap-icon://copy" tooltip="{i18n>Copystylemode}" press="onCopyMode" visible="{= ${AppAction>/appChange} === true ? true : false }" />
                             <Button text="{i18n>Upload}" icon="sap-icon://upload" tooltip="{i18n>Uploadstylesfromfile}" press="onUploadStyle"  visible="{= ${AppAction>/appChange} === true ? true : false }"/>
                             <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">
                                 <customData>
                                     <core:CustomData key="TableName" value="styleDynTable" />
                                 </customData>
                             </Button>
-                            <Button icon="sap-icon://grid" text="{i18n>Save}" tooltip="{i18n>Savetablelayout}" press="onSaveTableLayout" />
+                            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+                                <customData>
+                                    <core:CustomData key="TableName" value="styleDynTable" />
+                                </customData>
+                            </Button>
+                            <Button icon="sap-icon://grid" tooltip="{i18n>Savetablelayout}" press="onSaveTableLayout" />
                         </Toolbar>
                     </uiT:extension>
                     <uiT:layoutData>

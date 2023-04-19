@@ -23,6 +23,11 @@
             <Button id="btnColorEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editcolorattributes}" press="setColorEditMode" visible="true" />
             <Button id="btnColorDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedcolors}" press="onDeleteColor" visible="true" />
             <Button id="btnColorCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelColorsEdit" visible="false" />
+            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+                <customData>
+                    <core:CustomData key="TableName" value="colorsTable" />
+                </customData>
+            </Button>            
         </Toolbar>
 
         <MessageStrip id="ColorsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
@@ -41,19 +46,19 @@
             filter="onFilter">
             <c:columns>
                 <t:Column name="ATTRIBSEQ" width="7rem" filterProperty="Attribseq" sortProperty="Attribseq">
-                    <Label text="{i18n>ColorCode}" />
+                    <Label text="{ddtext>/COLORCD}" />
                     <t:template>
                         <Text text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
-                    <Label text="{i18n>Description}" />
+                    <Label text="{ddtext>/DESC}" />
                     <t:template>
                         <Input value="{DataModel>Desc1}" editable="{ColorEditModeModel>/editMode}" change="onColorChange" liveChange="onColorChange" tooltip="{DataModel>Desc1}" />
                     </t:template>
                 </t:Column>
                 <t:Column width="7rem" filterProperty="Sortseq" sortProperty="Sortseq">
-                    <Label text="{i18n>SortSeq}" />
+                    <Label text="{ddtext>/SORTSEQ}" />
                     <t:template>
                         <!-- <HBox class="sapUiResponsiveContentPadding">
                                     <Label required="true"/> -->

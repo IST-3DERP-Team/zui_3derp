@@ -26,6 +26,11 @@
             <Button id="btnGenAttrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteGeneralAttr" visible="true" />
             <Button id="btnGenAttrSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveattributes}" press="onSaveGeneralTable" visible="false" />
             <Button id="btnGenAttrCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelGeneralAttrEdit" visible="false" />
+            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+                <customData>
+                    <core:CustomData key="TableName" value="generalTable" />
+                </customData>
+            </Button>
         </Toolbar>
 
     <!-- General Attributes Table -->
@@ -66,7 +71,7 @@
                     <Text id="AttrTypeSeq" text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />
                 </t:template>
             </t:Column>
-            <t:Column width="8rem" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <t:Column width="14rem" filterProperty="Attribtyp" sortProperty="Attribtyp">
                 <Text text="{ddtext>/ATTRIBTYP}" />
                 <t:template>
                     <Input
@@ -88,7 +93,7 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
+            <t:Column width="10rem" filterProperty="Attribcd" sortProperty="Attribcd">
                 <Text text="{ddtext>/ATTRIBCD}" />
                 <t:template>
                     <Input
@@ -101,6 +106,7 @@
                         liveChange="onGeneralAttrChange"
                         valueHelpRequest="onAttrCodesValueHelp"
                         suggestionItems="{path:'AttribCdModel>/results',templateShareable: false}"
+                        suggest="handleSuggestion"
                         value="{DataModel>Attribcd}"
                         tooltip="{DataModel>Attribcd}"
                     >

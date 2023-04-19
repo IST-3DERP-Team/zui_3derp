@@ -48,8 +48,8 @@
                                     valueHelpRequest="onProdTypeValueHelp"
                                     suggestionItems="{ProdTypeModel>/results}"
                                     value="{headerData>/Prodtyp}"
-                                    change="onHeaderChange"
-                                    liveChange="onHeaderChange"
+                                    change="onHeaderInputChange"
+                                    liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Prodtyp}"
                                 >
                                     <suggestionItems>
@@ -70,8 +70,8 @@
                                     valueHelpRequest="onStyleCatValueHelp"
                                     suggestionItems="{StyleCatModel>/results}"
                                     value="{headerData>/Stylecat}"
-                                    change="onHeaderChange"
-                                    liveChange="onHeaderChange"
+                                    change="onHeaderInputChange"
+                                    liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Stylecat}"
                                 >
                                     <suggestionItems>
@@ -107,8 +107,8 @@
                                     valueHelpRequest="onSalesGroupValueHelp"
                                     suggestionItems="{SalesGroupModel>/results}"
                                     value="{headerData>/Salesgrp}"
-                                    change="onHeaderChange"
-                                    liveChange="onHeaderChange"
+                                    change="onHeaderInputChange"
+                                    liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Salesgrp}"
                                 >
                                     <suggestionItems>
@@ -143,8 +143,8 @@
                                     valueHelpRequest="onSeasonsValueHelp"
                                     suggestionItems="{SeasonsModel>/results}"
                                     value="{headerData>/Seasoncd}"
-                                    change="onHeaderChange"
-                                    liveChange="onHeaderChange"
+                                    change="onHeaderInputChange"
+                                    liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Seasoncd}"
                                 >
                                     <suggestionItems>
@@ -165,8 +165,8 @@
                                     valueHelpRequest="onCustGroupValueHelp"
                                     suggestionItems="{CustGroupModel>/results}"
                                     value="{headerData>/Custgrp}"
-                                    change="onHeaderChange"
-                                    liveChange="onHeaderChange"
+                                    change="onHeaderInputChange"
+                                    liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Custgrp}"
                                 >
                                     <suggestionItems>
@@ -186,8 +186,8 @@
                                 valueHelpRequest="onCustomersValueHelp"
                                 suggestionItems="{CustomersModel>/results}"
                                 value="{headerData>/Soldtocust}"
-                                change="onHeaderChange"
-                                liveChange="onHeaderChange"
+                                change="onHeaderInputChange"
+                                liveChange="onHeaderInputLiveChange"
                                 tooltip="{headerData>/Soldtocust}"
                             >
                                 <suggestionItems>
@@ -207,8 +207,8 @@
                                     valueHelpRequest="onSizeGroupValueHelp"
                                     suggestionItems="{SizeGroupModel>/results}"
                                     value="{headerData>/Sizegrp}"
-                                    change="onHeaderChange"
-                                    liveChange="onHeaderChange"
+                                    change="onHeaderInputChange"
+                                    liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Sizegrp}"
                                 >
                                     <suggestionItems>
@@ -238,8 +238,8 @@
                                     valueHelpRequest="onUomValueHelp"
                                     suggestionItems="{UOMModel>/results}"
                                     value="{headerData>/Uom}"
-                                    change="onHeaderChange"
-                                    liveChange="onHeaderChange"
+                                    change="onHeaderInputChange"
+                                    liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Uom}"
                                 >
                                     <suggestionItems>

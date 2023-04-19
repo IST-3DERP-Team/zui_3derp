@@ -44,7 +44,7 @@
 .sapUiTableContentRow.sapUiTableRowSel
 {
     background-color: #e8eff6;
-    outline: 0.125rem solid blue ;
+    /* outline: 0.125rem solid blue ; */
     outline-offset: calc(-0.125rem - 0.0625rem) ;
 }
  
@@ -107,4 +107,12 @@ for header.fragment
 .genAttrInfo {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+}
+
+.cursorPointer {
+    cursor: pointer;
+}
+
+.sapMDialogScroll {
+    height: 100%;
 }

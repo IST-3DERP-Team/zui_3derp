@@ -87,21 +87,30 @@
                 success: function (oData, oResponse) {
                     oJSONModel5.setData(oData);
                     oJSONModel5.setSizeLimit(9999);
-                    oView.setModel(oJSONModel5, "CustomersModel")
+                    oView.setModel(oJSONModel5, "CustomersModel");
+                    oView.setModel(new JSONModel(oData), "CustomerModel");
+
+                    if (that.getView().getModel("headerData") !== undefined) {
+                        var vCustgrp = that.getView().getModel("headerData").getProperty("/Custgrp");
+                        var aModelData = oData.results.filter(fItem => fItem.Custgrp === vCustgrp);
+                        var oModelData = {};
+                        oModelData["results"] = aModelData;
+                        that.getView().setModel(new JSONModel(oModelData), "CustomerModel");                      
+                    }
                 },
                 error: function (err) { }
             });
 
             //get Size Groups
-            // var oJSONModel6 = new JSONModel();
-            // oSHModel.read("/SizeGrpSet", {
-            //     success: function (oData, oResponse) {
-            //         oJSONModel6.setData(oData);
-            //         // oJSONModel6.setSizeLimit(9999);
-            //         oView.setModel(oJSONModel6, "SizeGroupModel");
-            //     },
-            //     error: function (err) { }
-            // });
+            var oJSONModel6 = new JSONModel();
+            oSHModel.read("/SizeGrpSet", {
+                success: function (oData, oResponse) {
+                    oJSONModel6.setData(oData);
+                    oJSONModel6.setSizeLimit(9999);
+                    oView.setModel(oJSONModel6, "SizeGroupModel");
+                },
+                error: function (err) { }
+            });
 
             //get UoM
             var oJSONModel7 = new JSONModel();
@@ -110,6 +119,7 @@
                     oJSONModel7.setData(oData);
                     oJSONModel7.setSizeLimit(9999);
                     oView.setModel(oJSONModel7, "UOMModel");
+                    oView.setModel(oJSONModel7, "UOMGMCModel");
                     that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/UOMModel",oData);
                     that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/UOMGMCModel",oData);
                 },
@@ -155,8 +165,8 @@
                     oJSONModel2.setData(oData);
                     oJSONModel2.setSizeLimit(9999);
                     oView.setModel(oJSONModel2, "AttribCdModel");
+                    oView.setModel(new JSONModel(oData), "AttribCodeModel");
                     that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/AttribCdModel",oData);
-                    
                 },
                 error: function (err) { }
             });
@@ -212,6 +222,7 @@
                     oJSONModel2.setData(oData);
                     oJSONModel2.setSizeLimit(9999);
                     oView.setModel(oJSONModel2, "ProcessAttribCodeModel");
+                    oView.setModel(new JSONModel(oData), "ProcessAttribCdModel");
                 },
                 error: function (err) { }
             });
@@ -236,6 +247,7 @@
                     oJSONModel6.setData(oData);
                     oJSONModel6.setSizeLimit(9999);
                     oView.setModel(oJSONModel6, "VASTypeModel");
+                    oView.setModel(new JSONModel(oData), "VASTypModel");
                 },
                 error: function (err) { }
             });
@@ -286,6 +298,7 @@
                 success: function (oData, oResponse) {
                     oJSONModel3.setData(oData);
                     oView.setModel(oJSONModel3, "UsageClassModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/UsageClassModel",oData);
                 },
                 error: function (err) { }
             });
@@ -321,6 +334,7 @@
                     oJSONModel6.setData(oData);
                     oJSONModel6.setSizeLimit(9999);
                     oView.setModel(oJSONModel6, "MatTypeModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/MatTypeModel",oData);
                 },
                 error: function (err) { }
             });
@@ -332,6 +346,7 @@
                     oJSONModel7.setData(oData);
                     oJSONModel7.setSizeLimit(9999);
                     oView.setModel(oJSONModel7, "GMCModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/GMCModel",oData);
                 },
                 error: function (err) { }
             });
@@ -343,6 +358,7 @@
                     oJSONModel8.setData(oData);
                     oJSONModel8.setSizeLimit(9999);
                     oView.setModel(oJSONModel8, "StylesModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/StylesModel",oData);
                 },
                 error: function (err) { }
             });
@@ -354,6 +370,7 @@
                     oJSONModel9.setData(oData);
                     oJSONModel9.setSizeLimit(9999);
                     oView.setModel(oJSONModel9, "SupplyTypeModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/SupplyTypeModel",oData);
                 },
                 error: function (err) { }
             });
@@ -365,6 +382,7 @@
                     oJSONModel10.setData(oData);
                     oJSONModel10.setSizeLimit(9999);
                     oView.setModel(oJSONModel10, "VendorModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/VendorModel",oData);
                 },
                 error: function (err) { }
             });
@@ -376,6 +394,7 @@
                     oJSONModel11.setData(oData);
                     oJSONModel11.setSizeLimit(9999);
                     oView.setModel(oJSONModel11, "CurrencyModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/CurrencyModel",oData);
                 },
                 error: function (err) { }
             });
@@ -387,6 +406,8 @@
                     oJSONModel12.setData(oData);
                     oJSONModel12.setSizeLimit(9999);
                     oView.setModel(oJSONModel12, "PurchGroupModel");
+                    // console.log(me.getView().getModel("PurchGroupModel"))
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/PurchGroupModel",oData);
                 },
                 error: function (err) { }
             });
@@ -398,6 +419,7 @@
                     oJSONModel13.setData(oData);
                     oJSONModel13.setSizeLimit(9999);
                     oView.setModel(oJSONModel13, "PurPlantModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/PurPlantModel",oData);
                 },
                 error: function (err) { }
             });
@@ -454,6 +476,7 @@
                     oJSONModel7.setData(oData);
                     oJSONModel7.setSizeLimit(9999);
                     oView.setModel(oJSONModel7, "UOMModel");
+                    oView.setModel(oJSONModel7, "UOMGMCModel");
                     that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/UOMModel",oData);
                     that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/UOMGMCModel",oData);
                 },
@@ -471,9 +494,6 @@
                  },
                  error: function (err) { }
              });
-
-
-            
         },
 
         onExport: function (oEvent) {

@@ -17,6 +17,11 @@
             <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteVersionAttr" visible="{= ${AppAction>/appChange} === true ? ${VersionAttrEditModeModel>/editMode} === true ? false : true : false }" />
             <Button id="btnVersionSave" icon="sap-icon://save" tooltip="{i18n>Saveversionattributes}" press="onSaveVersionAttrTable" visible="{VersionAttrEditModeModel>/editMode}" />
             <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelVersionAttrEdit" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? true : false }" />
+            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+                <customData>
+                    <core:CustomData key="TableName" value="versionAttrTable" />
+                </customData>
+            </Button>
         </Toolbar>
 
         <MessageStrip id="VersionAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
@@ -32,8 +37,8 @@
                 selectionMode="MultiToggle"
                 sort="onSorted">
                 <c:columns>
-                    <t:Column width="11rem" filterProperty="Attribtyp" sortProperty="Attribtyp">
-                        <Label text="{i18n>AttributeType}" />
+                    <t:Column width="14rem" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                        <Label text="{ddtext>/ATTRIBTYP}" />
                         <t:template>
                             <Input
                                 id="AttrTypesInput3"
@@ -41,7 +46,7 @@
                                 showSuggestion="true"
                                 showValueHelp="true"
                                 editable="{VersionAttrEditModeModel>/editMode}"
-                                change="onVersionAttrChange"
+                                change="onVersionAttrInputChange"
                                 liveChange="onVersionAttrChange"
                                 valueHelpRequest="onAttrTypesValueHelp"
                                 suggestionItems="{path:'AttribTypeModel>/results', templateShareable: false}"
@@ -55,7 +60,7 @@
                         </t:template>
                     </t:Column>
                     <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
-                        <Label text="{i18n>AttributeCode}" />
+                        <Label text="{ddtext>/ATTRIBCD}" />
                         <t:template>
                             <Input
                                 id="AttrCodesInput3"
@@ -63,13 +68,13 @@
                                 showSuggestion="true"
                                 showValueHelp="true"
                                 editable="{VersionAttrEditModeModel>/editMode}"
-                                change="onVersionAttrChange"
+                                change="onVersionAttrInputChange"
                                 liveChange="onVersionAttrChange"
                                 valueHelpRequest="onAttrCodesValueHelp"
                                 suggestionItems="{path:'AttribCdModel>/results', templateShareable: false}"
+                                suggest="handleSuggestion"
                                 value="{DataModel>Attribcd}"
                                 tooltip="{DataModel>Attribcd}"
-                                
                             >
                                 <suggestionItems>
                                     <core:ListItem text="{AttribCdModel>Attribcd}" additionalText="{AttribCdModel>Desc1}" />
@@ -78,20 +83,20 @@
                         </t:template>
                     </t:Column>
                     <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
-                        <Label text="{i18n>Description}" />
+                        <Label text="{ddtext>/DESC}" />
                         <t:template>
                             <Text text="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" />
                             <!-- <Input value="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange" liveChange="onVersionAttrChange" /> -->
                         </t:template>
                     </t:Column>
                     <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">
-                        <Label text="{i18n>Value}" />
+                        <Label text="{ddtext>/ATTRIBVAL}" />
                         <t:template>
                             <Input value="{DataModel>Attribval}" tooltip="{DataModel>Attribval}" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange" liveChange="onVersionAttrChange" />
                         </t:template>
                     </t:Column>
                     <t:Column width="11rem" filterProperty="Valunit" sortProperty="Valunit">
-                        <Label text="{i18n>UOM}" />
+                        <Label text="{ddtext>/ATTRIBVALUNIT}" />
                         <t:template>
                             <Input
                                 id="UomInput"
@@ -99,7 +104,7 @@
                                 showSuggestion="true"
                                 showValueHelp="true"
                                 editable="{VersionAttrEditModeModel>/editMode}"
-                                change="onVersionAttrChange"
+                                change="onVersionAttrInputChange"
                                 liveChange="onVersionAttrChange"
                                 valueHelpRequest="onUomValueHelp"
                                 suggestionItems="{path:'UOMModel>/results', templateShareable:false}"

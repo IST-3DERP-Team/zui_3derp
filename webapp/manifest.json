@@ -195,6 +195,9 @@
                     "defaultCountMode": "Inline",
                     "refreshAfterChange": false
                 }
+            },
+            "FILTER_MODEL": {
+                "type": "sap.ui.model.json.JSONModel"
             }
         },
         "resources": {

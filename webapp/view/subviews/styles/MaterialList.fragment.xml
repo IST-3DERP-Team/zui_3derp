@@ -12,6 +12,11 @@
                     <core:CustomData key="TableName" value="materialListTable" />
                 </customData>
             </Button>
+            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+                <customData>
+                    <core:CustomData key="TableName" value="materialListTable" />
+                </customData>
+            </Button>
         </Toolbar>
 
         <MessageStrip id="MaterialListMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
@@ -27,55 +32,55 @@
             selectionMode="Single" 
             visibleRowCountMode="Auto">
             <t:Column width="5rem" filterProperty="Seqno" sortProperty="Seqno">
-                <Label text="{i18n>SEQNO}" />
+                <Label text="{ddtext>/SEQ}" />
                 <t:template>
                     <Text text="{DataModel>Seqno}" tooltip="{DataModel>Seqno}" />
                 </t:template>
             </t:Column>
             <t:Column width="7rem" filterProperty="Mattyp" sortProperty="Mattyp">
-                <Label text="{i18n>MATTYP}" />
+                <Label text="{ddtext>/MATTYP}" />
                 <t:template>
                     <Text text="{DataModel>Mattyp}" tooltip="{DataModel>Mattyp}"/>
                 </t:template>
             </t:Column>
             <t:Column width="11rem" filterProperty="Matno" sortProperty="Matno">
-                <Label text="{i18n>MATNO}" />
+                <Label text="{ddtext>/MATNO}" />
                 <t:template>
                     <Text text="{DataModel>Matno}" tooltip="{DataModel>Matno}" />
                 </t:template>
             </t:Column>
             <t:Column width="7rem" filterProperty="Gmc" sortProperty="Gmc">
-                <Label text="{i18n>GMC}" />
+                <Label text="{ddtext>/GMC}" />
                 <t:template>
                     <Text text="{DataModel>Gmc}" tooltip="{DataModel>Gmc}" />
                 </t:template>
             </t:Column>
             <t:Column width="28rem" filterProperty="Gmcdesc" sortProperty="Gmcdesc">
-                <Label text="{i18n>GMCDESC}" />
+                <Label text="{ddtext>/GMCDESC}" />
                 <t:template>
                     <Text text="{DataModel>Gmcdesc}" tooltip = "{DataModel>Gmcdesc}"/>
                 </t:template>
             </t:Column>
             <t:Column width="24rem" filterProperty="Matdesc1" sortProperty="Matdesc1">
-                <Label text="{i18n>MATDESC1}" />
+                <Label text="{ddtext>/ADDTLDESC}" />
                 <t:template>
                     <Input value="{DataModel>Matdesc1}" tooltip="{DataModel>Matdesc1}" change="onMaterialListChange" editable="{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>Matno} === '' ? true : false : false }" />
                 </t:template>
             </t:Column>
             <t:Column width="7rem" filterProperty="Consump" sortProperty="Consump">
-                <Label text="{i18n>CONSUMP}" />
+                <Label text="{ddtext>/CONSUMP}" />
                 <t:template>
                     <Input value="{DataModel>Consump}" tooltip="{DataModel>Consump}" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange" />
                 </t:template>
             </t:Column>
             <t:Column width="8rem" filterProperty="Uom" sortProperty="Uom">
-                <Label text="{i18n>UOM}" />
+                <Label text="{ddtext>/UOM}" />
                 <t:template>
                     <Text text="{DataModel>Uom}" tooltip="{DataModel>Uom}" />
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterProperty="Supplytyp" sortProperty="Supplytyp">
-                <Label text="{i18n>SUPPLYTYP}" />
+            <t:Column width="14rem" filterProperty="Supplytyp" sortProperty="Supplytyp">
+                <Label text="{ddtext>/SUPPLYTYP}" />
                 <t:template>
                     <Input
                         id="SupplyTypeInput"
@@ -86,7 +91,7 @@
                         valueHelpRequest="onSupplyTypeValueHelp"
                         suggestionItems="{path:'SupplyTypeModel>/results', templateShareable:false}"
                         value="{DataModel>Supplytyp}"
-                        change="onMaterialListChange"
+                        change="onMaterialListInputChange"
                         tooltip="{DataModel>Supplytyp}"
                     >
                         <suggestionItems>
@@ -95,8 +100,8 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterProperty="Vendorcd" sortProperty="Vendorcd">
-                <Label text="{i18n>VENDORCD}" />
+            <t:Column width="25rem" filterProperty="Vendorcd" sortProperty="Vendorcd">
+                <Label text="{ddtext>/VENDORCD}" />
                 <t:template>
                     <Input
                         id="VendorInput"
@@ -107,7 +112,7 @@
                         valueHelpRequest="onVendorValueHelp"
                         suggestionItems="{path:'VendorModel>/results', templateShareable:false}"
                         value="{DataModel>Vendorcd}"
-                        change="onMaterialListChange"
+                        change="onMaterialListInputChange"
                         liveChange="onMaterialListChange"
                         tooltip="{DataModel>Vendorcd}"
                     >
@@ -117,8 +122,8 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="8rem" filterProperty="Currencycd" sortProperty="Currencycd">
-                <Label text="{i18n>CURRENCYCD}" />
+            <t:Column width="14rem" filterProperty="Currencycd" sortProperty="Currencycd">
+                <Label text="{ddtext>/CURRENCYCD}" />
                 <t:template>
                     <Input
                         id="CurrencyInput"
@@ -129,7 +134,7 @@
                         valueHelpRequest="onCurrencyValueHelp"
                         suggestionItems="{path:'CurrencyModel>/results', templateShareable:false}"
                         value="{DataModel>Currencycd}"
-                        change="onMaterialListChange"
+                        change="onMaterialListInputChange"
                         tooltip="{DataModel>Currencycd}"
                     >
                         <suggestionItems>
@@ -138,24 +143,25 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterProperty="Unitprice" sortProperty="Unitprice">
-                <Label text="{i18n>UnitPrice}" />
+            <t:Column width="9rem" filterProperty="Unitprice" sortProperty="Unitprice">
+                <Label text="{ddtext>/UNITPRICE}" />
                 <t:template>
                     <Input value="{DataModel>Unitprice}"  tooltip="{DataModel>Unitprice}" type="Number" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange" />
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterProperty="Purgrp" sortProperty="Purgrp">
-                <Label text="{i18n>PURGRP}" />
+            <t:Column width="15rem" filterProperty="Purgrp" sortProperty="Purgrp">
+                <Label text="{ddtext>/PURGRP}" />
                 <t:template>
                     <Input
                         id="PurGroupInput"
                         type="Text"
-                         showValueHelp="true"
+                        showValueHelp="true"
+                        showSuggestion="true"
                         editable="{MaterialListEditModeModel>/editMode}"
                         valueHelpRequest="onPurGroupValueHelp"
                         suggestionItems="{path:'PurchGroupModel>/results', templateShareable:false}"
                         value="{DataModel>Purgrp}"
-                        change="onMaterialListChange"
+                        change="onMaterialListInputChange"
                         liveChange="onMaterialListChange"
                         tooltip="{DataModel>Purgrp}"
                     >
@@ -165,8 +171,8 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterProperty="Purplant" sortProperty="Purplant">
-                <Label text="{i18n>PURPLANT}" />
+            <t:Column width="14rem" filterProperty="Purplant" sortProperty="Purplant">
+                <Label text="{ddtext>/PURPLANT}" />
                 <t:template>
                     <Input
                         id="PurPlantInput"
@@ -177,7 +183,7 @@
                         valueHelpRequest="onPurPlantValueHelp"
                         suggestionItems="{path:'PurPlantModel>/results', templateShareable:false}"
                         value="{DataModel>Purplant}"
-                        change="onMaterialListChange"
+                        change="onMaterialListInputChange"
                         tooltip="{DataModel>Purplant}"
                     >
                         <suggestionItems>

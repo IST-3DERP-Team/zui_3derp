@@ -21,7 +21,7 @@
         <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMitems}" press="onSaveBOMbyGMC" visible="{BOMbyGMCEditModeModel>/editMode}"/>
         <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelBOMbyGMCEdit" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? true : false }"/>
         <Button icon="sap-icon://cause" text="{i18n>GetComponents}" tooltip="{i18n>Getstylecomponents}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
-        <Button icon="sap-icon://process" text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+        <Button icon="sap-icon://process" text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>               
         <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>
             <core:CustomData key="TableName" value="bomGMCTable"/>
@@ -30,6 +30,11 @@
                 <ToolbarLayoutData shrinkable="true"/>
             </layoutData>
         </Button>
+        <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+            <customData>
+                <core:CustomData key="TableName" value="bomGMCTable" />
+            </customData>
+        </Button>         
     </Toolbar>
 
     <MessageStrip id="BOMbyGMCMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>

@@ -12,6 +12,11 @@
             <Button id="btnSizeSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Savesizeattributes}" press="onSaveSizeTable" visible="false" />
             <Button id="btnSizeEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editsizeattributes}" press="setSizeEditMode" visible="true" />
             <Button id="btnSizeCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelSizeEdit" visible="false" />
+            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+                <customData>
+                    <core:CustomData key="TableName" value="sizesTable" />
+                </customData>
+            </Button>
         </Toolbar>
 
         <MessageStrip id="SizesMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
@@ -27,7 +32,7 @@
             selectionMode="None">
             <c:columns>
                 <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="Attribseq" sortProperty="Attribseq">
-                    <Label text="{i18n>Seq}" />
+                    <Label text="{ddtext>/SEQ}" />
                     <t:template>
                         <Text text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />
                     </t:template>
@@ -39,14 +44,14 @@
                     </t:template>
                 </t:Column> -->
                 <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
-                    <Label text="{i18n>SizeCode}" />
+                    <Label text="{ddtext>/SIZECD}" />
                     <t:template>
                         <Text text="{DataModel>Attribcd}" tooltip="{DataModel>Attribcd}" />
                         <!-- <Input value="{DataModel>Attribcd}" editable="false" tooltip="{DataModel>Attribcd}"  /> -->
                     </t:template>
                 </t:Column>
                 <t:Column width="11rem" filterProperty="Baseind" sortProperty="Baseind" hAlign="Center">
-                    <Label text="{i18n>BaseInd}" />
+                    <Label text="{ddtext>/BASEIND}" />
                     <t:template>
                         <CheckBox selected="{DataModel>Baseind}" editable="{SizeEditModeModel>/editMode}" select="onSizeChange"  />
                     </t:template>

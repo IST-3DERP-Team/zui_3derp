@@ -32,7 +32,9 @@ sap.ui.define([
                 this._sbu = oEvent.getParameter("arguments").sbu; //get SBU route parameter
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get Style No route parameter
                 this._version = oEvent.getParameter("arguments").version; //get version route parameter
-
+                this._aColumns = {};
+                this._colFilters = {};
+                
                 //set change false as initial
                 //this._materialListChanged = false;
                 this.setChangeStatus(false);
@@ -43,7 +45,6 @@ sap.ui.define([
 
                 this.getOwnerComponent().getModel("UI_MODEL").setProperty("/fromScreen", "ASSIGNMAT");
             },
-
 
             setChangeStatus: function (changed) {
                 //set change flag
@@ -457,6 +458,7 @@ sap.ui.define([
                     input.setValue(oSelectedItem.getTitle()); //set input field selected Material
                 }
                 evt.getSource().getBinding("items").filter([]);
-            }
+            },
+
         })
     })
