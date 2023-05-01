@@ -33,6 +33,11 @@ sap.ui.define([
                 this._router = oComponent.getRouter();
                 //this._router.getRoute("RouteStyles").attachPatternMatched(this._routePatternMatched, this);
 
+                this.getOwnerComponent().getModel("LOOKUP_MODEL").setData(new JSONModel());
+                Utils.getStyleSearchHelps(this);
+                Utils.getAttributesSearchHelps(this);
+                Utils.getProcessAttributes(this);
+                
                 //Set model of smartfilterbar
                 this._Model = this.getOwnerComponent().getModel();
                 this.setSmartFilterModel();
@@ -170,7 +175,7 @@ sap.ui.define([
                 });
                 this._Model.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
-                        console.log(oData);
+                        // console.log(oData);
                         oJSONColumnsModel.setData(oData);
                         me.oJSONModel.setData(oData);
                         me.getView().setModel(oJSONColumnsModel, "DynColumns"); //set the view model
@@ -474,17 +479,22 @@ sap.ui.define([
             },
 
             updateColumnMenu() {
+                var me = this;
                 var oTable = this.getView().byId("styleDynTable"); 
 
                 var oMenuItem = new sap.ui.unified.MenuItem({
                     icon: "sap-icon://filter",
                     text: "Filter",
-                    // select: "onQuantityCustomItemSelect"
+                    select: function(oEvent) {
+                        console.log(oEvent.getSource())
+                        me.onColFilter("styleDynTable", oEvent.getSource().oParent.oParent.getAggregation("label").getProperty("text"));
+                    }
+                    // select: this.onColFilter("styleDynTable")
                     // submenu: oSubMenu
                 })
 
                 oTable.getColumns().forEach(col => {
-                    console.log(col.getMenu())
+                    // console.log(col.getMenu())
                     // Loop onto each column and attach Column Menu Open event
                     col.attachColumnMenuOpen(function(oEvent) {
                         //Get Menu associated with column
@@ -492,21 +502,21 @@ sap.ui.define([
 
                         //Create the Menu Item that need to be added
                         setTimeout(() => {
-                            console.log(oMenu)
+                            // console.log(oMenu)
                             var wCustomFilter = false;
                             oMenu.getItems().forEach(item => {
                                 if (item.sId.indexOf("filter") >= 0) {
                                     oMenu.removeItem(item);
                                 }
 
-                                // if (item.mProperties.text !== undefined && item.mProperties.text === "Filter") {
-                                //     wCustomFilter = true;
-                                // }
+                                if (item.mProperties.text !== undefined && item.mProperties.text === "Filter") {
+                                    wCustomFilter = true;
+                                }
                             })
                             
-                            // if (!wCustomFilter) {
-                            //     oMenu.insertItem(oMenuItem, 2);                               
-                            // }
+                            if (!wCustomFilter) {
+                                oMenu.insertItem(oMenuItem, 2);                               
+                            }
                             
                             oMenu.setPageSize(oMenu.getItems().length); 
                         }, 10);
@@ -1016,8 +1026,17 @@ sap.ui.define([
             // Column Filtering
             //******************************************* */
 
-            onColFilter: function(oEvent) {
-                var sTableId = oEvent.getSource().data("TableName");
+            onColFilter: function(oEvent, sColumnLabel) {
+                // console.log(oEvent, sColumnLabel)
+                var sTableId = "";
+
+                if (typeof(oEvent) === "string") {
+                    sTableId = oEvent;
+                }
+                else {
+                    sTableId = oEvent.getSource().data("TableName");
+                }
+
                 var sDialogFragmentName = "zui3derp.view.fragments.dialog.GenericFilterDialog";
 
                 if (!this._GenericFilterDialog) {
@@ -1032,7 +1051,7 @@ sap.ui.define([
                 var aColumnItems = oDialog.getModel().getProperty("/items");
                 var oFilterValues = oDialog.getModel().getProperty("/values");
                 var oFilterCustom = oDialog.getModel().getProperty("/custom");
-                var vSelectedItem = oDialog.getModel().getProperty("/selectedItem");
+                var vSelectedItem = sColumnLabel === undefined ? oDialog.getModel().getProperty("/selectedItem") : sColumnLabel;
                 var vSelectedColumn = oDialog.getModel().getProperty("/selectedColumn");
                 var oSearchValues = {}; //oDialog.getModel().getProperty("/search");
                 var aData = jQuery.extend(true, [], oTable.getModel("DataModel").getData().results);
@@ -1091,10 +1110,18 @@ sap.ui.define([
                     col.selected = false;                    
 
                     if (!bFiltered) { 
-                        if (idx === 0) {
-                            vSelectedColumn = col.ColumnName;
-                            vSelectedItem = col.ColumnLabel;
-                            col.selected = true;
+                        if (sColumnLabel === undefined) {
+                            if (idx === 0) {
+                                vSelectedColumn = col.ColumnName;
+                                vSelectedItem = col.ColumnLabel;
+                                col.selected = true;
+                            }
+                        }
+                        else {
+                            if (vSelectedItem === col.ColumnLabel) { 
+                                vSelectedColumn = col.ColumnName;
+                                col.selected = true;
+                            }
                         }
 
                         oFilterCustom[col.ColumnName] = {
@@ -1113,6 +1140,7 @@ sap.ui.define([
                         })
 
                         if (vSelectedItem === col.ColumnLabel) { 
+                            vSelectedColumn = col.ColumnName;
                             vFilterType = col.filterType;
                             col.selected = true;
 

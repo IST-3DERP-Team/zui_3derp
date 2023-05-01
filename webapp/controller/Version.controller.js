@@ -272,9 +272,9 @@ sap.ui.define([
                 this.setTableValueHelp(this.byId("versionAttrTable"), "versionAttr");
                 this.setTableValueHelp(this.byId("materialListTable"), "materialList");
                 
-                this.updateColumnMenu(this.byId("versionAttrTable"));
-                this.updateColumnMenu(this.byId("materialListTable"));
-                this.updateColumnMenu(this.byId("bomDetailedTable"));
+                this.updateColumnMenu(this.byId("versionAttrTable"), "versionAttrTable");
+                this.updateColumnMenu(this.byId("materialListTable"), "materialListTable");
+                this.updateColumnMenu(this.byId("bomDetailedTable"), "bomDetailedTable");
             },
 
             setTableValueHelp: function(oTable, sTable) {
@@ -286,7 +286,7 @@ sap.ui.define([
 
                         if (sColumnName.toUpperCase() === "ATTRIBTYP" || sColumnName.toUpperCase() === "ATTRIBCD" || sColumnName.toUpperCase() === "VALUNIT" || sColumnName.toUpperCase() === "SUPPLYTYP"
                             || sColumnName.toUpperCase() === "VENDORCD" || sColumnName.toUpperCase() === "CURRENCYCD" || sColumnName.toUpperCase() === "PURGRP" || sColumnName.toUpperCase() === "PURPLANT"
-                            || sColumnName.toUpperCase() === "PROCESSCD" || sColumnName.toUpperCase() === "MATTYP" || sColumnName.toUpperCase() === "ENTRYUOM" || sColumnName.toUpperCase() === "GMC") {
+                            || sColumnName.toUpperCase() === "PROCESSCD" || sColumnName.toUpperCase() === "MATTYP" || sColumnName.toUpperCase() === "ENTRYUOM" || sColumnName.toUpperCase() === "GMC" || sColumnName.toUpperCase() === "BOMSTYLE") {
                             sTableModel = col.getAggregation("template").getBindingInfo("value").parts[0].model;
 
                             if (sTableModel !== "") {
@@ -359,18 +359,21 @@ sap.ui.define([
                 else return sValue;
             },
 
-            updateColumnMenu(oTable) {
+            updateColumnMenu(oTable, sTableId) {
                 // var oTable = this.getView().byId("styleDynTable"); 
+                var me = this;
 
                 var oMenuItem = new sap.ui.unified.MenuItem({
                     icon: "sap-icon://filter",
                     text: "Filter",
-                    // select: "onQuantityCustomItemSelect"
-                    // submenu: oSubMenu
+                    select: function(oEvent) {
+                        console.log(oEvent.getSource())
+                        me.onColFilter(sTableId, oEvent.getSource().oParent.oParent.getAggregation("label").getProperty("text"));
+                    }
                 })
 
                 oTable.getColumns().forEach(col => {
-                    console.log(col.getMenu())
+                    // console.log(col.getMenu())
                     // Loop onto each column and attach Column Menu Open event
                     col.attachColumnMenuOpen(function(oEvent) {
                         //Get Menu associated with column
@@ -378,21 +381,21 @@ sap.ui.define([
 
                         //Create the Menu Item that need to be added
                         setTimeout(() => {
-                            console.log(oMenu)
+                            // console.log(oMenu)
                             var wCustomFilter = false;
                             oMenu.getItems().forEach(item => {
                                 if (item.sId.indexOf("filter") >= 0) {
                                     oMenu.removeItem(item);
                                 }
 
-                                // if (item.mProperties.text !== undefined && item.mProperties.text === "Filter") {
-                                //     wCustomFilter = true;
-                                // }
+                                if (item.mProperties.text !== undefined && item.mProperties.text === "Filter") {
+                                    wCustomFilter = true;
+                                }
                             })
                             
-                            // if (!wCustomFilter) {
-                            //     oMenu.insertItem(oMenuItem, 2);                               
-                            // }
+                            if (!wCustomFilter) {
+                                oMenu.insertItem(oMenuItem, 2);                               
+                            }
                             
                             oMenu.setPageSize(oMenu.getItems().length); 
                         }, 10);
@@ -951,7 +954,7 @@ sap.ui.define([
                         });
 
                         me.setTableValueHelp(oTableGMC, "bomGMC");  
-                        me.updateColumnMenu(oTableGMC);
+                        me.updateColumnMenu(oTableGMC, "bomGMCTable");
                         Common.closeLoadingDialog(that);
                     },
                     error: function (err) {
@@ -1128,6 +1131,10 @@ sap.ui.define([
                                 if (vColPath.toUpperCase() === "GMC") {
                                     that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/GMCDESC", "");
                                 }
+                                else if (vColPath.toUpperCase() === "BOMSTYLE") {
+                                    that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/BOMSTYLVER", "");
+                                    that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/DESC1", "");
+                                }
                             }
                             else {
                                 that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, oSource.getSelectedKey());
@@ -1137,6 +1144,12 @@ sap.ui.define([
                                         that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/MATTYP", item.Mattyp);
                                         that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/ENTRYUOM", item.Baseuom);
                                         that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/GMCDESC", item.Desc1);
+                                    })
+                                }
+                                else if (vColPath.toUpperCase() === "BOMSTYLE") {
+                                    that.getView().getModel("StylesModel").getData().results.filter(fItem => fItem.Styleno === oSource.getSelectedKey()).forEach(item => {
+                                        that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/BOMSTYLVER", item.Verno);
+                                        that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/DESC1", item.Desc1);
                                     })
                                 }
                             }
@@ -1832,7 +1845,7 @@ sap.ui.define([
                         });
 
                         oTable.bindRows("DataModel>/results");
-                        me.updateColumnMenu(oTable);
+                        me.updateColumnMenu(oTable, "bomUVTable");
 
                         Common.closeLoadingDialog(that);
                     },
@@ -2580,8 +2593,9 @@ sap.ui.define([
                         oColumnTemplate = new sap.m.Input({
                             value: "{DataModel>" + columnName + "}",
                             showValueHelp: true,
-                            valueHelpRequest: that.onStyleValueHelp,
-                            change: changeFunction,
+                            showSuggestion: true,
+                            valueHelpRequest: that.onStyleValueHelp.bind(that),
+                            change: inputChangeFunction,
                             liveChange: changeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? " + editModeCond + " : false  }" : false),
                             enabled: ("{= ${UI_MODEL>/dataMode} === 'READ' ? true : ${DataModel>BOMITMTYP} === 'STY' ? " + editModeCond + " : false  }"),
@@ -3303,28 +3317,30 @@ sap.ui.define([
 
             onStyleValueHelp: function (oEvent) {
                 //open styles value help
-                var sInputValue = oEvent.getSource().getValue();
-                that.inputId = oEvent.getSource().getId(); //get input field id
-                var oTable = that.getView().byId("bomGMCTable");
-                var oColumns = oTable.getColumns();
+                TableValueHelp.handleTableValueHelp(oEvent, this);
 
-                //get input field ids of Version and Description
-                for (var i = 0; i < oColumns.length; i++) {
-                    var name = oColumns[i].getName();
-                    if (name === Constants.BOMSTYLVER) {
-                        that.vernoInput = oEvent.getSource().getParent().mAggregations.cells[i].getId();
-                    }
-                    if (name === Constants.DESC1) {
-                        that.desc1Input = oEvent.getSource().getParent().mAggregations.cells[i].getId();
-                    }
-                }
+                // var sInputValue = oEvent.getSource().getValue();
+                // that.inputId = oEvent.getSource().getId(); //get input field id
+                // var oTable = that.getView().byId("bomGMCTable");
+                // var oColumns = oTable.getColumns();
 
-                if (!that._styleValueHelpDialog) {
-                    that._styleValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.Styles", that);
-                    that.getView().addDependent(that._styleValueHelpDialog);
-                }
+                // //get input field ids of Version and Description
+                // for (var i = 0; i < oColumns.length; i++) {
+                //     var name = oColumns[i].getName();
+                //     if (name === Constants.BOMSTYLVER) {
+                //         that.vernoInput = oEvent.getSource().getParent().mAggregations.cells[i].getId();
+                //     }
+                //     if (name === Constants.DESC1) {
+                //         that.desc1Input = oEvent.getSource().getParent().mAggregations.cells[i].getId();
+                //     }
+                // }
 
-                that._styleValueHelpDialog.open(sInputValue);
+                // if (!that._styleValueHelpDialog) {
+                //     that._styleValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.Styles", that);
+                //     that.getView().addDependent(that._styleValueHelpDialog);
+                // }
+
+                // that._styleValueHelpDialog.open(sInputValue);
             },
 
             _styleValueHelpSearch: function (evt) {
@@ -3738,6 +3754,8 @@ sap.ui.define([
                     mSize = '16rem';
                 } else if (oColumn.ColumnName === "ENTRYUOM") {
                     mSize = '11rem';
+                } else if (oColumn.ColumnName === "BOMSTYLE") {
+                    mSize = '10rem';
                 }
                 return mSize;
             },
@@ -3836,7 +3854,7 @@ sap.ui.define([
             },
 
             lockStyleVer: async function (isLock) {
-                return { "Type":"S", "Message":"Disable Locking"}
+                // return { "Type":"S", "Message":"Disable Locking"}
                 var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
 
                 var oParamLock = {
@@ -3895,9 +3913,17 @@ sap.ui.define([
             // Column Filtering
             //******************************************* */
 
-            onColFilter: function(oEvent) {
+            onColFilter: function(oEvent, sColumnLabel) {
                 var oDDText = this.getView().getModel("ddtext").getData();
-                var sTableId = oEvent.getSource().data("TableName");
+                
+                var sTableId = "";
+
+                if (typeof(oEvent) === "string") {
+                    sTableId = oEvent;
+                }
+                else {
+                    sTableId = oEvent.getSource().data("TableName");
+                }
 
                 if (this._aColumns["versionAttr"] === undefined) {
                     this._aColumns["versionAttr"] = [
@@ -4024,7 +4050,7 @@ sap.ui.define([
                 var aColumnItems = oDialog.getModel().getProperty("/items");
                 var oFilterValues = oDialog.getModel().getProperty("/values");
                 var oFilterCustom = oDialog.getModel().getProperty("/custom");
-                var vSelectedItem = oDialog.getModel().getProperty("/selectedItem");
+                var vSelectedItem = sColumnLabel === undefined ? oDialog.getModel().getProperty("/selectedItem") : sColumnLabel;
                 var vSelectedColumn = oDialog.getModel().getProperty("/selectedColumn");
                 var oSearchValues = {}; //oDialog.getModel().getProperty("/search");
                 var aData = [];
@@ -4051,6 +4077,8 @@ sap.ui.define([
                     vSelectedItem = "";
                     vSelectedColumn = "";
                 }
+
+                if (sColumnLabel !== undefined) { vSelectedItem = sColumnLabel }
 
                 if (sTableId === "bomDetailedTable") {
                     aData = jQuery.extend(true, [], oTable.getModel("DataModel").getData().results.items);
@@ -4119,14 +4147,28 @@ sap.ui.define([
                     }); 
 
                     oColumnValues[col.ColumnName].sort((a,b) => ((col.DataType === "NUMBER" ? +a.Value : (col.DataType === "DATETIME" ? (a.Value === "(blank)" ? "" : new Date(a.Value)) : a.Value)) > (col.DataType === "NUMBER" ? +b.Value : (col.DataType === "DATETIME" ? (b.Value === "(blank)" ? "" : new Date(b.Value)) : b.Value)) ? 1 : -1));
-
+                    
                     col.selected = false;                    
 
                     if (!bFiltered) { 
-                        if (idx === 0) {
-                            vSelectedColumn = col.ColumnName;
-                            vSelectedItem = col.ColumnLabel;
-                            col.selected = true;
+                        // if (idx === 0) {
+                        //     vSelectedColumn = col.ColumnName;
+                        //     vSelectedItem = col.ColumnLabel;
+                        //     col.selected = true;
+                        // }
+
+                        if (sColumnLabel === undefined) {
+                            if (idx === 0) {
+                                vSelectedColumn = col.ColumnName;
+                                vSelectedItem = col.ColumnLabel;
+                                col.selected = true;
+                            }
+                        }
+                        else {
+                            if (vSelectedItem === col.ColumnLabel) { 
+                                vSelectedColumn = col.ColumnName;
+                                col.selected = true;
+                            }
                         }
 
                         oFilterCustom[col.ColumnName] = {
@@ -4138,13 +4180,14 @@ sap.ui.define([
                         col.filterType = "VLF";
                         col.isFiltered = false;
                     }
-                    else if (bFiltered) {
+                    else if (bFiltered) { 
                         aColumnItems.filter(fItem => fItem.ColumnName === col.ColumnName).forEach(item => {
                             col.filterType = item.filterType;
                             col.isFiltered = item.isFiltered;
                         })
 
                         if (vSelectedItem === col.ColumnLabel) { 
+                            vSelectedColumn = col.ColumnName;
                             vFilterType = col.filterType;
                             col.selected = true;
                             

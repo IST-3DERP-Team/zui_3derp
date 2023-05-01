@@ -31,7 +31,7 @@
             visibleRowCountMode="Auto" 
             selectionMode="None">
             <c:columns>
-                <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="Attribseq" sortProperty="Attribseq">
+                <t:Column name="ATTRIBSEQ" width="5rem" sortProperty="Attribseq" visible="false">
                     <Label text="{ddtext>/SEQ}" />
                     <t:template>
                         <Text text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />

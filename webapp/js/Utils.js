@@ -33,6 +33,7 @@
                     oJSONModel0.setData(oData);
                     oJSONModel0.setSizeLimit(9999);
                     oView.setModel(oJSONModel0, "SeasonsModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/SeasonsModel", oData);
                 },
                 error: function (err) { }
             });
@@ -44,6 +45,7 @@
                     oJSONModel1.setData(oData);
                     oJSONModel1.setSizeLimit(9999);
                     oView.setModel(oJSONModel1, "ProdTypeModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/ProdTypeModel", oData);
                 },
                 error: function (err) { }
             });
@@ -55,6 +57,7 @@
                     oJSONModel2.setData(oData);
                     oJSONModel2.setSizeLimit(9999);
                     oView.setModel(oJSONModel2, "StyleCatModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/StyleCatModel", oData);
                 },
                 error: function (err) { }
             });
@@ -66,6 +69,7 @@
                     oJSONModel3.setData(oData);
                     oJSONModel3.setSizeLimit(9999);
                     oView.setModel(oJSONModel3, "SalesGroupModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/SalesGroupModel", oData);
                 },
                 error: function (err) { }
             });
@@ -77,6 +81,7 @@
                     oJSONModel4.setData(oData);
                     oJSONModel4.setSizeLimit(9999);
                     oView.setModel(oJSONModel4, "CustGroupModel")
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/CustGroupModel", oData);
                 },
                 error: function (err) { }
             });
@@ -89,13 +94,15 @@
                     oJSONModel5.setSizeLimit(9999);
                     oView.setModel(oJSONModel5, "CustomersModel");
                     oView.setModel(new JSONModel(oData), "CustomerModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/CustomerModel", oData);
 
                     if (that.getView().getModel("headerData") !== undefined) {
                         var vCustgrp = that.getView().getModel("headerData").getProperty("/Custgrp");
                         var aModelData = oData.results.filter(fItem => fItem.Custgrp === vCustgrp);
                         var oModelData = {};
                         oModelData["results"] = aModelData;
-                        that.getView().setModel(new JSONModel(oModelData), "CustomerModel");                      
+                        that.getView().setModel(new JSONModel(oModelData), "CustomerModel");
+                        that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/CustomerModel", oData);
                     }
                 },
                 error: function (err) { }
@@ -108,6 +115,7 @@
                     oJSONModel6.setData(oData);
                     oJSONModel6.setSizeLimit(9999);
                     oView.setModel(oJSONModel6, "SizeGroupModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/SizeGroupModel", oData);
                 },
                 error: function (err) { }
             });
@@ -211,6 +219,7 @@
                     oJSONModel1.setData(oData);
                     oJSONModel1.setSizeLimit(9999);
                     oView.setModel(oJSONModel1, "ProcessAttribTypeModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/ProcessAttribTypeModel", oData);
                 },
                 error: function (err) { }
             });
@@ -223,6 +232,7 @@
                     oJSONModel2.setSizeLimit(9999);
                     oView.setModel(oJSONModel2, "ProcessAttribCodeModel");
                     oView.setModel(new JSONModel(oData), "ProcessAttribCdModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/ProcessAttribCodeModel", oData);
                 },
                 error: function (err) { }
             });
@@ -248,6 +258,7 @@
                     oJSONModel6.setSizeLimit(9999);
                     oView.setModel(oJSONModel6, "VASTypeModel");
                     oView.setModel(new JSONModel(oData), "VASTypModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/VASTypModel", oData);
                 },
                 error: function (err) { }
             });

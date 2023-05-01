@@ -128,7 +128,7 @@
                     <Input id="AttribValInput" type="Text" editable="{GenAttrEditModeModel>/editMode}" value="{DataModel>Attribval}" change="onGeneralAttrChange" liveChange="onGeneralAttrChange" tooltip="{DataModel>Attribval}" />
                 </t:template>
             </t:Column>
-            <t:Column name="UOM" width="5rem" filterProperty="Valunit" sortProperty="Valunit">
+            <t:Column name="UOM" width="6rem" filterProperty="Valunit" sortProperty="Valunit">
                 <Text text="{ddtext>/ATTRIBVALUNIT}" />
                 <t:template>
                     <Input id="AttribValUnitInput" type="Text" editable="{GenAttrEditModeModel>/editMode}" value="{DataModel>Valunit}" change="onGeneralAttrChange" liveChange="onGeneralAttrChange" tooltip="{DataModel>Valunit}" />

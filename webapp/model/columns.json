@@ -262,6 +262,12 @@
                 "SuggestionItems": {"path": "GMCModel>/results", "text": "{GMCModel>Gmc}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_gmc"
             }
+        },
+        {"ColumnName": "BOMSTYLE", "TextFormatMode": "Key",
+            "ValueHelp": {"show": true, "items": {"path": "StylesModel", "value": "Styleno", "text": "Desc1"},
+                "SuggestionItems": {"path": "StylesModel>/results", "text": "{StylesModel>Styleno}", "maxSuggestionWidth": "250px"},
+                "columns": "tvh_styleno"
+            }
         }
     ],
     "tvh_mattyp": [
@@ -269,11 +275,16 @@
         {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "270px", "Visible": true, "Key": false, "Value": true}
     ],
     "tvh_gmc": [
-        {"ColumnName": "Gmc", "DataType": "STRING", "ColumnWidth": "120px", "Visible": true, "Key": true, "Value": false},
-        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "500px", "Visible": true, "Key": false, "Value": true},
+        {"ColumnName": "Gmc", "DataType": "STRING", "ColumnWidth": "120px", "Visible": true, "Key": true, "Value": true},
+        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "500px", "Visible": true, "Key": false, "Value": false},
         {"ColumnName": "Desc2", "DataType": "STRING", "ColumnWidth": "300px", "Visible": false, "Key": false, "Value": false},
         {"ColumnName": "Mattyp", "DataType": "STRING", "ColumnWidth": "100px", "Visible": true, "Key": false, "Value": false},
         {"ColumnName": "Baseuom", "DataType": "STRING", "ColumnWidth": "100px", "Visible": true, "Key": false, "Value": false},
         {"ColumnName": "Sbu", "DataType": "STRING", "ColumnWidth": "100px", "Visible": false, "Key": false, "Value": false}
+    ],
+    "tvh_styleno": [
+        {"ColumnName": "Styleno", "DataType": "STRING", "ColumnWidth": "150px", "Visible": true, "Key": true, "Value": true},
+        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "500px", "Visible": true, "Key": false, "Value": false},
+        {"ColumnName": "Verno", "DataType": "STRING", "ColumnWidth": "100px", "Visible": true, "Key": false, "Value": false}
     ]
 }

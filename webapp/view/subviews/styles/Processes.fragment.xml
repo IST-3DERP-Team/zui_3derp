@@ -45,7 +45,7 @@
             selectionMode="MultiToggle"
             sort="onSorted"> 
             <c:columns>
-                <t:Column width="4rem" filterProperty="Seqno" sortProperty="Seqno">
+                <t:Column width="4rem" sortProperty="Seqno" visible="false">
                     <Label text="{ddtext>/SEQ}" />
                     <t:template>
                         <Text text="{DataModel>Seqno}" tooltip="{DataModel>Seqno}" />

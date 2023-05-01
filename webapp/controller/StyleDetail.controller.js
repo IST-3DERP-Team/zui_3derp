@@ -49,15 +49,15 @@ sap.ui.define([
                         that.onNavBack();
                     }
                 }
-                var lookUpModel = {
-                    AttribCdModel: [],
-                    AttribTypeModel: [],
-                    ProcessCodeModel: [],
-                    UOMModel: [],
-                    UOMGMCModel: []
-                }
+                // var lookUpModel = {
+                //     AttribCdModel: [],
+                //     AttribTypeModel: [],
+                //     ProcessCodeModel: [],
+                //     UOMModel: [],
+                //     UOMGMCModel: []
+                // }
 
-                this.getOwnerComponent().getModel("LOOKUP_MODEL").setData(lookUpModel);
+                // this.getOwnerComponent().getModel("LOOKUP_MODEL").setData(lookUpModel);
                 this.getOwnerComponent().getModel("COLOR_MODEL").setData({ items: [] });
                 this._tableValueHelp = TableValueHelp;
 
@@ -123,7 +123,56 @@ sap.ui.define([
                 this._dataMode = "READ";
                 this._aColumns = {};
                 this._colFilters = {};
-                this.getColumnProp();
+
+                var lookUpData = this.getOwnerComponent().getModel("LOOKUP_MODEL").getData();
+                // console.log(lookUpData)
+                // console.log(this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["SeasonsModel"])
+                // console.log(this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["ProdTypeModel"])
+                // console.log(this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["StyleCatModel"])
+                // console.log(this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["SalesGroupModel"])
+                // console.log(this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["CustGroupModel"])
+                // console.log(this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["CustomerModel"])
+
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["SeasonsModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.SeasonsModel), "SeasonsModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["ProdTypeModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.ProdTypeModel), "ProdTypeModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["StyleCatModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.StyleCatModel), "StyleCatModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["SalesGroupModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.SalesGroupModel), "SalesGroupModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["CustGroupModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.CustGroupModel), "CustGroupModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["CustomerModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.CustomerModel), "CustomerModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["SizeGroupModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.SizeGroupModel), "SizeGroupModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["UOMModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.UOMModel), "UOMModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["AttribTypeModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.AttribTypeModel), "AttribTypeModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["AttribCdModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.AttribCdModel), "AttribCdModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["ProcessAttribCodeModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.ProcessAttribCodeModel), "ProcessAttribCodeModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["ProcessCodeModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.ProcessCodeModel), "ProcessCodeModel");
+                }
+                if (this.getOwnerComponent().getModel("LOOKUP_MODEL").getData()["VASTypModel"] !== undefined) {
+                    this.getView().setModel(new JSONModel(lookUpData.VASTypModel), "VASTypModel");
+                }
+                // console.log(this.getOwnerComponent().getModel("LOOKUP_MODEL").getData())
 
                 this.setChangeStatus(false);
                 //set blnIOMod to true if route from IO
@@ -185,7 +234,7 @@ sap.ui.define([
                 Utils.getAttributesSearchHelps(this);
                 Utils.getProcessAttributes(this);
                 Utils.getVersionSearchHelps(this);
-                
+
                 //Attachments
                 this.bindUploadCollection();
                 this.getView().getModel("FileModel").refresh();
@@ -202,7 +251,11 @@ sap.ui.define([
 
                 Common.closeLoadingDialog(that);
                 console.log("route")
-                //this.getAppAction();                
+                //this.getAppAction();
+
+                setTimeout(() => {
+                    this.getColumnProp();
+                }, 1000);
             },
 
             closeEditModes: function () {
@@ -472,12 +525,12 @@ sap.ui.define([
                 this.setTableValueHelp(this.byId("generalTable"), "general");
                 this.setTableValueHelp(this.byId("processesTable"), "processes");
                 
-                this.updateColumnMenu(this.byId("generalTable"));
-                this.updateColumnMenu(this.byId("colorsTable"));
-                this.updateColumnMenu(this.byId("sizesTable"));
-                this.updateColumnMenu(this.byId("processesTable"));
-                this.updateColumnMenu(this.byId("versionsTable"));
-                this.updateColumnMenu(this.byId("ioTable"));
+                this.updateColumnMenu(this.byId("generalTable"), "generalTable");
+                this.updateColumnMenu(this.byId("colorsTable"), "colorsTable");
+                this.updateColumnMenu(this.byId("sizesTable"), "sizesTable");
+                this.updateColumnMenu(this.byId("processesTable"), "processesTable");
+                this.updateColumnMenu(this.byId("versionsTable"), "versionsTable");
+                this.updateColumnMenu(this.byId("ioTable"), "ioTable");
             },
 
             setFormValueHelp: function(oControl, sForm) {
@@ -636,14 +689,17 @@ sap.ui.define([
                 else return sValue;
             },
 
-            updateColumnMenu(oTable) {
+            updateColumnMenu(oTable, sTableId) {
                 // var oTable = this.getView().byId("styleDynTable"); 
+                var me = this;
 
                 var oMenuItem = new sap.ui.unified.MenuItem({
                     icon: "sap-icon://filter",
                     text: "Filter",
-                    // select: "onQuantityCustomItemSelect"
-                    // submenu: oSubMenu
+                    select: function(oEvent) {
+                        console.log(oEvent.getSource())
+                        me.onColFilter(sTableId, oEvent.getSource().oParent.oParent.getAggregation("label").getProperty("text"));
+                    }
                 })
 
                 oTable.getColumns().forEach(col => {
@@ -662,14 +718,14 @@ sap.ui.define([
                                     oMenu.removeItem(item);
                                 }
 
-                                // if (item.mProperties.text !== undefined && item.mProperties.text === "Filter") {
-                                //     wCustomFilter = true;
-                                // }
+                                if (item.mProperties.text !== undefined && item.mProperties.text === "Filter") {
+                                    wCustomFilter = true;
+                                }
                             })
                             
-                            // if (!wCustomFilter) {
-                            //     oMenu.insertItem(oMenuItem, 2);                               
-                            // }
+                            if (!wCustomFilter) {
+                                oMenu.insertItem(oMenuItem, 2);                               
+                            }
                             
                             oMenu.setPageSize(oMenu.getItems().length); 
                         }, 10);
@@ -915,7 +971,9 @@ sap.ui.define([
                 this.byId("UOM").setEnabled(true);
                 this.byId("REMARKS1").setEnabled(true);
 
-                this.getView().setModel(new JSONModel(this.getView().getModel("CustomersModel").getData()), "CustomerModel");
+                if (this.getView().getModel("CustomersModel") !== undefined) {
+                    this.getView().setModel(new JSONModel(this.getView().getModel("CustomersModel").getData()), "CustomerModel");
+                }
             },
 
             onHeaderChange: function (oEvent) {
@@ -1342,7 +1400,7 @@ sap.ui.define([
             setGeneralAttrEditModeControls: function() {
                 //update to base on binding indices
                 var oTable = this.getView().byId("generalTable");
-                console.log(oTable.getModel("DataModel").getData().results)
+
                 setTimeout(() => {
                     for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
                         var iRowIndex = oTable.getBinding("rows").aIndices[i];
@@ -1353,7 +1411,7 @@ sap.ui.define([
                         var vValTyp = oTable.getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase();
                         var bNew = oTable.getContextByIndex(iRowIndex).getProperty("NEW");                    
                         var oCellCtrlValTyp = "";
-                        console.log(vAttrTyp, vValTyp)
+
                         oRow.getCells().forEach(cell => {
                             if ((bNew === undefined || !bNew) && this._dataMode === "NEW") {
                                 if (cell.getBindingInfo("text") === undefined) {
@@ -5093,7 +5151,7 @@ sap.ui.define([
             },
 
             lockStyle: async function (isLock) {
-                return { "Type":"S", "Message":"Disable Locking"}
+                // return { "Type":"S", "Message":"Disable Locking"}
                 var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
 
                 // var oParamLock = {
@@ -5255,9 +5313,17 @@ sap.ui.define([
             // Column Filtering
             //******************************************* */
 
-            onColFilter: function(oEvent) {
+            onColFilter: function(oEvent, sColumnLabel) {
                 var oDDText = this.getView().getModel("ddtext").getData();
-                var sTableId = oEvent.getSource().data("TableName");
+                
+                var sTableId = "";
+
+                if (typeof(oEvent) === "string") {
+                    sTableId = oEvent;
+                }
+                else {
+                    sTableId = oEvent.getSource().data("TableName");
+                }
 
                 if (this._aColumns["general"] === undefined) {
                     this._aColumns["general"] = [
@@ -5333,7 +5399,7 @@ sap.ui.define([
                 var aColumnItems = oDialog.getModel().getProperty("/items");
                 var oFilterValues = oDialog.getModel().getProperty("/values");
                 var oFilterCustom = oDialog.getModel().getProperty("/custom");
-                var vSelectedItem = oDialog.getModel().getProperty("/selectedItem");
+                var vSelectedItem = sColumnLabel === undefined ? oDialog.getModel().getProperty("/selectedItem") : sColumnLabel;
                 var vSelectedColumn = oDialog.getModel().getProperty("/selectedColumn");
                 var oSearchValues = {}; //oDialog.getModel().getProperty("/search");
                 var aData = [];
@@ -5342,7 +5408,7 @@ sap.ui.define([
                 var vFilterType = "VLF";
 
                 if (oTable.getModel("DataModel") !== undefined) { aData = jQuery.extend(true, [], oTable.getModel("DataModel").getData().results) } 
-                console.log(this._colFilters)
+                // console.log(this._colFilters)
                 if (this._colFilters[sTableId] !== undefined) {
                     aColumnItems = this._colFilters[sTableId].items;
                     oFilterValues = this._colFilters[sTableId].values;
@@ -5362,6 +5428,8 @@ sap.ui.define([
                     vSelectedItem = "";
                     vSelectedColumn = "";
                 }
+
+                if (sColumnLabel !== undefined) { vSelectedItem = sColumnLabel }
 
                 if (oFilterCustom === undefined) { 
                     oFilterCustom = {};
@@ -5418,10 +5486,23 @@ sap.ui.define([
                     col.selected = false;                    
 
                     if (!bFiltered) { 
-                        if (idx === 0) {
-                            vSelectedColumn = col.ColumnName;
-                            vSelectedItem = col.ColumnLabel;
-                            col.selected = true;
+                        // if (idx === 0) {
+                        //     vSelectedColumn = col.ColumnName;
+                        //     vSelectedItem = col.ColumnLabel;
+                        //     col.selected = true;
+                        // }
+                        if (sColumnLabel === undefined) {
+                            if (idx === 0) {
+                                vSelectedColumn = col.ColumnName;
+                                vSelectedItem = col.ColumnLabel;
+                                col.selected = true;
+                            }
+                        }
+                        else {
+                            if (vSelectedItem === col.ColumnLabel) { 
+                                vSelectedColumn = col.ColumnName;
+                                col.selected = true;
+                            }
                         }
 
                         oFilterCustom[col.ColumnName] = {
@@ -5440,6 +5521,7 @@ sap.ui.define([
                         })
 
                         if (vSelectedItem === col.ColumnLabel) { 
+                            vSelectedColumn = col.ColumnName;
                             vFilterType = col.filterType;
                             col.selected = true;
                             

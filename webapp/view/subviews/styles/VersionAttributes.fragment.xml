@@ -43,6 +43,7 @@
                             <Input
                                 id="AttrTypesInput3"
                                 type="Text"
+                                name="Attribtyp"
                                 showSuggestion="true"
                                 showValueHelp="true"
                                 editable="{VersionAttrEditModeModel>/editMode}"
