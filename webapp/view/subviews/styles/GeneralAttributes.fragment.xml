@@ -65,13 +65,13 @@
             </Toolbar>
         </t:extension> -->
         <t:columns>
-            <t:Column name="ATTRIBSEQ" width="5rem" filterProperty="Attribseq" sortProperty="Attribseq" visible="false">
+            <t:Column name="ATTRIBSEQ" width="5rem" sortProperty="Attribseq" visible="false">
                 <Text text="{ddtext>/ATTRIBSEQ}" />
                 <t:template>
                     <Text id="AttrTypeSeq" text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />
                 </t:template>
             </t:Column>
-            <t:Column width="14rem" filterProperty="Attribtyp" sortProperty="Attribtyp">
+            <t:Column width="14rem" sortProperty="Attribtyp">
                 <Text text="{ddtext>/ATTRIBTYP}" />
                 <t:template>
                     <Input
@@ -93,7 +93,7 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="10rem" filterProperty="Attribcd" sortProperty="Attribcd">
+            <t:Column width="10rem" sortProperty="Attribcd">
                 <Text text="{ddtext>/ATTRIBCD}" />
                 <t:template>
                     <Input
@@ -116,26 +116,26 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column name="DESC1" width="16rem" filterProperty="Desc1" sortProperty="Desc1">
+            <t:Column name="DESC1" width="16rem" sortProperty="Desc1">
                 <Text text="{ddtext>/DESC}" />
                 <t:template>
                     <Text id="AttrCodeDesc" text="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" />
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">
+            <t:Column width="11rem" sortProperty="Attribval">
                 <Text text="{ddtext>/ATTRIBVAL}" />
                 <t:template>
                     <Input id="AttribValInput" type="Text" editable="{GenAttrEditModeModel>/editMode}" value="{DataModel>Attribval}" change="onGeneralAttrChange" liveChange="onGeneralAttrChange" tooltip="{DataModel>Attribval}" />
                 </t:template>
             </t:Column>
-            <t:Column name="UOM" width="6rem" filterProperty="Valunit" sortProperty="Valunit">
+            <t:Column name="UOM" width="6rem" sortProperty="Valunit">
                 <Text text="{ddtext>/ATTRIBVALUNIT}" />
                 <t:template>
                     <Input id="AttribValUnitInput" type="Text" editable="{GenAttrEditModeModel>/editMode}" value="{DataModel>Valunit}" change="onGeneralAttrChange" liveChange="onGeneralAttrChange" tooltip="{DataModel>Valunit}" />
                     <!-- <Text id="AttrValunit" text="{DataModel>Valunit}" tooltip="{DataModel>Valunit}" /> -->
                 </t:template>
             </t:Column>
-            <t:Column width="10rem" filterProperty="Casverind" sortProperty="Casverind" hAlign="Center">
+            <t:Column width="10rem" sortProperty="Casverind" hAlign="Center">
                 <Text text="{ddtext>/CASVERIND}" />
                 <t:template>
                     <CheckBox selected="{DataModel>Casverind}" editable="{GenAttrEditModeModel>/editMode}" select="onGeneralAttrChange"  />

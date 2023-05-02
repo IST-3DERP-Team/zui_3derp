@@ -43,14 +43,14 @@
                         <Input value="{DataModel>Attribgrp}" editable="false" />
                     </t:template>
                 </t:Column> -->
-                <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
+                <t:Column width="11rem" sortProperty="Attribcd">
                     <Label text="{ddtext>/SIZECD}" />
                     <t:template>
                         <Text text="{DataModel>Attribcd}" tooltip="{DataModel>Attribcd}" />
                         <!-- <Input value="{DataModel>Attribcd}" editable="false" tooltip="{DataModel>Attribcd}"  /> -->
                     </t:template>
                 </t:Column>
-                <t:Column width="11rem" filterProperty="Baseind" sortProperty="Baseind" hAlign="Center">
+                <t:Column width="11rem" sortProperty="Baseind" hAlign="Center">
                     <Label text="{ddtext>/BASEIND}" />
                     <t:template>
                         <CheckBox selected="{DataModel>Baseind}" editable="{SizeEditModeModel>/editMode}" select="onSizeChange"  />

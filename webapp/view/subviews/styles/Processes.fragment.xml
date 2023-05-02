@@ -52,7 +52,7 @@
                         <!-- <Input value="{DataModel>Seqno}" editable="{ProcessEditModeModel>/editMode}" change="onProcessChange" tooltip="{DataModel>Seqno}"/> -->
                     </t:template>
                 </t:Column>
-                <t:Column width="20rem" filterProperty="Processcd" sortProperty="Processcd">
+                <t:Column width="20rem" sortProperty="Processcd">
                     <Label text="{ddtext>/PROCESSCD}" />
                     <t:template>
                         <Input id="ProcessCdInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
@@ -64,7 +64,7 @@
                         </Input>
                     </t:template>
                 </t:Column>
-                <t:Column width="20rem" filterProperty="Vastyp" sortProperty="Vastyp">
+                <t:Column width="20rem" sortProperty="Vastyp">
                     <Label text="{ddtext>/VASTYP}" />
                     <t:template>
                         <Input id="VASTypeInput" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
@@ -76,7 +76,7 @@
                         </Input>
                     </t:template>
                 </t:Column>
-                <t:Column width="11rem" filterProperty="Leadtime" sortProperty="Leadtime">
+                <t:Column width="11rem" sortProperty="Leadtime">
                     <Label text="{ddtext>/LEADTM}" />
                     <t:template>
                     <!-- change Leadtime column name to Leadtm -->
@@ -84,7 +84,7 @@
                             change="onProcessChange" liveChange="onProcessChange" tooltip="{DataModel>Leadtm}"/>
                     </t:template>
                 </t:Column>
-                <t:Column width="14rem" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                <t:Column width="14rem" sortProperty="Attribtyp">
                     <Label text="{ddtext>/ATTRIBTYP}" />
                     <t:template>
                         <Input id="AttrTypesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 
@@ -96,7 +96,7 @@
                         </Input>
                     </t:template>
                 </t:Column>
-                <t:Column width="14rem" filterProperty="Attribcd" sortProperty="Attribcd">
+                <t:Column width="14rem" sortProperty="Attribcd">
                     <Label text="{ddtext>/ATTRIBCD}" />
                     <t:template>
                         <Input id="AttrCodesInput2" type="Text" showSuggestion="true" showValueHelp="true" editable="{ProcessEditModeModel>/editMode}" 

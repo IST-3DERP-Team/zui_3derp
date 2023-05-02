@@ -31,55 +31,55 @@
             showColumnVisibilityMenu="true"
             selectionMode="Single" 
             visibleRowCountMode="Auto">
-            <t:Column width="5rem" filterProperty="Seqno" sortProperty="Seqno">
+            <t:Column width="5rem" sortProperty="Seqno">
                 <Label text="{ddtext>/SEQ}" />
                 <t:template>
                     <Text text="{DataModel>Seqno}" tooltip="{DataModel>Seqno}" />
                 </t:template>
             </t:Column>
-            <t:Column width="7rem" filterProperty="Mattyp" sortProperty="Mattyp">
+            <t:Column width="7rem" sortProperty="Mattyp">
                 <Label text="{ddtext>/MATTYP}" />
                 <t:template>
                     <Text text="{DataModel>Mattyp}" tooltip="{DataModel>Mattyp}"/>
                 </t:template>
             </t:Column>
-            <t:Column width="11rem" filterProperty="Matno" sortProperty="Matno">
+            <t:Column width="11rem" sortProperty="Matno">
                 <Label text="{ddtext>/MATNO}" />
                 <t:template>
                     <Text text="{DataModel>Matno}" tooltip="{DataModel>Matno}" />
                 </t:template>
             </t:Column>
-            <t:Column width="7rem" filterProperty="Gmc" sortProperty="Gmc">
+            <t:Column width="7rem" sortProperty="Gmc">
                 <Label text="{ddtext>/GMC}" />
                 <t:template>
                     <Text text="{DataModel>Gmc}" tooltip="{DataModel>Gmc}" />
                 </t:template>
             </t:Column>
-            <t:Column width="28rem" filterProperty="Gmcdesc" sortProperty="Gmcdesc">
+            <t:Column width="28rem" sortProperty="Gmcdesc">
                 <Label text="{ddtext>/GMCDESC}" />
                 <t:template>
                     <Text text="{DataModel>Gmcdesc}" tooltip = "{DataModel>Gmcdesc}"/>
                 </t:template>
             </t:Column>
-            <t:Column width="24rem" filterProperty="Matdesc1" sortProperty="Matdesc1">
+            <t:Column width="24rem" sortProperty="Matdesc1">
                 <Label text="{ddtext>/ADDTLDESC}" />
                 <t:template>
                     <Input value="{DataModel>Matdesc1}" tooltip="{DataModel>Matdesc1}" change="onMaterialListChange" editable="{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>Matno} === '' ? true : false : false }" />
                 </t:template>
             </t:Column>
-            <t:Column width="7rem" filterProperty="Consump" sortProperty="Consump">
+            <t:Column width="7rem" sortProperty="Consump">
                 <Label text="{ddtext>/CONSUMP}" />
                 <t:template>
                     <Input value="{DataModel>Consump}" tooltip="{DataModel>Consump}" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange" />
                 </t:template>
             </t:Column>
-            <t:Column width="8rem" filterProperty="Uom" sortProperty="Uom">
+            <t:Column width="8rem" sortProperty="Uom">
                 <Label text="{ddtext>/UOM}" />
                 <t:template>
                     <Text text="{DataModel>Uom}" tooltip="{DataModel>Uom}" />
                 </t:template>
             </t:Column>
-            <t:Column width="14rem" filterProperty="Supplytyp" sortProperty="Supplytyp">
+            <t:Column width="14rem" sortProperty="Supplytyp">
                 <Label text="{ddtext>/SUPPLYTYP}" />
                 <t:template>
                     <Input
@@ -100,7 +100,7 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="25rem" filterProperty="Vendorcd" sortProperty="Vendorcd">
+            <t:Column width="25rem" sortProperty="Vendorcd">
                 <Label text="{ddtext>/VENDORCD}" />
                 <t:template>
                     <Input
@@ -122,7 +122,7 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="16rem" filterProperty="Currencycd" sortProperty="Currencycd">
+            <t:Column width="16rem" sortProperty="Currencycd">
                 <Label text="{ddtext>/CURRENCYCD}" />
                 <t:template>
                     <Input
@@ -143,13 +143,13 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="9rem" filterProperty="Unitprice" sortProperty="Unitprice">
+            <t:Column width="9rem" sortProperty="Unitprice">
                 <Label text="{ddtext>/UNITPRICE}" />
                 <t:template>
                     <Input value="{DataModel>Unitprice}"  tooltip="{DataModel>Unitprice}" type="Number" editable="{MaterialListEditModeModel>/editMode}" change="onMaterialListChange" />
                 </t:template>
             </t:Column>
-            <t:Column width="15rem" filterProperty="Purgrp" sortProperty="Purgrp">
+            <t:Column width="15rem" sortProperty="Purgrp">
                 <Label text="{ddtext>/PURGRP}" />
                 <t:template>
                     <Input
@@ -171,7 +171,7 @@
                     </Input>
                 </t:template>
             </t:Column>
-            <t:Column width="14rem" filterProperty="Purplant" sortProperty="Purplant">
+            <t:Column width="14rem" sortProperty="Purplant">
                 <Label text="{ddtext>/PURPLANT}" />
                 <t:template>
                     <Input

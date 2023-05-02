@@ -401,7 +401,7 @@ sap.ui.define([
 
                 //bind the data to the table
                 oTable.bindRows("/rows");
-
+                this.updateColumnMenu();
                 Common.closeLoadingDialog(that);
             },
 
@@ -429,7 +429,7 @@ sap.ui.define([
                         template: me.columnTemplate(sColumnId, sColumnType),
                         width: sColumnWidth ? sColumnWidth + 'px' : me.getColumnSize(sColumnId, sColumnType),
                         sortProperty: sColumnId,
-                        filterProperty: sColumnId,
+                        // filterProperty: sColumnId,
                         autoResizable: true,
                         visible: sColumnVisible,
                         sorted: sColumnSorted,
@@ -478,44 +478,53 @@ sap.ui.define([
                 return oColumnTemplate;
             },
 
-            updateColumnMenu() {
+            updateColumnMenu() {                
                 var me = this;
                 var oTable = this.getView().byId("styleDynTable"); 
 
-                var oMenuItem = new sap.ui.unified.MenuItem({
-                    icon: "sap-icon://filter",
-                    text: "Filter",
-                    select: function(oEvent) {
-                        console.log(oEvent.getSource())
-                        me.onColFilter("styleDynTable", oEvent.getSource().oParent.oParent.getAggregation("label").getProperty("text"));
-                    }
-                    // select: this.onColFilter("styleDynTable")
-                    // submenu: oSubMenu
-                })
+                // var oMenuItem = new sap.ui.unified.MenuItem({
+                //     icon: "sap-icon://filter",
+                //     text: "Filter",
+                //     select: function(oEvent) {
+                //         // console.log(oEvent.getSource())
+                //         me.onColFilter("styleDynTable", oEvent.getSource().oParent.oParent.getAggregation("label").getProperty("text"));
+                //     }
+                //     // select: this.onColFilter("styleDynTable")
+                //     // submenu: oSubMenu
+                // })
 
                 oTable.getColumns().forEach(col => {
                     // console.log(col.getMenu())
                     // Loop onto each column and attach Column Menu Open event
                     col.attachColumnMenuOpen(function(oEvent) {
                         //Get Menu associated with column
-                        var oMenu = col.getMenu();                        
+                        var oMenu = col.getMenu();
+                        var oMenuItem = new sap.ui.unified.MenuItem({
+                            icon: "sap-icon://filter",
+                            text: "Filter",
+                            select: function(oEvent) {
+                                me.onColFilter("styleDynTable", oEvent.getSource().oParent.oParent.getAggregation("label").getProperty("text"));
+                            }
+                        })
 
                         //Create the Menu Item that need to be added
                         setTimeout(() => {
                             // console.log(oMenu)
                             var wCustomFilter = false;
                             oMenu.getItems().forEach(item => {
-                                if (item.sId.indexOf("filter") >= 0) {
-                                    oMenu.removeItem(item);
-                                }
+                                // if (item.sId.indexOf("filter") >= 0) {
+                                //     oMenu.removeItem(item);
+                                // }
 
                                 if (item.mProperties.text !== undefined && item.mProperties.text === "Filter") {
                                     wCustomFilter = true;
                                 }
+
+                                // console.log(item.mProperties.text)
                             })
                             
                             if (!wCustomFilter) {
-                                oMenu.insertItem(oMenuItem, 2);                               
+                                oMenu.insertItem(oMenuItem, 2);
                             }
                             
                             oMenu.setPageSize(oMenu.getItems().length); 

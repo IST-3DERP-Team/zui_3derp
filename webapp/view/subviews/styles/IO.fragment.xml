@@ -36,61 +36,61 @@
             sort="onSorted"
             filter="onFilter">
             <c:columns>
-                <t:Column name="IONO" width="8rem" filterProperty="IONO" sortProperty="IONO">
+                <t:Column name="IONO" width="8rem" sortProperty="IONO">
                     <Label text="{ddtext>/IONO}" />
                     <t:template>
                         <Text text="{DataModel>IONO}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="15rem" filterProperty="IODESC" sortProperty="IODESC">
+                <t:Column width="15rem" sortProperty="IODESC">
                     <Label text="{ddtext>/IODESC}" />
                     <t:template>
                         <Text text="{DataModel>IODESC}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="8rem" filterProperty="IOTYPE" sortProperty="IOTYPE">
+                <t:Column width="8rem" sortProperty="IOTYPE">
                     <Label text="{ddtext>/IOTYPE}" />
                     <t:template>
                         <Text text="{DataModel>IOTYPE}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="8rem" filterProperty="SALESGRP" sortProperty="SALESGRP">
+                <t:Column width="8rem" sortProperty="SALESGRP">
                     <Label text="{ddtext>/SALESGRP}" />
                     <t:template>
                         <Text text="{DataModel>SALESGRP}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="8rem" filterProperty="SEASONCD" sortProperty="SEASONCD">
+                <t:Column width="8rem" sortProperty="SEASONCD">
                     <Label text="{ddtext>/SEASONCD}" />
                     <t:template>
                         <Text text="{DataModel>SEASONCD}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="8rem" filterProperty="PRODPLANT" sortProperty="PRODPLANT">
+                <t:Column width="8rem" sortProperty="PRODPLANT">
                     <Label text="{ddtext>/PRODPLANT}" />
                     <t:template>
                         <Text text="{DataModel>PRODPLANT}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="8rem" filterProperty="STATUSCD" sortProperty="STATUSCD">
+                <t:Column width="8rem" sortProperty="STATUSCD">
                     <Label text="{ddtext>/STATUSCD}" />
                     <t:template>
                         <Text text="{DataModel>STATUSCD}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="8rem" filterProperty="VERNO" sortProperty="VERNO">
+                <t:Column width="8rem" sortProperty="VERNO">
                     <Label text="{ddtext>/VERNO}" />
                     <t:template>
                         <Text text="{DataModel>VERNO}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="10rem" filterProperty="CREATEDBY" sortProperty="CREATEDBY">
+                <t:Column width="10rem" sortProperty="CREATEDBY">
                     <Label text="{ddtext>/CREATEDBY}" />
                     <t:template>
                         <Text text="{DataModel>CREATEDBY}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="8rem" filterProperty="CREATEDDT" sortProperty="CREATEDDT">
+                <t:Column width="8rem" sortProperty="CREATEDDT">
                     <Label text="{ddtext>/CREATEDDT}" />
                     <t:template>
                         <Text text="{DataModel>CREATEDDT}" />

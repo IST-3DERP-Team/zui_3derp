@@ -45,19 +45,19 @@
             sort="onSorted"
             filter="onFilter">
             <c:columns>
-                <t:Column name="ATTRIBSEQ" width="7rem" filterProperty="Attribseq" sortProperty="Attribseq">
+                <t:Column name="ATTRIBSEQ" width="7rem" sortProperty="Attribseq">
                     <Label text="{ddtext>/COLORCD}" />
                     <t:template>
                         <Text text="{DataModel>Attribseq}" tooltip="{DataModel>Attribseq}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
+                <t:Column width="11rem" sortProperty="Desc1">
                     <Label text="{ddtext>/DESC}" />
                     <t:template>
                         <Input value="{DataModel>Desc1}" editable="{ColorEditModeModel>/editMode}" change="onColorChange" liveChange="onColorChange" tooltip="{DataModel>Desc1}" />
                     </t:template>
                 </t:Column>
-                <t:Column width="7rem" filterProperty="Sortseq" sortProperty="Sortseq">
+                <t:Column width="7rem" sortProperty="Sortseq">
                     <Label text="{ddtext>/SORTSEQ}" />
                     <t:template>
                         <!-- <HBox class="sapUiResponsiveContentPadding">

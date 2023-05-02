@@ -37,7 +37,7 @@
                 selectionMode="MultiToggle"
                 sort="onSorted">
                 <c:columns>
-                    <t:Column width="14rem" filterProperty="Attribtyp" sortProperty="Attribtyp">
+                    <t:Column width="14rem" sortProperty="Attribtyp">
                         <Label text="{ddtext>/ATTRIBTYP}" />
                         <t:template>
                             <Input
@@ -60,7 +60,7 @@
                             </Input>
                         </t:template>
                     </t:Column>
-                    <t:Column width="11rem" filterProperty="Attribcd" sortProperty="Attribcd">
+                    <t:Column width="11rem" sortProperty="Attribcd">
                         <Label text="{ddtext>/ATTRIBCD}" />
                         <t:template>
                             <Input
@@ -83,20 +83,20 @@
                             </Input>
                         </t:template>
                     </t:Column>
-                    <t:Column width="11rem" filterProperty="Desc1" sortProperty="Desc1">
+                    <t:Column width="11rem" sortProperty="Desc1">
                         <Label text="{ddtext>/DESC}" />
                         <t:template>
                             <Text text="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" />
                             <!-- <Input value="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange" liveChange="onVersionAttrChange" /> -->
                         </t:template>
                     </t:Column>
-                    <t:Column width="11rem" filterProperty="Attribval" sortProperty="Attribval">
+                    <t:Column width="11rem" sortProperty="Attribval">
                         <Label text="{ddtext>/ATTRIBVAL}" />
                         <t:template>
                             <Input value="{DataModel>Attribval}" tooltip="{DataModel>Attribval}" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange" liveChange="onVersionAttrChange" />
                         </t:template>
                     </t:Column>
-                    <t:Column width="11rem" filterProperty="Valunit" sortProperty="Valunit">
+                    <t:Column width="11rem" sortProperty="Valunit">
                         <Label text="{ddtext>/ATTRIBVALUNIT}" />
                         <t:template>
                             <Input

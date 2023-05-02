@@ -48,20 +48,20 @@
                             </Button>
                         </t:template>
                     </t:Column> -->
-                    <t:Column width="6rem" filterProperty="Verno" sortProperty="Verno" hAlign="End">
+                    <t:Column width="6rem" sortProperty="Verno" hAlign="End">
                         <Label text="{ddtext>/VERNO}"/>
                         <t:template>
                             <Text text="{DataModel>Verno}" tooltip="{DataModel>Verno}"/>
                         </t:template>
                     </t:Column>
-                    <t:Column width="6rem" hAlign="Center" filterProperty="Currentver" sortProperty="Currentver">
+                    <t:Column width="6rem" hAlign="Center" sortProperty="Currentver">
                         <Label text="{ddtext>/STATUS}" />
                         <t:template>
                             <tnt:InfoLabel id="il8" text="{= ${DataModel>Currentver} === true ? 'Current' : ' ' }" colorScheme="{= ${DataModel>Currentver} === true ? 8 : 7 }" displayOnly= "true"
                                 visible="{DataModel>Currentver}" tooltip="{= ${DataModel>Currentver} === true ? 'Current' : ' ' }"/>
                         </t:template>
                     </t:Column>
-                    <t:Column width="8rem"   filterProperty="Verno" sortProperty="Verno"  visible="{VersionEditModeModel>/editMode}">
+                    <t:Column width="8rem" sortProperty="Verno"  visible="{VersionEditModeModel>/editMode}">
                         <Label text=""/>
                         <t:template>
                             <Button text="{i18n>SetCurrent}" icon="sap-icon://detail-view" press="setVersionCurrent" visible="{= ${DataModel>Currentver} === true ? false : true }">
@@ -71,13 +71,13 @@
                             </Button>
                         </t:template>
                     </t:Column>
-                    <t:Column width="18rem" filterProperty="Desc1" sortProperty="Desc1">
+                    <t:Column width="18rem" sortProperty="Desc1">
                         <Label text="{ddtext>/DESC1}"/>
                         <t:template>
                             <Input value="{DataModel>Desc1}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange" tooltip="{DataModel>Desc1}"/>
                         </t:template>
                     </t:Column>
-                    <t:Column width="18rem" filterProperty="Desc2" sortProperty="Desc2">
+                    <t:Column width="18rem" sortProperty="Desc2">
                         <Label text="{ddtext>/DESC2}"/>
                         <t:template>
                             <Input value="{DataModel>Desc2}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange" tooltip="{DataModel>Desc2}"/>

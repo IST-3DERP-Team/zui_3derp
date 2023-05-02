@@ -25,133 +25,133 @@
         rows="{path:'DataModel>/results', parameters: {arrayNames:['items']}}"
         selectionMode="None" 
         visibleRowCountMode="Auto">
-        <t:Column width="10rem"  filterProperty="Bomitem" sortProperty="Bomitem">
+        <t:Column width="10rem" sortProperty="Bomitem">
             <Label text="{ddtext>/BOMITEM}"/>
             <t:template>
                 <Text text="{DataModel>Bomitem}" tooltip="{DataModel>Bomitem}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Bomitmtyp" sortProperty="Bomitmtyp">
+        <t:Column width="7rem" sortProperty="Bomitmtyp">
             <Label text="{ddtext>/BOMITMTYP}"/>
             <t:template>
                 <Text text="{DataModel>Bomitmtyp}" tooltip="{DataModel>Bomitmtyp}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Bomstyle" sortProperty="Bomstyle">
+        <t:Column width="7rem" sortProperty="Bomstyle">
             <Label text="{ddtext>/BOMSTYLE}"/>
             <t:template>
                 <Text text="{DataModel>Bomstyle}" tooltip="{DataModel>Bomstyle}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Bomstylver" sortProperty="Bomstylver">
+        <t:Column width="7rem" sortProperty="Bomstylver">
             <Label text="{ddtext>/BOMSTYLVER}"/>
             <t:template>
                 <Text text="{DataModel>Bomstylver}" tooltip="{DataModel>Bomstylver}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Partcd" sortProperty="Partcd">
+        <t:Column width="7rem" sortProperty="Partcd">
             <Label text="{ddtext>/PARTCD}"/>
             <t:template>
                 <Text text="{DataModel>Partcd}" tooltip="{DataModel>Partcd}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Partdesc" sortProperty="Partdesc">
+        <t:Column width="7rem" sortProperty="Partdesc">
             <Label text="{ddtext>/PARTDESC}"/>
             <t:template>
                 <Text text="{DataModel>Partdesc}" tooltip="{DataModel>Partdesc}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Partcnt" sortProperty="Partcnt">
+        <t:Column width="7rem" sortProperty="Partcnt">
             <Label text="{ddtext>/PARTCNT}"/>
             <t:template>
                 <Text text="{DataModel>Partcnt}" tooltip="{DataModel>Partcnt}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Usgcls" sortProperty="Usgcls">
+        <t:Column width="7rem" sortProperty="Usgcls">
             <Label text="{ddtext>/USGCLS}"/>
             <t:template>
                 <Text text="{DataModel>Usgcls}" tooltip="{DataModel>Usgcls}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Custstyle" sortProperty="Custstyle">
+        <t:Column width="7rem" sortProperty="Custstyle">
             <Label text="{ddtext>/CUSTSTYLE}"/>
             <t:template>
                 <Text text="{DataModel>Custstyle}" tooltip="{DataModel>Custstyle}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Processcd" sortProperty="Processcd">
+        <t:Column width="7rem" sortProperty="Processcd">
             <Label text="{ddtext>/PROCESSCD}"/>
             <t:template>
                 <Text text="{DataModel>Processcd}" tooltip="{DataModel>Processcd}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Color" sortProperty="Color">
+        <t:Column width="7rem" sortProperty="Color">
             <Label text="{ddtext>/COLOR}"/>
             <t:template>
                 <Text text="{DataModel>Color}" tooltip="{DataModel>Color}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Sizes" sortProperty="Sizes">
+        <t:Column width="7rem" sortProperty="Sizes">
             <Label text="{ddtext>/SIZE}"/>
             <t:template>
                 <Text text="{DataModel>Sizes}" tooltip="{DataModel>Sizes}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Dest" sortProperty="Dest">
+        <t:Column width="7rem" sortProperty="Dest">
             <Label text="{ddtext>/DEST}"/>
             <t:template>
                 <Text text="{DataModel>Dest}" tooltip="{DataModel>Dest}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Mattyp" sortProperty="Mattyp">
+        <t:Column width="7rem" sortProperty="Mattyp">
             <Label text="{ddtext>/MATTYP}"/>
             <t:template>
                 <Text text="{DataModel>Mattyp}" tooltip="{DataModel>Mattyp}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Gmc" sortProperty="Gmc">
+        <t:Column width="7rem" sortProperty="Gmc">
             <Label text="{ddtext>/GMC}"/>
             <t:template>
                 <Text text="{DataModel>Gmc}" tooltip="{DataModel>Gmc}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Matno" sortProperty="Matno">
+        <t:Column width="7rem" sortProperty="Matno">
             <Label text="{ddtext>/MATNO}"/>
             <t:template>
                 <Text text="{DataModel>Matno}" tooltip="{DataModel>Matno}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Consump" sortProperty="Consump">
+        <t:Column width="7rem" sortProperty="Consump">
             <Label text="{ddtext>/MATCONSPER}"/>
             <t:template>
                 <Text text="{DataModel>Matconsper}" tooltip="{DataModel>Matconsper}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Per" sortProperty="Per">
+        <t:Column width="7rem" sortProperty="Per">
             <Label text="{ddtext>/PER}"/>
             <t:template>
                 <Text text="{DataModel>Per}" tooltip="{DataModel>Per}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Entryuom" sortProperty="Entryuom">
+        <t:Column width="7rem" sortProperty="Entryuom">
             <Label text="{ddtext>/UOM}"/>
             <t:template>
                 <Text text="{DataModel>Entryuom}" tooltip="{DataModel>Entryuom}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Wastage" sortProperty="Wastage">
+        <t:Column width="7rem" sortProperty="Wastage">
             <Label text="{ddtext>/WASTAGE}"/>
             <t:template>
                 <Text text="{DataModel>Wastage}" tooltip="{DataModel>Wastage}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Comconsump" sortProperty="Comconsump">
+        <t:Column width="7rem" sortProperty="Comconsump">
             <Label text="{ddtext>/COMCONSUMP}"/>
             <t:template>
                 <Text text="{DataModel>Comconsump}"  tooltip="{DataModel>Comconsump}"/>
             </t:template>
         </t:Column>
-        <t:Column width="7rem"  filterProperty="Consump" sortProperty="Consump">
+        <t:Column width="7rem" sortProperty="Consump">
             <Label text="{ddtext>/CONSUMP}"/>
             <t:template>
                 <Text text="{DataModel>Consump}" tooltip="{DataModel>Consump}"/>

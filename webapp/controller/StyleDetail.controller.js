@@ -5151,7 +5151,7 @@ sap.ui.define([
             },
 
             lockStyle: async function (isLock) {
-                // return { "Type":"S", "Message":"Disable Locking"}
+                return { "Type":"S", "Message":"Disable Locking"}
                 var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
 
                 // var oParamLock = {
