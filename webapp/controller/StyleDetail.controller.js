@@ -5554,6 +5554,7 @@ sap.ui.define([
                 oDialog.getModel().setProperty("/customColFilterOperator", oFilterCustom[vSelectedColumn].Operator);
                 oDialog.getModel().setProperty("/customColFilterFrVal", oFilterCustom[vSelectedColumn].ValFr);
                 oDialog.getModel().setProperty("/customColFilterToVal", oFilterCustom[vSelectedColumn].ValTo);
+                // oDialog.getModel().setProperty("/panelUDFToVisible", false);
                 oDialog.getModel().setProperty("/searchValue", "");
                 oDialog.open();
                 // oDialog.setInitialFocus(sap.ui.getCore().byId("searchFilterValue"));
@@ -5631,6 +5632,13 @@ sap.ui.define([
                 else {
                     oDialog.getContent()[0].getDetailPages()[0].getContent()[0].getItems()[2].getItems()[0].getItems()[1].setType("Text");
                     oDialog.getContent()[0].getDetailPages()[0].getContent()[0].getItems()[2].getItems()[1].getItems()[1].setType("Text");
+                }
+
+                if (oFilterCustom[vSelectedColumn].Operator === "BT") {
+                    oDialog.getModel().setProperty("/panelUDFToVisible", true);
+                }
+                else {
+                    oDialog.getModel().setProperty("/panelUDFToVisible", false);
                 }
 
                 if (vDataType === "DATETIME") {
@@ -6091,14 +6099,12 @@ sap.ui.define([
             onCustomColFilterChange: function(oEvent) {
                 var oDialog = this._GenericFilterDialog;
 
-                if (oEvent.getSource().getSelectedKey() !== undefined) {
+                if (!(oEvent.getSource().getSelectedKey() === undefined || oEvent.getSource().getSelectedKey() === "")) {
                     if (oEvent.getSource().getSelectedKey() === "BT") {
                         oDialog.getModel().setProperty("/panelUDFToVisible", true);
                     }
                     else {
                         oDialog.getModel().setProperty("/panelUDFToVisible", false);
-                        sap.ui.getCore().byId("customColFilterToDate").setValue("");
-                        sap.ui.getCore().byId("customColFilterToVal").setValue("");
                     }
                 }
 

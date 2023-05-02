@@ -4298,6 +4298,13 @@ sap.ui.define([
                     oDialog.getContent()[0].getDetailPages()[0].getContent()[0].getItems()[2].getItems()[1].getItems()[1].setType("Text");
                 }
 
+                if (oFilterCustom[vSelectedColumn].Operator === "BT") {
+                    oDialog.getModel().setProperty("/panelUDFToVisible", true);
+                }
+                else {
+                    oDialog.getModel().setProperty("/panelUDFToVisible", false);
+                }
+                
                 if (vDataType === "DATETIME") {
                     oDialog.getModel().setProperty("/customColFilterFrValVisible", false);
                     oDialog.getModel().setProperty("/customColFilterToValVisible", false);
@@ -4755,12 +4762,13 @@ sap.ui.define([
             onCustomColFilterChange: function(oEvent) {
                 var oDialog = this._GenericFilterDialog;
 
-                if (oEvent.getSource().getSelectedKey() !== undefined) {
+                if (!(oEvent.getSource().getSelectedKey() === undefined || oEvent.getSource().getSelectedKey() === "")) {
                     if (oEvent.getSource().getSelectedKey() === "BT") {
                         oDialog.getModel().setProperty("/panelUDFToVisible", true);
                     }
                     else {
                         oDialog.getModel().setProperty("/panelUDFToVisible", false);
+                        // oDialog.getModel().setProperty("/customColFilterToVal", "");
                     }
                 }
 
