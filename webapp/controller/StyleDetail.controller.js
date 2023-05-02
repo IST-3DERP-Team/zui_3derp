@@ -693,22 +693,21 @@ sap.ui.define([
                 // var oTable = this.getView().byId("styleDynTable"); 
                 var me = this;
 
-                var oMenuItem = new sap.ui.unified.MenuItem({
-                    icon: "sap-icon://filter",
-                    text: "Filter",
-                    select: function(oEvent) {
-                        console.log(oEvent.getSource())
-                        me.onColFilter(sTableId, oEvent.getSource().oParent.oParent.getAggregation("label").getProperty("text"));
-                    }
-                })
-
                 oTable.getColumns().forEach(col => {
                     // console.log(col.getMenu())
                     // Loop onto each column and attach Column Menu Open event
                     col.attachColumnMenuOpen(function(oEvent) {
                         //Get Menu associated with column
                         var oMenu = col.getMenu();                        
-
+                        var oMenuItem = new sap.ui.unified.MenuItem({
+                            icon: "sap-icon://filter",
+                            text: "Filter",
+                            select: function(oEvent) {
+                                console.log(oEvent.getSource())
+                                me.onColFilter(sTableId, oEvent.getSource().oParent.oParent.getAggregation("label").getProperty("text"));
+                            }
+                        })
+                        
                         //Create the Menu Item that need to be added
                         setTimeout(() => {
                             // console.log(oMenu)
