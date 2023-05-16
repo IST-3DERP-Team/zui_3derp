@@ -4,13 +4,14 @@
     <Toolbar height="3rem" style="Clear">
         <HBox alignContent="Center" alignItems="Center">
             <Label text="{i18n>UsageClass}"/>
-            <ComboBox id="UsageClassCB" items="{UsageClassModel>/results}" class="sapUiMediumMarginBegin" selectedKey="AUV"
+            <!-- change UsageClassModel to UsageClassUVModel -->
+            <ComboBox id="UsageClassCB" items="{UsageClassUVModel>/results}" class="sapUiMediumMarginBegin" selectedKey="AUV"
                 showSecondaryValues="true" filterSecondaryValues= "true" change="getbomUVTable">
-                <core:ListItem key="{UsageClassModel>Usgcls}" text="{UsageClassModel>Ucdesc1}" additionalText="{UsageClassModel>Usgcls}"/>
+                <core:ListItem key="{UsageClassUVModel>Usgcls}" text="{UsageClassUVModel>Ucdesc1}" additionalText="{UsageClassUVModel>Usgcls}"/>
             </ComboBox>
         </HBox>
         <ToolbarSpacer />
-        <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMUVitems}" press="setBOMbyUVEditMode" visible="{= ${AppAction>/appChange} === true ? ${BOMbyUVEditModeModel>/editMode} === true ? false : true :false }"/>
+        <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMUVitems}" press="setBOMbyUVEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyUVEditModeModel>/editMode} === true ? false : true :false }"/>
         <Button icon="sap-icon://synchronize" tooltip="Refresh data" press="onRefresh"/>
         <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMUVitems}" press="onSaveBOMbyUV" visible="{BOMbyUVEditModeModel>/editMode}"/>
         <Button type="Ghost" icon="sap-icon://decline"  tooltip="{i18n>Canceledit}" press="cancelBOMbyUVEdit" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? true : false }"/>

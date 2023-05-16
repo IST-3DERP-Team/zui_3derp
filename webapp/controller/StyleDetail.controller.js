@@ -105,7 +105,7 @@ sap.ui.define([
                 });
             },
 
-            _routePatternMatched: function (oEvent) {
+            _routePatternMatched: async function (oEvent) {
                 Common.openLoadingDialog(that);
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get Style from route pattern
                 this._sbu = oEvent.getParameter("arguments").sbu; //get SBU from route pattern
@@ -203,7 +203,7 @@ sap.ui.define([
                     this.getProcessesTable(); //get process
                     this.getVersionsTable(); //get versions
                     setTimeout(() => {
-                        this.cancelHeaderEdit();
+                       // this.cancelHeaderEdit();
                     }, 500);
                 }
 
@@ -230,10 +230,15 @@ sap.ui.define([
                 this.getColorsTable();
 
                 //Load value helps
-                Utils.getStyleSearchHelps(this);
-                Utils.getAttributesSearchHelps(this);
-                Utils.getProcessAttributes(this);
-                Utils.getVersionSearchHelps(this);
+                _promiseResult = new Promise((resolve, reject) => {
+                    resolve(that.loadSearchHelps());
+                });
+                await _promiseResult;
+
+                // Utils.getStyleSearchHelps(this);
+                // Utils.getAttributesSearchHelps(this);
+                // Utils.getProcessAttributes(this);
+                // Utils.getVersionSearchHelps(this);
 
                 //Attachments
                 this.bindUploadCollection();
@@ -253,9 +258,22 @@ sap.ui.define([
                 console.log("route")
                 //this.getAppAction();
 
-                setTimeout(() => {
-                    this.getColumnProp();
-                }, 1000);
+                // setTimeout(() => {
+                //     this.getColumnProp();
+                // }, 1000);
+
+                 
+                _promiseResult = new Promise((resolve, reject) => {
+                    resolve(that.getColumnProp());
+                });
+                await _promiseResult;
+            },
+
+            loadSearchHelps:async function(){
+                await Utils.getStyleSearchHelps(this);
+                await Utils.getAttributesSearchHelps(this);
+                await Utils.getProcessAttributes(this);
+                await Utils.getVersionSearchHelps(this);
             },
 
             closeEditModes: function () {
@@ -484,6 +502,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "STATUS" });
                 oDDTextParam.push({ CODE: "DESC1" });
                 oDDTextParam.push({ CODE: "DESC2" });
+                oDDTextParam.push({ CODE: "DELETED" });
 
                 oDDTextParam.push({CODE: "INFO_INPUT_REQD_FIELDS"}); 
                 oDDTextParam.push({CODE: "INFO_NO_DATA_EDIT"}); 
@@ -1984,32 +2003,38 @@ sap.ui.define([
                 }
 
                 if (bProceed) {
-                    //set colors table editable
-                    var oJSONModel = new JSONModel();
-                    var data = {};
-                    this._colorChanged = false;
-                    data.editMode = true;
-                    oJSONModel.setData(data);
-                    this.getView().setModel(oJSONModel, "ColorEditModeModel");
-                    this.byId("btnColorAdd").setVisible(false);
-                    this.byId("btnColorSave").setVisible(true);
-                    this.byId("btnColorCancel").setVisible(true);
-                    this.byId("btnColorEdit").setVisible(false);
-                    this.byId("btnColorDelete").setVisible(false);
+                    const result = await this.lockStyle("X");
+                    if (result.Type != "S") {
+                        MessageBox.warning(result.Message);
+                    }
+                    else {
+                        //set colors table editable
+                        var oJSONModel = new JSONModel();
+                        var data = {};
+                        this._colorChanged = false;
+                        data.editMode = true;
+                        oJSONModel.setData(data);
+                        this.getView().setModel(oJSONModel, "ColorEditModeModel");
+                        this.byId("btnColorAdd").setVisible(false);
+                        this.byId("btnColorSave").setVisible(true);
+                        this.byId("btnColorCancel").setVisible(true);
+                        this.byId("btnColorEdit").setVisible(false);
+                        this.byId("btnColorDelete").setVisible(false);
 
-                    this.disableOtherTabs("detailPanel");
-                    this.byId("btnHdrEdit").setEnabled(false);
-                    this.byId("btnHdrDelete").setEnabled(false);
-                    this.byId("btnHdrClose").setEnabled(false);
-                    this.setColorEditModeControls();
+                        this.disableOtherTabs("detailPanel");
+                        this.byId("btnHdrEdit").setEnabled(false);
+                        this.byId("btnHdrDelete").setEnabled(false);
+                        this.byId("btnHdrClose").setEnabled(false);
+                        this.setColorEditModeControls();
 
-                     //mark as required fields
-                     oTable.getColumns().forEach((col, idx) => {
-                        //console.log(col);
-                        const colProp = col.mProperties.filterProperty;
-                        if(colProp == "Desc1" || colProp == "Sortseq")
-                            col.getLabel().addStyleClass("sapMLabelRequired");
-                    });
+                        //mark as required fields
+                        oTable.getColumns().forEach((col, idx) => {
+                            //console.log(col);
+                            const colProp = col.mProperties.filterProperty;
+                            if(colProp == "Desc1" || colProp == "Sortseq")
+                                col.getLabel().addStyleClass("sapMLabelRequired");
+                        });
+                    }
                 }
 
 
@@ -2852,6 +2877,9 @@ sap.ui.define([
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
                         oJSONModel.setData(oData);
+                        oData.results.forEach((item, index) => {
+                            item.Deleted = item.Deleted === "X" ? true : false;
+                        });
                         oTable.setModel(oJSONModel, "DataModel");
                         oTable.setVisibleRowCount(oData.results.length);
                         // oTable.attachPaste();
@@ -4477,11 +4505,12 @@ sap.ui.define([
                     // oData.push({NEW: true});
                     // oTable.getBinding("rows").refresh();
                     //oTable.setVisibleRowCount(oData.length);
-                    const result = await this.lockStyle("X");
-                    if (result.Type != "S") {
-                        MessageBox.warning(result.Message);
-                    }
-                    else {
+
+                    //const result = await this.lockStyle("X");
+                    //if (result.Type != "S") {
+                    //    MessageBox.warning(result.Message);
+                    //}
+                    //else {
                         if (tabName === "generalTable") {
                             this.setGeneralAttrEditMode();
                             this.onGeneralAttrChange();
@@ -4493,7 +4522,7 @@ sap.ui.define([
                             this.setProcessEditMode();
                             this.onProcessChange();
                         }
-                    }
+                    //}
                 }
             },
 
@@ -5150,7 +5179,7 @@ sap.ui.define([
             },
 
             lockStyle: async function (isLock) {
-                return { "Type":"S", "Message":"Disable Locking"}
+                //return { "Type":"S", "Message":"Disable Locking"}
                 var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
 
                 // var oParamLock = {

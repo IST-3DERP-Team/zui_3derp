@@ -83,6 +83,12 @@
                             <Input value="{DataModel>Desc2}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange" tooltip="{DataModel>Desc2}"/>
                         </t:template>
                     </t:Column>
+                     <t:Column width="10rem" sortProperty="Casverind" hAlign="Center">
+                <Text text="{ddtext>/DELETED}" />
+                <t:template>
+                    <CheckBox selected="{DataModel>Deleted}" editable="false"/>
+                </t:template>
+            </t:Column>        
                 </c:columns>
             </c:DynamicTable>
         <!-- </ScrollContainer> -->

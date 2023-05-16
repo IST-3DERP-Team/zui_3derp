@@ -5,7 +5,7 @@
     <Toolbar height="2rem" style="Clear">
         <!-- <Label text="{i18n>BOMbyGMC}"/> -->
         <ToolbarSpacer />
-        <Button id="btnBOMGMCAdd" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLineBOM" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
+        <Button id="btnBOMGMCAdd" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLineBOM" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>
                 <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
@@ -15,14 +15,14 @@
                 <core:CustomData key="TableName" value="bomGMCTable" />
             </customData>
         </Button>        
-        <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMitems}" press="setBOMbyGMCEditMode" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
-        <Button icon="sap-icon://delete" tooltip="{i18n>DeleteselectedBOMitems}" press="onDeleteBOMItems" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+        <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMitems}" press="setBOMbyGMCEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+        <Button icon="sap-icon://delete" tooltip="{i18n>DeleteselectedBOMitems}" press="onDeleteBOMItems" visible="{= ${AppAction>/appChange} === true ?  ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
         <Button icon="sap-icon://synchronize" press="onRefresh" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
         <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMitems}" press="onSaveBOMbyGMC" visible="{BOMbyGMCEditModeModel>/editMode}"/>
         <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelBOMbyGMCEdit" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? true : false }"/>
-        <Button icon="sap-icon://cause" text="{i18n>GetComponents}" tooltip="{i18n>Getstylecomponents}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
-        <Button icon="sap-icon://process" text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>               
-        <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
+        <Button icon="sap-icon://cause" text="{i18n>GetComponents}" tooltip="{i18n>Getstylecomponents}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
+        <Button icon="sap-icon://process" text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>               
+        <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>
             <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>

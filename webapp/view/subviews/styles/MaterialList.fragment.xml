@@ -3,8 +3,8 @@
         <Toolbar height="3rem" style="Clear">
             <!-- <Label text="{i18n>MaterialList}" /> -->
             <ToolbarSpacer />
-            <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editmateriallist}" press="setMaterialListEditMode" visible="{= ${AppAction>/appChange} === true ? ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
-            <Button icon="sap-icon://multiselect-all" text="{i18n>AssignMaterialNo}" tooltip="{i18n>Assignmaterialnumbers}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
+            <Button type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editmateriallist}" press="setMaterialListEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
+            <Button icon="sap-icon://multiselect-all" text="{i18n>AssignMaterialNo}" tooltip="{i18n>Assignmaterialnumbers}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
             <Button icon="sap-icon://save"  tooltip="{i18n>Savemateriallist}" press="onSaveMaterialList" visible="{MaterialListEditModeModel>/editMode}" />
             <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelMaterialListEdit" visible="{= ${MaterialListEditModeModel>/editMode} === true ? true : false }" />
             <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">
@@ -108,7 +108,7 @@
                         type="Text"
                         showSuggestion="true"
                         showValueHelp="true"
-                        editable="{MaterialListEditModeModel>/editMode}"
+                        editable="{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>Supplytyp} === 'NOM' ? true : false : false}"
                         valueHelpRequest="onVendorValueHelp"
                         suggestionItems="{path:'VendorModel>/results', templateShareable:false}"
                         value="{DataModel>Vendorcd}"
@@ -190,6 +190,24 @@
                             <core:ListItem text="{PurPlantModel>Plant}" additionalText="{PurPlantModel>Desc1}" />
                         </suggestionItems>
                     </Input>
+                </t:template>
+            </t:Column>
+             <t:Column width="5rem" sortProperty="Orderuom">
+                <Label text="{ddtext>/ORDERUOM}" />
+                <t:template>
+                    <Text text="{DataModel>Seqno}" tooltip="{DataModel>Orderuom}" />
+                </t:template>
+            </t:Column>
+             <t:Column width="5rem" sortProperty="Umrez">
+                <Label text="{ddtext>/UMREZ}" />
+                <t:template>
+                    <Text text="{DataModel>Umrez}" tooltip="{DataModel>Umrez}" />
+                </t:template>
+            </t:Column>
+             <t:Column width="5rem" sortProperty="Umren">
+                <Label text="{ddtext>/UMREN}" />
+                <t:template>
+                    <Text text="{DataModel>Umren}" tooltip="{DataModel>Umren}" />
                 </t:template>
             </t:Column>
             <c:layoutData>
