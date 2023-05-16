@@ -24,11 +24,11 @@
             <Button id="btnProcessDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedprocess}" press="onDeleteProcess" visible="true"/>
             <Button id="btnProcessSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveprocess}" press="onSaveProcessTable" visible="false"/>
             <Button id="btnProcessCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelProcessEdit" visible="false"/>
-            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+            <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="processesTable" />
                 </customData>
-            </Button>
+            </Button> -->
         </Toolbar>
          
         <MessageStrip id="ProcessesMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>

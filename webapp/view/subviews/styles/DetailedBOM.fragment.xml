@@ -9,11 +9,11 @@
                 <core:CustomData key="TableName" value="bomDetailedTable"/>
             </customData>
         </Button>
-        <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+        <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
             <customData>
                 <core:CustomData key="TableName" value="bomDetailedTable" />
             </customData>
-        </Button>
+        </Button> -->
     </Toolbar>
 
     <!-- Detailed BOM Tree Table -->

@@ -3015,38 +3015,38 @@ sap.ui.define([
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
                         if (sAction === "Yes") {
-                oModel.setHeaders({
-                    sbu: this._sbu,
-                    copy: this._copyFrVer
-                });
-                //call create method of style version
-                oModel.create(path, oEntry, {
-                    method: "POST",
-                    success: function (oData, oResponse) {
-                        me.getVersionsTable();
-                        me._NewVerionDialog.close();
-                        Common.closeLoadingDialog(that);
-                        Common.showMessage(me._i18n.getText('t4'));
+                            oModel.setHeaders({
+                                sbu: this._sbu,
+                                copy: this._copyFrVer
+                            });
+                            //call create method of style version
+                            oModel.create(path, oEntry, {
+                                method: "POST",
+                                success: function (oData, oResponse) {
+                                    me.getVersionsTable();
+                                    me._NewVerionDialog.close();
+                                    Common.closeLoadingDialog(that);
+                                    Common.showMessage(me._i18n.getText('t4'));
 
-                        if (oCurrent) { me.getHeaderData(); }
+                                    if (oCurrent) { me.getHeaderData(); }
 
-                        this.enableOtherTabs("detailPanel");
-                        this.byId("btnHdrEdit").setEnabled(true);
-                        this.byId("btnHdrDelete").setEnabled(true);
-                        this.byId("btnHdrClose").setEnabled(true);
-                        
-                        MessageBox.information(me._i18n.getText('t4'));
-                    },
-                    error: function (err) {
-                        Common.closeLoadingDialog(that);
-                        //Common.showMessage(me._i18n.getText('t5'));
-                        var errorMsg = JSON.parse(err.responseText).error.message.value;
-                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                    this.enableOtherTabs("detailPanel");
+                                    this.byId("btnHdrEdit").setEnabled(true);
+                                    this.byId("btnHdrDelete").setEnabled(true);
+                                    this.byId("btnHdrClose").setEnabled(true);
+                                    
+                                    MessageBox.information(me._i18n.getText('t4'));
+                                },
+                                error: function (err) {
+                                    Common.closeLoadingDialog(that);
+                                    //Common.showMessage(me._i18n.getText('t5'));
+                                    var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                    MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                }
+                            });
+                        }
                     }
                 });
-            }
-        }
-    });
             },
 
             setVersionEditMode: async function () {

@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
-    xmlns:c="zui3derp.control" xmlns:uiT="sap.ui.table"  xmlns:layout="sap.ui.layout"  >
+    xmlns:c="zui3derp.control" xmlns:uiT="sap.ui.table"  xmlns:layout="sap.ui.layout" >
      
 <VBox fitContainer="true" >
     <Toolbar height="2rem" style="Clear">
@@ -20,9 +20,17 @@
         <Button icon="sap-icon://synchronize" press="onRefresh" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
         <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMitems}" press="onSaveBOMbyGMC" visible="{BOMbyGMCEditModeModel>/editMode}"/>
         <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelBOMbyGMCEdit" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? true : false }"/>
-        <Button icon="sap-icon://cause" text="{i18n>GetComponents}" tooltip="{i18n>Getstylecomponents}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
-        <Button icon="sap-icon://process" text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>               
-        <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
+        <MenuButton icon="sap-icon://copy" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }">
+            <menu>
+                <Menu>
+                    <MenuItem id="_IDGenMenuItem1" text="{ddtext>/COPYBOMFROM}" tooltip="{ddtext>/COPYBOMFROM}" press="onCopyBOMFrom" />
+                    <MenuItem id="_IDGenMenuItem2" text="{ddtext>/COPYBOMTO}" tooltip="{ddtext>/COPYBOMTO}" press="onCopyBOMTo" />
+                </Menu>
+            </menu>
+        </MenuButton>
+        <Button icon="sap-icon://cause" text="{i18n>GetComponents}" tooltip="{i18n>Getstylecomponents}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
+        <Button icon="sap-icon://process" text="{i18n>RMC}" tooltip="{i18n>RunRMC}" press="onRMC" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>               
+        <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>
             <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>
@@ -30,11 +38,11 @@
                 <ToolbarLayoutData shrinkable="true"/>
             </layoutData>
         </Button>
-        <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+        <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
             <customData>
                 <core:CustomData key="TableName" value="bomGMCTable" />
             </customData>
-        </Button>         
+        </Button>          -->
     </Toolbar>
 
     <MessageStrip id="BOMbyGMCMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>

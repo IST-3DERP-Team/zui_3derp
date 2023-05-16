@@ -14,11 +14,11 @@
                     <core:CustomData key="TableName" value="ioTable" />
                 </customData>
             </Button>
-            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+            <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="ioTable" />
                 </customData>
-            </Button>
+            </Button> -->
         </Toolbar>
 
         <!-- <MessageStrip id="IOMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" /> -->
