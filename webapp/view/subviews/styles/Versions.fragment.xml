@@ -17,11 +17,11 @@
             <Button id="btnVersionCopy" type="Ghost" icon="sap-icon://copy" tooltip="{i18n>Copyversion}" press="onCopyVersion" visible="true"/>                                    
             <Button id="btnVersionSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveversions}" press="onSaveVersions" visible="false"/>
             <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelVersionEdit" visible="false"/>
-            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+            <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="versionsTable" />
                 </customData>
-            </Button>
+            </Button> -->
         </Toolbar>
 
         <MessageStrip id="VersionsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>

@@ -1,0 +1,40 @@
+<core:FragmentDefinition
+	xmlns="sap.ui.comp.valuehelpdialog"
+	xmlns:m="sap.m"
+	xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:core="sap.ui.core">
+	<ValueHelpDialog 
+		title="Season Code"
+		ok="onCustomSmartFilterValueHelpOkPress"
+		cancel="onCustomSmartFilterValueHelpCancelPress"
+		supportRanges="true"
+		key="Seasoncd"
+		descriptionKey="Desc1"
+	>
+		<filterBar>
+			<fb:FilterBar advancedMode="true" search="onFilterBarSearch">
+				<fb:filterGroupItems>
+					<fb:FilterGroupItem 
+						groupName="__$INTERNAL$"
+						name="Seasoncd"
+						label="Season Code"
+						visibleInFilterBar="true">
+						<fb:control>
+							<m:Input name="Seasoncd" />
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem 
+						groupName="__$INTERNAL$"
+						name="Desc1"
+						label="Description"
+						visibleInFilterBar="true"
+					>
+						<fb:control>
+							<m:Input name="Desc1" />
+						</fb:control>
+					</fb:FilterGroupItem>
+				</fb:filterGroupItems>
+			</fb:FilterBar>
+		</filterBar>
+	</ValueHelpDialog>
+</core:FragmentDefinition>

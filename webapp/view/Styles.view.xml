@@ -148,11 +148,11 @@
                                     <core:CustomData key="TableName" value="styleDynTable" />
                                 </customData>
                             </Button>
-                            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+                            <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                                 <customData>
                                     <core:CustomData key="TableName" value="styleDynTable" />
                                 </customData>
-                            </Button>
+                            </Button> -->
                             <Button icon="sap-icon://grid" tooltip="{i18n>Savetablelayout}" press="onSaveTableLayout" />
                         </Toolbar>
                     </uiT:extension>

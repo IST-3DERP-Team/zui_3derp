@@ -17,11 +17,11 @@
             <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteVersionAttr" visible="{= ${AppAction>/appChange} === true ? ${VersionAttrEditModeModel>/editMode} === true ? false : true : false }" />
             <Button id="btnVersionSave" icon="sap-icon://save" tooltip="{i18n>Saveversionattributes}" press="onSaveVersionAttrTable" visible="{VersionAttrEditModeModel>/editMode}" />
             <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelVersionAttrEdit" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? true : false }" />
-            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+            <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="versionAttrTable" />
                 </customData>
-            </Button>
+            </Button> -->
         </Toolbar>
 
         <MessageStrip id="VersionAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />

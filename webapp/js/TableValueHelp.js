@@ -764,7 +764,7 @@ sap.ui.define([
             this._inputSource.setSelectedKey(oEvent.getSource().getModel().getProperty(sRowPath + "/VHKey"));
             this._inputSource.setValueState("None");
             this._tableValueHelpDialog.close();
-            console.log(oEvent.getSource().getModel())
+            // console.log(oEvent.getSource().getModel())
         }, 
 
         handleTableValueHelpCancel: function() {

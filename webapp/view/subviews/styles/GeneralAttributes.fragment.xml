@@ -26,11 +26,11 @@
             <Button id="btnGenAttrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteGeneralAttr" visible="true" />
             <Button id="btnGenAttrSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveattributes}" press="onSaveGeneralTable" visible="false" />
             <Button id="btnGenAttrCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelGeneralAttrEdit" visible="false" />
-            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+            <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="generalTable" />
                 </customData>
-            </Button>
+            </Button> -->
         </Toolbar>
 
     <!-- General Attributes Table -->

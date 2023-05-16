@@ -1,0 +1,290 @@
+<core:FragmentDefinition xmlns:vbm="sap.ui.vbm" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:uiT="sap.ui.table"
+    xmlns:form="sap.ui.layout.form" xmlns:dnd="sap.ui.core.dnd" xmlns:tnt="sap.tnt">
+	<Dialog title="{ddtext>/COPYBOMTO}" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" xmlns:tnt="sap.tnt" contentHeight="75%" contentWidth="1485px" draggable="true" beforeOpen="beforeOpenCopyBOM" beforeClose="beforeCloseCopyBOM" >
+		<content>
+            <VBox fitContainer="true" width="100%">
+                <Panel class="sapUiNoContentPadding hdrFormBgColor">
+                    <HBox>
+                        <HBox class="sapUiSmallMarginEnd" alignItems="Center">
+                            <Text text="{ddtext>/STYLECD}:" class="sapUiTinyMarginEnd" />
+                            <MultiInput id="multiInputCSBStyleCdTo" width="200px"
+                                change="onCustomSmartFilterValueHelpChange"
+                                valueHelpRequest="onCustomSmartFilterValueHelp"
+                                suggestionRows="{
+                                    path: 'StyleCodeModel>/results',
+                                    sorter: { path: 'Stylecd' },
+                                    length: 1000,
+                                    templateShareable: false
+                                }">
+                                <suggestionColumns>
+                                    <Column>
+                                        <Label text="{ddtext>/STYLECD}"/>
+                                    </Column>
+                                </suggestionColumns>
+                                <suggestionRows>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Label text="{StyleCodeModel>Stylecd}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </suggestionRows>
+                            </MultiInput>
+                        </HBox>
+                        <HBox class="sapUiSmallMarginEnd" alignItems="Center">
+                            <Text text="{ddtext>/SEASONCD}:" class="sapUiTinyMarginEnd" />
+                            <MultiInput id="multiInputCSBSeasonCdTo" width="200px"
+                                change="onCustomSmartFilterValueHelpChange"
+                                valueHelpRequest="onCustomSmartFilterValueHelp"
+                                maxSuggestionWidth="350px"
+                                suggestionRows="{
+                                    path: 'SeasonsModel>/results',
+                                    sorter: { path: 'Seasoncd' },
+                                    length: 1000,
+                                    templateShareable: false
+                                }">
+                                <suggestionColumns>
+                                    <Column>
+                                        <Label text="{ddtext>/SEASONCD}"/>                                        
+                                    </Column>
+                                    <Column>
+                                        <Label text="{ddtext>/DESC}"/>
+                                    </Column>
+                                </suggestionColumns>
+                                <suggestionRows>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Label text="{SeasonsModel>Seasoncd}" />
+                                            <Label text="{SeasonsModel>Desc1}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </suggestionRows>
+                            </MultiInput>
+                        </HBox>
+                        <HBox class="sapUiSmallMarginEnd" alignItems="Center">
+                            <Text text="{ddtext>/VERNO}:" class="sapUiTinyMarginEnd" />
+                            <MultiInput id="multiInputCSBVerNoTo" width="200px"
+                                change="onCustomSmartFilterValueHelpChange"
+                                valueHelpRequest="onCustomSmartFilterValueHelp"
+                                suggestionRows="{
+                                    path: 'VersionsModel>/results',
+                                    sorter: { path: 'Verno' },
+                                    length: 1000,
+                                    templateShareable: false
+                                }">
+                                <suggestionColumns>
+                                    <Column>
+                                        <Label text="{ddtext>/VERNO}"/>
+                                    </Column>
+                                </suggestionColumns>
+                                <suggestionRows>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Label text="{VersionsModel>Verno}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </suggestionRows>
+                            </MultiInput>
+                        </HBox>
+                        <HBox class="sapUiTinyMarginEnd" alignItems="Center">
+                            <Button 
+                            text="Go"
+                            type="Emphasized"
+                            press="onSearchCopyBOMStyles"
+                            tooltip="{ddtext>/GO}"
+                            visible="true">
+                                <customData>
+                                    <core:CustomData key="Copy" value="To" />
+                                </customData>
+                            </Button>
+                        </HBox>
+                    </HBox>
+                    <layoutData>
+                        <FlexItemData growFactor="0" />
+                    </layoutData>
+                </Panel>
+
+                <HBox fitContainer="true">
+                    <uiT:Table id="copyStyleBOMToTableFr" width="700px"
+                        rows="{
+                            path: 'DataModel>/results',
+                            filters: {path: 'Rank', operator: 'EQ', value1: '0'}
+                        }"
+                        class="sapUiTinyMargin"
+                        visibleRowCountMode="Auto"
+                        showColumnVisibilityMenu="true"
+                        enableColumnReordering="true" 
+                        enableColumnFreeze="true"
+                        selectionMode="MultiToggle">
+                        <uiT:extension>
+                            <Toolbar class="sapUiTinyMarginBottom">
+                                <tnt:InfoLabel text="{ddtext>/AVAILSTYLES}" />
+                                <ToolbarSpacer/>
+                                <!-- <Button id="btnCopyStyleBOMToTableFrMax"
+                                    icon="sap-icon://full-screen"
+                                    press="onCopyBOMTableResize"
+                                    tooltip="{ddtext>/FULLSCREEN}"
+                                    visible="true" >
+                                    <customData>
+                                        <core:CustomData key="TableName" value="copyStyleBOMToTableFr" />
+                                        <core:CustomData key="Size" value="Max" />
+                                    </customData>
+                                </Button>
+                                <Button id="btnCopyStyleBOMToTableFrMin"
+                                    icon="sap-icon://exit-full-screen"
+                                    press="onCopyBOMTableResize"
+                                    tooltip="{ddtext>/EXITFULLSCREEN}"
+                                    visible="false" >
+                                    <customData>
+                                        <core:CustomData key="TableName" value="copyStyleBOMToTableFr" />
+                                        <core:CustomData key="Size" value="Min" />
+                                    </customData>
+                                </Button> -->
+                            </Toolbar>
+                        </uiT:extension>
+                        <uiT:columns>
+                            <uiT:Column width="150px" sortProperty="STYLENO">
+                                <Label text="{ddtext>/STYLENO}" />
+                                <uiT:template>
+                                    <Text text="{DataModel>STYLENO}" tooltip="{DataModel>STYLENO}" wrapping="false" />
+                                </uiT:template>
+                            </uiT:Column>
+                            <uiT:Column width="250px" sortProperty="STYLECD">
+                                <Label text="{ddtext>/STYLECD}" />
+                                <uiT:template>
+                                    <Text text="{DataModel>STYLECD}" tooltip="{DataModel>STYLECD}" wrapping="false" />
+                                </uiT:template>
+                            </uiT:Column>
+                            <uiT:Column width="150px" sortProperty="SEASONCD">
+                                <Label text="{ddtext>/SEASONCD}" />
+                                <uiT:template>
+                                    <Text text="{DataModel>SEASONCD}" tooltip="{DataModel>SEASONCD}" wrapping="false" />
+                                </uiT:template>
+                            </uiT:Column>   
+                            <uiT:Column width="100px" sortProperty="VERNO">
+                                <Label text="{ddtext>/VERNO}" />
+                                <uiT:template>
+                                    <Text text="{DataModel>VERNO}" tooltip="{DataModel>VERNO}" wrapping="false" />
+                                </uiT:template>
+                            </uiT:Column> 
+                        </uiT:columns>
+                        <uiT:dragDropConfig>
+                            <dnd:DragInfo
+                                groupName="moveToTableTo"
+                                sourceAggregation="rows"
+                                dragStart="onDragStart" />
+                            <dnd:DropInfo
+                                groupName="moveToTableFr"
+                                targetAggregation="rows"
+                                dropPosition="Between"
+                                drop="onDropTableFr" />
+                        </uiT:dragDropConfig>
+                    </uiT:Table>
+
+                    <VBox justifyContent="Center" class="sapUiTinyMarginBeginEnd">
+                        <Button
+                            class="sapUiTinyMarginBottom"
+                            icon="sap-icon://navigation-right-arrow"
+                            tooltip="Move to Selected BOM"
+                            press="moveToTableTo"/>
+                        <Button
+                            icon="sap-icon://navigation-left-arrow"
+                            tooltip="Move to Available BOM"
+                            press="moveToTableFr"/>
+                    </VBox>                    
+
+                    <uiT:Table id="copyStyleBOMToTableTo" width="700px"
+                        class="sapUiTinyMargin"
+                        rows="{
+                            path: 'DataModel>/results',
+                            filters: {path: 'Rank', operator: 'GT', value1: '0'},
+                            sorter: {path: 'Rank', descending: true}
+                        }"
+                        visibleRowCountMode="Auto"
+                        showColumnVisibilityMenu="true"
+                        enableColumnReordering="true" 
+                        enableColumnFreeze="true"
+                        selectionMode="MultiToggle">
+                        <uiT:extension>
+                            <Toolbar class="sapUiTinyMarginBottom">
+                                <tnt:InfoLabel text="{ddtext>/SELSTYLES}" />
+                                <ToolbarSpacer/>
+                                <!-- <Button id="btnCopyStyleBOMToTableToMax"
+                                    icon="sap-icon://full-screen"
+                                    press="onCopyBOMTableResize"
+                                    tooltip="{ddtext>/FULLSCREEN}"
+                                    visible="true" >
+                                    <customData>
+                                        <core:CustomData key="TableName" value="copyStyleBOMToTableTo" />
+                                        <core:CustomData key="Size" value="Max" />
+                                    </customData>
+                                </Button>
+                                <Button id="btnCopyStyleBOMToTableToMin"
+                                    icon="sap-icon://exit-full-screen"
+                                    press="onCopyBOMTableResize"
+                                    tooltip="{ddtext>/EXITFULLSCREEN}"
+                                    visible="false" >
+                                    <customData>
+                                        <core:CustomData key="TableName" value="copyStyleBOMToTableTo" />
+                                        <core:CustomData key="Size" value="Min" />
+                                    </customData>
+                                </Button> -->
+                            </Toolbar>
+                        </uiT:extension>
+                        <uiT:columns>
+                            <uiT:Column width="150px" sortProperty="STYLENO">
+                                <Label text="{ddtext>/STYLENO}" />
+                                <uiT:template>
+                                    <Text text="{DataModel>STYLENO}" tooltip="{DataModel>STYLENO}" wrapping="false" />
+                                </uiT:template>
+                            </uiT:Column>
+                            <uiT:Column width="250px" sortProperty="STYLECD">
+                                <Label text="{ddtext>/STYLECD}" />
+                                <uiT:template>
+                                    <Text text="{DataModel>STYLECD}" tooltip="{DataModel>STYLECD}" wrapping="false" />
+                                </uiT:template>
+                            </uiT:Column>
+                            <uiT:Column width="150px" sortProperty="SEASONCD">
+                                <Label text="{ddtext>/SEASONCD}" />
+                                <uiT:template>
+                                    <Text text="{DataModel>SEASONCD}" tooltip="{DataModel>SEASONCD}" wrapping="false" />
+                                </uiT:template>
+                            </uiT:Column>   
+                            <uiT:Column width="100px" sortProperty="VERNO">
+                                <Label text="{ddtext>/VERNO}" />
+                                <uiT:template>
+                                    <Text text="{DataModel>VERNO}" tooltip="{DataModel>VERNO}" wrapping="false" />
+                                </uiT:template>
+                            </uiT:Column>
+                        </uiT:columns>
+                        <uiT:dragDropConfig>
+                            <dnd:DragInfo
+                                groupName="moveToTableFr"
+                                sourceAggregation="rows"
+                                dragStart="onDragStart" />
+                            <dnd:DropInfo
+                                groupName="moveToTableTo"
+                                targetAggregation="rows"
+                                dropPosition="Between"
+                                drop="onDropTableTo" />
+                            <dnd:DragDropInfo
+                                sourceAggregation="rows"
+                                targetAggregation="rows"
+                                dropPosition="Between"
+                                dragStart="onDragStart"
+                                drop="onDropTableTo" />
+                        </uiT:dragDropConfig> 
+                    </uiT:Table>
+
+                    <layoutData>
+                        <FlexItemData growFactor="0.99" baseSize="0%"/>
+                    </layoutData>
+                </HBox>
+                
+            </VBox>
+		</content>
+		<buttons>
+			<Button text="{i18n>Copy}" tooltip="{ddtext>/COPY}" press="onCopyStyleBOMTo"/>
+			<Button text="{i18n>Cancel}" tooltip="{ddtext>/CANCEL}" press="onCloseDialog"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

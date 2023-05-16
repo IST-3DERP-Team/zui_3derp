@@ -8,12 +8,16 @@ sap.ui.define([
     "sap/ui/core/routing/History",
     "sap/m/MessageBox",
     'sap/ui/core/routing/HashChanger',
-    "../js/TableValueHelp"
+    "../js/TableValueHelp",
+    'sap/m/SearchField',
+    'sap/ui/model/type/String',
+    "sap/ui/model/FilterOperator",
+    "sap/m/Token",
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, Constants, Utils, JSONModel, History, MessageBox, HashChanger, TableValueHelp) {
+    function (Controller, Filter, Common, Constants, Utils, JSONModel, History, MessageBox, HashChanger, TableValueHelp, SearchField, typeString, FilterOperator, Token) {
         "use strict";
 
         var that;
@@ -36,6 +40,12 @@ sap.ui.define([
                 //Initialize translations
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
                 this._tableValueHelp = TableValueHelp;
+
+                // if (!this._CopyBOMDialog) {
+                //     this._CopyBOMDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CopyBOM", this);
+                //     this._CopyBOMDialog.setModel(new JSONModel());
+                //     this.getView().addDependent(this._CopyBOMDialog);
+                // } 
             },
 
             getAppAction: async function () {
@@ -208,6 +218,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "DESC" });
                 oDDTextParam.push({ CODE: "ATTRIBVAL" });
                 oDDTextParam.push({ CODE: "ATTRIBVALUNIT" });
+                oDDTextParam.push({ CODE: "BOMSEQ" });
                 oDDTextParam.push({ CODE: "BOMITEM" });
                 oDDTextParam.push({ CODE: "BOMITMTYP" });
                 oDDTextParam.push({ CODE: "BOMSTYLE" });
@@ -240,11 +251,29 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "UNITPRICE" });
                 oDDTextParam.push({ CODE: "PURGRP" });
                 oDDTextParam.push({ CODE: "PURPLANT" });
+                oDDTextParam.push({ CODE: "STYLECD" });
+                oDDTextParam.push({ CODE: "SEASONCD" });
+                oDDTextParam.push({ CODE: "VERNO" });
+                oDDTextParam.push({ CODE: "IONO" });
+                oDDTextParam.push({ CODE: "STYLENO" });
+                oDDTextParam.push({ CODE: "COPYBOM" });
+                oDDTextParam.push({ CODE: "REFMATNO" });
+                oDDTextParam.push({ CODE: "REFMATDESC" });
+                oDDTextParam.push({ CODE: "ENTRYUOM" });
+                oDDTextParam.push({ CODE: "AVAILBOM" });
+                oDDTextParam.push({ CODE: "SELBOM" });
+                oDDTextParam.push({ CODE: "COPYBOMFROM" });
+                oDDTextParam.push({ CODE: "COPYBOMTO" });
+                oDDTextParam.push({ CODE: "AVAILSTYLES" });
+                oDDTextParam.push({ CODE: "SELSTYLES" });
 
                 oDDTextParam.push({CODE: "INFO_INPUT_REQD_FIELDS"}); 
                 oDDTextParam.push({CODE: "INFO_NO_DATA_EDIT"}); 
                 oDDTextParam.push({CODE: "INFO_NO_SEL_RECORD_TO_PROC"}); 
                 oDDTextParam.push({CODE: "INFO_NO_RECORD_TO_REMOVE"}); 
+                oDDTextParam.push({CODE: "INFO_BOM_COPIED"}); 
+                oDDTextParam.push({CODE: "INFO_COMPONENT_SAVED"}); 
+                oDDTextParam.push({CODE: "INFO_NO_COMPONENT"}); 
                 
                 oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam  }, {
                     method: "POST",
@@ -1224,7 +1253,7 @@ sap.ui.define([
                     var checkColor = [];
                     //ncjoaquin 12/13/2022. remove the validation
                     //01/10/2023 validate at least one required color per BOM/GMC item
-
+                    console.log(oData)
                     for (var i = 0; i < oData.results.length; i++) {
                         //pivot colros only for AUV and ASUV
                         if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
@@ -1232,7 +1261,7 @@ sap.ui.define([
                             let noOfHasColor = 0;
                             for (var j = 0; j < me._colors.length; j++) {
                                 var color = me._colors[j];
-                                //console.log("color",oData.results[i][color.Attribcd]);
+
                                 if (oData.results[i][color.Attribcd] != "" && oData.results[i][color.Attribcd] != undefined) {
                                     noOfHasColor++;
                                 }
@@ -1555,9 +1584,292 @@ sap.ui.define([
 
             onGetComponent: function () {
                 //save first before get components
-                this._BOMbyGMCChanged = true;
-                this.onSaveBOMbyGMC(true);
-                blnGetComponentInd = true;
+                // this._BOMbyGMCChanged = true;
+                // this.onSaveBOMbyGMC(true);
+                // blnGetComponentInd = true;
+
+                Common.openProcessingDialog(this);
+
+                //get BOM by GMC components
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var oTable = this.getView().byId("bomGMCTable");
+                var oParam = oTable.getModel("DataModel").getData().results.filter(fItem => fItem.BOMITMTYP === "STY");
+                var oData = [];
+                var aColors = jQuery.extend(true, [], this._colors);
+                var vMaxColorSortSeq = +this._colors.sort((a, b) => ((+a.Sortseq) > (+b.Sortseq) ? 1 : -1))[this._colors.length-1].Sortseq;
+                var vMaxColorCd = +this._colors.sort((a, b) => ((+a.Attribcd) > (+b.Attribcd) ? 1 : -1))[this._colors.length-1].Attribcd;
+                console.log(vMaxColorCd)
+
+                if (isNaN(vMaxColorCd)) { vMaxColorCd = this._colors.length }
+
+                aColors.forEach(item => item.New = false);
+
+                oParam.forEach((item, index) => {
+                    oModel.setHeaders({
+                        styleno: item.BOMSTYLE,
+                        verno: item.BOMSTYLVER,
+                        getcomponent: ""
+                    });
+    
+                    oModel.read("/StyleAttributesColorSet", {
+                        success: function (oResult, oResponse) {
+                            oResult.results.sort((a, b) => (a.Sortseq > b.Sortseq ? 1 : -1));
+                            oResult.results.forEach(item => {
+                                if (me._colors.filter(fItem => fItem.Desc1 === item.Desc1).length === 0) {
+                                    vMaxColorSortSeq++;
+                                    vMaxColorCd++;
+
+                                    item.Attribcd = vMaxColorCd + "";
+                                    item.Sortseq = vMaxColorSortSeq + "";
+                                    item.New = true;
+                                    // me._colors.push(item);
+                                    aColors.push(item);
+                                }
+                            })
+                        },
+                        error: function (err) { }
+                    });
+
+                    setTimeout(() => {
+                        oModel.read("/StyleBOMGMCSet", {
+                            success: function (oResult, oResponse) {
+                                if (oData.length === 0) { oData = oResult.results }
+                                else { oResult.results.forEach(res => oData.push(res)) }
+    
+                                if ((index+1) === oParam.length) {
+                                    me.onSaveComponent(oData, aColors);
+                                }
+        
+                                // if (blnGetComponentInd) {
+                                //     me.onSaveBOMbyGMC(oGetComponentInd);
+                                //     blnGetComponentInd = false;
+                                // }
+        
+                                // me.getBOMGMCColorsData(); //get pivot colors data
+                                // me.getbomUVTable();  //get BOM by UV data
+                            },
+                            error: function (err) {
+                                Common.closeProcessingDialog(me);
+                                MessageBox.information(err);
+                            }
+                        });
+                    }, 100);
+                })
+            },
+
+            onSaveComponent: function(oData, oColors) {
+                console.log(oData)
+                console.log(oColors);
+                if (oData.length > 0) {
+                    Common.openProcessingDialog(this);
+                    var me = this;
+                    var path = "";
+                    var oModel = this.getOwnerComponent().getModel();
+                    var item = {};
+                    var oEntry = {
+                        Styleno: this._styleNo,
+                        GMCToItems: []
+                    }
+    
+                    for (var i = 0; i < oData.length; i++) {
+                        item = {
+                            "Styleno": this._styleNo,
+                            "Verno": this._version,
+                            "Bomseq": "",
+                            "Bomitmtyp": oData[i].BOMITMTYP,
+                            "Bomstyle": oData[i].BOMSTYLE,
+                            "Bomstylver": oData[i].BOMSTYLVER,
+                            "Partcd": oData[i].PARTCD,
+                            "Partdesc": oData[i].PARTDESC,
+                            "Partcnt": oData[i].PARTCNT + "",
+                            "Usgcls": oData[i].USGCLS,
+                            "Custstyle": oData[i].CUSTSTYLE,
+                            "Mattyp": oData[i].MATTYP,
+                            "Gmc": oData[i].GMC,
+                            "Matno": oData[i].REFMATNO,
+                            "Entryuom": oData[i].ENTRYUOM,
+                            "Matconsper": oData[i].MATCONSPER,
+                            "Per": oData[i].PER + "",
+                            "Wastage": oData[i].WASTAGE,
+                            "Comconsump": oData[i].COMCONSUMP,
+                            "Consump": oData[i].CONSUMP,
+                            "Processcd": oData[i].PROCESSCD,
+                            "Refmatno": oData[i].REFMATNO,
+                            "Refmatdesc": oData[i].REFMATDESC
+                        }
+                        oEntry.GMCToItems.push(item);
+                    };
+
+                    path = "/BOMGMCSet";
+    
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
+                    // console.log(oEntry)
+                    oModel.create(path, oEntry, {
+                        method: "POST",
+                        success: function (oDataRes, oResponse) {
+                            Common.closeProcessingDialog(me);
+    
+                            MessageBox.information(
+                                me.getView().getModel("ddtext").getData()["INFO_COMPONENT_SAVED"],
+                                {
+                                    actions: ["OK", MessageBox.Action.CLOSE],
+                                    onClose: function(sAction) {
+                                        me._aColors = jQuery.extend(true, [], oColors);
+
+                                        var oAddtlColors = oColors.filter(fItem => fItem.New === true);
+                                        if (oAddtlColors.length > 0) {
+                                            //save additional colors
+                                            var oEntry = {
+                                                Styleno: me._styleNo,
+                                                Type: Constants.COLOR,
+                                                AttributesToItems: []
+                                            }
+
+                                            for (var i = 0; i < oAddtlColors.length; i++) {
+                                                var item = {
+                                                    "Styleno": me._styleNo,
+                                                    "Attribtyp": "COLOR",
+                                                    "Attribcd": oAddtlColors[i].Attribcd,
+                                                    "Baseind": false,
+                                                    "Desc1": oAddtlColors[i].Desc1,
+                                                    "Valuetyp": "STRVAL",
+                                                    "Attribseq": oAddtlColors[i].Attribseq,
+                                                    "Sortseq": oAddtlColors[i].Sortseq
+                                                };
+                                                oEntry.AttributesToItems.push(item);
+                                            };
+
+                                            path = "/AttributesGeneralSet";
+                                            oModel.setHeaders({
+                                                sbu: me._sbu
+                                            });
+            
+                                            oModel.create(path, oEntry, {
+                                                method: "POST",
+                                                success: function (oData, oResponse) { 
+                                                    //build the BOM by UV headers and payload - this is for the colors pivot
+                                                    oEntry = {
+                                                        Styleno: me._styleNo,
+                                                        Verno: me._version,
+                                                        Usgcls: Constants.AUV,
+                                                        UVToItems: []
+                                                    }
+                
+                                                    for (var i = 0; i < oData.length; i++) {
+                                                        //pivot colros only for AUV and ASUV
+                                                        if (oData[i].USGCLS === Constants.AUV || oData[i].USGCLS === Constants.ASUV) {
+                                                            for (var j = 0; j < oColors.length; j++) {
+                                                                var color = oColors[j];
+                
+                                                                item = {
+                                                                    "Styleno": me._styleNo,
+                                                                    "Verno": me._version,
+                                                                    "Gmc": oData[i].GMC,
+                                                                    "Partcd": oData[i].PARTCD,
+                                                                    "Usgcls": oData[i].USGCLS,
+                                                                    "Color": color.Attribcd,
+                                                                    "Mattyp": oData[i].MATTYP,
+                                                                    "Mattypcls": Constants.ZCOLR,
+                                                                    "Desc1": color.Desc1,
+                                                                    "Consump": oData[i].CONSUMP,
+                                                                    "Wastage": oData[i].WASTAGE
+                                                                };
+                                                                oEntry.UVToItems.push(item);
+                                                            }
+                                                        }
+                                                    };
+                
+                                                    if (oEntry.UVToItems.length > 0) {
+                                                        path = "/BOMUVSet";
+                                                        console.log(oEntry)
+                                                        oModel.setHeaders({
+                                                            sbu: me._sbu
+                                                        });
+                                                        //call create deep method for BOM by UV 
+                                                        oModel.create(path, oEntry, {
+                                                            method: "POST",
+                                                            success: function (oData, oResponse) {
+                                                                me.getbomGMCTable();
+                                                            },
+                                                            error: function (err) { }
+                                                        });
+                                                    }
+                                                    else {
+                                                        me.getbomGMCTable();
+                                                    }
+                                                },
+                                                error: function (err) { }
+                                            });
+                                        }
+                                        else {
+                                            //build the BOM by UV headers and payload - this is for the colors pivot
+                                            oEntry = {
+                                                Styleno: me._styleNo,
+                                                Verno: me._version,
+                                                Usgcls: Constants.AUV,
+                                                UVToItems: []
+                                            }
+        
+                                            for (var i = 0; i < oData.length; i++) {
+                                                //pivot colros only for AUV and ASUV
+                                                if (oData[i].USGCLS === Constants.AUV || oData[i].USGCLS === Constants.ASUV) {
+                                                    for (var j = 0; j < oColors.length; j++) {
+                                                        var color = oColors[j];
+        
+                                                        item = {
+                                                            "Styleno": me._styleNo,
+                                                            "Verno": me._version,
+                                                            "Gmc": oData[i].GMC,
+                                                            "Partcd": oData[i].PARTCD,
+                                                            "Usgcls": oData[i].USGCLS,
+                                                            "Color": color.Attribcd,
+                                                            "Mattyp": oData[i].MATTYP,
+                                                            "Mattypcls": Constants.ZCOLR,
+                                                            "Desc1": color.Desc1,
+                                                            "Consump": oData[i].CONSUMP,
+                                                            "Wastage": oData[i].WASTAGE
+                                                        };
+                                                        oEntry.UVToItems.push(item);
+                                                    }
+                                                }
+                                            };
+        
+                                            if (oEntry.UVToItems.length > 0) {
+                                                path = "/BOMUVSet";
+                                                console.log(oEntry)
+                                                oModel.setHeaders({
+                                                    sbu: me._sbu
+                                                });
+                                                //call create deep method for BOM by UV 
+                                                oModel.create(path, oEntry, {
+                                                    method: "POST",
+                                                    success: function (oData, oResponse) {
+                                                        me.getbomGMCTable();
+                                                    },
+                                                    error: function (err) { }
+                                                });
+                                            }
+                                            else {
+                                                me.getbomGMCTable();
+                                            }
+                                        }
+                                    }
+                                }
+                            );
+                        },
+                        error: function (err) {
+                            Common.closeProcessingDialog(me);
+                            var errorMsg = JSON.parse(err.responseText).error.message.value;
+                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                        }
+                    });
+                }
+                else {
+                    MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_NO_COMPONENT"]);
+                }
             },
 
             setBOMbyGMCEditModeControls: function() {
@@ -1586,6 +1898,1014 @@ sap.ui.define([
                         })
                     }                     
                 }, 100);
+            },
+
+            onCopyBOMFrom: function(oEvent) {
+                Common.openLoadingDialog(this);                
+
+                var me = this;
+                var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
+
+                if (!this._CopyBOMFrDialog) {
+                    this._CopyBOMFrDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CopyBOM", this);
+                    this._CopyBOMFrDialog.setModel(new JSONModel(this.getView().getModel("ddtext").getData()), "ddtext");
+                    this.getView().addDependent(this._CopyBOMFrDialog);
+
+                    sap.ui.getCore().byId("multiInputCSBStyleCdFr").addValidator(this._onMultiInputValidate.bind(this));
+                    sap.ui.getCore().byId("multiInputCSBSeasonCdFr").addValidator(this._onMultiInputValidate.bind(this));
+                    sap.ui.getCore().byId("multiInputCSBVerNoFr").addValidator(this._onMultiInputValidate.bind(this));
+                    sap.ui.getCore().byId("multiInputCSBIONoFr").addValidator(this._onMultiInputValidate.bind(this));
+                    this._CopyBOMDialog = this._CopyBOMFrDialog;
+                }
+                else { 
+                    this._CopyBOMDialog = this._CopyBOMFrDialog; 
+                    sap.ui.getCore().byId("multiInputCSBStyleCdFr").removeAllTokens();
+                    sap.ui.getCore().byId("multiInputCSBSeasonCdFr").removeAllTokens();
+                    sap.ui.getCore().byId("multiInputCSBVerNoFr").removeAllTokens();
+                    sap.ui.getCore().byId("multiInputCSBIONoFr").removeAllTokens();
+                }
+
+                //get Versions
+                var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
+                oSHModel.read("/VerNoSet", {
+                    success: function (oData, oResponse) {
+                        me.getView().setModel(new JSONModel(oData), "VersionsModel");
+                    },
+                    error: function (err) { }
+                });
+
+                //get IO Nos
+                var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
+                oSHModel.read("/IONoSet", {
+                    success: function (oData, oResponse) {
+                        me.getView().setModel(new JSONModel(oData), "IONoModel");
+                    },
+                    error: function (err) { }
+                });
+
+                oSHModel.setHeaders({
+                    sbu: this._sbu
+                });
+
+                //get Style Codes
+                oSHModel.read("/StyleCodeSet", {
+                    success: function (oData, oResponse) {
+                        me.getView().setModel(new JSONModel(oData), "StyleCodeModel");
+                    },
+                    error: function (err) { }
+                });
+                
+                //get Seasons
+                oSHModel.read("/SeasonSet", {
+                    success: function (oData, oResponse) {
+                        me.getView().setModel(new JSONModel(oData), "SeasonsModel");
+                    },
+                    error: function (err) { }
+                });
+
+                this._CopyBOMDialog.open();                
+            },
+
+            beforeOpenCopyBOM: function(oEvent) {
+                // var me = this;
+                // var oModel = this.getOwnerComponent().getModel();
+
+                // oModel.read("/CopyBOMSet", {
+                //     success: function (oData, oResponse) {
+                //         // console.log(oData)
+                //         oData.results.forEach(function(oRow) {
+                //             oRow.Rank = me.copyBOMConfig.initialRank;
+                //         }, me);
+
+                //         me._CopyBOMDialog.setModel(new JSONModel(oData), "DataModel");
+
+                //         Common.closeLoadingDialog(me);
+                //     },
+                //     error: function () { }
+                // })
+
+                var oData = { results: [] };
+                this._CopyBOMDialog.setModel(new JSONModel(oData), "DataModel");
+                Common.closeLoadingDialog(this);
+            },
+
+            beforeCloseCopyBOM: function(oEvent) {
+                var oData = { results: [] };
+                this._CopyBOMDialog.setModel(new JSONModel(oData), "DataModel");
+            },
+
+            onCustomSmartFilterValueHelp: function(oEvent) {
+                var me = this;
+                var cols = [];
+                var oDialog;
+                console.log(oEvent.getSource())
+                this._oMultiInput = oEvent.getSource();
+
+                if (oEvent.getParameters().id.indexOf("multiInputCSBStyleCd") >= 0) {
+                    if (!this._oCustomFilterValueHelpDialog_Stylecd) {
+                        this._oCustomFilterValueHelpDialog_Stylecd = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.StyleCodeFilterValueHelpDialog", this);
+                        this.getView().addDependent(this._oCustomFilterValueHelpDialog_Stylecd);
+                        this._oCustomFilterValueHelpDialog_Stylecd.setRangeKeyFields([{
+                            label: "Style Code",
+                            key: "Stylecd",
+                            type: "string",
+                            typeInstance: new typeString({}, {
+                                maxLength: 40
+                            })
+                        }]);
+                    }
+
+                    cols.push({
+                        "label": "Style Code",
+                        "template": "Stylecd",
+                        "width": "200px",
+                        "sortProperty": "Stylecd"
+                    })
+
+                    oDialog = this._oCustomFilterValueHelpDialog_Stylecd;
+                }
+                else if (oEvent.getParameters().id.indexOf("multiInputCSBSeasonCd") >= 0) {
+                    if (!this._oCustomFilterValueHelpDialog_Seasoncd) {
+                        this._oCustomFilterValueHelpDialog_Seasoncd = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.SeasonCodeFilterValueHelpDialog", this);
+                        this.getView().addDependent(this._oCustomFilterValueHelpDialog_Seasoncd);
+                        this._oCustomFilterValueHelpDialog_Seasoncd.setRangeKeyFields([{
+                            label: "Season Code",
+                            key: "Seasoncd",
+                            type: "string",
+                            typeInstance: new typeString({}, {
+                                maxLength: 10
+                            })
+                        }]);
+                    }
+
+                    cols.push({
+                        "label": "Season Code",
+                        "template": "Seasoncd",
+                        "width": "200px",
+                        "sortProperty": "Seasoncd"
+                    })
+
+                    cols.push({
+                        "label": "Description",
+                        "template": "Desc1",
+                        "width": "200px",
+                        "sortProperty": "Desc1"
+                    })
+
+                    oDialog = this._oCustomFilterValueHelpDialog_Seasoncd; 
+                }
+                else if (oEvent.getParameters().id.indexOf("multiInputCSBVerNo") >= 0) {
+                    if (!this._oCustomFilterValueHelpDialog_Verno) {
+                        this._oCustomFilterValueHelpDialog_Verno = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.VerNoFilterValueHelpDialog", this);
+                        this.getView().addDependent(this._oCustomFilterValueHelpDialog_Verno);
+                        this._oCustomFilterValueHelpDialog_Verno.setRangeKeyFields([{
+                            label: "Version No",
+                            key: "Verno",
+                            type: "string",
+                            typeInstance: new typeString({}, {
+                                maxLength: 3
+                            })
+                        }]);
+                    }
+
+                    cols.push({
+                        "label": "Version No",
+                        "template": "Verno",
+                        "width": "100px",
+                        "sortProperty": "Verno"
+                    })
+
+                    oDialog = this._oCustomFilterValueHelpDialog_Verno;
+                }
+                else if (oEvent.getParameters().id.indexOf("multiInputCSBIONo") >= 0) {
+                    if (!this._oCustomFilterValueHelpDialog_Iono) {
+                        this._oCustomFilterValueHelpDialog_Iono = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.IONoFilterValueHelpDialog", this);
+                        this.getView().addDependent(this._oCustomFilterValueHelpDialog_Iono);
+                        this._oCustomFilterValueHelpDialog_Iono.setRangeKeyFields([{
+                            label: "IO No",
+                            key: "Iono",
+                            type: "string",
+                            typeInstance: new typeString({}, {
+                                maxLength: 8
+                            })
+                        }]);
+                    }
+                    
+                    cols.push({
+                        "label": "IO No",
+                        "template": "Iono",
+                        "width": "100px",
+                        "sortProperty": "Iono"
+                    })
+
+                    oDialog = this._oCustomFilterValueHelpDialog_Iono;
+                }
+                var oColModel = new JSONModel({ "cols": cols });
+
+                var aCols = oColModel.getData().cols;
+                // this._oBasicSearchField = new SearchField({
+                //     showSearchButton: false
+                // });
+    
+                // this._oCustomSmartFilterValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.SmartFilterValueHelpDialog", this);
+                // this.getView().addDependent(this._oCustomSmartFilterValueHelpDialog);
+
+                oDialog.getTableAsync().then(function (oTable) {
+                    if (me._oMultiInput.getId().indexOf("multiInputCSBStyleCd") >= 0) { oTable.setModel(this.getView().getModel("StyleCodeModel")); }
+                    if (me._oMultiInput.getId().indexOf("multiInputCSBSeasonCd") >= 0) { oTable.setModel(this.getView().getModel("SeasonsModel")); }
+                    if (me._oMultiInput.getId().indexOf("multiInputCSBVerNo") >= 0) { oTable.setModel(this.getView().getModel("VersionsModel")); }
+                    if (me._oMultiInput.getId().indexOf("multiInputCSBIONo") >= 0) { oTable.setModel(this.getView().getModel("IONoModel")); }
+
+                    oTable.setModel(oColModel, "columns");
+
+                    if (oTable.bindRows) {
+                        oTable.bindAggregation("rows", "/results");
+                    }
+    
+                    if (oTable.bindItems) {
+                        oTable.bindAggregation("items", "/results", function () {
+                            return new ColumnListItem({
+                                cells: aCols.map(function (column) {
+                                    return new Label({ text: "{" + column.template + "}" });
+                                })
+                            });
+                        });
+                    }
+    
+                    oDialog.update();
+                }.bind(this));
+    
+                
+                oDialog.setTokens(this._oMultiInput.getTokens());
+                oDialog.open();
+            },
+
+            onCustomSmartFilterValueHelpChange: function(oEvent) {
+                if (oEvent.getParameter("value") === "") {
+                    oEvent.getSource().setValueState("None");
+                }
+            },
+
+            onCustomSmartFilterValueHelpOkPress: function (oEvent) {
+                var aTokens = oEvent.getParameter("tokens");
+                var oDialog;
+
+                if (this._oMultiInput.getId().indexOf("multiInputCSBSeasonCd") < 0)  {
+                    aTokens.forEach(token => {
+                        token.setText(token.getProperty("key"))
+                    })
+                }
+
+                this._oMultiInput.setTokens(aTokens);
+    
+                if (this._oMultiInput.getId().indexOf("multiInputCSBStyleCd") >= 0) {
+                    oDialog = this._oCustomFilterValueHelpDialog_Stylecd;
+                }
+                else if (this._oMultiInput.getId().indexOf("multiInputCSBSeasonCd") >= 0) {
+                    oDialog = this._oCustomFilterValueHelpDialog_Seasoncd;
+                }
+                else if (this._oMultiInput.getId().indexOf("multiInputCSBVerNo") >= 0)  {
+                    oDialog = this._oCustomFilterValueHelpDialog_Verno;
+                }
+                else if (this._oMultiInput.getId().indexOf("multiInputCSBIONo") >= 0)  {
+                    oDialog = this._oCustomFilterValueHelpDialog_Iono;
+                }
+
+                oDialog.close();
+            },
+
+            onCustomSmartFilterValueHelpCancelPress: function () {
+                var oDialog;
+    
+                if (this._oMultiInput.getId().indexOf("multiInputCSBStyleCd") >= 0) {
+                    oDialog = this._oCustomFilterValueHelpDialog_Stylecd;
+                }
+                else if (this._oMultiInput.getId().indexOf("multiInputCSBSeasonCd") >= 0)  {
+                    oDialog = this._oCustomFilterValueHelpDialog_Seasoncd;
+                }
+                else if (this._oMultiInput.getId().indexOf("multiInputCSBVerNo") >= 0)  {
+                    oDialog = this._oCustomFilterValueHelpDialog_Verno;
+                }
+                else if (this._oMultiInput.getId().indexOf("multiInputCSBIONo") >= 0)  {
+                    oDialog = this._oCustomFilterValueHelpDialog_Iono;
+                }
+
+                oDialog.close();
+            },
+
+            // onCustomSmartFilterValueHelpAfterClose: function () {
+            //     this._oCustomSmartFilterValueHelpDialog.destroy();
+            // },
+
+            _onMultiInputValidate: function(oArgs) {
+                var oInput = oArgs.suggestionObject.oParent.oParent.oParent;
+                var aToken = oInput.getTokens();
+
+                if (oArgs.suggestionObject) {
+                    var oToken = new Token();
+
+                    if (oInput.getId().indexOf("multiInputCSBStyleCd") >= 0) {
+                        var oObject = oArgs.suggestionObject.getBindingContext("StyleCodeModel").getObject();
+                        oToken.setKey(oObject.Stylecd);
+                        oToken.setText(oObject.Stylecd);
+                    }
+                    else if (oInput.getId().indexOf("multiInputCSBSeasonCd") >= 0)  {
+                        var oObject = oArgs.suggestionObject.getBindingContext("SeasonsModel").getObject();
+                        oToken.setKey(oObject.Seasoncd);
+                        oToken.setText(oObject.Desc1 + " (" + oObject.Seasoncd + ")");
+                    }
+                    else if (oInput.getId().indexOf("multiInputCSBVerNo") >= 0) {
+                        var oObject = oArgs.suggestionObject.getBindingContext("VersionsModel").getObject();
+                        oToken.setKey(oObject.Verno);
+                        oToken.setText(oObject.Verno);
+                    }
+                    else if (oInput.getId().indexOf("multiInputCSBIONo") >= 0) {
+                        var oObject = oArgs.suggestionObject.getBindingContext("IONoModel").getObject();
+                        oToken.setKey(oObject.Iono);
+                        oToken.setText(oObject.Iono);
+                    }
+
+                    aToken.push(oToken)
+
+                    oInput.setTokens(aToken);
+                    oInput.setValueState("None");
+                }
+                else if (oArgs.text !== "") {
+                    oInput.setValueState("Error");
+                }
+    
+                return null;
+            },   
+
+            onFilterBarSearch: function (oEvent) {
+                var aSelectionSet = oEvent.getParameter("selectionSet");
+                // var sSearchQuery = this._oBasicSearchField.getValue();
+
+                var aFilters = aSelectionSet.reduce(function (aResult, oControl) {
+                    if (oControl.getValue()) {
+                        aResult.push(new Filter({
+                            path: oControl.getName(),
+                            operator: FilterOperator.Contains,
+                            value1: oControl.getValue()
+                        }));
+                    }
+
+                    return aResult;
+                }, []);
+    
+                this._filterTable(new Filter({
+                    filters: aFilters,
+                    and: true
+                }));
+            },
+
+            _filterTable: function (oFilter) {
+                var oDialog;
+    
+                if (this._oMultiInput.getId().indexOf("multiInputCSBStyleCd") >= 0) {
+                    oDialog = this._oCustomFilterValueHelpDialog_Stylecd;
+                }
+                else if (this._oMultiInput.getId().indexOf("multiInputCSBSeasonCd") >= 0)  {
+                    oDialog = this._oCustomFilterValueHelpDialog_Seasoncd;
+                }
+                else if (this._oMultiInput.getId().indexOf("multiInputCSBVerNo") >= 0)  {
+                    oDialog = this._oCustomFilterValueHelpDialog_Verno;
+                }
+                else if (this._oMultiInput.getId().indexOf("multiInputCSBIONo") >= 0)  {
+                    oDialog = this._oCustomFilterValueHelpDialog_Iono;
+                }
+
+                oDialog.getTableAsync().then(function (oTable) {
+                    if (oTable.bindRows) {
+                        oTable.getBinding("rows").filter(oFilter);
+                    }
+    
+                    if (oTable.bindItems) {
+                        oTable.getBinding("items").filter(oFilter);
+                    }
+    
+                    oDialog.update();
+                });
+            },         
+
+            onSearchCopyBOMStyles: function(oEvent) {
+                Common.openProcessingDialog(this);
+
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var vCustGrp = this.getView().getModel("headerData").getData().Custgrp;
+                var sCopy = oEvent.getSource().data("Copy");
+
+                var aFilters = [],
+                    aFilter = [];
+
+                var oFilterCriteria = [
+                    {
+                        FieldName: "STYLECD",
+                        Control: sap.ui.getCore().byId("multiInputCSBStyleCd" + sCopy)
+                    },
+                    {
+                        FieldName: "SEASONCD",
+                        Control: sap.ui.getCore().byId("multiInputCSBSeasonCd" + sCopy)
+                    },
+                    {
+                        FieldName: "VERNO",
+                        Control: sap.ui.getCore().byId("multiInputCSBVerNo" + sCopy)
+                    }                    
+                ];
+
+                if (sCopy === "Fr") {
+                    oFilterCriteria.push({
+                        FieldName: "IONO",
+                        Control: sap.ui.getCore().byId("multiInputCSBIONo" + sCopy)
+                    })
+                }
+
+                oFilterCriteria.forEach(item => {
+                    var aCustomFilter = [];
+                    var oCtrl = item.Control;
+
+                    if (oCtrl.getTokens().length === 1) {
+                        oCtrl.getTokens().map(function(oToken) {
+                            aFilter.push(new Filter(item.FieldName, FilterOperator.EQ, oToken.getKey()))
+                        })
+                        
+                        // console.log(aFilter)
+                    }
+                    else if (oCtrl.getTokens().length > 1) {
+                        oCtrl.getTokens().map(function(oToken) {
+                            aCustomFilter.push(new Filter(item.FieldName, FilterOperator.EQ, oToken.getKey()))
+                        })
+
+                        aFilter.push(new Filter(aCustomFilter, false));
+                    }                    
+                })
+
+                aFilters.push(new Filter(aFilter, true));
+                // console.log(aFilters);
+                console.log(vCustGrp);
+                oModel.setHeaders({
+                    sbu: this._sbu,
+                    custgrp: vCustGrp,
+                    copy: sCopy
+                });
+                oModel.read("/CopyBOMSet", {
+                    filters: aFilters,
+                    success: function (oData, oResponse) {
+                        console.log(sCopy, me._styleNo)
+                        console.log(oData.results.filter(fItem => fItem.STYLENO !== me._styleNo))
+                        if (sCopy === "To") {
+                            oData.results = oData.results.filter(fItem => fItem.STYLENO !== me._styleNo);
+                        }
+                        
+                        oData.results.forEach(function(oRow) {
+                            oRow.Rank = me.copyBOMConfig.initialRank;
+                        }, me);
+
+                        me._CopyBOMDialog.setModel(new JSONModel(oData), "DataModel");
+                        console.log(oData);
+                        Common.closeProcessingDialog(me);
+                    },
+                    error: function () { }
+                })
+            },
+
+            copyBOMConfig: {
+                initialRank: 0,
+                defaultRank: 1024,
+                rankAlgorithm: {
+                    Before: function(iRank) {
+                        return iRank + 1024;
+                    },
+                    Between: function(iRank1, iRank2) {
+                        // limited to 53 rows
+                        return (iRank1 + iRank2) / 2;
+                    },
+                    After: function(iRank) {
+                        return iRank / 2;
+                    }
+                }
+            },
+
+            getSelectedRowContext: function(sTableId, fnCallback) {
+                var oTable = sap.ui.getCore().byId(sTableId);
+                var iSelectedIndex = oTable.getSelectedIndex();
+    
+                if (iSelectedIndex === -1) {
+                    MessageBox.information("Please select row/s.");
+                    return;
+                }
+    
+                var oSelectedContext = oTable.getContextByIndex(iSelectedIndex);
+                if (oSelectedContext && fnCallback) {
+                    fnCallback.call(this, oSelectedContext, iSelectedIndex, oTable);
+                }
+    
+                return oSelectedContext;
+            },
+    
+            onDragStart: function(oEvent) {
+                var oDraggedRow = oEvent.getParameter("target");
+                var oDragSession = oEvent.getParameter("dragSession");
+    
+                // keep the dragged row context for the drop action
+                oDragSession.setComplexData("draggedRowContext", oDraggedRow.getBindingContext("DataModel"));
+            },
+    
+            onDropTableFr: function(oEvent) {
+                var oDragSession = oEvent.getParameter("dragSession");
+                var oDraggedRowContext = oDragSession.getComplexData("draggedRowContext");
+                if (!oDraggedRowContext) {
+                    return;
+                }
+    
+                // reset the rank property and update the model to refresh the bindings
+                this._CopyBOMDialog.getModel("DataModel").setProperty("Rank", this.copyBOMConfig.initialRank, oDraggedRowContext);
+                this._CopyBOMDialog.getModel("DataModel").refresh(true);
+            },
+    
+            moveToTableFr: function() {
+                var oTableTo = sap.ui.getCore().byId("copyBOMTableTo");
+
+                if (oTableTo.getSelectedIndices().length === 0) {
+                    MessageBox.information("Please select row/s.");
+                    return;
+                }
+
+                oTableTo.getSelectedIndices().sort((a,b) => a > b ? -1 : 1) .forEach(i => {
+                    var oSelectedRowContext = oTableTo.getContextByIndex(i);
+                    this._CopyBOMDialog.getModel("DataModel").setProperty("Rank", this.copyBOMConfig.initialRank, oSelectedRowContext);
+                    this._CopyBOMDialog.getModel("DataModel").refresh(true);
+                })
+
+                oTableTo.clearSelection();
+            },
+    
+            onDropTableTo: function(oEvent) {
+                var oDragSession = oEvent.getParameter("dragSession");
+                var oDraggedRowContext = oDragSession.getComplexData("draggedRowContext");
+
+                if (!oDraggedRowContext) {
+                    return;
+                }
+    
+                var oConfig = this.copyBOMConfig;
+                var iNewRank = oConfig.defaultRank;
+                var oDroppedRow = oEvent.getParameter("droppedControl");
+    
+                if (oDroppedRow && oDroppedRow instanceof sap.ui.table.Row) {
+                    // get the dropped row data
+                    var sDropPosition = oEvent.getParameter("dropPosition");
+                    var oDroppedRowContext = oDroppedRow.getBindingContext("DataModel");
+                    var iDroppedRowRank = oDroppedRowContext.getProperty("Rank");
+                    var iDroppedRowIndex = oDroppedRow.getIndex();
+                    var oDroppedTable = oDroppedRow.getParent();
+    
+                    // find the new index of the dragged row depending on the drop position
+                    var iNewRowIndex = iDroppedRowIndex + (sDropPosition === "After" ? 1 : -1);
+                    var oNewRowContext = oDroppedTable.getContextByIndex(iNewRowIndex);
+                    if (!oNewRowContext) {
+                        // dropped before the first row or after the last row
+                        iNewRank = oConfig.rankAlgorithm[sDropPosition](iDroppedRowRank);
+                    } else {
+                        // dropped between first and the last row
+                        iNewRank = oConfig.rankAlgorithm.Between(iDroppedRowRank, oNewRowContext.getProperty("Rank"));
+                    }
+                }
+    
+                // set the rank property and update the model to refresh the bindings                
+                this._CopyBOMDialog.getModel("DataModel").setProperty("Rank", iNewRank, oDraggedRowContext);
+                this._CopyBOMDialog.getModel("DataModel").refresh(true);
+            },
+    
+            moveToTableTo: function() {
+                var oTableFr = sap.ui.getCore().byId("copyBOMTableFr");
+                var oTableTo = sap.ui.getCore().byId("copyBOMTableTo");
+                var oFirstRowContext = oTableTo.getContextByIndex(0);
+
+                if (oTableFr.getSelectedIndices().length === 0) {
+                    MessageBox.information("Please select row/s.");
+                    return;
+                }
+
+                oTableFr.getSelectedIndices().sort((a,b) => a > b ? -1 : 1) .forEach(i => {
+                    // insert always as a first row
+                    var iNewRank = this.copyBOMConfig.defaultRank;
+                    if (oFirstRowContext) {
+                        iNewRank =  this.copyBOMConfig.rankAlgorithm.Before(oFirstRowContext.getProperty("Rank"));
+                    }
+    
+                    var oSelectedRowContext = oTableFr.getContextByIndex(i);
+                    this._CopyBOMDialog.getModel("DataModel").setProperty("Rank", iNewRank, oSelectedRowContext);
+                    this._CopyBOMDialog.getModel("DataModel").refresh(true);
+                })
+                
+                oTableFr.clearSelection();
+            },
+
+            onCopyStyleBOM: function(oEvent) {
+                var oData = this._CopyBOMDialog.getModel("DataModel").getData().results.filter(fItem => fItem.Rank > 0);
+                if (oData.length === 0) {
+                    MessageBox.information("No selected BOM to copy.");
+                    return;
+                }
+
+                Common.openProcessingDialog(this);
+                var me = this;
+                var path = "";
+                var oModel = this.getOwnerComponent().getModel();
+                var item = {};
+                var oEntry = {
+                    Styleno: this._styleNo,
+                    GMCToItems: []
+                }
+
+                for (var i = 0; i < oData.length; i++) {
+                    item = {
+                        "Styleno": this._styleNo,
+                        "Verno": this._version,
+                        "Bomseq": "",
+                        "Bomitmtyp": oData[i].BOMITMTYP,
+                        "Bomstyle": oData[i].BOMSTYLE,
+                        "Bomstylver": oData[i].BOMSTYLVER,
+                        "Partcd": oData[i].PARTCD,
+                        "Partdesc": oData[i].PARTDESC,
+                        "Partcnt": oData[i].PARTCNT + "",
+                        "Usgcls": oData[i].USGCLS,
+                        "Custstyle": oData[i].CUSTSTYLE,
+                        "Mattyp": oData[i].MATTYP,
+                        "Gmc": oData[i].GMC,
+                        "Matno": oData[i].REFMATNO,
+                        "Entryuom": oData[i].ENTRYUOM,
+                        "Matconsper": oData[i].MATCONSPER,
+                        "Per": oData[i].PER + "",
+                        "Wastage": oData[i].WASTAGE,
+                        "Comconsump": oData[i].COMCONSUMP,
+                        "Consump": oData[i].CONSUMP,
+                        "Processcd": oData[i].PROCESSCD,
+                        "Refmatno": oData[i].REFMATNO,
+                        "Refmatdesc": oData[i].REFMATDESC
+                    }
+                    oEntry.GMCToItems.push(item);
+                };
+
+                path = "/BOMGMCSet";
+
+                oModel.setHeaders({
+                    sbu: this._sbu
+                });
+                console.log(oEntry)
+                oModel.create(path, oEntry, {
+                    method: "POST",
+                    success: function (oDataRes, oResponse) {
+                        Common.closeProcessingDialog(me);
+
+                        MessageBox.information(
+                            me.getView().getModel("ddtext").getData()["INFO_BOM_COPIED"],
+                            {
+                                actions: ["OK", MessageBox.Action.CLOSE],
+                                onClose: function(sAction) {
+                                    me._CopyBOMDialog.close();
+
+                                    //build the BOM by UV headers and payload - this is for the colors pivot
+                                    oEntry = {
+                                        Styleno: me._styleNo,
+                                        Verno: me._version,
+                                        Usgcls: Constants.AUV,
+                                        UVToItems: []
+                                    }
+
+                                    for (var i = 0; i < oData.length; i++) {
+                                        //pivot colros only for AUV and ASUV
+                                        if (oData[i].USGCLS === Constants.AUV || oData[i].USGCLS === Constants.ASUV) {
+                                            for (var j = 0; j < me._colors.length; j++) {
+                                                var color = me._colors[j];
+
+                                                item = {
+                                                    "Styleno": me._styleNo,
+                                                    "Verno": me._version,
+                                                    "Gmc": oData[i].GMC,
+                                                    "Partcd": oData[i].PARTCD,
+                                                    "Usgcls": oData[i].USGCLS,
+                                                    "Color": color.Attribcd,
+                                                    "Mattyp": oData[i].MATTYP,
+                                                    "Mattypcls": Constants.ZCOLR,
+                                                    "Desc1": color.Desc1,
+                                                    "Consump": oData[i].CONSUMP,
+                                                    "Wastage": oData[i].WASTAGE
+                                                };
+                                                oEntry.UVToItems.push(item);
+                                            }
+                                        }
+                                    };
+
+                                    if (oEntry.UVToItems.length > 0) {
+                                        path = "/BOMUVSet";
+                                        console.log(oEntry)
+                                        oModel.setHeaders({
+                                            sbu: me._sbu
+                                        });
+                                        //call create deep method for BOM by UV 
+                                        oModel.create(path, oEntry, {
+                                            method: "POST",
+                                            success: function (oData, oResponse) {
+                                                me.getbomGMCTable();
+                                            },
+                                            error: function (err) { }
+                                        });
+                                    }
+                                    else {
+                                        me.getbomGMCTable();
+                                    }
+                                }
+                            }
+                        );
+                    },
+                    error: function (err) {
+                        Common.closeProcessingDialog(me);
+                        var errorMsg = JSON.parse(err.responseText).error.message.value;
+                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                    }
+                });
+            },
+
+            onCopyBOMTo: function(oEvent) {
+                var oBOMTable = this.getView().byId("bomGMCTable");
+                var oSelectedIndices = oBOMTable.getSelectedIndices();
+
+                if (oSelectedIndices.length === 0) {
+                    MessageBox.information("Please select BOM item/s to copy to other style/s.");
+                }
+                else {
+                    Common.openLoadingDialog(this);                
+
+                    var me = this;
+                    var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
+    
+                    if (!this._CopyBOMToDialog) {
+                        this._CopyBOMToDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CopyBOMTo", this);
+                        this._CopyBOMToDialog.setModel(new JSONModel(this.getView().getModel("ddtext").getData()), "ddtext");
+                        this.getView().addDependent(this._CopyBOMToDialog);
+    
+                        sap.ui.getCore().byId("multiInputCSBStyleCdTo").addValidator(this._onMultiInputValidate.bind(this));
+                        sap.ui.getCore().byId("multiInputCSBSeasonCdTo").addValidator(this._onMultiInputValidate.bind(this));
+                        sap.ui.getCore().byId("multiInputCSBVerNoTo").addValidator(this._onMultiInputValidate.bind(this));
+    
+                        this._CopyBOMDialog = this._CopyBOMToDialog;
+                    }
+                    else { 
+                        this._CopyBOMDialog = this._CopyBOMToDialog; 
+                        sap.ui.getCore().byId("multiInputCSBStyleCdTo").removeAllTokens();
+                        sap.ui.getCore().byId("multiInputCSBSeasonCdTo").removeAllTokens();
+                        sap.ui.getCore().byId("multiInputCSBVerNoTo").removeAllTokens();
+                    }
+    
+                    //get Versions
+                    var oSHModel = that.getOwnerComponent().getModel("SearchHelps");
+                    oSHModel.read("/VerNoSet", {
+                        success: function (oData, oResponse) {
+                            me.getView().setModel(new JSONModel(oData), "VersionsModel");
+                        },
+                        error: function (err) { }
+                    });
+    
+                    oSHModel.setHeaders({
+                        sbu: this._sbu
+                    });
+                    
+                    //get Style Codes
+                    oSHModel.read("/StyleCodeSet", {
+                        success: function (oData, oResponse) {
+                            console.log(oData);
+                            // oData.results.forEach(item => delete item["Wcolor"])
+                            oData.results = oData.results.filter(fItem => fItem.Wcolor === "X");
+                            me.getView().setModel(new JSONModel(oData), "StyleCodeModel");
+                        },
+                        error: function (err) { }
+                    });
+                    
+                    //get Seasons
+                    oSHModel.read("/SeasonSet", {
+                        success: function (oData, oResponse) {
+                            me.getView().setModel(new JSONModel(oData), "SeasonsModel");
+                        },
+                        error: function (err) { }
+                    });
+    
+                    this._CopyBOMDialog.open();
+                }
+            },
+
+            onCopyStyleBOMTo: function(oEvent) {
+                var oData = this._CopyBOMDialog.getModel("DataModel").getData().results.filter(fItem => fItem.Rank > 0);
+                if (oData.length === 0) {
+                    MessageBox.information("No selected style/s.");
+                    return;
+                }
+
+                Common.openProcessingDialog(this);
+
+                var me = this;
+                var path = "/BOMGMCSet";
+                var oModel = this.getOwnerComponent().getModel();
+                oModel.setHeaders({
+                    sbu: this._sbu
+                });
+                var item = {};
+                var oEntry = {
+                    Styleno: this._styleNo,
+                    GMCToItems: []
+                }
+                var oBOMTable = this.getView().byId("bomGMCTable");
+                var oSelectedIndices = oBOMTable.getSelectedIndices();
+                var oTmpSelectedIndices = [];
+                var oBOMData = oBOMTable.getModel("DataModel").getData().results;
+
+                oSelectedIndices.forEach(item => {
+                    oTmpSelectedIndices.push(oBOMTable.getBinding("rows").aIndices[item])
+                })
+
+                oSelectedIndices = oTmpSelectedIndices;
+                oSelectedIndices.forEach((selIdx, index) => {
+                    item = {
+                        "Styleno": this._styleNo,
+                        "Verno": this._version,
+                        "Bomseq": "",
+                        "Bomitmtyp": oBOMData.at(selIdx).BOMITMTYP,
+                        "Bomstyle": oBOMData.at(selIdx).BOMSTYLE,
+                        "Bomstylver": oBOMData.at(selIdx).BOMSTYLVER,
+                        "Partcd": oBOMData.at(selIdx).PARTCD,
+                        "Partdesc": oBOMData.at(selIdx).PARTDESC,
+                        "Partcnt": oBOMData.at(selIdx).PARTCNT + "",
+                        "Usgcls": oBOMData.at(selIdx).USGCLS,
+                        "Custstyle": oBOMData.at(selIdx).CUSTSTYLE,
+                        "Mattyp": oBOMData.at(selIdx).MATTYP,
+                        "Gmc": oBOMData.at(selIdx).GMC,
+                        "Matno": oBOMData.at(selIdx).REFMATNO,
+                        "Entryuom": oBOMData.at(selIdx).ENTRYUOM,
+                        "Matconsper": oBOMData.at(selIdx).MATCONSPER,
+                        "Per": oBOMData.at(selIdx).PER + "",
+                        "Wastage": oBOMData.at(selIdx).WASTAGE,
+                        "Comconsump": oBOMData.at(selIdx).COMCONSUMP,
+                        "Consump": oBOMData.at(selIdx).CONSUMP,
+                        "Processcd": oBOMData.at(selIdx).PROCESSCD,
+                        "Refmatno": oBOMData.at(selIdx).REFMATNO,
+                        "Refmatdesc": oBOMData.at(selIdx).REFMATDESC
+                    }
+                    oEntry.GMCToItems.push(item);
+                })
+
+                for (var i = 0; i < oData.length; i++) {
+                    var vStyleNo = oData[i].STYLENO;
+                    var vVerNo = oData[i].VERNO;
+                    var aBOMItems = oEntry.GMCToItems;
+                    var vCounter = i;
+                    var vCount = oData.length;
+
+                    setTimeout(() => {
+                        aBOMItems.forEach(item => {
+                            item.Styleno = vStyleNo;
+                            item.Verno = vVerNo;
+                        })
+    
+                        oModel.create(path, oEntry, {
+                            method: "POST",
+                            success: function (oDataRes, oResponse) {
+                                //get styles colors
+                                //update style resource no include w/ color indicator
+                                var aColors = [];
+                                oModel.setHeaders({
+                                    styleno: vStyleNo
+                                });
+                                oModel.read("/StyleAttributesColorSet", {
+                                    success: function (oData, oResponse) {
+                                        oData.results.sort((a, b) => (a.Sortseq > b.Sortseq ? 1 : -1));
+                                        aColors = oData.results;
+    
+                                        //build the BOM by UV headers and payload - this is for the colors pivot
+                                        oEntry = {
+                                            Styleno: vStyleNo,
+                                            Verno: vVerNo,
+                                            Usgcls: Constants.AUV,
+                                            UVToItems: []
+                                        }
+
+                                        for (var i = 0; i < aBOMItems.length; i++) {
+                                            //pivot colros only for AUV and ASUV
+                                            if (aBOMItems[i].Usgcls === Constants.AUV || aBOMItems[i].Usgcls === Constants.ASUV) {
+                                                for (var j = 0; j < aColors.length; j++) {
+                                                    var color = aColors[j];
+
+                                                    item = {
+                                                        "Styleno": vStyleNo,
+                                                        "Verno": vVerNo,
+                                                        "Gmc": aBOMItems[i].Gmc,
+                                                        "Partcd": aBOMItems[i].Partcd,
+                                                        "Usgcls": aBOMItems[i].Usgcls,
+                                                        "Color": color.Attribcd,
+                                                        "Mattyp": aBOMItems[i].Mattyp,
+                                                        "Mattypcls": Constants.ZCOLR,
+                                                        "Desc1": color.Desc1,
+                                                        "Consump": aBOMItems[i].Consump,
+                                                        "Wastage": aBOMItems[i].Wastage
+                                                    };
+                                                    oEntry.UVToItems.push(item);
+                                                }
+                                            }
+                                        };
+
+                                        if (oEntry.UVToItems.length > 0) {
+                                            path = "/BOMUVSet";
+
+                                            oModel.setHeaders({
+                                                sbu: me._sbu
+                                            });
+                                            //call create deep method for BOM by UV 
+                                            oModel.create(path, oEntry, {
+                                                method: "POST",
+                                                success: function (oData, oResponse) { },
+                                                error: function (err) { }
+                                            });
+                                        }
+                                    },
+                                    error: function (err) { }
+                                });
+                            },
+                            error: function (err) { }
+                        });
+    
+                        vCounter++;
+                        if (vCounter === vCount) {
+                            Common.closeProcessingDialog(me);
+                            me._CopyBOMDialog.close();
+                            MessageBox.information("Copy BOM To other style/s processed.")
+                        }                        
+                    }, 100);
+                };
+            },
+
+            onCopyBOMTableResize: function(oEvent) {
+                var sTableName = oEvent.getSource().data("TableName");
+                var sTableSize = oEvent.getSource().data("Size");
+                var oTableFr, oTableTo;
+                // console.log(oTableTo)
+
+                if (sTableName.indexOf("copyStyleBOMToTable") >= 0) {
+                    oTableFr = sap.ui.getCore().byId("copyStyleBOMToTableFr");
+                    oTableTo = sap.ui.getCore().byId("copyStyleBOMToTableTo");
+                }
+                else if (sTableName.indexOf("copyBOMTable") >= 0) {
+                    oTableFr = sap.ui.getCore().byId("copyBOMTableFr");
+                    oTableTo = sap.ui.getCore().byId("copyBOMTableTo");
+                }
+
+                if (sTableSize === "Max") {
+                    if (sTableName === "copyBOMTableFr") {
+                        oTableFr.setProperty("width", "1400px");
+                        oTableTo.setProperty("width", "0px");
+                        sap.ui.getCore().byId("btnCopyBOMFrMax").setVisible(false);
+                        sap.ui.getCore().byId("btnCopyBOMFrMin").setVisible(true);
+                    }
+                    else if (sTableName === "copyBOMTableTo") {
+                        oTableFr.setProperty("width", "0px");
+                        oTableTo.setProperty("width", "1400px");
+                        sap.ui.getCore().byId("btnCopyBOMToMax").setVisible(false);
+                        sap.ui.getCore().byId("btnCopyBOMToMin").setVisible(true);
+                    }
+                    else if (sTableName === "copyStyleBOMToTableFr") {
+                        oTableFr.setProperty("width", "1400px");
+                        oTableTo.setProperty("width", "0px");
+                        sap.ui.getCore().byId("btnCopyStyleBOMToTableFrMax").setVisible(false);
+                        sap.ui.getCore().byId("btnCopyStyleBOMToTableFrMin").setVisible(true);
+                    }
+                    else if (sTableName === "copyStyleBOMToTableTo") {
+                        oTableFr.setProperty("width", "0px");
+                        oTableTo.setProperty("width", "1400px");
+                        sap.ui.getCore().byId("btnCopyStyleBOMToTableToMax").setVisible(false);
+                        sap.ui.getCore().byId("btnCopyStyleBOMToTableToMin").setVisible(true);
+                    }
+                }
+                else if (sTableSize === "Min") {
+                    oTableFr.setProperty("width", "700px");
+                    oTableTo.setProperty("width", "700px");
+
+                    if (sTableName === "copyBOMTableFr") {
+                        sap.ui.getCore().byId("btnCopyBOMFrMax").setVisible(true);
+                        sap.ui.getCore().byId("btnCopyBOMFrMin").setVisible(false);
+                    }
+                    else if (sTableName === "copyBOMTableTo") {
+                        sap.ui.getCore().byId("btnCopyBOMToMax").setVisible(true);
+                        sap.ui.getCore().byId("btnCopyBOMToMin").setVisible(false);
+                    }
+                    else if (sTableName === "copyStyleBOMToTableFr") {
+                        sap.ui.getCore().byId("btnCopyStyleBOMToTableFrMax").setVisible(true);
+                        sap.ui.getCore().byId("btnCopyStyleBOMToTableFrMin").setVisible(false);
+                    }
+                    else if (sTableName === "copyStyleBOMToTableTo") {
+                        sap.ui.getCore().byId("btnCopyStyleBOMToTableToMax").setVisible(true);
+                        sap.ui.getCore().byId("btnCopyStyleBOMToTableToMin").setVisible(false);
+                    }
+                }
             },
 
             //******************************************* */

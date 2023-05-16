@@ -32,6 +32,21 @@ sap.ui.define([
 				duration: 3000,
 				animationDuration: 500
 			});
-		}
+		},
+
+		openProcessingDialog(doc, msg) {
+            if (!doc._ProcessingDialog) {
+                doc._ProcessingDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ProcessingDialog", doc);
+                doc.getView().addDependent(doc._ProcessingDialog);
+            }
+            jQuery.sap.syncStyleClass("sapUiSizeCompact", doc.getView(), doc._ProcessingDialog);
+            
+            doc._ProcessingDialog.setTitle(msg === undefined ? "Processing..." : msg);
+            doc._ProcessingDialog.open();
+        },
+
+        closeProcessingDialog(doc) {
+            doc._ProcessingDialog.close();
+        },
 	};
 });

@@ -12,11 +12,11 @@
                     <core:CustomData key="TableName" value="materialListTable" />
                 </customData>
             </Button>
-            <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+            <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="materialListTable" />
                 </customData>
-            </Button>
+            </Button> -->
         </Toolbar>
 
         <MessageStrip id="MaterialListMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
