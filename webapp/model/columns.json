@@ -186,7 +186,8 @@
         {"ColumnName": "Currentver", "ColumnLabel": "STATUS", "Order": "1", "DataType": "STRING", "ColumnWidth": "100", "Length": "1", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false  },
         {"ColumnName": "SetCurrent", "ColumnLabel": "", "Order": "2", "DataType": "STRING", "ColumnWidth": "135", "Length": "1", "Decimal": "0", "Visible": false, "Editable": false, "Mandatory": false  },
         {"ColumnName": "Desc1", "ColumnLabel": "DESC1", "Order": "3", "DataType": "STRING", "ColumnWidth": "290", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false  },
-        {"ColumnName": "Desc2", "ColumnLabel": "DESC2", "Order": "4", "DataType": "STRING", "ColumnWidth": "290", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false  }
+        {"ColumnName": "Desc2", "ColumnLabel": "DESC2", "Order": "4", "DataType": "STRING", "ColumnWidth": "290", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false  },
+        {"ColumnName": "Deleted", "ColumnLabel": "DELETED", "Order": "5", "DataType": "BOOLEAN", "ColumnWidth": "125", "Length": "1", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false  }
     ], 
     "versionAttr": [
         {"ColumnName": "Attribtyp", "ColumnLabel": "ATTRIBTYP", "Order": "0", "DataType": "STRING", "ColumnWidth": "255", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
@@ -257,7 +258,10 @@
                 "SuggestionItems": {"path": "PurPlantModel>/results", "text": "{PurPlantModel>Plant}", "additionalText": "{PurPlantModel>Desc1}", "maxSuggestionWidth": "200px"},
                 "columns": "tvh_purplant"
             }
-        }
+        },
+        {"ColumnName": "Orderuom", "ColumnLabel": "ORDERUOM", "Order": "14", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Umrez", "ColumnLabel": "UMREZ", "Order": "15", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "UmreN", "ColumnLabel": "UMREN", "Order": "16", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false }
     ],
     "tvh_supplytyp": [
         {"ColumnName": "Supplytype", "DataType": "STRING", "ColumnWidth": "150px", "Visible": true, "Key": true, "Value": false},

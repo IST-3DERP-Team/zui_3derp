@@ -21,7 +21,7 @@
                 id="objectHeader"
                 responsive="true" 
                 fullScreenOptimized="true" 
-                intro="{i18n>Version}: {headerData>/SelectedVersion}"
+                intro="{i18n>Version}: {headerData>/SelectedVersion} {CurrStylVersion>/VersionDeleted}"
                 backgroundDesign="Solid" 
                 icon="sap-icon://blank-tag-2" 
                 title="{headerData>/Stylecd}" 
