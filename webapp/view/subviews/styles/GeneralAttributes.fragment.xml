@@ -64,7 +64,7 @@
                 <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelGeneralAttrEdit" visible="{= ${GenAttrEditModeModel>/editMode} === true ? true : false }" />
             </Toolbar>
         </t:extension> -->
-        <t:columns>
+        <!-- <t:columns>
             <t:Column name="ATTRIBSEQ" width="5rem" sortProperty="Attribseq" visible="false">
                 <Text text="{ddtext>/ATTRIBSEQ}" />
                 <t:template>
@@ -132,7 +132,6 @@
                 <Text text="{ddtext>/ATTRIBVALUNIT}" />
                 <t:template>
                     <Input id="AttribValUnitInput" type="Text" editable="{GenAttrEditModeModel>/editMode}" value="{DataModel>Valunit}" change="onGeneralAttrChange" liveChange="onGeneralAttrChange" tooltip="{DataModel>Valunit}" />
-                    <!-- <Text id="AttrValunit" text="{DataModel>Valunit}" tooltip="{DataModel>Valunit}" /> -->
                 </t:template>
             </t:Column>
             <t:Column width="10rem" sortProperty="Casverind" hAlign="Center">
@@ -141,8 +140,7 @@
                     <CheckBox selected="{DataModel>Casverind}" editable="{GenAttrEditModeModel>/editMode}" select="onGeneralAttrChange"  />
                 </t:template>
             </t:Column>            
-        </t:columns>
-
+        </t:columns> -->
         <t:layoutData>
             <FlexItemData growFactor="1" baseSize="0%" />
         </t:layoutData>

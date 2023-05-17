@@ -44,7 +44,7 @@
             selectionMode="MultiToggle" 
             sort="onSorted"
             filter="onFilter">
-            <c:columns>
+            <!-- <c:columns>
                 <t:Column name="ATTRIBSEQ" width="7rem" sortProperty="Attribseq">
                     <Label text="{ddtext>/COLORCD}" />
                     <t:template>
@@ -60,13 +60,10 @@
                 <t:Column width="7rem" sortProperty="Sortseq">
                     <Label text="{ddtext>/SORTSEQ}" />
                     <t:template>
-                        <!-- <HBox class="sapUiResponsiveContentPadding">
-                                    <Label required="true"/> -->
                         <Input id="ColorIdInput" value="{DataModel>Sortseq}" editable="{ColorEditModeModel>/editMode}" valueStateText="Required" change="onColorChange" liveChange="onGeneralAttrChange" maxLength="2" tooltip="{DataModel>Sortseq}" />
-                        <!-- </HBox>                         -->
                     </t:template>
                 </t:Column>
-            </c:columns>
+            </c:columns> -->
             <c:layoutData>
                 <FlexItemData growFactor="1" baseSize="0%" />
             </c:layoutData>

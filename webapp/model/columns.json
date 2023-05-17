@@ -91,18 +91,24 @@
         {"ColumnName": "UserName", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false}
     ],
     "general": [
-        {"ColumnName": "ATTRIBTYP", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Attribtyp", "ColumnLabel": "ATTRIBTYP", "Order": "0", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "AttribTypeModel", "value": "Attribtyp", "text": "Desc1"},
                 "SuggestionItems": {"path": "AttribTypeModel>/results", "text": "{AttribTypeModel>Attribtyp}", "additionalText": "{AttribTypeModel>Desc1}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_attribtyp"
             }
         },
-        {"ColumnName": "ATTRIBCD", "TextFormatMode": "Key",
+        {"ColumnName": "Attribcd", "ColumnLabel": "ATTRIBCD", "Order": "1", "DataType": "STRING", "ColumnWidth": "160", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "Key",
             "ValueHelp": {"show": true, "items": {"path": "AttribCodeModel", "value": "Attribcd", "text": "Desc1"},
                 "SuggestionItems": {"path": "AttribCodeModel>/results", "text": "{AttribCodeModel>Attribcd}", "additionalText": "{AttribCodeModel>Desc1}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_attribcd"
             }
-        }
+        },
+        {"ColumnName": "Desc1", "ColumnLabel": "DESC", "Order": "2", "DataType": "STRING", "ColumnWidth": "255", "Length": "500", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Attribval", "ColumnLabel": "ATTRIBVAL", "Order": "3", "DataType": "STRING", "ColumnWidth": "175", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "Valunit", "ColumnLabel": "ATTRIBVALUNIT", "Order": "4", "DataType": "STRING", "ColumnWidth": "95", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "Casverind", "ColumnLabel": "CASVERIND", "Order": "5", "DataType": "BOOLEAN", "ColumnWidth": "160", "Length": "1", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false }
     ],
     "tvh_attribtyp": [
         {"ColumnName": "Attribtyp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": true, "Value": false},
@@ -116,26 +122,36 @@
         {"ColumnName": "Attribtyp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false},
         {"ColumnName": "Valunit", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false}
     ],
+    "colors": [
+        {"ColumnName": "Attribseq", "ColumnLabel": "COLORCD", "Order": "1", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Desc1", "ColumnLabel": "DESC", "Order": "2", "DataType": "STRING", "ColumnWidth": "175", "Length": "500", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": true  },
+        {"ColumnName": "Sortseq", "ColumnLabel": "SORTSEQ", "Order": "3", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": true  }
+    ],    
     "processes": [
-        {"ColumnName": "PROCESSCD", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Processcd", "ColumnLabel": "PROCESSCD", "Order": "0", "DataType": "STRING", "ColumnWidth": "320", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "ProcessCodeModel", "value": "ProcessCd", "text": "Desc1"},
                 "SuggestionItems": {"path": "ProcessCodeModel>/results", "text": "{ProcessCodeModel>ProcessCd}", "additionalText": "{ProcessCodeModel>Desc1}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_processcd"
             }
         },
-        {"ColumnName": "VASTYP", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Vastyp", "ColumnLabel": "VASTYP", "Order": "1", "DataType": "STRING", "ColumnWidth": "320", "Length": "20", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "VASTypModel", "value": "Processcd", "text": "Desc1"},
                 "SuggestionItems": {"path": "VASTypModel>/results", "text": "{VASTypModel>Processcd}", "additionalText": "{VASTypModel>Desc1}", "maxSuggestionWidth": "500px"},
                 "columns": "tvh_vastyp"
             }
         },
-        {"ColumnName": "ATTRIBTYP", "TextFormatMode": "Key",
+        {"ColumnName": "Leadtm", "ColumnLabel": "LEADTM", "Order": "2", "DataType": "NUMBER", "ColumnWidth": "175", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false  },
+        {"ColumnName": "Attribtyp", "ColumnLabel": "ATTRIBTYP", "Order": "3", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "Key",
             "ValueHelp": {"show": true, "items": {"path": "ProcessAttribTypeModel", "value": "Attribtype", "text": "Attribtype"},
                 "SuggestionItems": {"path": "ProcessAttribTypeModel>/results", "text": "{ProcessAttribTypeModel>Attribtype}"},
                 "columns": "tvh_procattribtyp"
             }
         },
-        {"ColumnName": "ATTRIBCD", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Attribcd", "ColumnLabel": "ATTRIBCD", "Order": "4", "DataType": "STRING", "ColumnWidth": "225", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "ProcessAttribCdModel", "value": "Attribcd", "text": "Desc2"},
                 "SuggestionItems": {"path": "ProcessAttribCdModel>/results", "text": "{ProcessAttribCdModel>Attribcd}", "additionalText": "{ProcessAttribCdModel>Desc2}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_procattribcd"
@@ -165,20 +181,32 @@
         {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false},
         {"ColumnName": "Styleno", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false}
     ],
+    "versions": [
+        {"ColumnName": "Verno", "ColumnLabel": "VERNO", "Order": "0", "DataType": "NUMBER", "ColumnWidth": "95", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Currentver", "ColumnLabel": "STATUS", "Order": "1", "DataType": "STRING", "ColumnWidth": "100", "Length": "1", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false  },
+        {"ColumnName": "SetCurrent", "ColumnLabel": "", "Order": "2", "DataType": "STRING", "ColumnWidth": "135", "Length": "1", "Decimal": "0", "Visible": false, "Editable": false, "Mandatory": false  },
+        {"ColumnName": "Desc1", "ColumnLabel": "DESC1", "Order": "3", "DataType": "STRING", "ColumnWidth": "290", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false  },
+        {"ColumnName": "Desc2", "ColumnLabel": "DESC2", "Order": "4", "DataType": "STRING", "ColumnWidth": "290", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false  }
+    ], 
     "versionAttr": [
-        {"ColumnName": "ATTRIBTYP", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Attribtyp", "ColumnLabel": "ATTRIBTYP", "Order": "0", "DataType": "STRING", "ColumnWidth": "255", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "AttribTypeModel", "value": "Attribtyp", "text": "Desc1"},
                 "SuggestionItems": {"path": "AttribTypeModel>/results", "text": "{AttribTypeModel>Attribtyp}", "additionalText": "{AttribTypeModel>Desc1}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_attribtyp"
             }
         },
-        {"ColumnName": "ATTRIBCD", "TextFormatMode": "Key",
+        {"ColumnName": "Attribcd", "ColumnLabel": "ATTRIBCD", "Order": "1", "DataType": "STRING", "ColumnWidth": "160", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "Key",
             "ValueHelp": {"show": true, "items": {"path": "AttribCodeModel", "value": "Attribcd", "text": "Desc1"},
                 "SuggestionItems": {"path": "AttribCodeModel>/results", "text": "{AttribCodeModel>Attribcd}", "additionalText": "{AttribCodeModel>Desc1}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_attribcd"
             }
         },
-        {"ColumnName": "VALUNIT", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Desc1", "ColumnLabel": "DESC", "Order": "2", "DataType": "STRING", "ColumnWidth": "255", "Length": "500", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Attribval", "ColumnLabel": "ATTRIBVAL", "Order": "3", "DataType": "STRING", "ColumnWidth": "175", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "Valunit", "ColumnLabel": "ATTRIBVALUNIT", "Order": "4", "DataType": "STRING", "ColumnWidth": "175", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "UOMModel", "value": "Valunit", "text": "Desc1"},
                 "SuggestionItems": {"path": "UOMModel>/results", "text": "{UOMModel>Valunit}", "additionalText": "{UOMModel>Desc1}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_uom"
@@ -186,31 +214,45 @@
         }
     ],
     "materialList": [
-        {"ColumnName": "SUPPLYTYP", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Seqno", "ColumnLabel": "SEQ", "Order": "0", "DataType": "NUMBER", "ColumnWidth": "80", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Mattyp", "ColumnLabel": "MATTYP", "Order": "1", "DataType": "STRING", "ColumnWidth": "115", "Length": "4", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Matno", "ColumnLabel": "MATNO", "Order": "2", "DataType": "STRING", "ColumnWidth": "175", "Length": "20", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Gmc", "ColumnLabel": "GMC", "Order": "3", "DataType": "STRING", "ColumnWidth": "115", "Length": "10", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Gmcdesc", "ColumnLabel": "GMCDESC", "Order": "4", "DataType": "STRING", "ColumnWidth": "450", "Length": "500", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Matdesc1", "ColumnLabel": "ADDTLDESC", "Order": "5", "DataType": "STRING", "ColumnWidth": "385", "Length": "500", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "Consump", "ColumnLabel": "CONSUMP", "Order": "6", "DataType": "NUMBER", "ColumnWidth": "115", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "Uom", "ColumnLabel": "UOM", "Order": "7", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "Supplytyp", "ColumnLabel": "SUPPLYTYP", "Order": "8", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+        "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "SupplyTypeModel", "value": "Supplytype", "text": "Desc1"},
                 "SuggestionItems": {"path": "SupplyTypeModel>/results", "text": "{SupplyTypeModel>Supplytype}", "additionalText": "{SupplyTypeModel>Desc1}", "maxSuggestionWidth": "275px"},
                 "columns": "tvh_supplytyp"
             }
         },
-        {"ColumnName": "VENDORCD", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Vendorcd", "ColumnLabel": "VENDORCD", "Order": "9", "DataType": "STRING", "ColumnWidth": "400", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "VendorModel", "value": "Lifnr", "text": "Desc1"},
                 "SuggestionItems": {"path": "VendorModel>/results", "text": "{VendorModel>Lifnr}", "additionalText": "{VendorModel>Desc1}", "maxSuggestionWidth": "490px"},
                 "columns": "tvh_vendorcd"
             }
         },
-        {"ColumnName": "CURRENCYCD", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Currencycd", "ColumnLabel": "CURRENCYCD", "Order": "10", "DataType": "STRING", "ColumnWidth": "255", "Length": "5", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "CurrencyModel", "value": "Waers", "text": "Desc1"},
                 "SuggestionItems": {"path": "CurrencyModel>/results", "text": "{CurrencyModel>Waers}", "additionalText": "{CurrencyModel>Desc1}", "maxSuggestionWidth": "390px"},
                 "columns": "tvh_currencycd"
             }
         },
-        {"ColumnName": "PURGRP", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Unitprice", "ColumnLabel": "UNITPRICE", "Order": "11", "DataType": "NUMBER", "ColumnWidth": "145", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "Purgrp", "ColumnLabel": "PURGRP", "Order": "12", "DataType": "STRING", "ColumnWidth": "240", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "PurchGroupModel", "value": "Purgrp", "text": "Desc1"},
                 "SuggestionItems": {"path": "PurchGroupModel>/results", "text": "{PurchGroupModel>Purgrp}", "additionalText": "{PurchGroupModel>Desc1}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_purgrp"
             }
         },
-        {"ColumnName": "PURPLANT", "TextFormatMode": "ValueKey",
+        {"ColumnName": "Purplant", "ColumnLabel": "PURPLANT", "Order": "13", "DataType": "STRING", "ColumnWidth": "225", "Length": "4", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "PurPlantModel", "value": "Plant", "text": "Desc1"},
                 "SuggestionItems": {"path": "PurPlantModel>/results", "text": "{PurPlantModel>Plant}", "additionalText": "{PurPlantModel>Desc1}", "maxSuggestionWidth": "200px"},
                 "columns": "tvh_purplant"

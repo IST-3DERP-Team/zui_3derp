@@ -31,7 +31,7 @@
             showColumnVisibilityMenu="true"
             selectionMode="Single" 
             visibleRowCountMode="Auto">
-            <t:Column width="5rem" sortProperty="Seqno">
+            <!-- <t:Column width="5rem" sortProperty="Seqno">
                 <Label text="{ddtext>/SEQ}" />
                 <t:template>
                     <Text text="{DataModel>Seqno}" tooltip="{DataModel>Seqno}" />
@@ -191,7 +191,7 @@
                         </suggestionItems>
                     </Input>
                 </t:template>
-            </t:Column>
+            </t:Column> -->
             <c:layoutData>
                 <FlexItemData growFactor="1" baseSize="0%" />
             </c:layoutData>

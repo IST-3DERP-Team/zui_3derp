@@ -20,7 +20,7 @@ sap.ui.define([
             var oTableSource = oSource.oParent.oParent;
             var sTabId = oTableSource.sId.split("--")[oTableSource.sId.split("--").length - 1];
             var oModel = me.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
-            var vColProp = me._oModelColumns["header"].filter(item => item.ColumnName === me._inputField);
+            var vColProp = me._oModelColumns["header"].filter(item => item.ColumnName.toUpperCase() === me._inputField);
             var sPath = vColProp[0].ValueHelp.items.path;
             var sKey = me._inputField, sValue = me._inputField;
             var sTextFormatMode = vColProp[0].TextFormatMode === undefined || vColProp[0].TextFormatMode === "" ? "Key" : vColProp[0].TextFormatMode;
@@ -277,7 +277,7 @@ sap.ui.define([
 
             // var me = this;
             var oModel = me.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
-            var vColProp = me._oModelColumns[sTabId.replace("Table", "")].filter(item => item.ColumnName === me._inputField.toUpperCase());
+            var vColProp = me._oModelColumns[sTabId.replace("Table", "")].filter(item => item.ColumnName.toUpperCase() === me._inputField.toUpperCase());
             var sPath = vColProp[0].ValueHelp.items.path;
             var sKey = me._inputField, sValue = me._inputField;
             var sTextFormatMode = vColProp[0].TextFormatMode === undefined || vColProp[0].TextFormatMode === "" ? "Key" : vColProp[0].TextFormatMode;
@@ -293,7 +293,7 @@ sap.ui.define([
                     if (item.Value) sValue = item.ColumnName;
                 })
             }
-            
+
             vh.forEach(item => {
                 item.VHKey = item[sKey];
                 item.VHValue = sValue === undefined || sKey === sValue ? "" : item[sValue];
@@ -453,7 +453,7 @@ sap.ui.define([
             // sap.ui.getCore().byId("btnTVHCancel").attachPress(me._tableValueHelp.handleTableValueHelpCancel.bind(me));
             me._tableValueHelpDialog.getContent()[0].getItems()[0].getExtension()[0].getContent()[3].attachSearch(me._tableValueHelp.handleTableValueHelpFilter);
             me._tableValueHelpDialog.getButtons()[0].attachPress(me._tableValueHelp.handleTableValueHelpCancel.bind(me));
-            console.log(oDDText)
+
             //bind columns to the table
             oTable.getModel().setProperty("/columns", oColumns.columns);
             oTable.bindColumns("/columns", function (index, context) {
@@ -520,7 +520,6 @@ sap.ui.define([
         },
 
         // handleTableValueHelp: async function (oEvent) {
-        //     console.log("run")
         //     var me = this;
         //     var oSource = oEvent.getSource();
         //     this._inputSource = oSource;
@@ -533,13 +532,13 @@ sap.ui.define([
 
         //     // var me = this;
         //     var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
-        //     var vColProp = this._aColumns[sTabId.replace("Tab", "")].filter(item => item.ColumnName === this._inputField);
+        //     var vColProp = this._aColumns[sTabId.replace("Table", "")].filter(item => item.ColumnName.toUpperCase() === this._inputField.toUpperCase());
         //     var sPath = vColProp[0].ValueHelp.items.path;
         //     var sKey = this._inputField, sValue = this._inputField;
         //     var sTextFormatMode = vColProp[0].TextFormatMode === undefined || vColProp[0].TextFormatMode === "" ? "Key" : vColProp[0].TextFormatMode;
         //     var sColumns = vColProp[0].ValueHelp.columns;
         //     var vhColumns = this._oModelColumns[sColumns];
-        //     var vh = this.getView().getModel(sPath).getData();
+        //     var vh = this.getView().getModel(sPath).getData().results;
         //     var aColumns = [], oDDTextParam = [];
         //     var oDDText = this.getView().getModel("ddtext").getData();
 
@@ -631,10 +630,14 @@ sap.ui.define([
         //     }
 
         //     aColumns.forEach(item => {
-        //         if (oDDText[item.ColumnName] === undefined) {
-        //             oDDTextParam.push({CODE: item.ColumnName});
+        //         if (oDDText[item.ColumnName.toUpperCase()] === undefined || oDDText[item.ColumnName.toUpperCase()] === "") {
+        //             oDDTextParam.push({CODE: item.ColumnName.toUpperCase()});
         //         }
         //     })
+
+        //     if (oDDText["DESC"] === undefined || oDDText["DESC"] === "") {
+        //         oDDTextParam.push({CODE: "DESC"});
+        //     }
 
         //     var oPromiseResult = new Promise((resolve, reject) => {
         //         if (oDDTextParam.length > 0) {
@@ -659,14 +662,20 @@ sap.ui.define([
         //     oDDText = await oPromiseResult;
 
         //     aColumns.forEach(item => {
-        //         if (!(oDDText[item.ColumnName] === undefined || oDDText[item.ColumnName] === "")) {
-        //             item.ColumnLabel = oDDText[item.ColumnName];
+        //         if (item.ColumnLabel.toUpperCase() === "DESC1" && !(oDDText["DESC1"] === undefined || oDDText["DESC1"] === "")) {
+        //             item.ColumnLabel = oDDText["DESC"];
+        //         }
+        //         else if (item.ColumnLabel.toUpperCase() === "DESC2" && !(oDDText["DESC2"] === undefined || oDDText["DESC2"] === "")) {
+        //             item.ColumnLabel = oDDText["DESC"];
+        //         }
+        //         else if (!(oDDText[item.ColumnName.toUpperCase()] === undefined || oDDText[item.ColumnName.toUpperCase()] === "")) {
+        //             item.ColumnLabel = oDDText[item.ColumnName.toUpperCase()];
         //         }
         //         else {
         //             item.ColumnLabel = item.ColumnName;
         //         }
-        //     })                
-
+        //     })               
+            
         //     var oColumns = { columns: aColumns };
         //     var oVHModel = new JSONModel({
         //         title: vColProp[0].ColumnLabel,
@@ -677,7 +686,7 @@ sap.ui.define([
         //     // create value help dialog
         //     if (!this._tableValueHelpDialog) {
         //         this._tableValueHelpDialog = sap.ui.xmlfragment(
-        //             "zuicostcnfg.view.fragments.valuehelp.TableValueHelpDialog",
+        //             "zui3derp.view.fragments.searchhelps.TableValueHelpDialog",
         //             this
         //         );
 
@@ -691,15 +700,16 @@ sap.ui.define([
         //     this._tableValueHelpDialog.open();
         //     var oTable = this._tableValueHelpDialog.getContent()[0].getAggregation("items")[0];
         //     oTable.attachCellClick(this._tableValueHelp.handleTableValueHelpSelect.bind(this));
-        //     sap.ui.getCore().byId("tvhSearchField").attachSearch(this._tableValueHelp.handleTableValueHelpFilter);           
-            // sap.ui.getCore().byId("btnTVHCancel").attachPress(me._tableValueHelp.handleTableValueHelpCancel.bind(me));
-            // me._tableValueHelpDialog.getButtons()[0].attachPress(me._tableValueHelp.handleTableValueHelpCancel.bind(me));
+        //     // sap.ui.getCore().byId("tvhSearchField").attachSearch(this._tableValueHelp.handleTableValueHelpFilter);           
+        //     // sap.ui.getCore().byId("btnTVHCancel").attachPress(me._tableValueHelp.handleTableValueHelpCancel.bind(me));
+        //     this._tableValueHelpDialog.getContent()[0].getItems()[0].getExtension()[0].getContent()[3].attachSearch(this._tableValueHelp.handleTableValueHelpFilter);
+        //     this._tableValueHelpDialog.getButtons()[0].attachPress(this._tableValueHelp.handleTableValueHelpCancel.bind(this));
 
         //     //bind columns to the table
         //     oTable.getModel().setProperty("/columns", oColumns.columns);
         //     oTable.bindColumns("/columns", function (index, context) {
         //         var sColumnId = context.getObject().ColumnName;
-        //         var sColumnLabel =  context.getObject().ColumnLabel;
+        //         var sColumnLabel = context.getObject().ColumnLabel;
         //         var sColumnWidth = context.getObject().Width;
         //         var sColumnVisible = context.getObject().Visible;
         //         var sColumnDataType = context.getObject().DataType;
@@ -756,7 +766,8 @@ sap.ui.define([
         //         this._tableValueHelpDialog.setContentWidth("645px");
         //     }
 
-        //     sap.ui.getCore().byId("tvhSearchField").setProperty("value", "");
+        //     // sap.ui.getCore().byId("tvhSearchField").setProperty("value", "");
+        //     this._tableValueHelpDialog.getContent()[0].getItems()[0].getExtension()[0].getContent()[3].setProperty("value", "");
         // },
 
         handleTableValueHelpSelect: function (oEvent) {

@@ -37,17 +37,7 @@
                 visibleRowCountMode="Fixed" 
                 class="sapUiSizeCompact" 
                 selectionBehavior="Row" >
-                <c:columns>
-                    <!-- <t:Column width="5rem"   filterProperty="Verno" sortProperty="Verno">
-                        <Label text="{i18n>Manage}"/>
-                        <t:template>
-                            <Button icon="sap-icon://detail-view" press="onSelectVersion">
-                            <customData>
-                                <core:CustomData  key="VerNo" value="{DataModel>Verno}"/>
-                            </customData>
-                            </Button>
-                        </t:template>
-                    </t:Column> -->
+                <!-- <c:columns>
                     <t:Column width="6rem" sortProperty="Verno" hAlign="End">
                         <Label text="{ddtext>/VERNO}"/>
                         <t:template>
@@ -83,7 +73,7 @@
                             <Input value="{DataModel>Desc2}" editable="{VersionEditModeModel>/editMode}" change="onVersionChange" liveChange="onVersionChange" tooltip="{DataModel>Desc2}"/>
                         </t:template>
                     </t:Column>
-                </c:columns>
+                </c:columns> -->
             </c:DynamicTable>
         <!-- </ScrollContainer> -->
     <!-- </Panel> -->

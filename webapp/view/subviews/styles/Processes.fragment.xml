@@ -44,12 +44,11 @@
             visibleRowCountMode="Auto"
             selectionMode="MultiToggle"
             sort="onSorted"> 
-            <c:columns>
+            <!-- <c:columns>
                 <t:Column width="4rem" sortProperty="Seqno" visible="false">
                     <Label text="{ddtext>/SEQ}" />
                     <t:template>
                         <Text text="{DataModel>Seqno}" tooltip="{DataModel>Seqno}" />
-                        <!-- <Input value="{DataModel>Seqno}" editable="{ProcessEditModeModel>/editMode}" change="onProcessChange" tooltip="{DataModel>Seqno}"/> -->
                     </t:template>
                 </t:Column>
                 <t:Column width="20rem" sortProperty="Processcd">
@@ -76,10 +75,9 @@
                         </Input>
                     </t:template>
                 </t:Column>
-                <t:Column width="11rem" sortProperty="Leadtime">
+                <t:Column width="11rem" sortProperty="Leadtm">
                     <Label text="{ddtext>/LEADTM}" />
                     <t:template>
-                    <!-- change Leadtime column name to Leadtm -->
                         <Input value="{DataModel>Leadtm}" type="Number" editable="{ProcessEditModeModel>/editMode}" 
                             change="onProcessChange" liveChange="onProcessChange" tooltip="{DataModel>Leadtm}"/>
                     </t:template>
@@ -108,7 +106,7 @@
                         </Input>
                     </t:template>
                 </t:Column>
-            </c:columns>
+            </c:columns> -->
             <c:layoutData>
                 <FlexItemData growFactor="1" baseSize="0%" />
             </c:layoutData>

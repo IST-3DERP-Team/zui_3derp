@@ -36,7 +36,7 @@
                 class="sapUiSizeCompact" 
                 selectionMode="MultiToggle"
                 sort="onSorted">
-                <c:columns>
+                <!-- <c:columns>
                     <t:Column width="14rem" sortProperty="Attribtyp">
                         <Label text="{ddtext>/ATTRIBTYP}" />
                         <t:template>
@@ -87,7 +87,6 @@
                         <Label text="{ddtext>/DESC}" />
                         <t:template>
                             <Text text="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" />
-                            <!-- <Input value="{DataModel>Desc1}" tooltip="{DataModel>Desc1}" editable="{VersionAttrEditModeModel>/editMode}" change="onVersionAttrChange" liveChange="onVersionAttrChange" /> -->
                         </t:template>
                     </t:Column>
                     <t:Column width="11rem" sortProperty="Attribval">
@@ -118,7 +117,7 @@
                             </Input>
                         </t:template>
                     </t:Column>
-                </c:columns>
+                </c:columns> -->
                 <c:layoutData>
                     <FlexItemData growFactor="1" baseSize="0%" />
                 </c:layoutData>            
