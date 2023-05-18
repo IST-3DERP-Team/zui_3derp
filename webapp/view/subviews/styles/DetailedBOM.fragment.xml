@@ -1,10 +1,10 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-<VBox fitContainer="true" >
-    <Toolbar height="3rem" style="Clear">
+<VBox fitContainer="true" class="sapUiTinyMargin">
+    <Toolbar height="2rem" style="Clear">
         <!-- <Label text="{i18n>DetailedBOM}"/> -->
         <ToolbarSpacer />
-        <Button icon="sap-icon://excel-attachment" press="onExport"  tooltip="{i18n>Downloadspreadsheet}">
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" press="onExport"  tooltip="{i18n>Downloadspreadsheet}">
             <customData>
                 <core:CustomData key="TableName" value="bomDetailedTable"/>
             </customData>

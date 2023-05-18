@@ -1,7 +1,7 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-<VBox fitContainer="true" >
-    <Toolbar height="3rem" style="Clear">
+<VBox fitContainer="true" class="sapUiTinyMargin">
+    <Toolbar height="2rem" style="Clear">
         <HBox alignContent="Center" alignItems="Center">
             <Label text="{i18n>UsageClass}"/>
             <!-- change UsageClassModel to UsageClassUVModel -->
@@ -11,11 +11,11 @@
             </ComboBox>
         </HBox>
         <ToolbarSpacer />
-        <Button type="Ghost" icon="sap-icon://edit"  tooltip="{i18n>EditBOMUVitems}" press="setBOMbyUVEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyUVEditModeModel>/editMode} === true ? false : true :false }"/>
-        <Button icon="sap-icon://synchronize" tooltip="Refresh data" press="onRefresh"/>
-        <Button icon="sap-icon://save" tooltip="{i18n>SaveBOMUVitems}" press="onSaveBOMbyUV" visible="{BOMbyUVEditModeModel>/editMode}"/>
-        <Button type="Ghost" icon="sap-icon://decline"  tooltip="{i18n>Canceledit}" press="cancelBOMbyUVEdit" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? true : false }"/>
-        <Button icon="sap-icon://excel-attachment" press="onExport" tooltip="Download spreadsheet">
+        <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://edit"  tooltip="{i18n>EditBOMUVitems}" press="setBOMbyUVEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyUVEditModeModel>/editMode} === true ? false : true :false }"/>
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://synchronize" tooltip="Refresh data" press="onRefresh"/>
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://save" tooltip="{i18n>SaveBOMUVitems}" press="onSaveBOMbyUV" visible="{BOMbyUVEditModeModel>/editMode}"/>
+        <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline"  tooltip="{i18n>Canceledit}" press="cancelBOMbyUVEdit" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? true : false }"/>
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" press="onExport" tooltip="Download spreadsheet">
             <customData>
             <core:CustomData key="TableName" value="bomUVTable"/>
             </customData>

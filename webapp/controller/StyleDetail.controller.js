@@ -174,7 +174,11 @@ sap.ui.define([
                 }
                 // console.log(this.getOwnerComponent().getModel("LOOKUP_MODEL").getData())
 
-                this.getCaptionMsgs();
+                _promiseResult = new Promise((resolve, reject) => {
+                    resolve(that.getCaptionMsgs());
+                });
+                await _promiseResult;
+
                 this.setChangeStatus(false);
                 //set blnIOMod to true if route from IO
                 var oJSONModel = new JSONModel();
@@ -465,7 +469,7 @@ sap.ui.define([
                 });
             },
 
-            getCaptionMsgs: function () {
+            getCaptionMsgs: async function () {
                 var me = this;
                 var oDDTextParam = [], oDDTextResult = {};
                 var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
@@ -509,17 +513,20 @@ sap.ui.define([
                 oDDTextParam.push({CODE: "INFO_NO_SEL_RECORD_TO_PROC"}); 
                 oDDTextParam.push({CODE: "INFO_NO_RECORD_TO_REMOVE"}); 
                 
-                oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam  }, {
-                    method: "POST",
-                    success: function (oData, oResponse) {
-                        oData.CaptionMsgItems.results.forEach(item => {
-                            oDDTextResult[item.CODE] = item.TEXT;
-                        })
+                return new Promise((resolve, reject)=>{
+                    oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam  }, {
+                        method: "POST",
+                        success: function (oData, oResponse) {
+                            oData.CaptionMsgItems.results.forEach(item => {
+                                oDDTextResult[item.CODE] = item.TEXT;
+                            })
 
-                        me.getView().setModel(new JSONModel(oDDTextResult), "ddtext");
-                        me.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").setData({ text: oDDTextResult })
-                    },
-                    error: function (err) { }
+                            me.getView().setModel(new JSONModel(oDDTextResult), "ddtext");
+                            me.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").setData({ text: oDDTextResult })
+                            resolve();
+                        },
+                        error: function (err) { resolve(); }
+                    });
                 });
             },
 
@@ -727,7 +734,6 @@ sap.ui.define([
                             icon: "sap-icon://filter",
                             text: "Filter",
                             select: function(oEvent) {
-                                console.log(oEvent.getSource())
                                 me.onColFilter(sTableId, oEvent.getSource().oParent.oParent.getAggregation("label").getProperty("text"));
                             }
                         })
@@ -2978,6 +2984,7 @@ sap.ui.define([
                 else {
                     var oTable = this.getView().byId("versionsTable");
                     var selected = oTable.getSelectedIndices();
+
                     var oTmpSelected = [];
                     selected.forEach(item => {
                         oTmpSelected.push(oTable.getBinding("rows").aIndices[item])
@@ -2985,7 +2992,7 @@ sap.ui.define([
                     selected = oTmpSelected;
                     var oTableModel = this.getView().byId("versionsTable").getModel("DataModel");
                     var oData = oTableModel.getData();
-                    console.log(oData)
+
                     var verno = oData.results[selected].Verno;
 
                     if (this._GenericFilterDialog) {
@@ -5326,7 +5333,7 @@ sap.ui.define([
             enableVersionItemTab: function() {
                 var oDataColor = [], oDataSize = [];
 
-                if (this.getView().byId("colorsTable").getModel("DataModel") !== undefined) { oDataColor = this.getView().byId("colorsTable").getModel("DataModel").getData().results }
+                if (this.getView().byId("colorsTable").getModel("DataModel").getData().results !== undefined) { oDataColor = this.getView().byId("colorsTable").getModel("DataModel").getData().results }
                 if (this.getView().byId("sizesTable").getModel("DataModel") !== undefined) { oDataSize = this.getView().byId("sizesTable").getModel("DataModel").getData().results }
                 
                 if (oDataColor.length === 0 || oDataSize.length === 0) {
@@ -5755,7 +5762,6 @@ sap.ui.define([
 
             onColFilter: function(oEvent, sColumnLabel) {
                 var oDDText = this.getView().getModel("ddtext").getData();
-                
                 var sTableId = "";
 
                 if (typeof(oEvent) === "string") {
@@ -5939,6 +5945,7 @@ sap.ui.define([
                             }
                         }
                         else {
+                            console.log(col.ColumnLabel)
                             if (vSelectedItem === col.ColumnLabel) { 
                                 vSelectedColumn = col.ColumnName;
                                 col.selected = true;

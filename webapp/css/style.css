@@ -116,3 +116,11 @@ for header.fragment
 .sapMDialogScroll {
     height: 100%;
 }
+
+.verDtlBtnPaddingRight {
+    padding-right: 0 !important;
+}
+
+.copyMenu > button {
+    padding-right: 0 !important;
+}

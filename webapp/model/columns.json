@@ -261,7 +261,7 @@
         },
         {"ColumnName": "Orderuom", "ColumnLabel": "ORDERUOM", "Order": "14", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
         {"ColumnName": "Umrez", "ColumnLabel": "UMREZ", "Order": "15", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "UmreN", "ColumnLabel": "UMREN", "Order": "16", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false }
+        {"ColumnName": "Umren", "ColumnLabel": "UMREN", "Order": "16", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false }
     ],
     "tvh_supplytyp": [
         {"ColumnName": "Supplytype", "DataType": "STRING", "ColumnWidth": "150px", "Visible": true, "Key": true, "Value": false},
@@ -285,36 +285,58 @@
         {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": false, "Value": true}
     ],
     "bomGMC": [
-        {"ColumnName": "PROCESSCD", "TextFormatMode": "ValueKey",
+        {"ColumnName": "BOMITEM", "ColumnLabel": "BOMITEM", "Order": "1", "DataType": "STRING", "ColumnWidth": "125", "Length": "15", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "BOMITMTYP", "ColumnLabel": "BOMITMTYP", "Order": "2", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": true },
+        {"ColumnName": "BOMITEM", "ColumnLabel": "BOMITEM", "Order": "3", "DataType": "STRING", "ColumnWidth": "125", "Length": "15", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "BOMSTYLE", "ColumnLabel": "BOMSTYLE", "Order": "4", "DataType": "STRING", "ColumnWidth": "150", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "Key",
+            "ValueHelp": {"show": true, "items": {"path": "StylesModel", "value": "Styleno", "text": "Desc1"},
+                "SuggestionItems": {"path": "StylesModel>/results", "text": "{StylesModel>Styleno}", "maxSuggestionWidth": "250px"},
+                "columns": "tvh_styleno"
+            }
+        },
+        {"ColumnName": "BOMSTYLVER", "ColumnLabel": "BOMSTYLVER", "Order": "5", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "DESC1", "ColumnLabel": "DESC1", "Order": "6", "DataType": "STRING", "ColumnWidth": "175", "Length": "256", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "PARTCD", "ColumnLabel": "PARTCD", "Order": "7", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "PARTDESC", "ColumnLabel": "PARTDESC", "Order": "8", "DataType": "STRING", "ColumnWidth": "255", "Length": "512", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "PARTCNT", "ColumnLabel": "PARTCNT", "Order": "9", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "USGCLS", "ColumnLabel": "USGCLS", "Order": "10", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "PROCESSCD", "ColumnLabel": "PROCESSCD", "Order": "11", "DataType": "STRING", "ColumnWidth": "285", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "ProcessCodeModel", "value": "ProcessCd", "text": "Desc1"},
                 "SuggestionItems": {"path": "ProcessCodeModel>/results", "text": "{ProcessCodeModel>ProcessCd}", "additionalText": "{ProcessCodeModel>Desc1}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_processcd"
             }
         },
-        {"ColumnName": "MATTYP", "TextFormatMode": "ValueKey",
+        {"ColumnName": "MATTYP", "ColumnLabel": "MATTYP", "Order": "12", "DataType": "STRING", "ColumnWidth": "255", "Length": "4", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "MatTypeModel", "value": "Mattype", "text": "Desc1"},
                 "SuggestionItems": {"path": "MatTypeModel>/results", "text": "{MatTypeModel>Mattype}", "additionalText": "{MatTypeModel>Desc1}", "maxSuggestionWidth": "490px"},
                 "columns": "tvh_mattyp"
             }
         },
-        {"ColumnName": "ENTRYUOM", "TextFormatMode": "ValueKey",
-            "ValueHelp": {"show": true, "items": {"path": "UOMGMCModel", "value": "Valunit", "text": "Desc1"},
-                "SuggestionItems": {"path": "UOMGMCModel>/results", "text": "{UOMGMCModel>Valunit}", "additionalText": "{UOMGMCModel>Desc1}", "maxSuggestionWidth": "250px"},
-                "columns": "tvh_uom"
-            }
-        },
-        {"ColumnName": "GMC", "TextFormatMode": "Key",
+        {"ColumnName": "GMC", "ColumnLabel": "GMC", "Order": "13", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "Key",
             "ValueHelp": {"show": true, "items": {"path": "MatTypGMCModel", "value": "Gmc", "text": "Desc1"},
                 "SuggestionItems": {"path": "GMCModel>/results", "text": "{GMCModel>Gmc}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_gmc"
             }
         },
-        {"ColumnName": "BOMSTYLE", "TextFormatMode": "Key",
-            "ValueHelp": {"show": true, "items": {"path": "StylesModel", "value": "Styleno", "text": "Desc1"},
-                "SuggestionItems": {"path": "StylesModel>/results", "text": "{StylesModel>Styleno}", "maxSuggestionWidth": "250px"},
-                "columns": "tvh_styleno"
+        {"ColumnName": "GMCDESC", "ColumnLabel": "GMCDESC", "Order": "14", "DataType": "STRING", "ColumnWidth": "450", "Length": "500", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "REFMATNO", "ColumnLabel": "REFMATNO", "Order": "15", "DataType": "STRING", "ColumnWidth": "125", "Length": "20", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "REFMATDESC", "ColumnLabel": "REFMATDESC", "Order": "16", "DataType": "STRING", "ColumnWidth": "285", "Length": "1333", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "MATCONSPER", "ColumnLabel": "MATCONSPER", "Order": "17", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "PER", "ColumnLabel": "PER", "Order": "18", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "ENTRYUOM", "ColumnLabel": "BASEUOM", "Order": "19", "DataType": "STRING", "ColumnWidth": "150", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+            "TextFormatMode": "ValueKey",
+            "ValueHelp": {"show": true, "items": {"path": "UOMGMCModel", "value": "Valunit", "text": "Desc1"},
+                "SuggestionItems": {"path": "UOMGMCModel>/results", "text": "{UOMGMCModel>Valunit}", "additionalText": "{UOMGMCModel>Desc1}", "maxSuggestionWidth": "250px"},
+                "columns": "tvh_uom"
             }
-        }
+        },
+        {"ColumnName": "WASTAGE", "ColumnLabel": "WASTAGE", "Order": "20", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "COMCONSUMP", "ColumnLabel": "COMCONSUMP", "Order": "21", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "18", "Decimal": "5", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "CONSUMP", "ColumnLabel": "CONSUMP", "Order": "22", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false }
     ],
     "tvh_mattyp": [
         {"ColumnName": "Mattype", "DataType": "STRING", "ColumnWidth": "130px", "Visible": true, "Key": true, "Value": false},
@@ -332,5 +354,18 @@
         {"ColumnName": "Styleno", "DataType": "STRING", "ColumnWidth": "150px", "Visible": true, "Key": true, "Value": true},
         {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "500px", "Visible": true, "Key": false, "Value": false},
         {"ColumnName": "Verno", "DataType": "STRING", "ColumnWidth": "100px", "Visible": true, "Key": false, "Value": false}
+    ],
+    "bomUV": [
+        {"ColumnName": "PARTCD", "ColumnLabel": "PARTCD", "Order": "1", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "PARTDESC", "ColumnLabel": "PARTDESC", "Order": "2", "DataType": "STRING", "ColumnWidth": "255", "Length": "512", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": true },
+        {"ColumnName": "MATTYP", "ColumnLabel": "MATTYP", "Order": "3", "DataType": "STRING", "ColumnWidth": "125", "Length": "4", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "GMC", "ColumnLabel": "GMC", "Order": "4", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "GMCDESC", "ColumnLabel": "GMCDESC", "Order": "5", "DataType": "STRING", "ColumnWidth": "450", "Length": "500", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "USGCLS", "ColumnLabel": "USGCLS", "Order": "6", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "SEQNO", "ColumnLabel": "SEQNO", "Order": "7", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "BOMITEM", "ColumnLabel": "BOMITEM", "Order": "8", "DataType": "STRING", "ColumnWidth": "125", "Length": "15", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "MATTYPCLS", "ColumnLabel": "MATTYPCLS", "Order": "9", "DataType": "STRING", "ColumnWidth": "125", "Length": "15", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "CONSUMP", "ColumnLabel": "CONSUMP", "Order": "998", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "WASTAGE", "ColumnLabel": "WASTAGE", "Order": "999", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false }
     ]
 }
