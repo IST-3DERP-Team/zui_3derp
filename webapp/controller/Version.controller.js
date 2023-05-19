@@ -1051,6 +1051,9 @@ sap.ui.define([
                                 }
                             })
                         })
+                        
+                        oTableGMC.getModel("DataModel").setProperty("/results", oGMCTableData.results);
+                        // console.log(oGMCTableData);
 
                         // oTableGMC.bindColumns("DataModel>/columns", function (sId, oContext) {
                         //     var column = oContext.getObject();
