@@ -883,6 +883,7 @@ sap.ui.define([
                 //get dynamic columns of BOM by GMC
                 oModel.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
+                        console.log(oData.results)
                         oData.results.forEach((column) => {
                             columnData.push({
                                 "ColumnName": column.ColumnName,
@@ -1160,8 +1161,8 @@ sap.ui.define([
                         var oColumnsModel = this.getView().getModel("bombByGMCColumns");
                         var oColumnsData = oColumnsModel.getProperty('/');
                         oTable.getColumns().forEach((col, idx) => {
-                            //console.log(col);
-                            oColumnsData.filter(item => item.ColumnName === col.sId.split("-")[1])
+                            console.log(col);
+                            oColumnsData.filter(item => item.ColumnName === col.getProperty("sortProperty"))
                                 .forEach(ci => {
                                     if (ci.Editable) {
                                         if (ci.Mandatory) {
@@ -1169,7 +1170,6 @@ sap.ui.define([
                                         }
                                     }
                                 });
-
                         });
 
                         this._dataMode = "EDIT";
@@ -4418,9 +4418,38 @@ sap.ui.define([
                         this.setTabReadEditMode(true, "BOMbyGMCEditModeModel");
                         this.onBOMbyGMCChange();
                         this.setBOMbyGMCEditModeControls();
-                    }
 
-                    console.log(this._dataMode)
+                        var oTable = this.getView().byId("bomGMCTable");
+                        oTable.getColumns().forEach((col, idx) => {
+                            var sColName = "";
+
+                            if (col.mAggregations.template.mBindingInfos.text !== undefined) {
+                                sColName = col.mAggregations.template.mBindingInfos.text.parts[0].path;
+                            }
+                            else if (col.mAggregations.template.mBindingInfos.selected !== undefined) {
+                                sColName = col.mAggregations.template.mBindingInfos.selected.parts[0].path;
+                            }
+                            
+                            var column = this._aColumns["bomGMC"].filter(item => item.ColumnName === sColName)[0];
+                            col.setTemplate(this.columnTemplate('GMC', column));
+                        });
+
+                        this.setTableValueHelp(oTable, "bomGMC");
+
+                        var oColumnsModel = this.getView().getModel("bombByGMCColumns");
+                        var oColumnsData = oColumnsModel.getProperty('/');
+                        oTable.getColumns().forEach((col, idx) => {
+                            console.log(col);
+                            oColumnsData.filter(item => item.ColumnName === col.getProperty("sortProperty"))
+                                .forEach(ci => {
+                                    if (ci.Editable) {
+                                        if (ci.Mandatory) {
+                                            col.getLabel().addStyleClass("sapMLabelRequired");
+                                        }
+                                    }
+                                });
+                        });
+                    }
                 }
                 //mark as required field
                 var oTable = this.getView().byId("bomGMCTable");
@@ -4436,7 +4465,6 @@ sap.ui.define([
                                 }
                             }
                         });
-
                 });
                 // }
             },
