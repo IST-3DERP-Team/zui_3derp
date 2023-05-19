@@ -1264,6 +1264,40 @@ sap.ui.define([
                             }
                         }
                     }
+
+                    if (oEvent !== undefined) {
+                        var oSource = oEvent.getSource();
+
+                        if (oSource.getBindingInfo("value") !== undefined) {
+                            var sRowPath = oSource.oParent.getBindingContext("DataModel").sPath;
+                            var vColPath = oSource.getBindingInfo("value").parts[0].path;
+                            
+                            if (oEvent.getParameter("value") === "") {
+                                // that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, "");
+
+                                // if (vColPath.toUpperCase() === "GMC") {
+                                //     that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/GMCDESC", "");
+                                // }
+                                // else if (vColPath.toUpperCase() === "BOMSTYLE") {
+                                //     that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/BOMSTYLVER", "");
+                                //     that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/DESC1", "");
+                                // }
+                            }
+                            else {
+                                // that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, oEvent.getParameter("value"));
+                                console.log(vColPath, oEvent.getParameter("value"))
+                                if (vColPath.toUpperCase() === "REFMATNO") {
+                                    that.getView().getModel("GMCModel").getData().results.filter(fItem => fItem.Cusmatcd === oEvent.getParameter("value")).forEach(item => {
+                                        that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/GMC", item.Gmc);
+                                        that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/GMCDESC", item.Desc1);
+                                        that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/MATTYP", item.Mattyp);
+                                        that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/ENTRYUOM", item.Baseuom);
+                                        console.log(oData)
+                                    })
+                                }
+                            }
+                        }
+                    }
                 } catch (err) { }
             },
 
@@ -1287,7 +1321,7 @@ sap.ui.define([
                             }
                         }
                     }
-                    console.log(oEvent.getSource())
+
                     if (oEvent !== undefined) {
                         var oSource = oEvent.getSource();
 
@@ -4889,7 +4923,7 @@ sap.ui.define([
                 }
             },
 
-            _GMCValueHelpClose: function (evt) {
+            _GMCValueHelpClose: function (evt) { 
                 //on select GMC
                 var oSelectedItem = evt.getParameter("selectedItem");
                 if (oSelectedItem) {
@@ -5603,18 +5637,6 @@ sap.ui.define([
                     inputValueHelpChangeFunction = this.onMaterialListInputChange.bind(this);
                     inputValueHelpLiveChangeFunction = this.onMaterialListInputChange.bind(this);
                     editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>Matno} === '' ? true : false : false }";
-                }
-                else if (sTabId === "bomGMCTable") { 
-                    changeFunction = this.onBOMbyGMCChange.bind(this);
-                    liveChangeFunction = this.onBOMbyGMCLiveChange.bind(this);
-                    inputValueHelpChangeFunction = this.onBOMbyGMCInputChange.bind(this);
-                    inputValueHelpLiveChangeFunction = this.onBOMbyGMCChange.bind(this);
-                }
-                else if (sTabId === "bomUVTable") { 
-                    changeFunction = this.onBOMbyUVChange.bind(this);
-                    liveChangeFunction = this.onBOMbyUVChange.bind(this);
-                    inputValueHelpChangeFunction = this.onBOMbyUVChange.bind(this);
-                    inputValueHelpLiveChangeFunction = this.onBOMbyUVChange.bind(this);
                 }
 
                 oTable.getColumns().forEach((col, idx) => {
