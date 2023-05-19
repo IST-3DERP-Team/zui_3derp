@@ -1398,7 +1398,8 @@ sap.ui.define([
                     console.log(oData)
                     for (var i = 0; i < oData.results.length; i++) {
                         //pivot colros only for AUV and ASUV
-                        if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
+                        let vUSGCLS = oData.results[i].USGCLS;
+                        if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
                             const noOfColors = me._colors.length;
                             let noOfHasColor = 0;
                             for (var j = 0; j < me._colors.length; j++) {
@@ -1407,18 +1408,9 @@ sap.ui.define([
                                 if (oData.results[i][color.Attribcd] != "" && oData.results[i][color.Attribcd] != undefined) {
                                     noOfHasColor++;
                                 }
-                                // if(oData.results[i][color.Attribcd]=="")
-                                // {
-                                //     oMsgStrip.setVisible(true);
-                                //     oMsgStrip.setText("Color Description is required");
-                                //     return;
-                                // }
-
                             }
 
                             if (noOfHasColor == 0) {
-                                // oMsgStrip.setVisible(true);
-                                // oMsgStrip.setText("At least one color is required.");
                                 MessageBox.information("At least one color is required.");
                                 return;
                             }
@@ -1445,7 +1437,7 @@ sap.ui.define([
                                         me.setTabReadEditMode(false, "BOMbyGMCEditModeModel");
                                         me.setRowReadMode("bomGMCTable");
                                         // Common.showMessage(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
+                                        //MessageBox.information(me._i18n.getText('t4'));
 
                                         //build the BOM by UV headers and payload - this is for the colors pivot
                                         var oEntry = {
@@ -1457,7 +1449,8 @@ sap.ui.define([
 
                                         for (var i = 0; i < oData.results.length; i++) {
                                             //pivot colros only for AUV and ASUV
-                                            if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
+                                            let vUSGCLS = oData.results[i].USGCLS;
+                                            if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
                                                 for (var j = 0; j < me._colors.length; j++) {
 
                                                     var color = me._colors[j];
@@ -1507,6 +1500,7 @@ sap.ui.define([
                                             });
                                         }
                                         Common.closeLoadingDialog(that);
+                                        MessageBox.information(me._i18n.getText('t4'));
                                     },
                                     error: function (err) {
                                         Common.closeLoadingDialog(that);
@@ -1903,7 +1897,8 @@ sap.ui.define([
                 
                                                     for (var i = 0; i < oData.length; i++) {
                                                         //pivot colros only for AUV and ASUV
-                                                        if (oData[i].USGCLS === Constants.AUV || oData[i].USGCLS === Constants.ASUV) {
+                                                        let vUSGCLS = oData.results[i].USGCLS;
+                                                        if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
                                                             for (var j = 0; j < oColors.length; j++) {
                                                                 var color = oColors[j];
                 
@@ -1958,7 +1953,8 @@ sap.ui.define([
         
                                             for (var i = 0; i < oData.length; i++) {
                                                 //pivot colros only for AUV and ASUV
-                                                if (oData[i].USGCLS === Constants.AUV || oData[i].USGCLS === Constants.ASUV) {
+                                                let vUSGCLS = oData.results[i].USGCLS;
+                                                if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
                                                     for (var j = 0; j < oColors.length; j++) {
                                                         var color = oColors[j];
         
@@ -3087,7 +3083,7 @@ sap.ui.define([
                 //console.log("colors", me._colors);
                 for (var i = 0; i < oData.results.length; i++) {
                     //pivot colros only for AUV and ASUV
-                    if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
+                    if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {    
                         let noOfHasColor = 0;
                         for (var j = 0; j < me._colors.length; j++) {
                             var color = me._colors[j];
