@@ -1422,7 +1422,7 @@ sap.ui.define([
                      //mark as required fields
                      var oTable = this.getView().byId("generalTable");
                      oTable.getColumns().forEach((col, idx) => {
-                        const colProp = col.mProperties.filterProperty;
+                        const colProp = col.mProperties.sortProperty;
                         if(colProp == "Attribtyp")
                             col.getLabel().addStyleClass("sapMLabelRequired");
                     });
@@ -1975,7 +1975,7 @@ sap.ui.define([
                     var oTable = this.getView().byId("colorsTable");
                     oTable.getColumns().forEach((col, idx) => {
                         //console.log(col);
-                        const colProp = col.mProperties.filterProperty;
+                        const colProp = col.mProperties.sortProperty;
                         if(colProp == "Desc1" || colProp == "Sortseq")
                             col.getLabel().addStyleClass("sapMLabelRequired");
                     });
@@ -2059,7 +2059,7 @@ sap.ui.define([
                         //mark as required fields
                         oTable.getColumns().forEach((col, idx) => {
                             //console.log(col);
-                            const colProp = col.mProperties.filterProperty;
+                            const colProp = col.mProperties.sortProperty;
                             if(colProp == "Desc1" || colProp == "Sortseq")
                                 col.getLabel().addStyleClass("sapMLabelRequired");
                         });
@@ -2618,7 +2618,7 @@ sap.ui.define([
                     var oTable = this.getView().byId("processesTable");
                     //mark as required field
                     oTable.getColumns().forEach((col, idx) => {
-                        const colProp = col.mProperties.filterProperty;
+                        const colProp = col.mProperties.sortProperty;
                         if(colProp == "Processcd")
                             col.getLabel().addStyleClass("sapMLabelRequired");
                     });
@@ -4886,7 +4886,7 @@ sap.ui.define([
 
                     //remove required field
                     oTable.getColumns().forEach((col, idx) => {
-                       const colProp = col.mProperties.filterProperty;
+                       const colProp = col.mProperties.sortProperty;
                        if(colProp == "Attribtyp")
                            col.getLabel().removeStyleClass("sapMLabelRequired");
                    });
@@ -4920,7 +4920,7 @@ sap.ui.define([
                     var oTable = this.getView().byId("processesTable");
                     //remove required field
                     oTable.getColumns().forEach((col, idx) => {
-                        const colProp = col.mProperties.filterProperty;
+                        const colProp = col.mProperties.sortProperty;
                         if(colProp == "Processcd")
                             col.getLabel().removeStyleClass("sapMLabelRequired");
                     });
@@ -4946,7 +4946,7 @@ sap.ui.define([
 
                     //remove required fields
                     oTable.getColumns().forEach((col, idx) => {
-                        const colProp = col.mProperties.filterProperty;
+                        const colProp = col.mProperties.sortProperty;
                         if (colProp == "Desc1" || colProp == "Sortseq")
                             col.getLabel().removeStyleClass("sapMLabelRequired");
                     });

@@ -54,6 +54,11 @@ sap.ui.define([
                 //     this._CopyBOMDialog.setModel(new JSONModel());
                 //     this.getView().addDependent(this._CopyBOMDialog);
                 // } 
+
+                //var matno = new URL(url).searchParams.get("matno");
+
+                // Output the value of 'matno'
+                //console.log("urlparams",matno); // Output: 1000087-00001
             },
 
             onExit: function () {
@@ -883,6 +888,7 @@ sap.ui.define([
                 //get dynamic columns of BOM by GMC
                 oModel.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
+                        console.log(oData.results)
                         oData.results.forEach((column) => {
                             columnData.push({
                                 "ColumnName": column.ColumnName,
@@ -1160,8 +1166,8 @@ sap.ui.define([
                         var oColumnsModel = this.getView().getModel("bombByGMCColumns");
                         var oColumnsData = oColumnsModel.getProperty('/');
                         oTable.getColumns().forEach((col, idx) => {
-                            //console.log(col);
-                            oColumnsData.filter(item => item.ColumnName === col.sId.split("-")[1])
+                            console.log(col);
+                            oColumnsData.filter(item => item.ColumnName === col.getProperty("sortProperty"))
                                 .forEach(ci => {
                                     if (ci.Editable) {
                                         if (ci.Mandatory) {
@@ -1169,7 +1175,6 @@ sap.ui.define([
                                         }
                                     }
                                 });
-
                         });
 
                         this._dataMode = "EDIT";
@@ -3120,6 +3125,7 @@ sap.ui.define([
                 //console.log("colors", me._colors);
                 for (var i = 0; i < oData.results.length; i++) {
                     //pivot colros only for AUV and ASUV
+                    let vUSGCLS = oData.results[i].USGCLS;
                     if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {    
                         let noOfHasColor = 0;
                         for (var j = 0; j < me._colors.length; j++) {
@@ -4294,6 +4300,35 @@ sap.ui.define([
                 return oColumnTemplate;
             },
 
+            columnTextLinkTemplate: function (sColumnId) {
+                var oColumnTemplate;
+                oColumnTemplate = new sap.m.Text({ text: "{" + sColumnId + "}", wrapping: false, tooltip: "{" + sColumnId + "}" }); //default text
+                if (sColumnId === "DELETED") {
+                    oColumnTemplate = new sap.m.CheckBox({
+                        selected: "{" + sColumnId + "}",
+                        editable: false
+                    });
+                }
+                else if (sColumnId === "CLOSED") {
+                    //Manage button
+                    oColumnTemplate = new sap.m.CheckBox({
+                        selected: "{" + sColumnId + "}",
+                        editable: false
+                    });
+                }
+                else if (sColumnId === "UNLIMITED" || sColumnId === "OVERDELTOL" || sColumnId === "UNDERDELTOL") {
+                    //Manage button
+                    oColumnTemplate = new sap.m.CheckBox({
+                        selected: "{" + sColumnId + "}",
+                        editable: false
+                    });
+                }
+
+
+
+                return oColumnTemplate;
+            },
+
             addBOMItem: function (item) {
                 //adding BOM item to the payload
                 return {
@@ -4414,9 +4449,38 @@ sap.ui.define([
                         this.setTabReadEditMode(true, "BOMbyGMCEditModeModel");
                         this.onBOMbyGMCChange();
                         this.setBOMbyGMCEditModeControls();
-                    }
 
-                    console.log(this._dataMode)
+                        var oTable = this.getView().byId("bomGMCTable");
+                        oTable.getColumns().forEach((col, idx) => {
+                            var sColName = "";
+
+                            if (col.mAggregations.template.mBindingInfos.text !== undefined) {
+                                sColName = col.mAggregations.template.mBindingInfos.text.parts[0].path;
+                            }
+                            else if (col.mAggregations.template.mBindingInfos.selected !== undefined) {
+                                sColName = col.mAggregations.template.mBindingInfos.selected.parts[0].path;
+                            }
+                            
+                            var column = this._aColumns["bomGMC"].filter(item => item.ColumnName === sColName)[0];
+                            col.setTemplate(this.columnTemplate('GMC', column));
+                        });
+
+                        this.setTableValueHelp(oTable, "bomGMC");
+
+                        var oColumnsModel = this.getView().getModel("bombByGMCColumns");
+                        var oColumnsData = oColumnsModel.getProperty('/');
+                        oTable.getColumns().forEach((col, idx) => {
+                            console.log(col);
+                            oColumnsData.filter(item => item.ColumnName === col.getProperty("sortProperty"))
+                                .forEach(ci => {
+                                    if (ci.Editable) {
+                                        if (ci.Mandatory) {
+                                            col.getLabel().addStyleClass("sapMLabelRequired");
+                                        }
+                                    }
+                                });
+                        });
+                    }
                 }
                 //mark as required field
                 var oTable = this.getView().byId("bomGMCTable");
@@ -4432,7 +4496,6 @@ sap.ui.define([
                                 }
                             }
                         });
-
                 });
                 // }
             },
@@ -5563,16 +5626,43 @@ sap.ui.define([
                     var oControl;
 
                     if (sColumnDataType !== "BOOLEAN") {
-                        oControl = new sap.m.Text({
-                            wrapping: false,
-                            tooltip: sColumnDataType === "BOOLEAN" ? "" : "{DataModel>" + sColumnId + "}"
-                        })
+                       
+                        if(sColumnId === "GMC"){
+                            oControl = new sap.m.Link({
+                                text: "{DataModel>" + sColumnId + "}",
+                                press: function(oEvent) {
+                                  // Handle the click event of the hyperlink
+                                  window.open("https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_GMC-display", "_blank");
+                                },
+                            })
+                            oControl.addStyleClass("hyperlink") 
+ 
+                        }else if(sColumnId === "BOMSTYLE"){
+                            oControl = new sap.m.Link({
+                                text: "{DataModel>" + sColumnId + "}",
+                                press: function(oEvent) {
+                                    const vStyleNo =  oEvent.oSource.mProperties.text;
+                                    console.log(vStyleNo)
+                                    // Handle the click event of the hyperlink
+                                    window.open(`https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_ORD_STYLE-display&/RouteStyleDetail/${vStyleNo}/VER/%20`, "_blank");
+                                },
+                            })
+                            oControl.addStyleClass("hyperlink") 
+ 
+                        }
+                        else
+                        {
+                            oControl = new sap.m.Text({
+                                wrapping: false,
+                                tooltip: sColumnDataType === "BOOLEAN" ? "" : "{DataModel>" + sColumnId + "}"
+                            })
+    
+                        }
     
                         if (context.getObject().TextFormatMode && context.getObject().TextFormatMode === "ValueKey") {
                             var rscPath = context.getObject().ValueHelp.items.path;
                             var rscKey = context.getObject().ValueHelp.items.value;
                             var rscValue = context.getObject().ValueHelp.items.text;
-    
                             oControl.bindText({  
                                 parts: [  
                                     { path: "DataModel>" + sColumnId }
@@ -5588,12 +5678,15 @@ sap.ui.define([
                             });
                         }
                         else {
-                            oControl.bindText({  
-                                parts: [  
-                                    { path: "DataModel>" + sColumnId }
-                                ]
-                            });    
+                            if(sColumnId !== "GMC" && sColumnId !== "BOMSTYLE" ){
+                                oControl.bindText({  
+                                    parts: [  
+                                        { path: "DataModel>" + sColumnId }
+                                    ]
+                                });    
+                            }
                         }
+                        
                     }
                     else {
                         oControl = new sap.m.CheckBox({                           
