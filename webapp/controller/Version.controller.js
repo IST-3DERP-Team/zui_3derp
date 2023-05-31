@@ -883,7 +883,7 @@ sap.ui.define([
                 //get dynamic columns of BOM by GMC
                 oModel.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
-                        console.log(oData.results)
+                        // console.log(oData.results)
                         oData.results.forEach((column) => {
                             columnData.push({
                                 "ColumnName": column.ColumnName,
@@ -979,7 +979,7 @@ sap.ui.define([
                         });
                         //assigned to UsageClassUVModel
                         that.getView().setModel(new JSONModel({ results: filteredItems }), "UsageClassUVModel");
-
+                        rowData.forEach(item => item.EDITABLE = '');
                         var oJSONModel = new JSONModel();
                         oJSONModel.setData({
                             results: rowData,
@@ -994,7 +994,7 @@ sap.ui.define([
                             me.onSaveBOMbyGMC(oGetComponentInd);
                             blnGetComponentInd = false;
                         }
-                        console.log(columnData)
+                        // console.log(columnData)
                         me.setLocTableColumns("bomGMCTable", columnData);
                         me.getBOMGMCColorsData(); //get pivot colors data
                         me.getbomUVTable();  //get BOM by UV data
@@ -1130,6 +1130,15 @@ sap.ui.define([
                         MessageBox.warning(result.Message);
                     }
                     else {
+                        var bProceed = await this.getBOMValidation(this);
+                        if (!bProceed) return;
+
+                        if (this.getView().byId("bomGMCTable").getModel("DataModel").getData().results.filter(fItem => fItem.EDITABLE === "X").length === 0) {
+                            Common.closeProcessingDialog(this);
+                            MessageBox.information("Material list has assigned SAP material no. and already attached to an IO.\r\nEditing not allowed.");
+                            return;
+                        }
+                        
                         var oJSONModel = new JSONModel();
                         var data = {};
                         this._BOMbyGMCChanged = false;
@@ -1161,7 +1170,6 @@ sap.ui.define([
                         var oColumnsModel = this.getView().getModel("bombByGMCColumns");
                         var oColumnsData = oColumnsModel.getProperty('/');
                         oTable.getColumns().forEach((col, idx) => {
-                            console.log(col);
                             oColumnsData.filter(item => item.ColumnName === col.getProperty("sortProperty"))
                                 .forEach(ci => {
                                     if (ci.Editable) {
@@ -1174,9 +1182,11 @@ sap.ui.define([
 
                         this._dataMode = "EDIT";
                         this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "EDIT");
-
                         // this.setBOMbyGMCEditModeControls();
 
+                        setTimeout(() => {
+                            Common.closeProcessingDialog(this);
+                        }, 100);
                     }
                 }
             },
@@ -1274,7 +1284,31 @@ sap.ui.define([
                         if (oSource.getBindingInfo("value") !== undefined) {
                             var sRowPath = oSource.oParent.getBindingContext("DataModel").sPath;
                             var vColPath = oSource.getBindingInfo("value").parts[0].path;
-                            
+                            var oColumn = that._aColumns["bomGMC"].filter(item => item.ColumnName === vColPath);
+                            var vGmc = that.byId("bomGMCTable").getModel("DataModel").getProperty(sRowPath + "/GMC");
+
+                            if (oColumn.length > 0) {
+                                if (oColumn[0].ColumnType === "COLOR") {
+                                    //check if gmc/color has assigned material no. already
+                                    if (that.getView().getModel("BOMValidation").getData().filter(fItem => fItem.COLOR === vColPath && fItem.GMC === vGmc && fItem.MATNO === "X").length > 0) {
+                                        that.getView().getModel("BOMValidation").getData().forEach(item => {
+                                            if (item.GMC === vGmc && item.COLOR === vColPath) { item.MSG = "02" }
+                                        })
+                                    }
+                                    else if (that.getView().getModel("BOMValidation").getData().filter(fItem => fItem.COLOR === vColPath && fItem.GMC === vGmc && fItem.MATL === "X").length > 0) {
+                                        that.getView().getModel("BOMValidation").getData().forEach(item => {
+                                            if (item.GMC === vGmc && item.COLOR === vColPath) { item.MSG = "01" }
+                                        })
+                                    }
+                                }
+                            }
+
+                            if (vColPath === "MATCONSPER" || vColPath === "PER" || vColPath === "WASTAGE") {
+                                that.getView().getModel("BOMValidation").getData().forEach(item => {
+                                    if (item.GMC === vGmc && item.MSG === "") { item.MSG = "01" }
+                                })
+                            }
+
                             if (oEvent.getParameter("value") === "") {
                                 // that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, "");
 
@@ -1295,7 +1329,6 @@ sap.ui.define([
                                         that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/GMCDESC", item.Desc1);
                                         that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/MATTYP", item.Mattyp);
                                         that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/ENTRYUOM", item.Baseuom);
-                                        console.log(oData)
                                     })
                                 }
                             }
@@ -1462,10 +1495,18 @@ sap.ui.define([
                         }
                     };
 
-                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
-                        actions: ["Yes", "No"],
+                    var vMessage = "";
+                    if (this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                        vMessage = "Material list with assigned SAP material no. already exists.\r\nMaterial will be deleted and a new one will be created.";
+                    }
+                    else {
+                        vMessage = "Are you sure you want to save?";
+                    }
+
+                    MessageBox.confirm(vMessage, {
+                        actions: ["Continue", "Cancel"],
                         onClose: function (sAction) {
-                            if (sAction === "Yes") {
+                            if (sAction === "Continue") {
                                 Common.openLoadingDialog(that);
                                 //call create deep method for BOM by GMC
                                 oModel.create(path, oEntry, {
@@ -1482,8 +1523,6 @@ sap.ui.define([
                                         me.setTabReadEditMode(false, "BOMbyGMCEditModeModel");
                                         me.setRowReadMode("bomGMCTable");
                                         // Common.showMessage(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
-
                                         //build the BOM by UV headers and payload - this is for the colors pivot
                                         var oEntry = {
                                             Styleno: me._styleNo,
@@ -1544,6 +1583,14 @@ sap.ui.define([
                                             });
                                         }
                                         Common.closeLoadingDialog(that);
+
+                                        if (me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "01").length > 0 ||
+                                            me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                                            MessageBox.information("Saved. RMC has to be executed.");
+                                        }
+                                        else {
+                                            MessageBox.information(me._i18n.getText('t4'));
+                                        }
                                     },
                                     error: function (err) {
                                         Common.closeLoadingDialog(that);
@@ -1705,9 +1752,57 @@ sap.ui.define([
                 }
             },
 
-            onDeleteBOMItems: function () {
+            onDeleteBOMItems: async function () {
+                var oTable = this.getView().byId("bomGMCTable");
+                var oTableModel = oTable.getModel("DataModel");
+                var oData = oTableModel.getData();
+                var oSelectedIndices = oTable.getSelectedIndices();
+                var oTmpSelectedIndices = []
+                
+                this._oBOMGMCToDelete = [];
+
+                oSelectedIndices.forEach(item => {
+                    oTmpSelectedIndices.push(oTable.getBinding("rows").aIndices[item])
+                })
+
+                oSelectedIndices = oTmpSelectedIndices;
+
+                if (oSelectedIndices.length === 0) {
+                    MessageBox.information("Select items to delete.");
+                    return;
+                }
+
+                var bProceed = await this.getBOMValidation(this);
+                if (!bProceed) return;
+
+                Common.closeProcessingDialog(this);
+
+                for (var i = 0; i < oSelectedIndices.length; i++) {
+                    if (oData.results[oSelectedIndices[i]].EDITABLE === "X") {
+                        this._oBOMGMCToDelete.push(oSelectedIndices[i]);
+                    }
+                }
+
+                if (this._oBOMGMCToDelete.length === 0) {                    
+                    MessageBox.information("Material list has assigned SAP material no. and already attached to an IO.\r\nDeletion not allowed.");
+                    return;
+                }
+                               
+                //validate
+                if (oSelectedIndices.length !== this._oBOMGMCToDelete.length) {
+                    MessageBox.confirm("Selected BOM line with material list that has assigned SAP material no. and already attached to an IO will not be deleted.\r\nContinue?", {
+                        actions: ["Continue", "Cancel"],
+                        onClose: function (sAction) {
+                            if (sAction === "Continue") {
+                                me.onConfirmDeleteBOMItems();
+                            }
+                        }
+                    });
+                }
+                else { this.onDeleteTableItems('bomGMCTable', 'ConfirmDeleteBOMItems', this._ConfirmDeleteBOMDialog); }                
+
                 //confirm delete selected BOM items
-                this.onDeleteTableItems('bomGMCTable', 'ConfirmDeleteBOMItems', this._ConfirmDeleteBOMDialog);
+                // this.onDeleteTableItems('bomGMCTable', 'ConfirmDeleteBOMItems', this._ConfirmDeleteBOMDialog);
             },
 
             onConfirmDeleteBOMItems: function (oEvent) {
@@ -1719,20 +1814,20 @@ sap.ui.define([
                 var oTable = this.getView().byId("bomGMCTable");
                 var oTableModel = oTable.getModel("DataModel");
                 var oData = oTableModel.getData();
-                var selected = oTable.getSelectedIndices();
+                var selected = this._oBOMGMCToDelete;
 
                 oModel.setUseBatch(true);
                 oModel.setDeferredGroups(["group1"]);
 
                 // this._ConfirmDeleteBOMDialog.close();
-                oEvent.getSource().getParent().close();
+                if (oEvent !== undefined) { oEvent.getSource().getParent().close(); }
 
                 if (selected.length > 0) {
-
                     //call delete method of BOM for each item selected
                     for (var i = 0; i < selected.length; i++) {
                         var verno = this._version;
                         var bomseq = oData.results[selected[i]].BOMSEQ;
+
                         if (bomseq !== "0") {
                             verno = this.pad(verno, 3);
                             bomseq = this.pad(bomseq, 3);
@@ -1750,6 +1845,7 @@ sap.ui.define([
                             oModel.submitChanges({
                                 groupId: "group1"
                             });
+
                             oModel.setRefreshAfterChange(true);
                         }
                     }
@@ -1757,6 +1853,7 @@ sap.ui.define([
                     oData.results = oData.results.filter(function (value, index) {
                         return selected.indexOf(index) == -1;
                     })
+
                     oTableModel.setData(oData);
                     oTable.clearSelection();
                 }
@@ -3088,6 +3185,44 @@ sap.ui.define([
                 }
             },
 
+            getBOMValidation: async (me) => {
+                var oModel = me.getOwnerComponent().getModel();
+                Common.openProcessingDialog(me, "Validating");
+
+                var promise = new Promise((resolve, reject) => {
+                    oModel.setHeaders({
+                        styleno: me._styleNo,
+                        verno: me._version
+                    })
+
+                    oModel.read('/BOMValidationSet', {
+                        success: function (oData) {
+                            oData.results.forEach(item => item.MSG = '');
+                            
+                            me.getView().setModel(new JSONModel(oData.results), "BOMValidation");
+                            me.getView().byId("bomGMCTable").getModel("DataModel").getData().results.forEach(item => {
+                                var vRow = oData.results.filter(fItem => fItem.GMC === item.GMC && fItem.MATNO === "X" && fItem.IO === "X");
+                                if (vRow.length > 0) {
+                                    // item.EDITABLE = vRow[0].IO === "X" && vRow[0].MATNO === "X" ? "" : "X";
+                                    item.EDITABLE = "";
+                                }
+                                else { item.EDITABLE = "X" }
+                            })
+
+                            // Common.closeProcessingDialog(me);
+                            resolve(true); 
+                        },
+                        error: function (err) { 
+                            resolve(false);
+                            Common.closeProcessingDialog(me);
+                            MessageBox.information(err);
+                        }
+                    })
+                })
+
+                return await promise;
+            },
+
             //******************************************* */
             // RMC
             //******************************************* */
@@ -3109,7 +3244,6 @@ sap.ui.define([
                 var oTableModel = this.getView().byId("bomGMCTable").getModel("DataModel");
                 var oData = oTableModel.getData();
                 var item = {};
-                console.log(oData)
                 var oMsgStrip = this.getView().byId('BOMbyGMCMessageStrip');
                 oMsgStrip.setVisible(false);
 
@@ -3128,7 +3262,6 @@ sap.ui.define([
                         let noOfHasColor = 0;
                         for (var j = 0; j < me._colors.length; j++) {
                             var color = me._colors[j];
-                            console.log(color)
                             //add items with color description only 
                             if (oData.results[i][color.Attribcd] != "" && oData.results[i][color.Attribcd] != undefined) {
                                 item = {
@@ -3433,6 +3566,15 @@ sap.ui.define([
                     MessageBox.warning(result.Message);
                 }
                 else {
+                    var bProceed = await this.getBOMValidation(this);
+                    if (!bProceed) return;
+
+                    if (this.getView().byId("bomGMCTable").getModel("DataModel").getData().results.filter(fItem => fItem.EDITABLE === "X").length === 0) {
+                        Common.closeProcessingDialog(this);
+                        MessageBox.information("Material list has assigned SAP material no. and already attached to an IO.\r\nEditing not allowed.");
+                        return;
+                    }
+
                     //set BOM by UV table edit mode
                     var oJSONModel = new JSONModel();
                     var data = {};
@@ -3506,6 +3648,10 @@ sap.ui.define([
                     this._dataMode = "EDIT";
                     this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "EDIT");
                     this.setBOMbyUVEditModeControls();
+
+                    setTimeout(() => {
+                        Common.closeProcessingDialog(this);
+                    }, 100);
                 }
             },
 
@@ -3555,10 +3701,43 @@ sap.ui.define([
                 })
             },
 
-            onBOMbyUVChange: function () {
+            onBOMbyUVChange: async function (oEvent) {
                 //set BOM by UV change flag
                 that._BOMbyUVChanged = true;
                 that.setChangeStatus(true);
+
+                if (oEvent !== undefined) {
+                    var oSource = oEvent.getSource();
+
+                    if (oSource.getBindingInfo("value") !== undefined) {
+                        var sRowPath = oSource.oParent.getBindingContext("DataModel").sPath;
+                        var vColPath = oSource.getBindingInfo("value").parts[0].path;
+                        var oColumn = that._aColumns["bomGMC"].filter(item => item.ColumnName === vColPath);
+                        var vGmc = that.byId("bomUVTable").getModel("DataModel").getProperty(sRowPath + "/GMC");
+
+                        if (oColumn.length > 0) {
+                            if (oColumn[0].ColumnType === "COLOR") {
+                                //check if gmc/color has assigned material no. already
+                                if (that.getView().getModel("BOMValidation").getData().filter(fItem => fItem.COLOR === vColPath && fItem.GMC === vGmc && fItem.MATNO === "X").length > 0) {
+                                    that.getView().getModel("BOMValidation").getData().forEach(item => {
+                                        if (item.GMC === vGmc && item.COLOR === vColPath) { item.MSG = "02" }
+                                    })
+                                }
+                                else if (that.getView().getModel("BOMValidation").getData().filter(fItem => fItem.COLOR === vColPath && fItem.GMC === vGmc && fItem.MATL === "X").length > 0) {
+                                    that.getView().getModel("BOMValidation").getData().forEach(item => {
+                                        if (item.GMC === vGmc && item.COLOR === vColPath) { item.MSG = "01" }
+                                    })
+                                }
+                            }
+                        }
+
+                        if (vColPath === "CONSUMP" || vColPath === "WASTAGE") {
+                            that.getView().getModel("BOMValidation").getData().forEach(item => {
+                                if (item.GMC === vGmc && item.MSG === "") { item.MSG = "01" }
+                            })
+                        }
+                    }
+                }
             },
 
             onSaveBOMbyUV: function () {
@@ -3622,10 +3801,18 @@ sap.ui.define([
                         }
                     };
 
-                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
-                        actions: ["Yes", "No"],
+                    var vMessage = "";
+                    if (this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                        vMessage = "Material list with assigned SAP material no. already exists.\r\nMaterial will be deleted and a new one will be created.";
+                    }
+                    else {
+                        vMessage = "Are you sure you want to save?";
+                    }
+
+                    MessageBox.confirm(vMessage, {
+                        actions: ["Continue", "Cancel"],
                         onClose: function (sAction) {
-                            if (sAction === "Yes") {
+                            if (sAction === "Continue") {
                                 Common.openLoadingDialog(that);
 
                                 path = "/BOMUVSet";
@@ -3644,8 +3831,14 @@ sap.ui.define([
                                         me.setTabReadEditMode(false, "BOMbyUVEditModeModel");
                                         me.setRowReadMode("bomUVTable");
                                         Common.closeLoadingDialog(that);
-                                        // Common.showMessage(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
+
+                                        if (me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "01").length > 0 ||
+                                            me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                                            MessageBox.information("Saved. RMC has to be executed.");
+                                        }
+                                        else {
+                                            MessageBox.information(me._i18n.getText('t4'));
+                                        }
                                     },
                                     error: function (err) {
                                         Common.closeLoadingDialog(that);
@@ -4095,8 +4288,8 @@ sap.ui.define([
                         change: changeFunction,
                         liveChange: changeFunction,
                         // editable: "{= ${DataModel>USGCLS} === 'AUV' ? " + editModeCond + " : ${DataModel>USGCLS} === 'ASUV' ? " + editModeCond + " : false }",
-                        editable: "{= ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " :  false }",
-                        enabled: "{= ${UI_MODEL>/dataMode} === 'READ' ? true : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " : false  }",
+                        editable: "{= ${DataModel>EDITABLE === '' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " :  false }",
+                        enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " : false  }",
                         visible: true,
                         tooltip: "{DataModel>" + columnName + "}"
                     });
@@ -4115,6 +4308,7 @@ sap.ui.define([
                             selectedKey: Constants.GMC,
                             change: changeFunction,
                             editable: ((column.Editable) ? "{= " + editModeCond + " }" : false),
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -4136,6 +4330,7 @@ sap.ui.define([
                             change: inputChangeFunction,
                             liveChange: changeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -4146,6 +4341,7 @@ sap.ui.define([
                             showValueHelp: true,
                             valueHelpRequest: that.onMatTypeValueHelp.bind(that),
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                             visible: column.Visible,
                             showSuggestion: true,
                             suggestionItems: {
@@ -4175,6 +4371,7 @@ sap.ui.define([
                             },
                             change: changeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -4189,9 +4386,9 @@ sap.ui.define([
                             change: inputChangeFunction,
                             liveChange: liveChangeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}",
-
                         });
                     } else if (columnName === "BOMSTYLE") {
                         //setting Style input with value help
@@ -4203,7 +4400,7 @@ sap.ui.define([
                             change: inputChangeFunction,
                             liveChange: changeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? " + editModeCond + " : false  }" : false),
-                            enabled: ("{= ${UI_MODEL>/dataMode} === 'READ' ? true : ${DataModel>BOMITMTYP} === 'STY' ? " + editModeCond + " : false  }"),
+                            enabled: ("{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>BOMITMTYP} === 'STY' ? " + editModeCond + " : false  }"),
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -4214,6 +4411,7 @@ sap.ui.define([
                             showValueHelp: true,
                             valueHelpRequest: that.onUomGMCValueHelp.bind(that),
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                             visible: column.Visible,
                             showSuggestion: true,
                             suggestionItems: {
@@ -4235,7 +4433,7 @@ sap.ui.define([
                             change: changeFunction,
                             liveChange: liveChangeFunction,
                             editable: false,
-                            enabled: ("{= ${UI_MODEL>/dataMode} === 'READ' ? true : false  }"),
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -4246,7 +4444,7 @@ sap.ui.define([
                             change: changeFunction,
                             liveChange: liveChangeFunction,
                             editable: false,
-                            enabled: ("{= ${UI_MODEL>/dataMode} === 'READ' ? true : false  }"),
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -4257,6 +4455,7 @@ sap.ui.define([
                             change: changeFunction,
                             liveChange: liveChangeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                            enabled: type === 'UV' ? true : "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}",
                             textAlign: sap.ui.core.TextAlign.Right
@@ -4269,6 +4468,7 @@ sap.ui.define([
                                 change: changeFunction,
                                 liveChange: changeFunction,
                                 editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                                enabled: type === 'UV' ? true : "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                                 visible: column.Visible,
                                 tooltip: "{DataModel>" + columnName + "}",
                                 textAlign: sap.ui.core.TextAlign.Right
@@ -4285,6 +4485,7 @@ sap.ui.define([
                                 change: changeFunction,
                                 liveChange: changeFunction,
                                 editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                                enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
                                 visible: column.Visible,
                                 tooltip: "{DataModel>" + columnName + "}"
                             })
@@ -4439,7 +4640,6 @@ sap.ui.define([
                         var oColumnsModel = this.getView().getModel("bombByGMCColumns");
                         var oColumnsData = oColumnsModel.getProperty('/');
                         oTable.getColumns().forEach((col, idx) => {
-                            console.log(col);
                             oColumnsData.filter(item => item.ColumnName === col.getProperty("sortProperty"))
                                 .forEach(ci => {
                                     if (ci.Editable) {

@@ -259,7 +259,6 @@ sap.ui.define([
                 }
 
                 Common.closeLoadingDialog(that);
-                console.log("route")
                 //this.getAppAction();
 
                 // setTimeout(() => {
@@ -5140,7 +5139,6 @@ sap.ui.define([
             },
 
             setControlAppAction(pChange) {
-                console.log(pChange, "action")
                 if (this._iono != ' ') {
                     if (this._styleNo === Constants.NEW) {
                         //this.byId("btnHdrApplyIO").setVisible(false);
