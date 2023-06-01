@@ -90,7 +90,7 @@ sap.ui.define([
 		onAfterRendering: function() {
 			var that = this;
            
-            console.log("after render")
+            // console.log("after render")
             //get the copied data
 			//sap.ui.table.Table.prototype.onAfterRendering.apply(this, arguments);
             if (sap.ui.table.Table.prototype.onAfterRendering) {
