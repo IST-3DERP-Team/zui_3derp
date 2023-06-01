@@ -255,10 +255,11 @@ sap.ui.define([
                             // item.CREATEDDT = dateFormat.format(item.CREATEDDT);
                             // item.UPDATEDDT = dateFormat.format(item.UPDATEDDT);
                             //item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));
-                            if (item.CREATEDDT !== null) {
+                            if (item.CREATEDDT !== null && item.CREATEDDT !== "  /  /" && item.CREATEDDT !== "") {
                                 item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));// + " " + timeFormat.format(new Date(item.CREATEDTM));
                             }
-                            if (item.UPDATEDDT !== null) {
+                            if (item.UPDATEDDT !== null && item.UPDATEDDT !== "  /  /" && item.UPDATEDDT !== "" && item.UPDATEDDT !== " //  /  /") {
+                                //console.log(item.UPDATEDDT)
                                 item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));// + " " + timeFormat.format(new Date(item.UPDATEDTM));
                             }
                         })

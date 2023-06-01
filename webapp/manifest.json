@@ -86,6 +86,15 @@
                     "annotations": [],
                     "localUri": "localService/ZGW_3DERP_LOCK_SRV/metadata.xml"
                 }
+            },
+            "ZGW_3DERP_RFC_SRV": {
+                "uri": "/sap/opu/odata/sap/ZGW_3DERP_RFC_SRV/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "localUri": "localService/ZGW_3DERP_RFC_SRV/metadata.xml",
+                    "odataVersion": "2.0"
+                }
             }
         }
     },
@@ -198,6 +207,18 @@
             },
             "FILTER_MODEL": {
                 "type": "sap.ui.model.json.JSONModel"
+            },
+            "ZGW_3DERP_RFC_SRV": {
+                "dataSource": "ZGW_3DERP_RFC_SRV",
+                "preload": true,
+                "settings": {
+                    "defaultBindingMode": "TwoWay",
+                    "defaultCountMode": "Inline",
+                    "refreshAfterChange": false,
+                    "metadataUrlParams": {
+                        "sap-value-list": "none"
+                    }
+                }
             }
         },
         "resources": {

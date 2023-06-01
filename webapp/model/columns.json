@@ -221,7 +221,7 @@
         {"ColumnName": "Gmc", "ColumnLabel": "GMC", "Order": "3", "DataType": "STRING", "ColumnWidth": "115", "Length": "10", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
         {"ColumnName": "Gmcdesc", "ColumnLabel": "GMCDESC", "Order": "4", "DataType": "STRING", "ColumnWidth": "450", "Length": "500", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
         {"ColumnName": "Matdesc1", "ColumnLabel": "ADDTLDESC", "Order": "5", "DataType": "STRING", "ColumnWidth": "385", "Length": "500", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
-        {"ColumnName": "Consump", "ColumnLabel": "CONSUMP", "Order": "6", "DataType": "NUMBER", "ColumnWidth": "115", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "Consump", "ColumnLabel": "CONSUMP", "Order": "6", "DataType": "NUMBER", "ColumnWidth": "115", "Length": "18", "Decimal": "5", "Visible": true, "Editable": false, "Mandatory": false },
         {"ColumnName": "Uom", "ColumnLabel": "UOM", "Order": "7", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
         {"ColumnName": "Supplytyp", "ColumnLabel": "SUPPLYTYP", "Order": "8", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
         "TextFormatMode": "ValueKey",

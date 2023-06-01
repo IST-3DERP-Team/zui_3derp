@@ -3125,8 +3125,7 @@ sap.ui.define([
                 //console.log("colors", me._colors);
                 for (var i = 0; i < oData.results.length; i++) {
                     //pivot colros only for AUV and ASUV
-                    let vUSGCLS = oData.results[i].USGCLS;
-                    if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {    
+                    if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
                         let noOfHasColor = 0;
                         for (var j = 0; j < me._colors.length; j++) {
                             var color = me._colors[j];
@@ -3203,6 +3202,159 @@ sap.ui.define([
                             MessageBox.information(me._i18n.getText('t5'));
                         }
                     });
+                }
+                //console.log(JSON.stringify(oEntry2));
+            },
+
+            //new RMC method that will process only selected records
+            onRMC2: async function () {
+                //RMC clicked
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var oTableModel = this.getView().byId("bomGMCTable").getModel("DataModel");
+                var oData = oTableModel.getData();
+                var item = {};
+                console.log(oData);
+                
+                var oMsgStrip = this.getView().byId('BOMbyGMCMessageStrip');
+                oMsgStrip.setVisible(false);
+
+                //01/10/2023 add BOMGMCColorToItems parameter
+                var oEntry2 = {
+                    STYLENO: this._styleNo,
+                    VERNO: this._version,
+                    GMCToItems: []
+
+                };
+               
+                for (var i = 0; i < oData.results.length; i++) {
+                    //pivot colros only for AUV and ASUV
+                    let vUSGCLS = oData.results[i].USGCLS;
+                    if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {    
+                        let noOfHasColor = 0;
+                        for (var j = 0; j < me._colors.length; j++) {
+                            var color = me._colors[j];
+                            //console.log(color)
+                            //add items with color description only 
+                            if (oData.results[i][color.Attribcd] != "" && oData.results[i][color.Attribcd] != undefined) {
+                                item = {
+                                    "STYLENO": me._styleNo,
+                                    "BOMSEQ": oData.results[i].BOMSEQ,
+                                    "BOMITEM": oData.results[i].BOMITEM,
+                                    "VERNO": me._version,
+                                    "BOMITMTYP": oData.results[i].BOMITMTYP,
+                                    "GMC": oData.results[i].GMC,
+                                    "PARTCD": oData.results[i].PARTCD,
+                                    "USGCLS": oData.results[i].USGCLS,
+                                    "COLOR": color.Attribcd,
+                                    "MATTYP": oData.results[i].MATTYP,
+                                    "MATTYPCLS": Constants.ZCOLR,
+                                    "DESC1": oData.results[i][color.Attribcd]
+
+                                };
+                                oEntry2.GMCToItems.push(item);
+                                //console.log(item)
+                                noOfHasColor++;
+                            }
+                        }
+                        if (noOfHasColor == 0) {
+                            MessageBox.information("At least one color is required.");
+                            return;
+                        }
+                    }
+                };
+                let noOfGMC = 0;
+                let noOfBomWGMC = 0
+                noOfGMC = oData.results.filter(item => item.BOMITMTYP === "GMC");
+                noOfBomWGMC = oData.results.filter(item => item.BOMITMTYP === "GMC" && item.GMC !== "");
+                if (noOfGMC.length == 0) {
+                    MessageBox.information("RMC is only possible for materials with assigned GMC");
+                    return;
+                }
+
+                let resultDialog = "";
+                if (noOfGMC.length > noOfBomWGMC.length) {
+                    resultDialog = await this.rmcConfirmDialog();
+                }
+                console.log(resultDialog);
+                if (resultDialog != "No") {
+                    Common.openLoadingDialog(that);
+
+                    //build header and payload
+                    //var entitySet = "/StyleBOMGMCSet(STYLENO='" + that._styleNo + "',VERNO='" + that._version + "',BOMSEQ='')";
+                    //oModel.setHeaders({ sbu: that._sbu });
+                    // var oEntry = {
+                    //     STYLENO: that._styleNo,
+                    //     VERNO: that._version
+                    // };
+                    var oTable = this.byId("bomGMCTable");
+                    var oSelectedIndices = this.getView().byId("bomGMCTable").getSelectedIndices();
+                    var oTmpSelectedIndices = [];
+                    oSelectedIndices.forEach(item => {
+                        oTmpSelectedIndices.push(oTable.getBinding("rows").aIndices[item])
+                    })
+                    oSelectedIndices = oTmpSelectedIndices;
+
+                    oModel.setUseBatch(true);
+                    oModel.setDeferredGroups(["update"]);
+                    var mParameters = {
+                        "groupId": "update"
+                    }
+
+                    for (var i = 0; i < oSelectedIndices.length; i++) {
+                        var index = oSelectedIndices[i];
+                        var entitySet = "/StyleBOMGMCSet(STYLENO='" + that._styleNo + "',VERNO='" + that._version + "',BOMSEQ='" + oData.results[index].BOMSEQ + "')";
+                        const param = {
+                            "STYLENO": that._styleNo,
+                            "VERNO": that._version,
+                            "BOMSEQ": oData.results[index].BOMSEQ,
+                            "BOMITEM": oData.results[i].BOMITEM,
+                            "BOMITMTYP": oData.results[i].BOMITMTYP,
+                            "GMC": oData.results[i].GMC,
+                            "PARTCD": oData.results[i].PARTCD,
+                            "PARTCNT": oData.results[i].PARTCNT,
+                            "PARTDESC": oData.results[i].PARTDESC,
+                            "USGCLS": oData.results[i].USGCLS,
+                            "MATTYP": oData.results[i].MATTYP,
+                        }
+                        oModel.update(entitySet, param, mParameters);
+                    }
+                  
+                    //return;
+
+                    oModel.setHeaders({
+                        sbu: that._sbu
+                    });
+                    oModel.submitChanges({
+                        mParameters,
+                        success: function (oData, oResponse) {
+                            me.onRefresh();
+                            Common.closeLoadingDialog(me);
+                            MessageBox.information(me._i18n.getText('t4'));
+                        },
+                        error: function (oData, oResponse) {
+                            Common.closeLoadingDialog(me);
+                            MessageBox.information(me._i18n.getText('t5'));
+                        }
+                    });
+                     /*
+                    //call update method of Style BOm by GMC
+                    oModel.update(entitySet, oEntry, {
+                        method: "PUT",
+                        success: function (data, oResponse) {
+                            me.onRefresh();
+                            Common.closeLoadingDialog(me);
+                            // Common.showMessage(me._i18n.getText('t4'));
+                            MessageBox.information(me._i18n.getText('t4'));
+                        },
+                        error: function () {
+                            Common.closeLoadingDialog(me);
+                            // Common.showMessage(me._i18n.getText('t5'));
+                            MessageBox.information(me._i18n.getText('t5'));
+                        }
+                    });
+                    */
+                    
                 }
                 //console.log(JSON.stringify(oEntry2));
             },
@@ -3355,11 +3507,19 @@ sap.ui.define([
                 });
                 oModel.read("/StyleBOMUVSet", {
                     success: function (oData, oResponse) {
+                        const usageClass = that.getView().byId("UsageClassCB").getSelectedKey();
                         var rowData = oData.results;
                         //Get unique items of BOM by UV
-                        var unique = rowData.filter((rowData, index, self) =>
-                            index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS)));
-
+                        var unique;
+                        if(usageClass === 'CUV'){
+                            unique = rowData.filter((rowData, index, self) =>
+                            index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS && t.SOLDTOCUST === rowData.SOLDTOCUST)));
+                    
+                        }
+                        else{
+                            unique = rowData.filter((rowData, index, self) =>
+                                index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS)));
+                        }
                         //For every unique item
                         for (var i = 0; i < unique.length; i++) {
                             //Set the pivot column for each unique item
@@ -3589,34 +3749,59 @@ sap.ui.define([
                         UVToItems: []
                     }
 
-                    var pivotArray;
+                    var pivotArray= [];
                     if (usageClass === Constants.AUV) {
                         pivotArray = this._colors;
-                    } else {
+                    } else if (usageClass === Constants.ASUV || usageClass === Constants.ASDUV || usageClass === Constants.ACSUV || usageClass === Constants.ASPOUV ){
                         pivotArray = this._sizes;
                     }
 
                     // var color, size;
                     //each table item
                     for (var i = 0; i < oData.results.length; i++) {
+                        var vUSGCLS = oData.results[i].USGCLS;
 
-                        //deconstruct the pivot columns into line items
-                        for (var j = 0; j < pivotArray.length; j++) {
+                        if(pivotArray.length > 0 )
+                        {
+                            //deconstruct the pivot columns into line items
+                            for (var j = 0; j < pivotArray.length; j++) {
 
-                            var attrib = pivotArray[j];
+                                var attrib = pivotArray[j];
+                                item = {
+                                    "Styleno": this._styleNo,
+                                    "Verno": this._version,
+                                    "Gmc": oData.results[i].GMC,
+                                    "Partcd": oData.results[i].PARTCD,
+                                    "Usgcls": oData.results[i].USGCLS,
+                                    "Color": ((oData.results[i].USGCLS === Constants.AUV) ? attrib.Attribcd : ''), //for AUV save on Color
+                                    //"Sze": ((oData.results[i].USGCLS !== Constants.AUV) ? attrib.Attribcd : ''), //Non-AUV save on Sze
+                                    "Sze": ((vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) ? attrib.Attribcd : ''), 
+                                    "Dest": " ",
+                                    "Mattyp": oData.results[i].MATTYP,
+                                    "Mattypcls": oData.results[i].MATTYPCLS,
+                                    "Attribcd": oData.results[i].ATTRIBCD,
+                                    "Desc1": oData.results[i][attrib.Attribcd],
+                                    "Consump": oData.results[i].CONSUMP,
+                                    "Wastage": oData.results[i].WASTAGE
+                                };
+                                oEntry.UVToItems.push(item);
+                            }
+                        }
+                        else
+                        {
                             item = {
                                 "Styleno": this._styleNo,
                                 "Verno": this._version,
                                 "Gmc": oData.results[i].GMC,
                                 "Partcd": oData.results[i].PARTCD,
                                 "Usgcls": oData.results[i].USGCLS,
-                                "Color": ((oData.results[i].USGCLS === Constants.AUV) ? attrib.Attribcd : ''), //for AUV save on Color
-                                "Sze": ((oData.results[i].USGCLS !== Constants.AUV) ? attrib.Attribcd : ''), //Non-AUV save on Sze
-                                "Dest": " ",
+                                "Color": '', 
+                                "Sze": '', 
+                                "Dest": oData.results[i].DEST,
                                 "Mattyp": oData.results[i].MATTYP,
                                 "Mattypcls": oData.results[i].MATTYPCLS,
                                 "Attribcd": oData.results[i].ATTRIBCD,
-                                "Desc1": oData.results[i][attrib.Attribcd],
+                                "Desc1": oData.results[i].DESC1,
                                 "Consump": oData.results[i].CONSUMP,
                                 "Wastage": oData.results[i].WASTAGE
                             };
@@ -5631,9 +5816,18 @@ sap.ui.define([
                             oControl = new sap.m.Link({
                                 text: "{DataModel>" + sColumnId + "}",
                                 press: function(oEvent) {
-                                  // Handle the click event of the hyperlink
-                                  window.open("https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_GMC-display", "_blank");
+                                    const vGMC =  oEvent.oSource.mProperties.text;
+                                    // Handle the click event of the hyperlink
+                                    window.open(`https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_GMC-display&/${that._sbu}/${vGMC}` , "_blank");
                                 },
+                                // Add the custom event handler for right-click
+                                // onAfterRendering: function() {
+                                //     var that = this;
+                                //     this.$().on("contextmenu", function(e) {
+                                //         e.preventDefault();
+                                //         window.open(that.getHref(), "_blank");
+                                //     });
+                                // }
                             })
                             oControl.addStyleClass("hyperlink") 
  
@@ -5641,10 +5835,22 @@ sap.ui.define([
                             oControl = new sap.m.Link({
                                 text: "{DataModel>" + sColumnId + "}",
                                 press: function(oEvent) {
+                                    // Handle the click event of the hyperlink
                                     const vStyleNo =  oEvent.oSource.mProperties.text;
                                     console.log(vStyleNo)
-                                    // Handle the click event of the hyperlink
+                                    
                                     window.open(`https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_ORD_STYLE-display&/RouteStyleDetail/${vStyleNo}/VER/%20`, "_blank");
+                                },
+                            })
+                            oControl.addStyleClass("hyperlink") 
+ 
+                        }else if(sColumnId === "Matno"){
+                            oControl = new sap.m.Link({
+                                text: "{DataModel>" + sColumnId + "}",
+                                press: function(oEvent) {
+                                    // Handle the click event of the hyperlink
+                                    const vcolumnData =  oEvent.oSource.mProperties.text;
+                                    window.open(`https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_MATERIAL-display&/${that._sbu}/${vcolumnData}`, "_blank");
                                 },
                             })
                             oControl.addStyleClass("hyperlink") 
@@ -5678,7 +5884,7 @@ sap.ui.define([
                             });
                         }
                         else {
-                            if(sColumnId !== "GMC" && sColumnId !== "BOMSTYLE" ){
+                            if(sColumnId !== "GMC" && sColumnId !== "BOMSTYLE" && sColumnId !== "Matno" ){
                                 oControl.bindText({  
                                     parts: [  
                                         { path: "DataModel>" + sColumnId }
