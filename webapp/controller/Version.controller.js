@@ -23,6 +23,12 @@ sap.ui.define([
         var that;
         var blnGetComponentInd = false;
         var _promiseResult;
+        var oController = {
+            openLinkInNewTab: function(event, link) {
+                event.preventDefault();
+                window.open(link.href, "_blank");
+            }
+        };
 
         return Controller.extend("zui3derp.controller.Version", {
 
@@ -1493,7 +1499,7 @@ sap.ui.define([
                     };
 
                     var vMessage = "";
-                    if (this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                    if (this._dataMode !== "NEW" && this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
                         vMessage = "Material list with assigned SAP material no. already exists.\r\nMaterial will be deleted and a new one will be created.";
                     }
                     else {
@@ -6046,6 +6052,10 @@ sap.ui.define([
                             oControl.addStyleClass("hyperlink") 
  
                         }else if(sColumnId === "Matno"){
+                            //   oControl = new sap.ui.core.HTML({
+                            //     content: `<a href="#" onclick="return false;" oncontextmenu="that.oController.openLinkInNewTab(event, this);">{DataModel>${sColumnId}}</a>`
+                            // })
+                          
                             oControl = new sap.m.Link({
                                 text: "{DataModel>" + sColumnId + "}",
                                 press: function(oEvent) {
@@ -6115,6 +6125,13 @@ sap.ui.define([
                         hAlign: sColumnDataType === "NUMBER" ? "End" : sColumnDataType === "BOOLEAN" ? "Center" : "Begin"
                     });
                 });
+            },
+
+            
+                // Event handler function to open the link in a new tab
+            openLinkInNewTab(event, link) {
+                event.preventDefault();
+                window.open(link.href, "_blank");
             },
 
             setRowEditMode(sTabId) {

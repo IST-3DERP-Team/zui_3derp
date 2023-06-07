@@ -330,14 +330,14 @@ sap.ui.define([
                 if (!hasValue) {
                     //add column for copy button
                     oColumnsData.unshift({
-                        "ColumnName": this._i18n.getText('Copy'),
+                        "ColumnName": "Copy",// this._i18n.getText('Copy')
                         "ColumnType": "COPY",
                         "Visible": false
                     });
 
                     //add column for manage button
                     oColumnsData.unshift({
-                        "ColumnName": this._i18n.getText('Manage'),
+                        "ColumnName": "Manage", //this._i18n.getText('Manage')
                         "ColumnType": "SEL",
                         "Visible": false
                     });
