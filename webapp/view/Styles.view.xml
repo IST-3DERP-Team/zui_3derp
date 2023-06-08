@@ -19,70 +19,70 @@
                 <!-- >>> Filters <<< -->
                 <smartfilterbar:SmartFilterBar id="SmartFilterBar" entitySet="ZVI_3DERP_STYLES_FILTER" search="onSearch" persistencyKey="3DERP_StylesPKey" filterContainerWidth="15rem" showClearButton="true">
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration id="filterSBU" key="SBU" groupId="_BASIC" label="{i18n>SBU}" tooltip="{i18n>SBU}" mandatory="mandatory" controlType="dropDownList" filterType="single" />
+                        <smartfilterbar:ControlConfiguration id="filterSBU" key="SBU" groupId="_BASIC" label="{ddtext>/SBU}" tooltip="{ddtext>/SBU}" mandatory="mandatory" controlType="dropDownList" filterType="single" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration id="filterSalesGroup" key="SALESGRP" groupId="_BASIC" label="{i18n>SALESGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
+                        <smartfilterbar:ControlConfiguration id="filterSalesGroup" key="SALESGRP" groupId="_BASIC" label="{ddtext>/SALESGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration id="filterCustomerGroup" key="CUSTGRP" groupId="_BASIC" label="{i18n>CUSTGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
+                        <smartfilterbar:ControlConfiguration id="filterCustomerGroup" key="CUSTGRP" groupId="_BASIC" label="{ddtext>/CUSTGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{i18n>SEASONCD}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
+                        <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{ddtext>/SEASONCD}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{i18n>PRODTYP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
+                        <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{ddtext>/PRODTYP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="STYLENO" groupId="_ADVANCED" label="{i18n>STYLENO}" preventInitialDataFetchInValueHelpDialog="false" />
+                        <smartfilterbar:ControlConfiguration key="STYLENO" groupId="_ADVANCED" label="{ddtext>/STYLENO}" preventInitialDataFetchInValueHelpDialog="false" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="STYLECAT" groupId="_ADVANCED" label="{i18n>STYLECAT}" />
+                        <smartfilterbar:ControlConfiguration key="STYLECAT" groupId="_ADVANCED" label="{ddtext>/STYLECAT}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="STYLECD" groupId="_ADVANCED" label="{i18n>STYLECD}" />
+                        <smartfilterbar:ControlConfiguration key="STYLECD" groupId="_ADVANCED" label="{ddtext>/STYLECD}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="FTSTYLE" groupId="_ADVANCED" label="{i18n>FTSTYLE}" />
+                        <smartfilterbar:ControlConfiguration key="FTSTYLE" groupId="_ADVANCED" label="{ddtext>/FTSTYLE}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="SOLDTOCUST" groupId="_ADVANCED" label="{i18n>SOLDTOCUST}" preventInitialDataFetchInValueHelpDialog="false" />
+                        <smartfilterbar:ControlConfiguration key="SOLDTOCUST" groupId="_ADVANCED" label="{ddtext>/SOLDTOCUST}" preventInitialDataFetchInValueHelpDialog="false" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="DESC1" groupId="_ADVANCED" label="{i18n>DESC1}" />
+                        <smartfilterbar:ControlConfiguration key="DESC1" groupId="_ADVANCED" label="{ddtext>/DESC1}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="DESC2" groupId="_ADVANCED" label="{i18n>DESC2}" />
+                        <smartfilterbar:ControlConfiguration key="DESC2" groupId="_ADVANCED" label="{ddtext>/DESC2}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="STATUSCD" groupId="_ADVANCED" label="{i18n>STATUSCD}" />
+                        <smartfilterbar:ControlConfiguration key="STATUSCD" groupId="_ADVANCED" label="{ddtext>/STATUSCD}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="CUSTPRDTYP" groupId="_ADVANCED" label="{i18n>CUSTPRDTYP}" />
+                        <smartfilterbar:ControlConfiguration key="CUSTPRDTYP" groupId="_ADVANCED" label="{ddtext>/CUSTPRDTYP}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="PRODGRP" groupId="_ADVANCED" label="{i18n>PRODGRP}" />
+                        <smartfilterbar:ControlConfiguration key="PRODGRP" groupId="_ADVANCED" label="{ddtext>/PRODGRP}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="SIZEGRP" groupId="_ADVANCED" label="{i18n>SIZEGRP}" />
+                        <smartfilterbar:ControlConfiguration key="SIZEGRP" groupId="_ADVANCED" label="{ddtext>/SIZEGRP}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="UOM" groupId="_ADVANCED" label="{i18n>UOM}" />
+                        <smartfilterbar:ControlConfiguration key="UOM" groupId="_ADVANCED" label="{ddtext>/UOM}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="STYLEGRP" groupId="_ADVANCED" label="{i18n>STYLEGRP}" />
+                        <smartfilterbar:ControlConfiguration key="STYLEGRP" groupId="_ADVANCED" label="{ddtext>/STYLEGRP}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="FABRCTN" groupId="_ADVANCED" label="{i18n>FABRCTN}" />
+                        <smartfilterbar:ControlConfiguration key="FABRCTN" groupId="_ADVANCED" label="{ddtext>/FABRCTN}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="VERNO" groupId="_ADVANCED" label="{i18n>VERNO}" />
+                        <smartfilterbar:ControlConfiguration key="VERNO" groupId="_ADVANCED" label="{ddtext>/VERNO}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="CREATEDBY" groupId="_ADVANCED" label="{i18n>CREATEDBY}" />
+                        <smartfilterbar:ControlConfiguration key="CREATEDBY" groupId="_ADVANCED" label="{ddtext>/CREATEDBY}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="CREATEDDT" label="{i18n>CREATEDDT}">
+                        <smartfilterbar:ControlConfiguration key="CREATEDDT" label="{ddtext>/CREATEDDT}">
                             <smartfilterbar:customControl>
                                 <DateRangeSelection id="CreatedDatePicker" value="{parts: [{path: ''}, {path: ''}], type: 'sap.ui.model.type.DateInterval',
                             formatOptions: { UTC: false, format: 'yyyyMMdd' }}" />
@@ -90,10 +90,10 @@
                         </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="UPDATEDBY" groupId="_ADVANCED" label="{i18n>UPDATEDBY}" />
+                        <smartfilterbar:ControlConfiguration key="UPDATEDBY" groupId="_ADVANCED" label="{ddtext>/UPDATEDBY}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="UPDATEDDT" label="{i18n>UPDATEDDT}">
+                        <smartfilterbar:ControlConfiguration key="UPDATEDDT" label="{ddtext>/UPDATEDDT}">
                             <smartfilterbar:customControl>
                                 <DateRangeSelection id="UpdatedDatePicker" value="{parts: [{path: ''}, {path: ''}], type: 'sap.ui.model.type.DateInterval',
                             formatOptions: { UTC: false, format: 'yyyyMMdd' }}" />
@@ -109,13 +109,13 @@
                 <!-- Statistics -->
                 <layout:HorizontalLayout class="sapUiResponsiveContentPadding statClass">
                     <!-- remove class sapUiSmallMarginBottom tag from GenericTag element -->
-                    <GenericTag text="{i18n>forecast}" design="StatusIconHidden" status="Warning">
+                    <GenericTag text="{ddtext>/Forecast}" design="StatusIconHidden" status="Warning">
                         <ObjectNumber emphasized="true" number="{model>forecast}" state="Warning" id="forecastNumber" />
                     </GenericTag>
-                    <GenericTag text="{i18n>order}" design="StatusIconHidden" status="Information">
+                    <GenericTag text="{ddtext>/Order}" design="StatusIconHidden" status="Information">
                         <ObjectNumber emphasized="true" number="{model>order}" state="Information" id="orderNumber" />
                     </GenericTag>
-                    <GenericTag text="{i18n>shipped}" design="StatusIconHidden" status="Success">
+                    <GenericTag text="{ddtext>/Shipped}" design="StatusIconHidden" status="Success">
                         <ObjectNumber emphasized="true" number="{model>shipped}" state="Success" id="shippedNumber" />
                     </GenericTag>
                 </layout:HorizontalLayout>
@@ -136,14 +136,14 @@
                         <Toolbar id="tableToolbar" class="sapUiTinyMarginBottom">
                             <HBox>
                                 <Title id="StylesCount" />
-                                <Title text="{i18n>style}" class="sapUiTinyMarginBegin" />
+                                <Title text="{ddtext>/Styles}" class="sapUiTinyMarginBegin" />
                             </HBox>
                             <ToolbarSpacer />
-                            <Button icon="sap-icon://add" tooltip="{i18n>Createnewstyle}" press="onCreateNewStyle" visible="{= ${AppAction>/appChange} === true ? true : false }" />
-                            <Button icon="sap-icon://refresh" tooltip="Refresh" press="onRefresh" />
-                            <Button icon="sap-icon://copy" tooltip="{i18n>Copystylemode}" press="onCopyMode" visible="{= ${AppAction>/appChange} === true ? true : false }" />
-                            <Button text="{i18n>Upload}" icon="sap-icon://upload" tooltip="{i18n>Uploadstylesfromfile}" press="onUploadStyle"  visible="{= ${AppAction>/appChange} === true ? true : false }"/>
-                            <Button icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">
+                            <Button icon="sap-icon://add" tooltip="{ddtext>/CREATENEWSTYLE}" press="onCreateNewStyle" visible="{= ${AppAction>/appChange} === true ? true : false }" />
+                            <Button icon="sap-icon://refresh" tooltip="{ddtext>/REFRESH}" press="onRefresh" />
+                            <Button icon="sap-icon://copy" tooltip="{ddtext>/COPYSTYLE}" press="onCopyMode" visible="{= ${AppAction>/appChange} === true ? true : false }" />
+                            <Button icon="sap-icon://upload" tooltip="{ddtext>/UPLOADSTYLE}" press="onUploadStyle"  visible="{= ${AppAction>/appChange} === true ? true : false }"/>
+                            <Button icon="sap-icon://excel-attachment" tooltip="{ddtext18n>DOWNLOADSPREADSHEET}" press="onExport">
                                 <customData>
                                     <core:CustomData key="TableName" value="styleDynTable" />
                                 </customData>
@@ -153,7 +153,7 @@
                                     <core:CustomData key="TableName" value="styleDynTable" />
                                 </customData>
                             </Button> -->
-                            <Button icon="sap-icon://grid" tooltip="{i18n>Savetablelayout}" press="onSaveTableLayout" />
+                            <Button icon="sap-icon://grid" tooltip="{i18n>SAVELAYOUT}" press="onSaveTableLayout" />
                         </Toolbar>
                     </uiT:extension>
                     <uiT:layoutData>

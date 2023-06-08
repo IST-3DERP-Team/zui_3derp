@@ -4,7 +4,7 @@
     <Toolbar height="2rem" style="Clear">
         <!-- <Label text="{i18n>DetailedBOM}"/> -->
         <ToolbarSpacer />
-        <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" press="onExport"  tooltip="{i18n>Downloadspreadsheet}">
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" press="onExport"  tooltip="{ddtext>/DOWNLOADSPREADSHEET}">
             <customData>
                 <core:CustomData key="TableName" value="bomDetailedTable"/>
             </customData>

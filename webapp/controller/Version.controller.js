@@ -23,6 +23,7 @@ sap.ui.define([
         var that;
         var blnGetComponentInd = false;
         var _promiseResult;
+        var _oCaption = {};
         var oController = {
             openLinkInNewTab: function(event, link) {
                 event.preventDefault();
@@ -34,7 +35,7 @@ sap.ui.define([
 
             onInit: function () {
                 that = this;
-
+                this._validationErrors = [];
                 //Initialize router
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
@@ -242,6 +243,18 @@ sap.ui.define([
                 var oDDTextParam = [], oDDTextResult = {};
                 var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
 
+                oDDTextParam.push({ CODE: "COPY" });
+                oDDTextParam.push({ CODE: "ADDNEWLINE" });
+                oDDTextParam.push({ CODE: "REMOVENEWLINE" });
+                oDDTextParam.push({ CODE: "GETCOMPONENTS" });
+                oDDTextParam.push({ CODE: "RMC" });
+                oDDTextParam.push({ CODE: "EDIT" });
+                oDDTextParam.push({ CODE: "ADD" });
+                oDDTextParam.push({ CODE: "REFRESH" });
+                oDDTextParam.push({ CODE: "DELETE" });
+                oDDTextParam.push({ CODE: "CANCEL" });
+                oDDTextParam.push({ CODE: "SAVE" });
+                
                 oDDTextParam.push({ CODE: "ATTRIBTYP" });
                 oDDTextParam.push({ CODE: "ATTRIBCD" });
                 oDDTextParam.push({ CODE: "DESC" });
@@ -303,6 +316,14 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "ORDERUOM" });
                 oDDTextParam.push({ CODE: "UMREZ" });
                 oDDTextParam.push({ CODE: "UMREN" });
+
+                oDDTextParam.push({ CODE: "VERSIONATTRIBUTES" });
+                oDDTextParam.push({ CODE: "BOMBYGMC" });
+                oDDTextParam.push({ CODE: "BOMBYUV" });
+                oDDTextParam.push({ CODE: "DETAILEDBOM" });
+                oDDTextParam.push({ CODE: "MATERIALLIST" });
+                oDDTextParam.push({ CODE: "VERSION" });
+
                 oDDTextParam.push({CODE: "INFO_BOM_COPIED"}); 
                 oDDTextParam.push({CODE: "INFO_COMPONENT_SAVED"}); 
                 oDDTextParam.push({CODE: "INFO_NO_COMPONENT"}); 
@@ -312,6 +333,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "INFO_NO_DATA_EDIT" });
                 oDDTextParam.push({ CODE: "INFO_NO_SEL_RECORD_TO_PROC" });
                 oDDTextParam.push({ CODE: "INFO_NO_RECORD_TO_REMOVE" });
+                oDDTextParam.push({ CODE: "INFO_CHECK_INVALID_ENTRIES" });
 
                 return new Promise((resolve, reject)=>{
                     oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam }, {
@@ -323,6 +345,7 @@ sap.ui.define([
 
                             me.getView().setModel(new JSONModel(oDDTextResult), "ddtext");
                             me.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").setData({ text: oDDTextResult });
+                            _oCaption = me.getView().getModel("ddtext").getData();
                             resolve();
                         },
                         error: function (err) { resolve(); }
@@ -1417,6 +1440,34 @@ sap.ui.define([
                 var oSource = oEvent.getSource();
                 var sColumnName = oSource.getBindingInfo("value").parts[0].path;
                 var oTable = that.getView().byId("bomGMCTable");
+                
+                if (sColumnName === "MATCONSPER" || sColumnName === "PER" || sColumnName === "WASTAGE") {
+                    var decPlaces = oEvent.getSource().getBindingInfo("value").constraints.scale;
+
+                    if (oEvent.getParameters().value.split(".").length > 1) {
+                        if (oEvent.getParameters().value.split(".")[1].length > decPlaces) {
+                            oEvent.getSource().setValueState("Error");
+                            oEvent.getSource().setValueStateText("Enter a number with a maximum of " + decPlaces + " decimal places.");
+                            that._validationErrors.push(oEvent.getSource().getId());
+                        }
+                        else {
+                            oEvent.getSource().setValueState("None");
+                            that._validationErrors.forEach((item, index) => {
+                                if (item === oEvent.getSource().getId()) {
+                                    that._validationErrors.splice(index, 1)
+                                }
+                            })
+                        }
+                    }
+                    else {
+                        oEvent.getSource().setValueState("None");
+                        that._validationErrors.forEach((item, index) => {
+                            if (item === oEvent.getSource().getId()) {
+                                that._validationErrors.splice(index, 1)
+                            }
+                        })
+                    }
+                }
 
                 if (sColumnName === "MATCONSPER" || sColumnName === "PER" || sColumnName === "WASTAGE") {
                     var sRowPath = oSource.getBindingInfo("value").binding.oContext.sPath;
@@ -1431,8 +1482,9 @@ sap.ui.define([
                     if (vMatConsPer === "" || vMatConsPer === undefined) { vMatConsPer = "0"; }
                     if (vPer === "" || vPer === undefined) { vPer = "0"; }
                     if (vWastage === "" || vWastage === undefined) { vWastage = "0"; }
-
-                    var vCompConsump = (((+vPer) + (+vWastage)) * (+vMatConsPer));
+                    
+                    var decPlaces = oEvent.getSource().getBindingInfo("value").constraints.scale;
+                    var vCompConsump = (((+vPer) + (+vWastage)) * (+vMatConsPer)).toFixed(decPlaces);
                     oTable.getModel("DataModel").setProperty(sRowPath + '/COMCONSUMP', vCompConsump + "");
                     oTable.getModel("DataModel").setProperty(sRowPath + '/CONSUMP', vCompConsump + "");
                     // oTable.getModel("DataModel").setProperty("/results", oTable.getModel("DataModel").getData().results);
@@ -1450,6 +1502,11 @@ sap.ui.define([
 
                 var oMsgStrip = this.getView().byId('BOMbyGMCMessageStrip');
                 oMsgStrip.setVisible(false);
+
+                if (this._validationErrors.length > 0) {
+                    MessageBox.information(_oCaption.INFO_CHECK_INVALID_ENTRIES);
+                    return;
+                }
 
                 if (!this._BOMbyGMCChanged) { //check if data changed
                     // Common.showMessage(this._i18n.getText('t7'));
@@ -4270,10 +4327,42 @@ sap.ui.define([
                 })
             },
 
-            onMaterialListChange: function () {
+            onMaterialListChange: function (oEvent) {
                 //material list change flag
                 this._materialListChanged = true;
                 this.setChangeStatus(true);
+
+                var oSource = oEvent.getSource();
+                var sColumnName = oSource.getBindingInfo("value").parts[0].path;
+                var oTable = that.getView().byId("bomGMCTable");
+                
+                if (sColumnName.toUpperCase() === "UNITPRICE") {
+                    var decPlaces = oEvent.getSource().getBindingInfo("value").constraints.scale;
+
+                    if (oEvent.getParameters().value.split(".").length > 1) {
+                        if (oEvent.getParameters().value.split(".")[1].length > decPlaces) {
+                            oEvent.getSource().setValueState("Error");
+                            oEvent.getSource().setValueStateText("Enter a number with a maximum of " + decPlaces + " decimal places.");
+                            that._validationErrors.push(oEvent.getSource().getId());
+                        }
+                        else {
+                            oEvent.getSource().setValueState("None");
+                            that._validationErrors.forEach((item, index) => {
+                                if (item === oEvent.getSource().getId()) {
+                                    that._validationErrors.splice(index, 1)
+                                }
+                            })
+                        }
+                    }
+                    else {
+                        oEvent.getSource().setValueState("None");
+                        that._validationErrors.forEach((item, index) => {
+                            if (item === oEvent.getSource().getId()) {
+                                that._validationErrors.splice(index, 1)
+                            }
+                        })
+                    }
+                }
             },
 
             onMaterialListInputChange: function (oEvent) {
@@ -4321,6 +4410,11 @@ sap.ui.define([
 
                 var oMsgStrip = this.getView().byId('MaterialListMessageStrip');
                 oMsgStrip.setVisible(false);
+
+                if (this._validationErrors.length > 0) {
+                    MessageBox.information(_oCaption.INFO_CHECK_INVALID_ENTRIES);
+                    return;
+                }
 
                 if (!this._materialListChanged) { //check changed data
                     // Common.showMessage(this._i18n.getText('t7'));
@@ -4645,7 +4739,8 @@ sap.ui.define([
                     } else if (columnName === "MATCONSPER" || columnName === "PER" || columnName === "WASTAGE") {
                         //setting the GMC input with value help
                         oColumnTemplate = new sap.m.Input({
-                            value: "{DataModel>" + columnName + "}",
+                            // value: "{DataModel>" + columnName + "}",
+                            value: "{path:'" + "DataModel>" + columnName + "', formatOptions:{ minFractionDigits:" + column.Decimal + ", maxFractionDigits:" + column.Decimal + " }, constraints:{ precision:" + column.Length + ", scale:" + column.Decimal + " }}",
                             change: changeFunction,
                             liveChange: liveChangeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),

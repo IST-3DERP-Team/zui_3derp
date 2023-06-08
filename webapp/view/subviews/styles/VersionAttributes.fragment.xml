@@ -3,20 +3,20 @@
         <Toolbar height="2rem" style="Clear">
             <!-- <Label text="{i18n>VersionAttributes}" /> -->
             <ToolbarSpacer />
-            <Button id="btnVersionAttrAdd" class="verDtlBtnPaddingRight" icon="sap-icon://add" press="addLine" tooltip="{i18n>Addnewline}" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${VersionAttrEditModeModel>/editMode} === true ? false : true : false }">
+            <Button id="btnVersionAttrAdd" class="verDtlBtnPaddingRight" icon="sap-icon://add" press="addLine" tooltip="{ddtext>/ADDNEWLINE}" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${VersionAttrEditModeModel>/editMode} === true ? false : true : false }">
                 <customData>
                     <core:CustomData key="TableName" value="versionAttrTable" />
                 </customData>
             </Button>
-            <Button id="btnVersionAttrRemoveRow" type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://less" tooltip="{i18n>Removenewline}" press="removeNewLine" visible="false">
+            <Button id="btnVersionAttrRemoveRow" type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://less" tooltip="{ddtext>/REMOVENEWLINE}" press="removeNewLine" visible="false">
                 <customData>
                     <core:CustomData key="TableName" value="versionAttrTable" />
                 </customData>
             </Button>        
-            <Button id="btnVersionEdit" type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://edit" tooltip="{i18n>Editversionattributes}" press="setVersionAttrEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${VersionAttrEditModeModel>/editMode} === true ? false : true : false }" />
-            <Button id="btnVersionDelete" type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteVersionAttr" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${VersionAttrEditModeModel>/editMode} === true ? false : true : false }" />
-            <Button id="btnVersionSave" class="verDtlBtnPaddingRight" icon="sap-icon://save" tooltip="{i18n>Saveversionattributes}" press="onSaveVersionAttrTable" visible="{VersionAttrEditModeModel>/editMode}" />
-            <Button id="btnVersionCancel" type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelVersionAttrEdit" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? true : false }" />
+            <Button id="btnVersionEdit" type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setVersionAttrEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${VersionAttrEditModeModel>/editMode} === true ? false : true : false }" />
+            <Button id="btnVersionDelete" type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteVersionAttr" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${VersionAttrEditModeModel>/editMode} === true ? false : true : false }" />
+            <Button id="btnVersionSave" class="verDtlBtnPaddingRight" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveVersionAttrTable" visible="{VersionAttrEditModeModel>/editMode}" />
+            <Button id="btnVersionCancel" type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelVersionAttrEdit" visible="{= ${VersionAttrEditModeModel>/editMode} === true ? true : false }" />
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="versionAttrTable" />

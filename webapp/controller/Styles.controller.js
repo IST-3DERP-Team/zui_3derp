@@ -18,6 +18,8 @@ sap.ui.define([
 
         var that;
         var styleNo;
+        var _oCaption = {};
+
         // var dateFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({ pattern: "MM/dd/yyyy" });
         var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({ pattern: "MM/dd/yyyy" });
         var timeFormat = sap.ui.core.format.DateFormat.getTimeInstance({ pattern: "KK:mm:ss a" });
@@ -32,6 +34,9 @@ sap.ui.define([
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
                 //this._router.getRoute("RouteStyles").attachPatternMatched(this._routePatternMatched, this);
+
+                //get captions
+                this.getCaptionMsgs();
 
                 this.getOwnerComponent().getModel("LOOKUP_MODEL").setData(new JSONModel());
                 Utils.getStyleSearchHelps(this);
@@ -82,6 +87,7 @@ sap.ui.define([
 
                 this.getAppAction();
 
+
                 this.getOwnerComponent().getModel("UI_MODEL").setData({
                     fromScreen: "MAIN",
                     genAttrInfo: "",
@@ -89,6 +95,80 @@ sap.ui.define([
                 })
 
                 this._colFilters = {};
+            },
+
+            getCaptionMsgs: async function () {
+                var me = this;
+                var oDDTextParam = [], oDDTextResult = {};
+                var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+
+                oDDTextParam.push({ CODE: "SBU" });
+                oDDTextParam.push({ CODE: "SALESGRP" });
+                oDDTextParam.push({ CODE: "CUSTGRP" });
+                oDDTextParam.push({ CODE: "SEASONCD" });
+                oDDTextParam.push({ CODE: "PRODTYP" });
+                oDDTextParam.push({ CODE: "STYLENO" });
+                oDDTextParam.push({ CODE: "STYLECAT" });
+                oDDTextParam.push({ CODE: "STYLECD" });
+                oDDTextParam.push({ CODE: "FTSTYLE" });
+                oDDTextParam.push({ CODE: "BOMSTYLVER" });
+                oDDTextParam.push({ CODE: "SOLDTOCUST" });
+                oDDTextParam.push({ CODE: "DESC1" });
+                oDDTextParam.push({ CODE: "DESC2" });
+                oDDTextParam.push({ CODE: "STATUSCD" });
+                oDDTextParam.push({ CODE: "CUSTPRDTYP" });
+                oDDTextParam.push({ CODE: "PRODGRP" });
+                oDDTextParam.push({ CODE: "SIZEGRP" });
+                oDDTextParam.push({ CODE: "UOM" });
+                oDDTextParam.push({ CODE: "STYLEGRP" });
+                oDDTextParam.push({ CODE: "FABRCTN" });
+                oDDTextParam.push({ CODE: "VERNO" });
+                oDDTextParam.push({ CODE: "UOM" });
+                oDDTextParam.push({ CODE: "CREATEDBY" });
+                oDDTextParam.push({ CODE: "CREATEDDT" });
+                oDDTextParam.push({ CODE: "UPDATEDBY" });
+                oDDTextParam.push({ CODE: "UPDATEDDT" });
+
+                oDDTextParam.push({ CODE: "Forecast" });
+                oDDTextParam.push({ CODE: "Order" });
+                oDDTextParam.push({ CODE: "Shipped" });
+                oDDTextParam.push({ CODE: "Styles" });
+
+
+                oDDTextParam.push({ CODE: "CREATENEWSTYLE" });
+                oDDTextParam.push({ CODE: "REFRESH" });
+                oDDTextParam.push({ CODE: "COPYSTYLE" });
+                oDDTextParam.push({ CODE: "UPLOAD" });
+                oDDTextParam.push({ CODE: "UPLOADSTYLE" });
+                oDDTextParam.push({ CODE: "DOWNLOADSPREADSHEET" });
+                oDDTextParam.push({ CODE: "SAVELAYOUT" });
+                 
+                oDDTextParam.push({ CODE: "INFO_INPUT_REQD_FIELDS" });
+                oDDTextParam.push({ CODE: "INFO_NO_DATA_EDIT" });
+                oDDTextParam.push({ CODE: "INFO_NO_SEL_RECORD_TO_PROC" });
+                oDDTextParam.push({ CODE: "INFO_NO_RECORD_TO_REMOVE" });
+                oDDTextParam.push({ CODE: "INFO_CHECK_INVALID_ENTRIES" });
+                oDDTextParam.push({ CODE: "INFO_INPUT_NEW_STYLE" });
+                oDDTextParam.push({ CODE: "INFO_INPUT_NEW_SEASON" });
+                oDDTextParam.push({ CODE: "INFO_LAYOUT_SAVE" });
+
+                return new Promise((resolve, reject)=>{
+                    oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam }, {
+                        method: "POST",
+                        success: function (oData, oResponse) {
+                            oData.CaptionMsgItems.results.forEach(item => {
+                                oDDTextResult[item.CODE] = item.TEXT;
+                            })
+
+                            me.getView().setModel(new JSONModel(oDDTextResult), "ddtext");
+                            me.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").setData({ text: oDDTextResult });
+                            _oCaption = me.getView().getModel("ddtext").getData();
+                            console.log(_oCaption);
+                            resolve();
+                        },
+                        error: function (err) { resolve(); }
+                    });
+                });
             },
 
             getAppAction: async function () {
@@ -426,7 +506,8 @@ sap.ui.define([
 
                     return new sap.ui.table.Column({
                         id: sColumnId,
-                        label: sColumnLabel ? sColumnLabel : "{i18n>" + sColumnId + "}",
+                        //label: sColumnLabel ? sColumnLabel : "{i18n>" + sColumnId + "}",
+                        label: sColumnLabel ? sColumnLabel : "{ddtext>/" + sColumnId + "}",
                         template: me.columnTemplate(sColumnId, sColumnType),
                         width: sColumnWidth ? sColumnWidth + 'px' : me.getColumnSize(sColumnId, sColumnType),
                         sortProperty: sColumnId,
@@ -712,13 +793,13 @@ sap.ui.define([
                 var versions = [];
 
                 if (newStyleCode === "") {
-                    Common.showMessage(this._i18n.getText('t1'));
+                    MessageBox.information(_oCaption.INFO_INPUT_NEW_STYLE);
                 } else if (newSeason === "") {
-                    Common.showMessage(this._i18n.getText('t2'))
+                    MessageBox.information(_oCaption.INFO_INPUT_NEW_SEASON);
                 } else {
 
                     if (bomCheck === true && colorCheck === false) {
-                        Common.showMessage(this._i18n.getText('t3'));
+                        MessageBox.information(_oCaption.INFO_INPUT_REQ_COLOR);
                     } else {
                         //add versions to copy to the payload
                         for (var i = 0; i < selected.length; i++) {
@@ -748,11 +829,11 @@ sap.ui.define([
                             success: function (data, oResponse) {
                                 me._CopyStyleDialog.close();
                                 me.onSearch();
-                                Common.showMessage(me._i18n.getText('t4'));
+                                MessageBox.information(_oCaption.SAVED);
                             },
                             error: function () {
                                 me._CopyStyleDialog.close();
-                                Common.showMessage(me._i18n.getText('t5'));
+                                MessageBox.information(_oCaption.ERROR);
                             }
                         });
                     }
@@ -844,7 +925,7 @@ sap.ui.define([
                 oModel.create("/LayoutVariantSet", oEntry, {
                     method: "POST",
                     success: function (data, oResponse) {
-                        Common.showMessage(me._i18n.getText('t6'));
+                        MessageBox.information(_oCaption.INFO_LAYOUT_SAVE);
                     },
                     error: function () {
                         alert("Error");
@@ -907,8 +988,7 @@ sap.ui.define([
                 oModel.create("/TableLayoutSet", oParam, {
                     method: "POST",
                     success: function (data, oResponse) {
-                        sap.m.MessageBox.information("Layout saved.");
-                        //Common.showMessage(me._i18n.getText('t6'));
+                        sap.m.MessageBox.information(_oCaption.INFO_LAYOUT_SAVE);
                     },
                     error: function (err) {
                         console.log(err);

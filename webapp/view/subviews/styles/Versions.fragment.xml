@@ -11,12 +11,12 @@
 
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
-            <Button id="btnVersionAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewversion}" press="onCreateNewVersion" visible="true"/>                                    
-            <Button id="btnVersionEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editversions}" press="setVersionEditMode" visible="true"/>
-            <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete"  tooltip="{i18n>Deleteselectedversions}" press="onDeleteVersion" visible="true"/>
-            <Button id="btnVersionCopy" type="Ghost" icon="sap-icon://copy" tooltip="{i18n>Copyversion}" press="onCopyVersion" visible="true"/>                                    
-            <Button id="btnVersionSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveversions}" press="onSaveVersions" visible="false"/>
-            <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelVersionEdit" visible="false"/>
+            <Button id="btnVersionAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADD}" press="onCreateNewVersion" visible="true"/>                                    
+            <Button id="btnVersionEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setVersionEditMode" visible="true"/>
+            <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete"  tooltip="{ddtext>/DELETE}" press="onDeleteVersion" visible="true"/>
+            <Button id="btnVersionCopy" type="Ghost" icon="sap-icon://copy" tooltip="{ddtext>/COPY}" press="onCopyVersion" visible="true"/>                                    
+            <Button id="btnVersionSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveVersions" visible="false"/>
+            <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelVersionEdit" visible="false"/>
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="versionsTable" />

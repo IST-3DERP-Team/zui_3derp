@@ -1,15 +1,9 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-    <!-- <Panel expandable="true" expanded="false" width="80%" class="sapUiSizeCompact">
-
-        <headerToolbar>
-            <Toolbar height="2rem" style="Clear">
-                <Label text="{i18n>Colors}" />
-            </Toolbar>
-        </headerToolbar> -->
+    
     <VBox fitContainer="true" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
-            <Button id="btnIORefresh" type="Ghost" icon="sap-icon://refresh" tooltip="{i18n>Refresh}" press="onRefresh" visible="true">
+            <Button id="btnIORefresh" type="Ghost" icon="sap-icon://refresh" tooltip="{ddtext>/REFRESH}" press="onRefresh" visible="true">
                 <customData>
                     <core:CustomData key="TableName" value="ioTable" />
                 </customData>

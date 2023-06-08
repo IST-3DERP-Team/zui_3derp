@@ -10,20 +10,20 @@
     <VBox fitContainer="true" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer/>
-            <Button id="btnProcessAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="true">
+            <Button id="btnProcessAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLine" visible="true">
                 <customData>
                     <core:CustomData key="TableName" value="processesTable"/>
                 </customData>
             </Button>
-            <Button id="btnProcessRemoveRow" type="Ghost" icon="sap-icon://less" tooltip="{i18n>Removenewline}" press="removeNewLine" visible="false">
+            <Button id="btnProcessRemoveRow" type="Ghost" icon="sap-icon://less" tooltip="{ddtext>/REMOVENEWLINE}" press="removeNewLine" visible="false">
                 <customData>
                     <core:CustomData key="TableName" value="processesTable" />
                 </customData>
             </Button>            
-            <Button id="btnProcessEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editprocess}" press="setProcessEditMode" visible="true"/>
-            <Button id="btnProcessDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedprocess}" press="onDeleteProcess" visible="true"/>
-            <Button id="btnProcessSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Saveprocess}" press="onSaveProcessTable" visible="false"/>
-            <Button id="btnProcessCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelProcessEdit" visible="false"/>
+            <Button id="btnProcessEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setProcessEditMode" visible="true"/>
+            <Button id="btnProcessDelete" type="Ghost" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteProcess" visible="true"/>
+            <Button id="btnProcessSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveProcessTable" visible="false"/>
+            <Button id="btnProcessCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelProcessEdit" visible="false"/>
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="processesTable" />
