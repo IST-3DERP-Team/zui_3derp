@@ -15,6 +15,8 @@ sap.ui.define([
 
         var that;
         var _startUpInfo;
+        var _promiseResult;
+        var _oCaption = {};
 
         return Controller.extend("zui3derp.controller.AssignMaterial", {
             onInit: function () {
@@ -35,6 +37,11 @@ sap.ui.define([
                 this._version = oEvent.getParameter("arguments").version; //get version route parameter
                 this._aColumns = {};
                 this._colFilters = {};
+
+                _promiseResult = new Promise((resolve, reject) => {
+                    resolve(that.getCaptionMsgs());
+                });
+                await _promiseResult;
                 
                 //set change false as initial
                 //this._materialListChanged = false;
@@ -218,7 +225,7 @@ sap.ui.define([
                                 // Common.showMessage(me._i18n.getText('t4'));
                             }
                             else {
-                                MessageBox.information("No matching material no. found.");
+                                MessageBox.information(_oCaption.INFO_NO_MATCHING_MATNO);//No matching material no. found.
                             }
 
                             Common.closeLoadingDialog(me);
@@ -226,12 +233,12 @@ sap.ui.define([
                         error: function (err) {
                             Common.closeLoadingDialog(that);
                             // Common.showMessage(me._i18n.getText('t5'));
-                            MessageBox.information(me._i18n.getText('t5'));
+                            MessageBox.information(_oCaption.INFO_ERROR);
                         }
                     });
                 } else {
                     // Common.showMessage(this._i18n.getText('t10'));
-                    MessageBox.information(me._i18n.getText('t10'));
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
                 }
             },
 
@@ -340,13 +347,13 @@ sap.ui.define([
                             // oMsgStrip.setVisible(true);
                             // oMsgStrip.setText(errorMsg);
                             // Common.showMessage(me._i18n.getText('t5'));
-                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                            MessageBox.information(_oCaption.INFO_ERROR+ ": " + errorMsg);
                         }
                     });
 
                 } else {
                     // Common.showMessage(this._i18n.getText('t10'));
-                    MessageBox.information(this._i18n.getText('t10'));
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
                 }
             },
 
@@ -365,7 +372,7 @@ sap.ui.define([
 
                 if (!this._materialListChanged) {
                     // Common.showMessage(this._i18n.getText('t7'));
-                    MessageBox.information(this._i18n.getText('t7'));
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 } else {
                     //build header and payload
                     var oData = oTableModel.getData();
@@ -422,14 +429,14 @@ sap.ui.define([
                                         // me.getMaterialList();
                                         Common.closeLoadingDialog(that);
                                         // Common.showMessage(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
+                                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                         me._materialListChanged = false;
                                         me.setChangeStatus(false);
                                     },
                                     error: function (err) {
                                         Common.closeLoadingDialog(that);
                                         // Common.showMessage(me._i18n.getText('t5'));
-                                        MessageBox.information(me._i18n.getText('t5'));
+                                        MessageBox.information(_oCaption.INFO_ERROR);
                                     }
                                 });
                             }
@@ -517,7 +524,38 @@ sap.ui.define([
                         Common.closeLoadingDialog(that);
                     }
                 })
-            }
+            },
+
+            getCaptionMsgs: async function () {
+                var me = this;
+                var oDDTextParam = [], oDDTextResult = {};
+                var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+
+  
+                oDDTextParam.push({ CODE: "INFO_NO_RECORD_SELECT" });
+                oDDTextParam.push({ CODE: "INFO_NO_SEL_RECORD_TO_PROC" });
+                oDDTextParam.push({ CODE: "INFO_SAVE_SUCCESS" });
+                oDDTextParam.push({ CODE: "WARN_NO_DATA_MODIFIED" });
+                oDDTextParam.push({ CODE: "INFO_NO_MATCHING_MATNO" });
+                oDDTextParam.push({ CODE: "INFO_ERROR" });
+
+                return new Promise((resolve, reject)=>{
+                    oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam }, {
+                        method: "POST",
+                        success: function (oData, oResponse) {
+                            oData.CaptionMsgItems.results.forEach(item => {
+                                oDDTextResult[item.CODE] = item.TEXT;
+                            })
+
+                            me.getView().setModel(new JSONModel(oDDTextResult), "ddtext");
+                            me.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").setData({ text: oDDTextResult });
+                            _oCaption = me.getView().getModel("ddtext").getData();
+                            resolve();
+                        },
+                        error: function (err) { resolve(); }
+                    });
+                });
+            },
 
         })
     })

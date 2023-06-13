@@ -565,12 +565,17 @@ sap.ui.define([
                 oDDTextParam.push({CODE: "INFO_NO_RECORD_TO_REMOVE"});
                 oDDTextParam.push({CODE: "WARN_NO_DATA_MODIFIED" }); 
                 oDDTextParam.push({CODE: "CONFIRM_SAVE" }); 
+                oDDTextParam.push({CODE: "INFO_ERROR" })
                 oDDTextParam.push({CODE: "INFO_SAVE_SUCCESS" }); 
                 oDDTextParam.push({CODE: "INFO_NO_RECORD_SELECT" });
                 oDDTextParam.push({CODE: "INFO_BASE_INDICATOR" });
-                oDDTextParam.push({CODE: "INFO_NO_RECORD_SELECT" });
-                oDDTextParam.push({CODE: "INFO_NO_RECORD_SELECT" }); 
-                oDDTextParam.push({CODE: "INFO_NO_RECORD_SELECT" });
+                oDDTextParam.push({CODE: "INFO_NO_DELETE_BOM" });
+                oDDTextParam.push({CODE: "INFO_NO_DELETE_ATTR_REQ" }); 
+                oDDTextParam.push({CODE: "INFO_NO_EDIT_STYLE_IO_ORDDTLS" });
+                oDDTextParam.push({CODE: "INFO_NO_EDIT_STYLE_HAS_IO" });
+                oDDTextParam.push({CODE: "INFO_SIZE_ONLY_ALLOW_EDIT" });
+                oDDTextParam.push({CODE: "INFO_NOT_ALLOW_DUPLICATE_DESC" });
+                oDDTextParam.push({CODE: "INFO_NO_COLORS" });
                 
                 return new Promise((resolve, reject)=>{
                     oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam  }, {
@@ -946,10 +951,10 @@ sap.ui.define([
                 }
                 else {
                     if (this.getView().getModel("IOData").getData().filter(fItem => fItem.WITHORDERDTL === "X").length > 0) {
-                        MessageBox.information("Header info editing not allowed.\r\nStyle already used in IO with order details.");
+                        MessageBox.information(_oCaption.INFO_NO_EDIT_STYLE_IO_ORDDTLS); //Header info editing not allowed.\r\nStyle already used in IO with order details.
                     }
                     else if (this.getView().getModel("IOData").getData().filter(fItem => fItem.WITHBOMSIZEUV === "X").length > 0) {
-                        MessageBox.information("Header info editing not allowed.\r\nStyle already used in IO and BOM by GMC has ASUV/SUV already.");
+                        MessageBox.information(_oCaption.INFO_NO_EDIT_STYLE_HAS_IO);//Header info editing not allowed.\r\nStyle already used in IO and BOM by GMC has ASUV/SUV already.
                     }
                     else {
                         // const result = await this.lockStyle("X");
@@ -975,7 +980,7 @@ sap.ui.define([
                             this.setDtlsEnableButton(false);
 
                             if (this.getView().getModel("IOData").getData().length > 0) {
-                                MessageBox.information("Only size group can be edited.\r\nStyle already used in IO.");
+                                MessageBox.information(_oCaption.INFO_SIZE_ONLY_ALLOW_EDIT);//"Only size group can be edited.\r\nStyle already used in IO."
 
                                 this.byId("STYLECD").setEnabled(false);
                                 this.byId("PRODTYP").setEnabled(false);
@@ -1770,7 +1775,7 @@ sap.ui.define([
                                 //             //oMsgStrip.setVisible(true);
                                 //             //oMsgStrip.setText(errorMsg);
                                 //             // Common.showMessage(me._i18n.getText('t5'));
-                                            MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                            MessageBox.information(_oCaption.INFO_ERROR + "\r\n" + errorMsg);
                                         }
                                     });
                                 }
@@ -2254,10 +2259,7 @@ sap.ui.define([
                     })
 
                     if (hasDuplicateColorDesc) {
-                        //Common.showMessage("Duplicate color is not allow");
-                        // oMsgStrip.setVisible(true);
-                        // oMsgStrip.setText("Duplicate Description is not allowed");
-                        MessageBox.information("Duplicate Description is not allowed");
+                        MessageBox.information(_oCaption.INFO_NOT_ALLOW_DUPLICATE_DESC);//"Duplicate Description is not allowed"
                         return;
                     }
 
@@ -2301,7 +2303,7 @@ sap.ui.define([
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // oMsgStrip.setVisible(true);
                                         // oMsgStrip.setText(errorMsg);
-                                        MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                        MessageBox.information(_oCaption.INFO_ERROR + "\r\n" + errorMsg);
                                     }
                                 });
                             }
@@ -2600,7 +2602,7 @@ sap.ui.define([
                                             var errorMsg = JSON.parse(err.responseText).error.message.value;
                                             //oMsgStrip.setVisible(true);
                                             //oMsgStrip.setText(errorMsg);
-                                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                            MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                                         }
                                     });
                                 }
@@ -2614,7 +2616,7 @@ sap.ui.define([
                                 var errorMsg = JSON.parse(err.responseText).error.message.value;
                                 // oMsgStrip.setVisible(true);
                                 // oMsgStrip.setText(errorMsg);
-                                MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                MessageBox.information(_oCaption.INFO_ERROR + "\r\n" + errorMsg);
                             }
                         });
                     }
@@ -2829,7 +2831,7 @@ sap.ui.define([
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         //oMsgStrip.setVisible(true);
                                         //oMsgStrip.setText(errorMsg);
-                                        MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                        MessageBox.information(_oCaption.INFO_ERROR + "\r\n" + errorMsg);
                                     }
                                 });
                             }
@@ -3035,7 +3037,7 @@ sap.ui.define([
 
             onRouteVersion: function (oEvent) {
                 if (this.getOwnerComponent().getModel("COLOR_MODEL").getData().items.length === 0) {
-                    MessageBox.information("No colors found.")
+                    MessageBox.information(_oCaption.INFO_NO_COLORS)//"No colors found."
                 }
                 else {
                     var oTable = this.getView().byId("versionsTable");
@@ -3144,7 +3146,7 @@ sap.ui.define([
                                     Common.closeLoadingDialog(that);
                                     //Common.showMessage(me._i18n.getText('t5'));
                                     var errorMsg = JSON.parse(err.responseText).error.message.value;
-                                    MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                    MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                                 }
                             });
                         }
@@ -3281,7 +3283,7 @@ sap.ui.define([
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // //oMsgStrip.setVisible(true);
                             //             //oMsgStrip.setText(errorMsg);
-                                        MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                        MessageBox.information(_oCaption.INFO_ERROR + "\r\n" + errorMsg);
                                     }
                                 });
                             }
@@ -3404,12 +3406,12 @@ sap.ui.define([
                             vVersion = oData.at(oTable.getBinding("rows").aIndices[oSelectedIndices[0]]).Verno;
                         }
                         else {
-                            MessageBox.information("Select only one version to copy from.")
+                            MessageBox.information(_oCaption.INFO_SEL_ONE_VERSION_COPY_FR)//Select only one version to copy from.
                             bProceed = false;
                         }
                     }
                     else {
-                        MessageBox.information("Select version to copy from.")
+                        MessageBox.information(_oCaption.INFO_SEL_ONE_VERSION_COPY_FR)//Select version to copy from.
                         bProceed = false;
                     }
                 }
@@ -4820,7 +4822,7 @@ sap.ui.define([
 
                             if (selected.length === noEdit) {
                                 bProceed = false;
-                                MessageBox.information("No record to delete.\r\nSelected color/s already used in BOM.")
+                                MessageBox.information(_oCaption.INFO_NO_DELETE_BOM)//"No record to delete.\r\nSelected color/s already used in BOM."
                             }
                         }
                     }
@@ -4865,7 +4867,7 @@ sap.ui.define([
 
                         if (selected.length === noEdit) {
                             bProceed = false;
-                            MessageBox.information("No record to delete.\r\nSelected attribute/s are mandatory.")
+                            MessageBox.information(_oCaption.INFO_NO_DELETE_ATTR_REQ) //No record to delete.\r\nSelected attribute/s are mandatory.
                         }                            
                     }
 
