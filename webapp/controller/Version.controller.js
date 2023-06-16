@@ -1495,7 +1495,7 @@ sap.ui.define([
                     if (vPer === "" || vPer === undefined) { vPer = "0"; }
                     if (vWastage === "" || vWastage === undefined) { vWastage = "0"; }
                     
-                    var decPlaces = oEvent.getSource().getBindingInfo("value").constraints.scale;
+                    var decPlaces = 5;// oEvent.getSource().getBindingInfo("value").constraints.scale;
                     var vCompConsump = (((+vPer) + (+vWastage)) * (+vMatConsPer)).toFixed(decPlaces);
                     oTable.getModel("DataModel").setProperty(sRowPath + '/COMCONSUMP', vCompConsump + "");
                     oTable.getModel("DataModel").setProperty(sRowPath + '/CONSUMP', vCompConsump + "");
@@ -1519,10 +1519,19 @@ sap.ui.define([
                     MessageBox.information(_oCaption.INFO_CHECK_INVALID_ENTRIES);
                     return;
                 }
+                var bProceed = true;
+                this.getView().byId("bomGMCTable").getModel("DataModel").getData().results.forEach(item => {
+                    if (item.BOMITMTYP === "" || item.PARTCD === "" || item.PARTCNT === "" || item.USGCLS === "") {
+                        bProceed = false;
+                    }
+                })
+                if(!bProceed){
+                    MessageBox.information(_oCaption.INFO_INPUT_REQD_FIELDS);
+                    return;
+                }
 
                 if (!this._BOMbyGMCChanged) { //check if data changed
-                    // Common.showMessage(this._i18n.getText('t7'));
-                    MessageBox.information(this._i18n.getText('t7'));
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 } else {
                     //build headers and payload
                     var oData = oTableModel.getData();
@@ -1676,6 +1685,192 @@ sap.ui.define([
                                         MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                                     }
                                 });
+                            }
+                        }
+                    });
+                }
+            },
+
+            onSaveBOMbyGMC_New: function (oGetComponentInd) {
+                //on save of BOM by GMC 
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var oTableModel = this.getView().byId("bomGMCTable").getModel("DataModel");
+                var path;
+                var item = {};
+
+                var oMsgStrip = this.getView().byId('BOMbyGMCMessageStrip');
+                oMsgStrip.setVisible(false);
+
+                if (this._validationErrors.length > 0) {
+                    MessageBox.information(_oCaption.INFO_CHECK_INVALID_ENTRIES);
+                    return;
+                }
+
+                if (!this._BOMbyGMCChanged) { //check if data changed
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
+                } else {
+                    //build headers and payload
+                    var oData = oTableModel.getData();
+                    var oEntry = {
+                        Styleno: this._styleNo,
+                        GMCToItems: []
+                    }
+
+                    for (var i = 0; i < oData.results.length; i++) {
+                        item = that.addBOMItem(oData.results[i]);
+                        oEntry.GMCToItems.push(item);
+                    };
+                    //Common.openLoadingDialog(that);
+                    path = "/BOMGMCSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
+
+                    var checkColor = [];
+                    //ncjoaquin 12/13/2022. remove the validation
+                    //01/10/2023 validate at least one required color per BOM/GMC item
+                    console.log(oData)
+                    for (var i = 0; i < oData.results.length; i++) {
+                        //pivot colros only for AUV and ASUV
+                        let vUSGCLS = oData.results[i].USGCLS;
+                        if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
+                            const noOfColors = me._colors.length;
+                            let noOfHasColor = 0;
+                            for (var j = 0; j < me._colors.length; j++) {
+                                var color = me._colors[j];
+
+                                if (oData.results[i][color.Attribcd] != "" && oData.results[i][color.Attribcd] != undefined) {
+                                    noOfHasColor++;
+                                }
+                            }
+
+                            if (noOfHasColor == 0) {
+                                MessageBox.information(_oCaption.INFO_COLOR_REQ);//At least one color is required.
+                                return;
+                            }
+                        }
+                    };
+
+                    var vMessage = "";
+                    if (this._dataMode !== "NEW" && this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                        vMessage = "Material list with assigned SAP material no. already exists.\r\nMaterial will be deleted and a new one will be created.";
+                    }
+                    else {
+                        vMessage = "Are you sure you want to save?";
+                    }
+
+                    MessageBox.confirm(vMessage, {
+                        actions: ["Continue", "Cancel"],
+                        onClose: async function (sAction) {
+                            if (sAction === "Continue") {
+                                Common.openLoadingDialog(that);
+                                await new Promise((resolve, reject) => {
+                                    //call create deep method for BOM by GMC
+                                    oModel.create(path, oEntry, {
+                                        method: "POST",
+                                        success: function (oDataRes, oResponse) {
+                                            resolve(true);
+                                            me._BOMbyGMCChanged = false;
+
+                                            if (oGetComponentInd === true) {
+                                                me.getbomGMCTable(true);
+                                                me._BOMbyGMCChanged = true;
+                                            } else {
+                                                me.getbomGMCTable();
+                                            }
+                                            me.setTabReadEditMode(false, "BOMbyGMCEditModeModel");
+                                            me.setRowReadMode("bomGMCTable");
+                                            // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                                            //MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+
+                                            //build the BOM by UV headers and payload - this is for the colors pivot
+                                            var oEntry = {
+                                                Styleno: me._styleNo,
+                                                Verno: me._version,
+                                                Usgcls: Constants.AUV,
+                                                UVToItems: []
+                                            }
+
+                                            for (var i = 0; i < oData.results.length; i++) {
+                                                //pivot colros only for AUV and ASUV
+                                                let vUSGCLS = oData.results[i].USGCLS;
+                                                if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
+                                                    for (var j = 0; j < me._colors.length; j++) {
+
+                                                        var color = me._colors[j];
+                                                        item = {
+                                                            "Styleno": me._styleNo,
+                                                            "Verno": me._version,
+                                                            "Gmc": oData.results[i].GMC,
+                                                            "Partcd": oData.results[i].PARTCD,
+                                                            "Usgcls": oData.results[i].USGCLS,
+                                                            "Color": color.Attribcd,
+                                                            "Mattyp": oData.results[i].MATTYP,
+                                                            "Mattypcls": Constants.ZCOLR,
+                                                            "Desc1": oData.results[i][color.Attribcd],
+                                                            "Consump": oData.results[i].CONSUMP,
+                                                            "Wastage": oData.results[i].WASTAGE
+                                                        };
+                                                        oEntry.UVToItems.push(item);
+                                                    }
+                                                }
+                                            };
+                                            var errorMsg='';
+                                            if (oEntry.UVToItems.length > 0) {
+
+                                                path = "/BOMUVSet";
+                                                console.log(oEntry)
+                                                oModel.setHeaders({
+                                                    sbu: me._sbu
+                                                });
+                                                //call create deep method for BOM by UV 
+                                                oModel.create(path, oEntry, {
+                                                    method: "POST",
+                                                    success: function (oData, oResponse) {
+                                                        //me.getbomGMCTable();
+                                                        me._BOMbyGMCChanged = false;
+                                                        me.setChangeStatus(false);
+                                                        me.lockStyleVer("O");
+                                                        // MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                                                        // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                                                        resolve(true);
+                                                    },
+                                                    error: function (err) {
+                                                        resolve(false);
+                                                        errorMsg = JSON.parse(err.responseText).error.message.value;
+                                                        // oMsgStrip.setVisible(true);
+                                                        // oMsgStrip.setText(errorMsg);
+                                                        MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
+                                                        // Common.showMessage(_oCaption.INFO_ERROR);
+                                                        me.lockStyleVer("O");
+                                                    }
+                                                });
+                                            }
+                                           
+                                            Common.closeLoadingDialog(that);
+
+                                            if (me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "01").length > 0 ||
+                                                me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                                                MessageBox.information(_oCaption.INFO_BOM_SAVED_RMC);//Saved. RMC has to be executed.
+                                            }
+                                            else {
+                                                if(errorMsg.length===0)
+                                                    MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                                            }
+                                        },
+                                        error: function (err) {
+                                            resolve(false);
+                                            Common.closeLoadingDialog(that);
+                                            // Common.showMessage(_oCaption.INFO_ERROR);
+                                            var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                            // oMsgStrip.setVisible(true);
+                                            // oMsgStrip.setText(errorMsg);
+                                            MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
+                                        }
+                                    });
+                                })
                             }
                         }
                     });
@@ -3447,7 +3642,7 @@ sap.ui.define([
                                     "BOMSEQ": oData.results[i].BOMSEQ,
                                     "BOMITEM": oData.results[i].BOMITEM,
                                     "VERNO": me._version,
-                                    "BOMITMTYP": oData.results[i].BOMITMTYP,
+                                    //"BOMITMTYP": oData.results[i].BOMITMTYP, //remove as per ms. nerie
                                     "GMC": oData.results[i].GMC,
                                     "PARTCD": oData.results[i].PARTCD,
                                     "USGCLS": oData.results[i].USGCLS,
@@ -3509,18 +3704,20 @@ sap.ui.define([
                     for (var i = 0; i < oSelectedIndices.length; i++) {
                         var index = oSelectedIndices[i];
                         var entitySet = "/StyleBOMGMCSet(STYLENO='" + that._styleNo + "',VERNO='" + that._version + "',BOMSEQ='" + oData.results[index].BOMSEQ + "')";
+                        //var row = oData.results[index];
+                        //var entitySet = `/StyleBOMGMCSet(STYLENO='${that._styleNo}',VERNO='${that._version}',BOMSEQ='${row.BOMSEQ}',BOMITEM='${row.BOMITEM}',BOMITMTYP='${row.BOMITMTYP}',GMC='${row.GMC}',PARTCD='${row.PARTCD}',PARTCNT='${row.PARTCNT}',PARTDESC='${row.PARTDESC}',USGCLS='${row.USGCLS}',MATTYP='${row.MATTYP}')`;
                         const param = {
                             "STYLENO": that._styleNo,
                             "VERNO": that._version,
                             "BOMSEQ": oData.results[index].BOMSEQ,
-                            "BOMITEM": oData.results[i].BOMITEM,
-                            "BOMITMTYP": oData.results[i].BOMITMTYP,
-                            "GMC": oData.results[i].GMC,
-                            "PARTCD": oData.results[i].PARTCD,
-                            "PARTCNT": oData.results[i].PARTCNT,
-                            "PARTDESC": oData.results[i].PARTDESC,
-                            "USGCLS": oData.results[i].USGCLS,
-                            "MATTYP": oData.results[i].MATTYP,
+                            "BOMITEM": oData.results[index].BOMITEM,
+                            "BOMITMTYP": oData.results[index].BOMITMTYP,
+                            "GMC": oData.results[index].GMC,
+                            "PARTCD": oData.results[index].PARTCD,
+                            "PARTCNT": oData.results[index].PARTCNT,
+                            "PARTDESC": oData.results[index].PARTDESC,
+                            "USGCLS": oData.results[index].USGCLS,
+                            "MATTYP": oData.results[index].MATTYP,
                         }
                         oModel.update(entitySet, param, mParameters);
                     }

@@ -128,6 +128,8 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "CREATEDDT" });
                 oDDTextParam.push({ CODE: "UPDATEDBY" });
                 oDDTextParam.push({ CODE: "UPDATEDDT" });
+                oDDTextParam.push({ CODE: "Manage" });
+                oDDTextParam.push({ CODE: "Copy" });
 
                 oDDTextParam.push({ CODE: "Forecast" });
                 oDDTextParam.push({ CODE: "Order" });
@@ -504,10 +506,12 @@ sap.ui.define([
 
                     if (sColumnWidth === 0 || sColumnWidth === 7) sColumnWidth = 110;
 
+                    //var sColLabel = sColumnLabel ? sColumnLabel : _oCaption.sColumnId;
                     return new sap.ui.table.Column({
                         id: sColumnId,
                         //label: sColumnLabel ? sColumnLabel : "{i18n>" + sColumnId + "}",
-                        label: sColumnLabel ? sColumnLabel : "{ddtext>/" + sColumnId + "}",
+                        // label: sColumnLabel ? sColumnLabel : "{ddtext>/" + sColumnId + "}",
+                        label: sColumnLabel ? sColumnLabel : that.getView().getModel("ddtext").getData()[sColumnId],
                         template: me.columnTemplate(sColumnId, sColumnType),
                         width: sColumnWidth ? sColumnWidth + 'px' : me.getColumnSize(sColumnId, sColumnType),
                         sortProperty: sColumnId,
@@ -1460,7 +1464,7 @@ sap.ui.define([
 
                 var aFilter = [];
                 var oFilter = null;
-                var oSourceTableColumns = this.byId(sSourceTabId).getColumns();
+                var oSourceTableColumns = this.byId(sSourceTabId).getColumns().filter(fItem => fItem.getAggregation("label") !== null);
                
                 aColumnItems.forEach(item => {
                     var oColumn = oSourceTableColumns.filter(fItem => fItem.getAggregation("label").getProperty("text") === item.ColumnLabel)[0];                    

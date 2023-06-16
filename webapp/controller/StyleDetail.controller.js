@@ -4075,8 +4075,15 @@ sap.ui.define([
                 // this.getView().setModel(new JSONModel(oModelData), "AttribCodeModel");
 
                 if (this.getView().getModel("AttribCdModel").getData()[vAttribtyp] === undefined) {
-                    var aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttribtyp);
-                    var oModelData = {};
+                    var aModelData;
+                    if(vAttribtyp ==='STYP'){
+                        const vWvTypAttrCode = oEvent.getSource().oParent.oParent.getModel("DataModel").getData().results.filter(item => item.Attribtyp === "WVTYP")[0];
+                        aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttribtyp && fItem.Attribgrp === vWvTypAttrCode.Attribcd);
+                    }
+                    else
+                        aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttribtyp);
+                    
+                        var oModelData = {};
                     oModelData["results"] = aModelData;
                     this.getView().setModel(new JSONModel(oModelData), "AttribCodeModel");
                     this.getView().getModel("AttribCdModel").setProperty("/" + vAttribtyp, aModelData);
@@ -5281,7 +5288,7 @@ sap.ui.define([
             },
 
             lockStyle: async function (isLock) {
-                //return { "Type":"S", "Message":"Disable Locking"}
+                return { "Type":"S", "Message":"Disable Locking"}
                 var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
 
                 // var oParamLock = {

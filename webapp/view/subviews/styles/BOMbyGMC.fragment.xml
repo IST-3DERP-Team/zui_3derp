@@ -29,7 +29,7 @@
             </menu>
         </MenuButton>
         <Button class="verDtlBtnPaddingRight" icon="sap-icon://cause" text="{ddtext>/GETCOMPONENTS}" tooltip="{ddtext>/GETCOMPONENTS}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
-        <Button class="verDtlBtnPaddingRight" icon="sap-icon://process" text="{ddtext>/RMC}" tooltip="{ddtext>/RMC}" press="onRMC" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>               
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://process" text="{ddtext>/RMC}" tooltip="{ddtext>/RMC}" press="onRMC2" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>               
         <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" tooltip="{ddtext>/DOWNLOADSPREADSHEET}" press="onExport" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>
             <core:CustomData key="TableName" value="bomGMCTable"/>
