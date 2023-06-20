@@ -3,11 +3,11 @@
         <Toolbar height="2rem" style="Clear">
             <!-- <Label text="{i18n>MaterialList}" /> -->
             <ToolbarSpacer />
-            <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://edit" tooltip="{i18n>Editmateriallist}" press="setMaterialListEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
-            <Button class="verDtlBtnPaddingRight" icon="sap-icon://multiselect-all" text="{i18n>AssignMaterialNo}" tooltip="{i18n>Assignmaterialnumbers}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
-            <Button class="verDtlBtnPaddingRight" icon="sap-icon://save"  tooltip="{i18n>Savemateriallist}" press="onSaveMaterialList" visible="{MaterialListEditModeModel>/editMode}" />
-            <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelMaterialListEdit" visible="{= ${MaterialListEditModeModel>/editMode} === true ? true : false }" />
-            <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" tooltip="{i18n>Downloadspreadsheet}" press="onExport">
+            <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setMaterialListEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
+            <Button class="verDtlBtnPaddingRight" icon="sap-icon://multiselect-all" text="{ddtext>/ASSIGNMATERIAL}" tooltip="{ddtext>/ASSIGNMATERIAL}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
+            <Button class="verDtlBtnPaddingRight" icon="sap-icon://save"  tooltip="{ddtext>/SAVE}" press="onSaveMaterialList" visible="{MaterialListEditModeModel>/editMode}" />
+            <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelMaterialListEdit" visible="{= ${MaterialListEditModeModel>/editMode} === true ? true : false }" />
+            <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" tooltip="{ddtext>/EXPORTTOEXCEL}" press="onExport">
                 <customData>
                     <core:CustomData key="TableName" value="materialListTable" />
                 </customData>

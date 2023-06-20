@@ -23,7 +23,11 @@ function() {
             MATTYP: "MATTYP",
             ENTRYUOM: "ENTRYUOM",
             BOMSTYLVER: "BOMSTYLVER",
-            DESC1: "DESC1"
+            DESC1: "DESC1",
+            ASDUV: "ASDUV",
+            ACSUV: "ACSUV",
+            ASPOUV : "ASPOUV",
+            
         };
     
         return constants;

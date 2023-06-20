@@ -20,20 +20,20 @@
                     id="objectHeader1"
                     responsive="true"
                     fullScreenOptimized="true"
-                    intro="{i18n>CurrentVersion}: {headerData>/Verno}"
+                    intro="{ddtext>/CURRENTVERSION}: {headerData>/Verno}"
                     backgroundDesign="Solid"
                     icon="sap-icon://blank-tag-2"
                     title="{headerData>/Stylecd} ({headerData>/Styleno})"
                     number="{headerData>/Statuscd}"
-                    numberUnit="{i18n>Status}"
+                    numberUnit="{ddtext>/STATUS}"
                     numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}"
                     class="sapUiTinyMarginBegin objectHeader"
                 >
                     <attributes>
-                        <ObjectAttribute title="{i18n>CREATEDBY}" text="{headerData>/Createdby}" />
-                        <ObjectAttribute title="{i18n>CREATEDDT}" text="{headerData>/Createddt}" />
-                        <ObjectAttribute title="{i18n>UPDATEDBY}" text="{headerData>/Updatedby}" />
-                        <ObjectAttribute title="{i18n>UPDATEDDT}" text="{headerData>/Updateddt}" />
+                        <ObjectAttribute title="{ddtext>/CREATEDBY}" text="{headerData>/Createdby}" />
+                        <ObjectAttribute title="{ddtext>/CREATEDDT}" text="{headerData>/Createddt}" />
+                        <ObjectAttribute title="{ddtext>/UPDATEDBY}" text="{headerData>/Updatedby}" />
+                        <ObjectAttribute title="{ddtext>/UPDATEDDT}" text="{headerData>/Updateddt}" />
                     </attributes>
                 </ObjectHeader>
 
@@ -49,7 +49,7 @@
             </headerToolbar> -->
                 <IconTabBar id="detailPanel" tabDensityMode="Compact" expandable="false" class="sapUiNoContentPadding" stretchContentHeight="true" applyContentPadding="false">
                     <items>
-                        <IconTabFilter  key ="genAttrib" icon="sap-icon://hint" text="{i18n>Attributes}" tooltip="{i18n>Styleattributes}">
+                        <IconTabFilter  key ="genAttrib" icon="sap-icon://hint" text="{ddtext>/ATTRIBUTES}" tooltip="{ddtext>/STYLEATTRIBUTES}">
                             <!-- <IconTabFilter icon="sap-icon://hint" text="General Attributes" tooltip="{i18n>Styleattributes}"> -->
                             <core:Fragment fragmentName="zui3derp.view.subviews.styles.GeneralAttributes" type="XML" />
                             <!-- GENERAL ATTRIBUTES -->
@@ -64,24 +64,24 @@
                             <!-- PROCESSES -->
                             <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.Processes" type="XML"/> -->
                         </IconTabFilter>
-                        <IconTabFilter  key ="color" icon="sap-icon://palette" text="Colors" tooltip="{i18n>Manageversions}">
+                        <IconTabFilter  key ="color" icon="sap-icon://palette" text="{ddtext>/COLORS}" tooltip="{ddtext>/COLORS}">
                             <core:Fragment fragmentName="zui3derp.view.subviews.styles.Colors" type="XML" />
                         </IconTabFilter>
-                        <IconTabFilter  key ="size" icon="sap-icon://resize-horizontal" text="Sizes" tooltip="{i18n>Manageversions}">
+                        <IconTabFilter  key ="size" icon="sap-icon://resize-horizontal" text="{ddtext>/SIZES}" tooltip="{ddtext>/SIZES}">
                             <core:Fragment fragmentName="zui3derp.view.subviews.styles.Sizes" type="XML" />
                         </IconTabFilter>
-                        <IconTabFilter  key ="process" icon="sap-icon://process" text="Processes" tooltip="{i18n>Manageversions}">
+                        <IconTabFilter  key ="process" icon="sap-icon://process" text="{ddtext>/PROCESS}" tooltip="{ddtext>/PROCESS}">
                             <core:Fragment fragmentName="zui3derp.view.subviews.styles.Processes" type="XML" />
                         </IconTabFilter>
 
                         <!-- VERSIONS -->
-                        <IconTabFilter  key ="version" icon="sap-icon://notes" text="{i18n>Versions}" tooltip="{i18n>Manageversions}">
+                        <IconTabFilter  key ="version" icon="sap-icon://notes" text="{ddtext>/VERSIONS}" tooltip="{ddtext>/VERSIONS}">
                             <!-- VERSIONS -->
                             <core:Fragment fragmentName="zui3derp.view.subviews.styles.Versions" type="XML" />
                         </IconTabFilter>
 
                         <!-- ATTACHMENTS -->
-                        <IconTabFilter  key ="attachment" icon="sap-icon://attachment" text="{i18n>Attachments}" tooltip="{i18n>Manageattachments}">
+                        <IconTabFilter  key ="attachment" icon="sap-icon://attachment" text="{ddtext>/ATTACHMENTS}" tooltip="{ddtext>/ATTACHMENTS}">
                             <core:Fragment fragmentName="zui3derp.view.subviews.styles.Attachments" type="XML" />
                         </IconTabFilter>
 

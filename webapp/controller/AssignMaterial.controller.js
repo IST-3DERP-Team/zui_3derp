@@ -14,6 +14,9 @@ sap.ui.define([
         "use strict";
 
         var that;
+        var _startUpInfo;
+        var _promiseResult;
+        var _oCaption = {};
 
         return Controller.extend("zui3derp.controller.AssignMaterial", {
             onInit: function () {
@@ -28,20 +31,32 @@ sap.ui.define([
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             },
 
-            _routePatternMatched: function (oEvent) {
+            _routePatternMatched: async function (oEvent) {
                 this._sbu = oEvent.getParameter("arguments").sbu; //get SBU route parameter
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get Style No route parameter
                 this._version = oEvent.getParameter("arguments").version; //get version route parameter
                 this._aColumns = {};
                 this._colFilters = {};
+
+                _promiseResult = new Promise((resolve, reject) => {
+                    resolve(that.getCaptionMsgs());
+                });
+                await _promiseResult;
                 
                 //set change false as initial
                 //this._materialListChanged = false;
                 this.setChangeStatus(false);
 
+                var oModelStartUp = new sap.ui.model.json.JSONModel();
+                await oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
+                    _startUpInfo = oModelStartUp.oData
+                    //console.log(oModelStartUp, oModelStartUp.oData);
+                });
+
                 //get data
                 this.getMaterialList();
                 this.getMaterials();
+                this.getRoleAuth();
 
                 this.getOwnerComponent().getModel("UI_MODEL").setProperty("/fromScreen", "ASSIGNMAT");
             },
@@ -83,7 +98,6 @@ sap.ui.define([
                         var result = oData.results;
                         result = result.filter(a => a.Matno === "");
                         oData.results = result;
-
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length);
@@ -211,7 +225,7 @@ sap.ui.define([
                                 // Common.showMessage(me._i18n.getText('t4'));
                             }
                             else {
-                                MessageBox.information("No matching material no. found.");
+                                MessageBox.information(_oCaption.INFO_NO_MATCHING_MATNO);//No matching material no. found.
                             }
 
                             Common.closeLoadingDialog(me);
@@ -219,12 +233,12 @@ sap.ui.define([
                         error: function (err) {
                             Common.closeLoadingDialog(that);
                             // Common.showMessage(me._i18n.getText('t5'));
-                            MessageBox.information(me._i18n.getText('t5'));
+                            MessageBox.information(_oCaption.INFO_ERROR);
                         }
                     });
                 } else {
                     // Common.showMessage(this._i18n.getText('t10'));
-                    MessageBox.information(me._i18n.getText('t10'));
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
                 }
             },
 
@@ -256,38 +270,45 @@ sap.ui.define([
                         Mode: "CREATE",
                         MatListToItems: []
                     }
-
+                    var role =  this.getView().getModel("RoleAuthModel").getData();
+                    const roleObjcd = role.map(item => item.Objcd);
+                   
+                    //return;
                     for (var i = 0; i < oSelected.length; i++) {
                         var index = oSelected[i];
-                        var item = {
-                            "Styleno": this._styleNo,
-                            "Verno": oData.results[index].Verno,
-                            "Seqno": oData.results[index].Seqno,
-                            "Matno": oData.results[index].Matno,
-                            "Mattyp": oData.results[index].Mattyp,
-                            "Gmc": oData.results[index].Gmc,
-                            "Bommatid": oData.results[index].Bommatid,
-                            "Matconsump": oData.results[index].Matconsump,
-                            "Wastage": oData.results[index].Wastage,
-                            "Comconsump": oData.results[index].Comconsump,
-                            "Consump": oData.results[index].Consump,
-                            "Uom": oData.results[index].Uom,
-                            "Supplytyp": oData.results[index].Supplytyp,
-                            "Vendorcd": oData.results[index].Vendorcd,
-                            "Currencycd": oData.results[index].Currencycd,
-                            "Unitprice": oData.results[index].Unitprice,
-                            "Purgrp": oData.results[index].Purgrp,
-                            "Purplant": oData.results[index].Purplant,
-                            "Matdesc1": oData.results[index].Matdesc1,
-                            "Matdesc2": oData.results[index].Matdesc2,
-                            "Deleted": " ",
-                            "Createdby": oData.results[index].Createdby,
-                            "Createddt": oData.results[index].Createddt,
-                            "Createdtm": oData.results[index].Createdtm,
-                            "Updatedby": " ",
-                            "Updateddt": " "
+                        //filter items with authorization based on mattypgrp
+                        const exists = roleObjcd.includes(this._sbu + oData.results[index].Mattypgrp);
+                        if(exists){
+                            var item = {
+                                "Styleno": this._styleNo,
+                                "Verno": oData.results[index].Verno,
+                                "Seqno": oData.results[index].Seqno,
+                                "Matno": oData.results[index].Matno,
+                                "Mattyp": oData.results[index].Mattyp,
+                                "Gmc": oData.results[index].Gmc,
+                                "Bommatid": oData.results[index].Bommatid,
+                                "Matconsump": oData.results[index].Matconsump,
+                                "Wastage": oData.results[index].Wastage,
+                                "Comconsump": oData.results[index].Comconsump,
+                                "Consump": oData.results[index].Consump,
+                                "Uom": oData.results[index].Uom,
+                                "Supplytyp": oData.results[index].Supplytyp,
+                                "Vendorcd": oData.results[index].Vendorcd,
+                                "Currencycd": oData.results[index].Currencycd,
+                                "Unitprice": oData.results[index].Unitprice,
+                                "Purgrp": oData.results[index].Purgrp,
+                                "Purplant": oData.results[index].Purplant,
+                                "Matdesc1": oData.results[index].Matdesc1,
+                                "Matdesc2": oData.results[index].Matdesc2,
+                                "Deleted": " ",
+                                "Createdby": oData.results[index].Createdby,
+                                "Createddt": oData.results[index].Createddt,
+                                "Createdtm": oData.results[index].Createdtm,
+                                "Updatedby": " ",
+                                "Updateddt": " "
+                            }
+                            oEntry.MatListToItems.push(item);
                         }
-                        oEntry.MatListToItems.push(item);
                     };
                     Common.openLoadingDialog(that);
 
@@ -326,13 +347,13 @@ sap.ui.define([
                             // oMsgStrip.setVisible(true);
                             // oMsgStrip.setText(errorMsg);
                             // Common.showMessage(me._i18n.getText('t5'));
-                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                            MessageBox.information(_oCaption.INFO_ERROR+ ": " + errorMsg);
                         }
                     });
 
                 } else {
                     // Common.showMessage(this._i18n.getText('t10'));
-                    MessageBox.information(this._i18n.getText('t10'));
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
                 }
             },
 
@@ -351,7 +372,7 @@ sap.ui.define([
 
                 if (!this._materialListChanged) {
                     // Common.showMessage(this._i18n.getText('t7'));
-                    MessageBox.information(this._i18n.getText('t7'));
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 } else {
                     //build header and payload
                     var oData = oTableModel.getData();
@@ -408,14 +429,14 @@ sap.ui.define([
                                         // me.getMaterialList();
                                         Common.closeLoadingDialog(that);
                                         // Common.showMessage(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
+                                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                         me._materialListChanged = false;
                                         me.setChangeStatus(false);
                                     },
                                     error: function (err) {
                                         Common.closeLoadingDialog(that);
                                         // Common.showMessage(me._i18n.getText('t5'));
-                                        MessageBox.information(me._i18n.getText('t5'));
+                                        MessageBox.information(_oCaption.INFO_ERROR);
                                     }
                                 });
                             }
@@ -458,6 +479,82 @@ sap.ui.define([
                     input.setValue(oSelectedItem.getTitle()); //set input field selected Material
                 }
                 evt.getSource().getBinding("items").filter([]);
+            },
+
+            //get the authorization, this will hide the create material button if user is not authorized
+            getRoleAuth:function (){
+                
+                var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
+                var oJSONModel = new JSONModel();
+                var id =_startUpInfo.id; //"NCJOAQUIN" 
+                oModel.read("/CreateMatRoleSet", {
+                    urlParameters: {
+                        "$filter": "Bname eq '" + id + "' and Roleid eq '" + this._sbu + "CRTMAT'"
+                    },
+                    success: function (oData, oResponse) {
+                        var result = oData.results;
+                        result = result.filter(a => a.Zresult === "0");
+
+                        oJSONModel.setData(result);
+                        that.getView().setModel(oJSONModel, "RoleAuthModel");
+                        if(result.length == 0)
+                        {
+                            that.byId("btnCreateMat").setVisible(false);
+                        }
+                        else
+                        {
+                            const materialList = that.byId("materialListTable").getModel("DataModel").getData().results;
+                            const distinctValues = [...new Set(materialList.map(item => that._sbu + item.Mattypgrp))];
+                            const filteredItems = distinctValues.filter((item) => {
+                                return result.some((obj) => {
+                                    return obj.Objcd === item;
+                                });
+                            });
+                            if(filteredItems.length == 0 )
+                            {
+                                that.byId("btnCreateMat").setVisible(false);
+                            }
+                            else
+                            {
+                                that.byId("btnCreateMat").setVisible(true);
+                            }
+                        }
+                    },
+                    error: function () {
+                        Common.closeLoadingDialog(that);
+                    }
+                })
+            },
+
+            getCaptionMsgs: async function () {
+                var me = this;
+                var oDDTextParam = [], oDDTextResult = {};
+                var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+
+  
+                oDDTextParam.push({ CODE: "INFO_NO_RECORD_SELECT" });
+                oDDTextParam.push({ CODE: "INFO_NO_SEL_RECORD_TO_PROC" });
+                oDDTextParam.push({ CODE: "INFO_SAVE_SUCCESS" });
+                oDDTextParam.push({ CODE: "WARN_NO_DATA_MODIFIED" });
+                oDDTextParam.push({ CODE: "INFO_NO_MATCHING_MATNO" });
+                oDDTextParam.push({ CODE: "INFO_ERROR" });
+
+                return new Promise((resolve, reject)=>{
+                    oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam }, {
+                        method: "POST",
+                        success: function (oData, oResponse) {
+                            oData.CaptionMsgItems.results.forEach(item => {
+                                oDDTextResult[item.CODE] = item.TEXT;
+                            })
+
+                            me.getView().setModel(new JSONModel(oDDTextResult), "ddtext");
+                            me.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").setData({ text: oDDTextResult });
+                            _oCaption = me.getView().getModel("ddtext").getData();
+                            resolve();
+                        },
+                        error: function (err) { resolve(); }
+                    });
+                });
             },
 
         })

@@ -9,7 +9,7 @@
                 <Label text="Assign Material No."/>
                 <ToolbarSpacer />
                 <Button text="Assign Automatic" tooltip="Automatically assign material nos." press="onAssignAutomatic"/>
-                <Button text="Create Material" tooltip="Create material for selected items" press="onCreateMaterial"/>
+                <Button text="Create Material" id="btnCreateMat" tooltip="Create material for selected items" press="onCreateMaterial"/>
                 <Button type="Ghost" icon="sap-icon://save" text="Save" tooltip="Save material list" press="onSaveMaterialList"/>              
             </Toolbar>
 

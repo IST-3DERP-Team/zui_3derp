@@ -23,12 +23,19 @@ sap.ui.define([
         var that;
         var blnGetComponentInd = false;
         var _promiseResult;
+        var _oCaption = {};
+        var oController = {
+            openLinkInNewTab: function(event, link) {
+                event.preventDefault();
+                window.open(link.href, "_blank");
+            }
+        };
 
         return Controller.extend("zui3derp.controller.Version", {
 
             onInit: function () {
                 that = this;
-
+                this._validationErrors = [];
                 //Initialize router
                 var oComponent = this.getOwnerComponent();
                 this._router = oComponent.getRouter();
@@ -54,6 +61,11 @@ sap.ui.define([
                 //     this._CopyBOMDialog.setModel(new JSONModel());
                 //     this.getView().addDependent(this._CopyBOMDialog);
                 // } 
+
+                //var matno = new URL(url).searchParams.get("matno");
+
+                // Output the value of 'matno'
+                //console.log("urlparams",matno); // Output: 1000087-00001
             },
 
             onExit: function () {
@@ -231,6 +243,19 @@ sap.ui.define([
                 var oDDTextParam = [], oDDTextResult = {};
                 var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
 
+                oDDTextParam.push({ CODE: "COPY" });
+                oDDTextParam.push({ CODE: "ADDNEWLINE" });
+                oDDTextParam.push({ CODE: "REMOVENEWLINE" });
+                oDDTextParam.push({ CODE: "GETCOMPONENTS" });
+                oDDTextParam.push({ CODE: "RMC" });
+                oDDTextParam.push({ CODE: "EDIT" });
+                oDDTextParam.push({ CODE: "ADD" });
+                oDDTextParam.push({ CODE: "REFRESH" });
+                oDDTextParam.push({ CODE: "DELETE" });
+                oDDTextParam.push({ CODE: "CANCEL" });
+                oDDTextParam.push({ CODE: "SAVE" });
+                oDDTextParam.push({ CODE: "ASSIGNMATERIAL" });
+                
                 oDDTextParam.push({ CODE: "ATTRIBTYP" });
                 oDDTextParam.push({ CODE: "ATTRIBCD" });
                 oDDTextParam.push({ CODE: "DESC" });
@@ -292,6 +317,14 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "ORDERUOM" });
                 oDDTextParam.push({ CODE: "UMREZ" });
                 oDDTextParam.push({ CODE: "UMREN" });
+
+                oDDTextParam.push({ CODE: "VERSIONATTRIBUTES" });
+                oDDTextParam.push({ CODE: "BOMBYGMC" });
+                oDDTextParam.push({ CODE: "BOMBYUV" });
+                oDDTextParam.push({ CODE: "DETAILEDBOM" });
+                oDDTextParam.push({ CODE: "MATERIALLIST" });
+                oDDTextParam.push({ CODE: "VERSION" });
+
                 oDDTextParam.push({CODE: "INFO_BOM_COPIED"}); 
                 oDDTextParam.push({CODE: "INFO_COMPONENT_SAVED"}); 
                 oDDTextParam.push({CODE: "INFO_NO_COMPONENT"}); 
@@ -301,6 +334,22 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "INFO_NO_DATA_EDIT" });
                 oDDTextParam.push({ CODE: "INFO_NO_SEL_RECORD_TO_PROC" });
                 oDDTextParam.push({ CODE: "INFO_NO_RECORD_TO_REMOVE" });
+                oDDTextParam.push({ CODE: "INFO_CHECK_INVALID_ENTRIES" });
+                oDDTextParam.push({ CODE: "INFO_ERROR" });
+                oDDTextParam.push({ CODE: "INFO_SAVE_SUCCESS" });
+                oDDTextParam.push({ CODE: "WARN_NO_DATA_MODIFIED" });
+                oDDTextParam.push({ CODE: "INFO_MATLIST_SAP_MATNO" });
+                oDDTextParam.push({ CODE: "INFO_COLOR_REQ" });
+                oDDTextParam.push({ CODE: "INFO_BOM_SAVED_RMC" });
+                oDDTextParam.push({ CODE: "INFO_COLOR_DESC_REQ" });
+                oDDTextParam.push({ CODE: "INFO_NO_SEL_BOM_ITEMS" });
+                oDDTextParam.push({ CODE: "INFO_COPY_BOM_PROCESSED" });
+                oDDTextParam.push({ CODE: "INFO_RMC_MAT_ASSGND" });
+                oDDTextParam.push({ CODE: "INFO_NO_VALID_MATNO" });
+                oDDTextParam.push({ CODE: "INFO_NO_MATCHING_MATNO" });
+                oDDTextParam.push({ CODE: "INFO_MATLIST_SAP_MATNO" });
+                oDDTextParam.push({ CODE: "INFO_NOT_ALLOW_DUPLICATE_ATTR" });
+                oDDTextParam.push({ CODE: "INFO_SEL_ONE_VERSION_COPY_FR" });
 
                 return new Promise((resolve, reject)=>{
                     oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam }, {
@@ -312,6 +361,7 @@ sap.ui.define([
 
                             me.getView().setModel(new JSONModel(oDDTextResult), "ddtext");
                             me.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").setData({ text: oDDTextResult });
+                            _oCaption = me.getView().getModel("ddtext").getData();
                             resolve();
                         },
                         error: function (err) { resolve(); }
@@ -675,10 +725,7 @@ sap.ui.define([
                         if (a == b) hasDuplicate = true
                     })
                     if (hasDuplicate) {
-                        //Common.showMessage("Duplicate color is not allow");
-                        // oMsgStrip.setVisible(true);
-                        // oMsgStrip.setText("Duplicate Attribute is not allowed");
-                        MessageBox.information("Duplicate Attribute is not allowed");
+                        MessageBox.information(_oCaption.INFO_NOT_ALLOW_DUPLICATE_ATTR);//"Duplicate Attribute is not allowed"
                         return;
                     }
 
@@ -701,16 +748,16 @@ sap.ui.define([
                                         Common.closeLoadingDialog(me);
                                         me.setTabReadEditMode(false, "VersionAttrEditModeModel");
                                         me.setRowReadMode("versionAttrTable");
-                                        // Common.showMessage(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
+                                        // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                     },
                                     error: function (err) {
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // oMsgStrip.setVisible(true);
                                         // oMsgStrip.setText(errorMsg);
                                         Common.closeLoadingDialog(me);
-                                        // Common.showMessage(me._i18n.getText('t5'));
-                                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                        // Common.showMessage(_oCaption.INFO_ERROR);
+                                        MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                                     }
                                 });
                             }
@@ -1135,7 +1182,7 @@ sap.ui.define([
 
                         if (this.getView().byId("bomGMCTable").getModel("DataModel").getData().results.filter(fItem => fItem.EDITABLE === "X").length === 0) {
                             Common.closeProcessingDialog(this);
-                            MessageBox.information("Material list has assigned SAP material no. and already attached to an IO.\r\nEditing not allowed.");
+                            MessageBox.information(_oCaption.INFO_MATLIST_SAP_MATNO);//Material list has assigned SAP material no. and already attached to an IO.\r\nEditing not allowed.
                             return;
                         }
                         
@@ -1406,6 +1453,34 @@ sap.ui.define([
                 var oSource = oEvent.getSource();
                 var sColumnName = oSource.getBindingInfo("value").parts[0].path;
                 var oTable = that.getView().byId("bomGMCTable");
+                
+                if (sColumnName === "MATCONSPER" || sColumnName === "PER" || sColumnName === "WASTAGE") {
+                    var decPlaces = oEvent.getSource().getBindingInfo("value").constraints.scale;
+
+                    if (oEvent.getParameters().value.split(".").length > 1) {
+                        if (oEvent.getParameters().value.split(".")[1].length > decPlaces) {
+                            oEvent.getSource().setValueState("Error");
+                            oEvent.getSource().setValueStateText("Enter a number with a maximum of " + decPlaces + " decimal places.");
+                            that._validationErrors.push(oEvent.getSource().getId());
+                        }
+                        else {
+                            oEvent.getSource().setValueState("None");
+                            that._validationErrors.forEach((item, index) => {
+                                if (item === oEvent.getSource().getId()) {
+                                    that._validationErrors.splice(index, 1)
+                                }
+                            })
+                        }
+                    }
+                    else {
+                        oEvent.getSource().setValueState("None");
+                        that._validationErrors.forEach((item, index) => {
+                            if (item === oEvent.getSource().getId()) {
+                                that._validationErrors.splice(index, 1)
+                            }
+                        })
+                    }
+                }
 
                 if (sColumnName === "MATCONSPER" || sColumnName === "PER" || sColumnName === "WASTAGE") {
                     var sRowPath = oSource.getBindingInfo("value").binding.oContext.sPath;
@@ -1420,8 +1495,9 @@ sap.ui.define([
                     if (vMatConsPer === "" || vMatConsPer === undefined) { vMatConsPer = "0"; }
                     if (vPer === "" || vPer === undefined) { vPer = "0"; }
                     if (vWastage === "" || vWastage === undefined) { vWastage = "0"; }
-
-                    var vCompConsump = (((+vPer) + (+vWastage)) * (+vMatConsPer));
+                    
+                    var decPlaces = 5;// oEvent.getSource().getBindingInfo("value").constraints.scale;
+                    var vCompConsump = (((+vPer) + (+vWastage)) * (+vMatConsPer)).toFixed(decPlaces);
                     oTable.getModel("DataModel").setProperty(sRowPath + '/COMCONSUMP', vCompConsump + "");
                     oTable.getModel("DataModel").setProperty(sRowPath + '/CONSUMP', vCompConsump + "");
                     // oTable.getModel("DataModel").setProperty("/results", oTable.getModel("DataModel").getData().results);
@@ -1440,9 +1516,23 @@ sap.ui.define([
                 var oMsgStrip = this.getView().byId('BOMbyGMCMessageStrip');
                 oMsgStrip.setVisible(false);
 
+                if (this._validationErrors.length > 0) {
+                    MessageBox.information(_oCaption.INFO_CHECK_INVALID_ENTRIES);
+                    return;
+                }
+                var bProceed = true;
+                this.getView().byId("bomGMCTable").getModel("DataModel").getData().results.forEach(item => {
+                    if (item.BOMITMTYP === "" || item.PARTCD === "" || item.PARTCNT === "" || item.USGCLS === "") {
+                        bProceed = false;
+                    }
+                })
+                if(!bProceed){
+                    MessageBox.information(_oCaption.INFO_INPUT_REQD_FIELDS);
+                    return;
+                }
+
                 if (!this._BOMbyGMCChanged) { //check if data changed
-                    // Common.showMessage(this._i18n.getText('t7'));
-                    MessageBox.information(this._i18n.getText('t7'));
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 } else {
                     //build headers and payload
                     var oData = oTableModel.getData();
@@ -1468,7 +1558,8 @@ sap.ui.define([
                     console.log(oData)
                     for (var i = 0; i < oData.results.length; i++) {
                         //pivot colros only for AUV and ASUV
-                        if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
+                        let vUSGCLS = oData.results[i].USGCLS;
+                        if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
                             const noOfColors = me._colors.length;
                             let noOfHasColor = 0;
                             for (var j = 0; j < me._colors.length; j++) {
@@ -1477,19 +1568,10 @@ sap.ui.define([
                                 if (oData.results[i][color.Attribcd] != "" && oData.results[i][color.Attribcd] != undefined) {
                                     noOfHasColor++;
                                 }
-                                // if(oData.results[i][color.Attribcd]=="")
-                                // {
-                                //     oMsgStrip.setVisible(true);
-                                //     oMsgStrip.setText("Color Description is required");
-                                //     return;
-                                // }
-
                             }
 
                             if (noOfHasColor == 0) {
-                                // oMsgStrip.setVisible(true);
-                                // oMsgStrip.setText("At least one color is required.");
-                                MessageBox.information("At least one color is required.");
+                                MessageBox.information(_oCaption.INFO_COLOR_REQ);//At least one color is required.
                                 return;
                             }
                         }
@@ -1522,7 +1604,9 @@ sap.ui.define([
                                         }
                                         me.setTabReadEditMode(false, "BOMbyGMCEditModeModel");
                                         me.setRowReadMode("bomGMCTable");
-                                        // Common.showMessage(me._i18n.getText('t4'));
+                                        // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                                        //MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+
                                         //build the BOM by UV headers and payload - this is for the colors pivot
                                         var oEntry = {
                                             Styleno: me._styleNo,
@@ -1533,7 +1617,8 @@ sap.ui.define([
 
                                         for (var i = 0; i < oData.results.length; i++) {
                                             //pivot colros only for AUV and ASUV
-                                            if (oData.results[i].USGCLS === Constants.AUV || oData.results[i].USGCLS === Constants.ASUV) {
+                                            let vUSGCLS = oData.results[i].USGCLS;
+                                            if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
                                                 for (var j = 0; j < me._colors.length; j++) {
 
                                                     var color = me._colors[j];
@@ -1570,15 +1655,15 @@ sap.ui.define([
                                                     me._BOMbyGMCChanged = false;
                                                     me.setChangeStatus(false);
                                                     me.lockStyleVer("O");
-                                                    // MessageBox.information(me._i18n.getText('t4'));
-                                                    // Common.showMessage(me._i18n.getText('t4'));
+                                                    // MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                                                    // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
                                                 },
                                                 error: function (err) {
                                                     var errorMsg = JSON.parse(err.responseText).error.message.value;
                                                     // oMsgStrip.setVisible(true);
                                                     // oMsgStrip.setText(errorMsg);
-                                                    // MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
-                                                    // Common.showMessage(me._i18n.getText('t5'));
+                                                    // MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
+                                                    // Common.showMessage(_oCaption.INFO_ERROR);
                                                 }
                                             });
                                         }
@@ -1586,21 +1671,207 @@ sap.ui.define([
 
                                         if (me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "01").length > 0 ||
                                             me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
-                                            MessageBox.information("Saved. RMC has to be executed.");
+                                            MessageBox.information(_oCaption.INFO_BOM_SAVED_RMC);//Saved. RMC has to be executed.
                                         }
                                         else {
-                                            MessageBox.information(me._i18n.getText('t4'));
+                                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                         }
                                     },
                                     error: function (err) {
                                         Common.closeLoadingDialog(that);
-                                        // Common.showMessage(me._i18n.getText('t5'));
+                                        // Common.showMessage(_oCaption.INFO_ERROR);
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // oMsgStrip.setVisible(true);
                                         // oMsgStrip.setText(errorMsg);
-                                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                        MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                                     }
                                 });
+                            }
+                        }
+                    });
+                }
+            },
+
+            onSaveBOMbyGMC_New: function (oGetComponentInd) {
+                //on save of BOM by GMC 
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var oTableModel = this.getView().byId("bomGMCTable").getModel("DataModel");
+                var path;
+                var item = {};
+
+                var oMsgStrip = this.getView().byId('BOMbyGMCMessageStrip');
+                oMsgStrip.setVisible(false);
+
+                if (this._validationErrors.length > 0) {
+                    MessageBox.information(_oCaption.INFO_CHECK_INVALID_ENTRIES);
+                    return;
+                }
+
+                if (!this._BOMbyGMCChanged) { //check if data changed
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
+                } else {
+                    //build headers and payload
+                    var oData = oTableModel.getData();
+                    var oEntry = {
+                        Styleno: this._styleNo,
+                        GMCToItems: []
+                    }
+
+                    for (var i = 0; i < oData.results.length; i++) {
+                        item = that.addBOMItem(oData.results[i]);
+                        oEntry.GMCToItems.push(item);
+                    };
+                    //Common.openLoadingDialog(that);
+                    path = "/BOMGMCSet";
+
+                    oModel.setHeaders({
+                        sbu: this._sbu
+                    });
+
+                    var checkColor = [];
+                    //ncjoaquin 12/13/2022. remove the validation
+                    //01/10/2023 validate at least one required color per BOM/GMC item
+                    console.log(oData)
+                    for (var i = 0; i < oData.results.length; i++) {
+                        //pivot colros only for AUV and ASUV
+                        let vUSGCLS = oData.results[i].USGCLS;
+                        if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
+                            const noOfColors = me._colors.length;
+                            let noOfHasColor = 0;
+                            for (var j = 0; j < me._colors.length; j++) {
+                                var color = me._colors[j];
+
+                                if (oData.results[i][color.Attribcd] != "" && oData.results[i][color.Attribcd] != undefined) {
+                                    noOfHasColor++;
+                                }
+                            }
+
+                            if (noOfHasColor == 0) {
+                                MessageBox.information(_oCaption.INFO_COLOR_REQ);//At least one color is required.
+                                return;
+                            }
+                        }
+                    };
+
+                    var vMessage = "";
+                    if (this._dataMode !== "NEW" && this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                        vMessage = "Material list with assigned SAP material no. already exists.\r\nMaterial will be deleted and a new one will be created.";
+                    }
+                    else {
+                        vMessage = "Are you sure you want to save?";
+                    }
+
+                    MessageBox.confirm(vMessage, {
+                        actions: ["Continue", "Cancel"],
+                        onClose: async function (sAction) {
+                            if (sAction === "Continue") {
+                                Common.openLoadingDialog(that);
+                                await new Promise((resolve, reject) => {
+                                    //call create deep method for BOM by GMC
+                                    oModel.create(path, oEntry, {
+                                        method: "POST",
+                                        success: function (oDataRes, oResponse) {
+                                            resolve(true);
+                                            me._BOMbyGMCChanged = false;
+
+                                            if (oGetComponentInd === true) {
+                                                me.getbomGMCTable(true);
+                                                me._BOMbyGMCChanged = true;
+                                            } else {
+                                                me.getbomGMCTable();
+                                            }
+                                            me.setTabReadEditMode(false, "BOMbyGMCEditModeModel");
+                                            me.setRowReadMode("bomGMCTable");
+                                            // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                                            //MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+
+                                            //build the BOM by UV headers and payload - this is for the colors pivot
+                                            var oEntry = {
+                                                Styleno: me._styleNo,
+                                                Verno: me._version,
+                                                Usgcls: Constants.AUV,
+                                                UVToItems: []
+                                            }
+
+                                            for (var i = 0; i < oData.results.length; i++) {
+                                                //pivot colros only for AUV and ASUV
+                                                let vUSGCLS = oData.results[i].USGCLS;
+                                                if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
+                                                    for (var j = 0; j < me._colors.length; j++) {
+
+                                                        var color = me._colors[j];
+                                                        item = {
+                                                            "Styleno": me._styleNo,
+                                                            "Verno": me._version,
+                                                            "Gmc": oData.results[i].GMC,
+                                                            "Partcd": oData.results[i].PARTCD,
+                                                            "Usgcls": oData.results[i].USGCLS,
+                                                            "Color": color.Attribcd,
+                                                            "Mattyp": oData.results[i].MATTYP,
+                                                            "Mattypcls": Constants.ZCOLR,
+                                                            "Desc1": oData.results[i][color.Attribcd],
+                                                            "Consump": oData.results[i].CONSUMP,
+                                                            "Wastage": oData.results[i].WASTAGE
+                                                        };
+                                                        oEntry.UVToItems.push(item);
+                                                    }
+                                                }
+                                            };
+                                            var errorMsg='';
+                                            if (oEntry.UVToItems.length > 0) {
+
+                                                path = "/BOMUVSet";
+                                                console.log(oEntry)
+                                                oModel.setHeaders({
+                                                    sbu: me._sbu
+                                                });
+                                                //call create deep method for BOM by UV 
+                                                oModel.create(path, oEntry, {
+                                                    method: "POST",
+                                                    success: function (oData, oResponse) {
+                                                        //me.getbomGMCTable();
+                                                        me._BOMbyGMCChanged = false;
+                                                        me.setChangeStatus(false);
+                                                        me.lockStyleVer("O");
+                                                        // MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                                                        // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                                                        resolve(true);
+                                                    },
+                                                    error: function (err) {
+                                                        resolve(false);
+                                                        errorMsg = JSON.parse(err.responseText).error.message.value;
+                                                        // oMsgStrip.setVisible(true);
+                                                        // oMsgStrip.setText(errorMsg);
+                                                        MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
+                                                        // Common.showMessage(_oCaption.INFO_ERROR);
+                                                        me.lockStyleVer("O");
+                                                    }
+                                                });
+                                            }
+                                           
+                                            Common.closeLoadingDialog(that);
+
+                                            if (me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "01").length > 0 ||
+                                                me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                                                MessageBox.information(_oCaption.INFO_BOM_SAVED_RMC);//Saved. RMC has to be executed.
+                                            }
+                                            else {
+                                                if(errorMsg.length===0)
+                                                    MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                                            }
+                                        },
+                                        error: function (err) {
+                                            resolve(false);
+                                            Common.closeLoadingDialog(that);
+                                            // Common.showMessage(_oCaption.INFO_ERROR);
+                                            var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                            // oMsgStrip.setVisible(true);
+                                            // oMsgStrip.setText(errorMsg);
+                                            MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
+                                        }
+                                    });
+                                })
                             }
                         }
                     });
@@ -1654,9 +1925,7 @@ sap.ui.define([
                             for (var j = 0; j < me._colors.length; j++) {
                                 var color = me._colors[j];
                                 if (oData.results[i][color.Attribcd] == "") {
-                                    // oMsgStrip.setVisible(true);
-                                    // oMsgStrip.setText("Color Description is required");
-                                    MessageBox.information("Color Description is required");
+                                    MessageBox.information(_oCaption.INFO_COLOR_DESC_REQ);//Color Description is required
                                     return;
                                 }
 
@@ -1677,8 +1946,8 @@ sap.ui.define([
                             //     me.getbomGMCTable();
                             // }
                             me.setTabReadEditMode(false, "BOMbyGMCEditModeModel")
-                            // Common.showMessage(me._i18n.getText('t4'));
-                            MessageBox.information(me._i18n.getText('t4'));
+                            // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
 
                             //build the BOM by UV headers and payload - this is for the colors pivot
                             var oEntry = {
@@ -1726,15 +1995,15 @@ sap.ui.define([
                                         me.getbomGMCTable();
                                         me._BOMbyGMCChanged = false;
                                         me.setChangeStatus(false);
-                                        // Common.showMessage(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
+                                        // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                     },
                                     error: function (err) {
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // oMsgStrip.setVisible(true);
                                         // oMsgStrip.setText(errorMsg);
-                                        // Common.showMessage(me._i18n.getText('t5'));
-                                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                        // Common.showMessage(_oCaption.INFO_ERROR);
+                                        MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                                     }
                                 });
                             }
@@ -1742,11 +2011,11 @@ sap.ui.define([
                         },
                         error: function (err) {
                             Common.closeLoadingDialog(that);
-                            // Common.showMessage(me._i18n.getText('t5'));
+                            // Common.showMessage(_oCaption.INFO_ERROR);
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
                             // oMsgStrip.setVisible(true);
                             // oMsgStrip.setText(errorMsg);
-                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                            MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                         }
                     });
                 }
@@ -1768,7 +2037,7 @@ sap.ui.define([
                 oSelectedIndices = oTmpSelectedIndices;
 
                 if (oSelectedIndices.length === 0) {
-                    MessageBox.information("Select items to delete.");
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_TO_DELETE);
                     return;
                 }
 
@@ -1784,7 +2053,7 @@ sap.ui.define([
                 }
 
                 if (this._oBOMGMCToDelete.length === 0) {                    
-                    MessageBox.information("Material list has assigned SAP material no. and already attached to an IO.\r\nDeletion not allowed.");
+                    MessageBox.information(_oCaption.INFO_MATLIST_SAP_MATNO);//Material list has assigned SAP material no. and already attached to an IO.\r\nDeletion not allowed.
                     return;
                 }
                                
@@ -2037,7 +2306,8 @@ sap.ui.define([
                 
                                                     for (var i = 0; i < oData.length; i++) {
                                                         //pivot colros only for AUV and ASUV
-                                                        if (oData[i].USGCLS === Constants.AUV || oData[i].USGCLS === Constants.ASUV) {
+                                                        let vUSGCLS = oData.results[i].USGCLS;
+                                                        if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
                                                             for (var j = 0; j < oColors.length; j++) {
                                                                 var color = oColors[j];
                 
@@ -2092,7 +2362,8 @@ sap.ui.define([
         
                                             for (var i = 0; i < oData.length; i++) {
                                                 //pivot colros only for AUV and ASUV
-                                                if (oData[i].USGCLS === Constants.AUV || oData[i].USGCLS === Constants.ASUV) {
+                                                let vUSGCLS = oData.results[i].USGCLS;
+                                                if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {
                                                     for (var j = 0; j < oColors.length; j++) {
                                                         var color = oColors[j];
         
@@ -2140,7 +2411,7 @@ sap.ui.define([
                         error: function (err) {
                             Common.closeProcessingDialog(me);
                             var errorMsg = JSON.parse(err.responseText).error.message.value;
-                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                            MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                         }
                     });
                 }
@@ -2669,7 +2940,7 @@ sap.ui.define([
                 var iSelectedIndex = oTable.getSelectedIndex();
     
                 if (iSelectedIndex === -1) {
-                    MessageBox.information("Please select row/s.");
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);//"Please select row/s."
                     return;
                 }
     
@@ -2705,7 +2976,7 @@ sap.ui.define([
                 var oTableTo = sap.ui.getCore().byId("copyBOMTableTo");
 
                 if (oTableTo.getSelectedIndices().length === 0) {
-                    MessageBox.information("Please select row/s.");
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
                     return;
                 }
 
@@ -2761,7 +3032,7 @@ sap.ui.define([
                 var oFirstRowContext = oTableTo.getContextByIndex(0);
 
                 if (oTableFr.getSelectedIndices().length === 0) {
-                    MessageBox.information("Please select row/s.");
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
                     return;
                 }
 
@@ -2783,7 +3054,7 @@ sap.ui.define([
             onCopyStyleBOM: function(oEvent) {
                 var oData = this._CopyBOMDialog.getModel("DataModel").getData().results.filter(fItem => fItem.Rank > 0);
                 if (oData.length === 0) {
-                    MessageBox.information("No selected BOM to copy.");
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);//"No selected BOM to copy."
                     return;
                 }
 
@@ -2901,7 +3172,7 @@ sap.ui.define([
                     error: function (err) {
                         Common.closeProcessingDialog(me);
                         var errorMsg = JSON.parse(err.responseText).error.message.value;
-                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                        MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                     }
                 });
             },
@@ -2911,7 +3182,7 @@ sap.ui.define([
                 var oSelectedIndices = oBOMTable.getSelectedIndices();
 
                 if (oSelectedIndices.length === 0) {
-                    MessageBox.information("Please select BOM item/s to copy to other style/s.");
+                    MessageBox.information(_oCaption.INFO_NO_SEL_BOM_ITEMS);//Please select BOM item/s to copy to other style/s.
                 }
                 else {
                     Common.openLoadingDialog(this);                
@@ -2976,7 +3247,7 @@ sap.ui.define([
             onCopyStyleBOMTo: function(oEvent) {
                 var oData = this._CopyBOMDialog.getModel("DataModel").getData().results.filter(fItem => fItem.Rank > 0);
                 if (oData.length === 0) {
-                    MessageBox.information("No selected style/s.");
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
                     return;
                 }
 
@@ -3115,7 +3386,7 @@ sap.ui.define([
                         if (vCounter === vCount) {
                             Common.closeProcessingDialog(me);
                             me._CopyBOMDialog.close();
-                            MessageBox.information("Copy BOM To other style/s processed.")
+                            MessageBox.information(_oCaption.INFO_COPY_BOM_PROCESSED);//"Copy BOM To other style/s processed."
                         }                        
                     }, 100);
                 };
@@ -3287,7 +3558,7 @@ sap.ui.define([
                         if (noOfHasColor == 0) {
                             // oMsgStrip.setVisible(true);
                             // oMsgStrip.setText("At least one color is required.");
-                            MessageBox.information("At least one color is required.");
+                            MessageBox.information(_oCaption.INFO_COLOR_REQ);
                             return;
                         }
                     }
@@ -3297,7 +3568,7 @@ sap.ui.define([
                 noOfGMC = oData.results.filter(item => item.BOMITMTYP === "GMC");
                 noOfBomWGMC = oData.results.filter(item => item.BOMITMTYP === "GMC" && item.GMC !== "");
                 if (noOfGMC.length == 0) {
-                    MessageBox.information("RMC is only possible for materials with assigned GMC");
+                    MessageBox.information(_oCaption.INFO_RMC_MAT_ASSGND);//"RMC is only possible for materials with assigned GMC"
                     return;
                 }
 
@@ -3325,15 +3596,168 @@ sap.ui.define([
                         success: function (data, oResponse) {
                             me.onRefresh();
                             Common.closeLoadingDialog(me);
-                            // Common.showMessage(me._i18n.getText('t4'));
-                            MessageBox.information(me._i18n.getText('t4'));
+                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                         },
                         error: function () {
                             Common.closeLoadingDialog(me);
-                            // Common.showMessage(me._i18n.getText('t5'));
-                            MessageBox.information(me._i18n.getText('t5'));
+                            MessageBox.information(_oCaption.INFO_ERROR);
                         }
                     });
+                }
+                //console.log(JSON.stringify(oEntry2));
+            },
+
+            //new RMC method that will process only selected records
+            onRMC2: async function () {
+                //RMC clicked
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var oTableModel = this.getView().byId("bomGMCTable").getModel("DataModel");
+                var oData = oTableModel.getData();
+                var item = {};
+                console.log(oData);
+                
+                var oMsgStrip = this.getView().byId('BOMbyGMCMessageStrip');
+                oMsgStrip.setVisible(false);
+
+                //01/10/2023 add BOMGMCColorToItems parameter
+                var oEntry2 = {
+                    STYLENO: this._styleNo,
+                    VERNO: this._version,
+                    GMCToItems: []
+
+                };
+               
+                for (var i = 0; i < oData.results.length; i++) {
+                    //pivot colros only for AUV and ASUV
+                    let vUSGCLS = oData.results[i].USGCLS;
+                    if (vUSGCLS === Constants.AUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) {    
+                        let noOfHasColor = 0;
+                        for (var j = 0; j < me._colors.length; j++) {
+                            var color = me._colors[j];
+                            //console.log(color)
+                            //add items with color description only 
+                            if (oData.results[i][color.Attribcd] != "" && oData.results[i][color.Attribcd] != undefined) {
+                                item = {
+                                    "STYLENO": me._styleNo,
+                                    "BOMSEQ": oData.results[i].BOMSEQ,
+                                    "BOMITEM": oData.results[i].BOMITEM,
+                                    "VERNO": me._version,
+                                    //"BOMITMTYP": oData.results[i].BOMITMTYP, //remove as per ms. nerie
+                                    "GMC": oData.results[i].GMC,
+                                    "PARTCD": oData.results[i].PARTCD,
+                                    "USGCLS": oData.results[i].USGCLS,
+                                    "COLOR": color.Attribcd,
+                                    "MATTYP": oData.results[i].MATTYP,
+                                    "MATTYPCLS": Constants.ZCOLR,
+                                    "DESC1": oData.results[i][color.Attribcd]
+
+                                };
+                                oEntry2.GMCToItems.push(item);
+                                //console.log(item)
+                                noOfHasColor++;
+                            }
+                        }
+                        if (noOfHasColor == 0) {
+                            MessageBox.information(_oCaption.INFO_COLOR_REQ);
+                            return;
+                        }
+                    }
+                };
+                let noOfGMC = 0;
+                let noOfBomWGMC = 0
+                noOfGMC = oData.results.filter(item => item.BOMITMTYP === "GMC");
+                noOfBomWGMC = oData.results.filter(item => item.BOMITMTYP === "GMC" && item.GMC !== "");
+                if (noOfGMC.length == 0) {
+                    MessageBox.information(_oCaption.INFO_RMC_MAT_ASSGND);
+                    return;
+                }
+
+                let resultDialog = "";
+                if (noOfGMC.length > noOfBomWGMC.length) {
+                    resultDialog = await this.rmcConfirmDialog();
+                }
+                console.log(resultDialog);
+                if (resultDialog != "No") {
+                    Common.openLoadingDialog(that);
+
+                    //build header and payload
+                    //var entitySet = "/StyleBOMGMCSet(STYLENO='" + that._styleNo + "',VERNO='" + that._version + "',BOMSEQ='')";
+                    //oModel.setHeaders({ sbu: that._sbu });
+                    // var oEntry = {
+                    //     STYLENO: that._styleNo,
+                    //     VERNO: that._version
+                    // };
+                    var oTable = this.byId("bomGMCTable");
+                    var oSelectedIndices = this.getView().byId("bomGMCTable").getSelectedIndices();
+                    var oTmpSelectedIndices = [];
+                    oSelectedIndices.forEach(item => {
+                        oTmpSelectedIndices.push(oTable.getBinding("rows").aIndices[item])
+                    })
+                    oSelectedIndices = oTmpSelectedIndices;
+
+                    oModel.setUseBatch(true);
+                    oModel.setDeferredGroups(["update"]);
+                    var mParameters = {
+                        "groupId": "update"
+                    }
+
+                    for (var i = 0; i < oSelectedIndices.length; i++) {
+                        var index = oSelectedIndices[i];
+                        var entitySet = "/StyleBOMGMCSet(STYLENO='" + that._styleNo + "',VERNO='" + that._version + "',BOMSEQ='" + oData.results[index].BOMSEQ + "')";
+                        //var row = oData.results[index];
+                        //var entitySet = `/StyleBOMGMCSet(STYLENO='${that._styleNo}',VERNO='${that._version}',BOMSEQ='${row.BOMSEQ}',BOMITEM='${row.BOMITEM}',BOMITMTYP='${row.BOMITMTYP}',GMC='${row.GMC}',PARTCD='${row.PARTCD}',PARTCNT='${row.PARTCNT}',PARTDESC='${row.PARTDESC}',USGCLS='${row.USGCLS}',MATTYP='${row.MATTYP}')`;
+                        const param = {
+                            "STYLENO": that._styleNo,
+                            "VERNO": that._version,
+                            "BOMSEQ": oData.results[index].BOMSEQ,
+                            "BOMITEM": oData.results[index].BOMITEM,
+                            "BOMITMTYP": oData.results[index].BOMITMTYP,
+                            "GMC": oData.results[index].GMC,
+                            "PARTCD": oData.results[index].PARTCD,
+                            "PARTCNT": oData.results[index].PARTCNT,
+                            "PARTDESC": oData.results[index].PARTDESC,
+                            "USGCLS": oData.results[index].USGCLS,
+                            "MATTYP": oData.results[index].MATTYP,
+                        }
+                        oModel.update(entitySet, param, mParameters);
+                    }
+                  
+                    //return;
+
+                    oModel.setHeaders({
+                        sbu: that._sbu
+                    });
+                    oModel.submitChanges({
+                        mParameters,
+                        success: function (oData, oResponse) {
+                            me.onRefresh();
+                            Common.closeLoadingDialog(me);
+                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                        },
+                        error: function (oData, oResponse) {
+                            Common.closeLoadingDialog(me);
+                            MessageBox.information(_oCaption.INFO_ERROR);
+                        }
+                    });
+                     /*
+                    //call update method of Style BOm by GMC
+                    oModel.update(entitySet, oEntry, {
+                        method: "PUT",
+                        success: function (data, oResponse) {
+                            me.onRefresh();
+                            Common.closeLoadingDialog(me);
+                            // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                        },
+                        error: function () {
+                            Common.closeLoadingDialog(me);
+                            // Common.showMessage(_oCaption.INFO_ERROR);
+                            MessageBox.information(_oCaption.INFO_ERROR);
+                        }
+                    });
+                    */
+                    
                 }
                 //console.log(JSON.stringify(oEntry2));
             },
@@ -3486,11 +3910,19 @@ sap.ui.define([
                 });
                 oModel.read("/StyleBOMUVSet", {
                     success: function (oData, oResponse) {
+                        const usageClass = that.getView().byId("UsageClassCB").getSelectedKey();
                         var rowData = oData.results;
                         //Get unique items of BOM by UV
-                        var unique = rowData.filter((rowData, index, self) =>
-                            index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS)));
-
+                        var unique;
+                        if(usageClass === 'CUV'){
+                            unique = rowData.filter((rowData, index, self) =>
+                            index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS && t.SOLDTOCUST === rowData.SOLDTOCUST)));
+                    
+                        }
+                        else{
+                            unique = rowData.filter((rowData, index, self) =>
+                                index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS)));
+                        }
                         //For every unique item
                         for (var i = 0; i < unique.length; i++) {
                             //Set the pivot column for each unique item
@@ -3571,7 +4003,7 @@ sap.ui.define([
 
                     if (this.getView().byId("bomGMCTable").getModel("DataModel").getData().results.filter(fItem => fItem.EDITABLE === "X").length === 0) {
                         Common.closeProcessingDialog(this);
-                        MessageBox.information("Material list has assigned SAP material no. and already attached to an IO.\r\nEditing not allowed.");
+                        MessageBox.information(_oCaption.INFO_MATLIST_SAP_MATNO);
                         return;
                     }
 
@@ -3753,8 +4185,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._BOMbyUVChanged) { //check changed data
-                    // Common.showMessage(this._i18n.getText('t7'));
-                    MessageBox.information(me._i18n.getText('t7'));
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 } else {
 
                     //build headers and payload
@@ -3766,34 +4197,59 @@ sap.ui.define([
                         UVToItems: []
                     }
 
-                    var pivotArray;
+                    var pivotArray= [];
                     if (usageClass === Constants.AUV) {
                         pivotArray = this._colors;
-                    } else {
+                    } else if (usageClass === Constants.ASUV || usageClass === Constants.ASDUV || usageClass === Constants.ACSUV || usageClass === Constants.ASPOUV ){
                         pivotArray = this._sizes;
                     }
 
                     // var color, size;
                     //each table item
                     for (var i = 0; i < oData.results.length; i++) {
+                        var vUSGCLS = oData.results[i].USGCLS;
 
-                        //deconstruct the pivot columns into line items
-                        for (var j = 0; j < pivotArray.length; j++) {
+                        if(pivotArray.length > 0 )
+                        {
+                            //deconstruct the pivot columns into line items
+                            for (var j = 0; j < pivotArray.length; j++) {
 
-                            var attrib = pivotArray[j];
+                                var attrib = pivotArray[j];
+                                item = {
+                                    "Styleno": this._styleNo,
+                                    "Verno": this._version,
+                                    "Gmc": oData.results[i].GMC,
+                                    "Partcd": oData.results[i].PARTCD,
+                                    "Usgcls": oData.results[i].USGCLS,
+                                    "Color": ((oData.results[i].USGCLS === Constants.AUV) ? attrib.Attribcd : ''), //for AUV save on Color
+                                    //"Sze": ((oData.results[i].USGCLS !== Constants.AUV) ? attrib.Attribcd : ''), //Non-AUV save on Sze
+                                    "Sze": ((vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) ? attrib.Attribcd : ''), 
+                                    "Dest": " ",
+                                    "Mattyp": oData.results[i].MATTYP,
+                                    "Mattypcls": oData.results[i].MATTYPCLS,
+                                    "Attribcd": oData.results[i].ATTRIBCD,
+                                    "Desc1": oData.results[i][attrib.Attribcd],
+                                    "Consump": oData.results[i].CONSUMP,
+                                    "Wastage": oData.results[i].WASTAGE
+                                };
+                                oEntry.UVToItems.push(item);
+                            }
+                        }
+                        else
+                        {
                             item = {
                                 "Styleno": this._styleNo,
                                 "Verno": this._version,
                                 "Gmc": oData.results[i].GMC,
                                 "Partcd": oData.results[i].PARTCD,
                                 "Usgcls": oData.results[i].USGCLS,
-                                "Color": ((oData.results[i].USGCLS === Constants.AUV) ? attrib.Attribcd : ''), //for AUV save on Color
-                                "Sze": ((oData.results[i].USGCLS !== Constants.AUV) ? attrib.Attribcd : ''), //Non-AUV save on Sze
-                                "Dest": " ",
+                                "Color": '', 
+                                "Sze": '', 
+                                "Dest": oData.results[i].DEST,
                                 "Mattyp": oData.results[i].MATTYP,
                                 "Mattypcls": oData.results[i].MATTYPCLS,
                                 "Attribcd": oData.results[i].ATTRIBCD,
-                                "Desc1": oData.results[i][attrib.Attribcd],
+                                "Desc1": oData.results[i].DESC1,
                                 "Consump": oData.results[i].CONSUMP,
                                 "Wastage": oData.results[i].WASTAGE
                             };
@@ -3834,19 +4290,19 @@ sap.ui.define([
 
                                         if (me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "01").length > 0 ||
                                             me.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
-                                            MessageBox.information("Saved. RMC has to be executed.");
+                                            MessageBox.information(_oCaption.INFO_BOM_SAVED_RMC);
                                         }
                                         else {
-                                            MessageBox.information(me._i18n.getText('t4'));
+                                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                         }
                                     },
                                     error: function (err) {
                                         Common.closeLoadingDialog(that);
-                                        // Common.showMessage(me._i18n.getText('t5'));
+                                        // Common.showMessage(_oCaption.INFO_ERROR);
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // oMsgStrip.setVisible(true);
                                         // oMsgStrip.setText(errorMsg);
-                                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                        MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                                     }
                                 });
                             }
@@ -4076,10 +4532,42 @@ sap.ui.define([
                 })
             },
 
-            onMaterialListChange: function () {
+            onMaterialListChange: function (oEvent) {
                 //material list change flag
                 this._materialListChanged = true;
                 this.setChangeStatus(true);
+
+                var oSource = oEvent.getSource();
+                var sColumnName = oSource.getBindingInfo("value").parts[0].path;
+                var oTable = that.getView().byId("bomGMCTable");
+                
+                if (sColumnName.toUpperCase() === "UNITPRICE") {
+                    var decPlaces = oEvent.getSource().getBindingInfo("value").constraints.scale;
+
+                    if (oEvent.getParameters().value.split(".").length > 1) {
+                        if (oEvent.getParameters().value.split(".")[1].length > decPlaces) {
+                            oEvent.getSource().setValueState("Error");
+                            oEvent.getSource().setValueStateText("Enter a number with a maximum of " + decPlaces + " decimal places.");
+                            that._validationErrors.push(oEvent.getSource().getId());
+                        }
+                        else {
+                            oEvent.getSource().setValueState("None");
+                            that._validationErrors.forEach((item, index) => {
+                                if (item === oEvent.getSource().getId()) {
+                                    that._validationErrors.splice(index, 1)
+                                }
+                            })
+                        }
+                    }
+                    else {
+                        oEvent.getSource().setValueState("None");
+                        that._validationErrors.forEach((item, index) => {
+                            if (item === oEvent.getSource().getId()) {
+                                that._validationErrors.splice(index, 1)
+                            }
+                        })
+                    }
+                }
             },
 
             onMaterialListInputChange: function (oEvent) {
@@ -4128,9 +4616,13 @@ sap.ui.define([
                 var oMsgStrip = this.getView().byId('MaterialListMessageStrip');
                 oMsgStrip.setVisible(false);
 
+                if (this._validationErrors.length > 0) {
+                    MessageBox.information(_oCaption.INFO_CHECK_INVALID_ENTRIES);
+                    return;
+                }
+
                 if (!this._materialListChanged) { //check changed data
-                    // Common.showMessage(this._i18n.getText('t7'));
-                    MessageBox.information(me._i18n.getText('t7'));
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 } else {
                     //build headers and payload
                     var oData = oTableModel.getData();
@@ -4185,16 +4677,16 @@ sap.ui.define([
                                         me.setRowReadMode("materialListTable");
                                         me.lockStyleVer("O");
                                         Common.closeLoadingDialog(me);
-                                        // Common.showMessage(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
+                                        // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                     },
                                     error: function (err) {
                                         Common.closeLoadingDialog(me);
-                                        // Common.showMessage(me._i18n.getText('t5'));
+                                        // Common.showMessage(_oCaption.INFO_ERROR);
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // oMsgStrip.setVisible(true);
                                         // oMsgStrip.setText(errorMsg);
-                                        MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                        MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                                     }
                                 });
                             }
@@ -4227,11 +4719,11 @@ sap.ui.define([
                         });
                     }
                     else {
-                        MessageBox.information("No valid record for material no. creation.\r\nMaterial no assigned or deleted already.");
+                        MessageBox.information(_oCaption.INFO_NO_VALID_MATNO);//No valid record for material no. creation.\r\nMaterial no assigned or deleted already.
                     }
                 }
                 else {
-                    MessageBox.information("No available record to process.");
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);//"No available record to process."
                 }
             },
 
@@ -4451,7 +4943,8 @@ sap.ui.define([
                     } else if (columnName === "MATCONSPER" || columnName === "PER" || columnName === "WASTAGE") {
                         //setting the GMC input with value help
                         oColumnTemplate = new sap.m.Input({
-                            value: "{DataModel>" + columnName + "}",
+                            // value: "{DataModel>" + columnName + "}",
+                            value: "{path:'" + "DataModel>" + columnName + "', formatOptions:{ minFractionDigits:" + column.Decimal + ", maxFractionDigits:" + column.Decimal + " }, constraints:{ precision:" + column.Length + ", scale:" + column.Decimal + " }}",
                             change: changeFunction,
                             liveChange: liveChangeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
@@ -4495,6 +4988,35 @@ sap.ui.define([
                         }
                     }
                 }
+
+                return oColumnTemplate;
+            },
+
+            columnTextLinkTemplate: function (sColumnId) {
+                var oColumnTemplate;
+                oColumnTemplate = new sap.m.Text({ text: "{" + sColumnId + "}", wrapping: false, tooltip: "{" + sColumnId + "}" }); //default text
+                if (sColumnId === "DELETED") {
+                    oColumnTemplate = new sap.m.CheckBox({
+                        selected: "{" + sColumnId + "}",
+                        editable: false
+                    });
+                }
+                else if (sColumnId === "CLOSED") {
+                    //Manage button
+                    oColumnTemplate = new sap.m.CheckBox({
+                        selected: "{" + sColumnId + "}",
+                        editable: false
+                    });
+                }
+                else if (sColumnId === "UNLIMITED" || sColumnId === "OVERDELTOL" || sColumnId === "UNDERDELTOL") {
+                    //Manage button
+                    oColumnTemplate = new sap.m.CheckBox({
+                        selected: "{" + sColumnId + "}",
+                        editable: false
+                    });
+                }
+
+
 
                 return oColumnTemplate;
             },
@@ -5711,7 +6233,7 @@ sap.ui.define([
             },
 
             lockStyleVer: async function (isLock) {
-                return { "Type": "S", "Message": "Disable Locking" }
+                //return { "Type": "S", "Message": "Disable Locking" }
                 var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
 
                 var oParamLock = {
@@ -5795,16 +6317,68 @@ sap.ui.define([
                     var oControl;
 
                     if (sColumnDataType !== "BOOLEAN") {
-                        oControl = new sap.m.Text({
-                            wrapping: false,
-                            tooltip: sColumnDataType === "BOOLEAN" ? "" : "{DataModel>" + sColumnId + "}"
-                        })
+                       
+                        if(sColumnId === "GMC"){
+                            oControl = new sap.m.Link({
+                                text: "{DataModel>" + sColumnId + "}",
+                                press: function(oEvent) {
+                                    const vGMC =  oEvent.oSource.mProperties.text;
+                                    // Handle the click event of the hyperlink
+                                    window.open(`https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_GMC-display&/${that._sbu}/${vGMC}` , "_blank");
+                                },
+                                // Add the custom event handler for right-click
+                                // onAfterRendering: function() {
+                                //     var that = this;
+                                //     this.$().on("contextmenu", function(e) {
+                                //         e.preventDefault();
+                                //         window.open(that.getHref(), "_blank");
+                                //     });
+                                // }
+                            })
+                            oControl.addStyleClass("hyperlink") 
+ 
+                        }else if(sColumnId === "BOMSTYLE"){
+                            oControl = new sap.m.Link({
+                                text: "{DataModel>" + sColumnId + "}",
+                                press: function(oEvent) {
+                                    // Handle the click event of the hyperlink
+                                    const vStyleNo =  oEvent.oSource.mProperties.text;
+                                    console.log(vStyleNo)
+                                    
+                                    window.open(`https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_ORD_STYLE-display&/RouteStyleDetail/${vStyleNo}/VER/%20`, "_blank");
+                                },
+                            })
+                            oControl.addStyleClass("hyperlink") 
+ 
+                        }else if(sColumnId === "Matno"){
+                            //   oControl = new sap.ui.core.HTML({
+                            //     content: `<a href="#" onclick="return false;" oncontextmenu="that.oController.openLinkInNewTab(event, this);">{DataModel>${sColumnId}}</a>`
+                            // })
+                          
+                            oControl = new sap.m.Link({
+                                text: "{DataModel>" + sColumnId + "}",
+                                press: function(oEvent) {
+                                    // Handle the click event of the hyperlink
+                                    const vcolumnData =  oEvent.oSource.mProperties.text;
+                                    window.open(`https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_MATERIAL-display&/${that._sbu}/${vcolumnData}`, "_blank");
+                                },
+                            })
+                            oControl.addStyleClass("hyperlink") 
+ 
+                        }
+                        else
+                        {
+                            oControl = new sap.m.Text({
+                                wrapping: false,
+                                tooltip: sColumnDataType === "BOOLEAN" ? "" : "{DataModel>" + sColumnId + "}"
+                            })
+    
+                        }
     
                         if (context.getObject().TextFormatMode && context.getObject().TextFormatMode === "ValueKey") {
                             var rscPath = context.getObject().ValueHelp.items.path;
                             var rscKey = context.getObject().ValueHelp.items.value;
                             var rscValue = context.getObject().ValueHelp.items.text;
-    
                             oControl.bindText({  
                                 parts: [  
                                     { path: "DataModel>" + sColumnId }
@@ -5820,12 +6394,15 @@ sap.ui.define([
                             });
                         }
                         else {
-                            oControl.bindText({  
-                                parts: [  
-                                    { path: "DataModel>" + sColumnId }
-                                ]
-                            });    
+                            if(sColumnId !== "GMC" && sColumnId !== "BOMSTYLE" && sColumnId !== "Matno" ){
+                                oControl.bindText({  
+                                    parts: [  
+                                        { path: "DataModel>" + sColumnId }
+                                    ]
+                                });    
+                            }
                         }
+                        
                     }
                     else {
                         oControl = new sap.m.CheckBox({                           
@@ -5847,6 +6424,13 @@ sap.ui.define([
                         hAlign: sColumnDataType === "NUMBER" ? "End" : sColumnDataType === "BOOLEAN" ? "Center" : "Begin"
                     });
                 });
+            },
+
+            
+                // Event handler function to open the link in a new tab
+            openLinkInNewTab(event, link) {
+                event.preventDefault();
+                window.open(link.href, "_blank");
             },
 
             setRowEditMode(sTabId) {

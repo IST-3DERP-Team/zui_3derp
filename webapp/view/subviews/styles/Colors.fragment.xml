@@ -9,20 +9,20 @@
     <VBox fitContainer="true" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <ToolbarSpacer />
-            <Button id="btnColorAdd" type="Ghost" icon="sap-icon://add" tooltip="{i18n>Addnewline}" press="addLine" visible="true">
+            <Button id="btnColorAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLine" visible="true">
                 <customData>
                     <core:CustomData key="TableName" value="colorsTable" />
                 </customData>
             </Button>
-            <Button id="btnColorRemoveRow" type="Ghost" icon="sap-icon://less" tooltip="{i18n>Removenewline}" press="removeNewLine" visible="false">
+            <Button id="btnColorRemoveRow" type="Ghost" icon="sap-icon://less" tooltip="{ddtext>/REMOVENEWLINE}" press="removeNewLine" visible="false">
                 <customData>
                     <core:CustomData key="TableName" value="colorsTable" />
                 </customData>
             </Button>            
-            <Button id="btnColorSave" type="Ghost" icon="sap-icon://save" tooltip="{i18n>Savecolorattributes}" press="onSaveColorTable" visible="false" />
-            <Button id="btnColorEdit" type="Ghost" icon="sap-icon://edit" tooltip="{i18n>Editcolorattributes}" press="setColorEditMode" visible="true" />
-            <Button id="btnColorDelete" type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedcolors}" press="onDeleteColor" visible="true" />
-            <Button id="btnColorCancel" type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelColorsEdit" visible="false" />
+            <Button id="btnColorSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveColorTable" visible="false" />
+            <Button id="btnColorEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setColorEditMode" visible="true" />
+            <Button id="btnColorDelete" type="Ghost" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteColor" visible="true" />
+            <Button id="btnColorCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelColorsEdit" visible="false" />
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="colorsTable" />

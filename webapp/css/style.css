@@ -124,3 +124,7 @@ for header.fragment
 .copyMenu > button {
     padding-right: 0 !important;
 }
+
+.hyperlink {
+    text-decoration: underline;
+}

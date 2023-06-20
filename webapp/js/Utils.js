@@ -521,8 +521,8 @@
 
             for (var i = 0; i < columns.length; i++) {
                 aCols.push({
-                    label: columns[i].mProperties.filterProperty,
-                    property: columns[i].mProperties.filterProperty,
+                    label: columns[i].mProperties.sortProperty, //change filterProperty to sortProperty
+                    property: columns[i].mProperties.sortProperty, //change filterProperty to sortProperty
                     type: 'string'
                 })
             }

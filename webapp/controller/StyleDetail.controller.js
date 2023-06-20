@@ -21,6 +21,7 @@ sap.ui.define([
         var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({ pattern: "MM/dd/yyyy" });
         var _promiseResult;
         var _sAction;
+        var _oCaption = {};
 
         return Controller.extend("zui3derp.controller.StyleDetail", {
 
@@ -474,6 +475,48 @@ sap.ui.define([
                 var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
 
                 oDDTextParam.push({ CODE: "COPY" });
+                oDDTextParam.push({ CODE: "ADDNEWLINE" });
+                oDDTextParam.push({ CODE: "REMOVENEWLINE" });
+                oDDTextParam.push({ CODE: "GETCOMPONENTS" });
+                oDDTextParam.push({ CODE: "RMC" });
+                oDDTextParam.push({ CODE: "EDIT" });
+                oDDTextParam.push({ CODE: "ADD" });
+                oDDTextParam.push({ CODE: "REFRESH" });
+                oDDTextParam.push({ CODE: "DELETE" });
+                oDDTextParam.push({ CODE: "CANCEL" });
+                oDDTextParam.push({ CODE: "SAVE" });
+                oDDTextParam.push({ CODE: "CLOSE" });
+
+                oDDTextParam.push({ CODE: "SBU" });
+                oDDTextParam.push({ CODE: "SALESGRP" });
+                oDDTextParam.push({ CODE: "CUSTGRP" });
+                oDDTextParam.push({ CODE: "SEASONCD" });
+                oDDTextParam.push({ CODE: "PRODTYP" });
+                oDDTextParam.push({ CODE: "STYLENO" });
+                oDDTextParam.push({ CODE: "STYLECAT" });
+                oDDTextParam.push({ CODE: "STYLECD" });
+                oDDTextParam.push({ CODE: "FTSTYLE" });
+                oDDTextParam.push({ CODE: "BOMSTYLVER" });
+                oDDTextParam.push({ CODE: "SOLDTOCUST" });
+                oDDTextParam.push({ CODE: "DESC1" });
+                oDDTextParam.push({ CODE: "DESC2" });
+                oDDTextParam.push({ CODE: "STATUSCD" });
+                oDDTextParam.push({ CODE: "CUSTPRDTYP" });
+                oDDTextParam.push({ CODE: "PRODGRP" });
+                oDDTextParam.push({ CODE: "SIZEGRP" });
+                oDDTextParam.push({ CODE: "UOM" });
+                oDDTextParam.push({ CODE: "STYLEGRP" });
+                oDDTextParam.push({ CODE: "FABRCTN" });
+                oDDTextParam.push({ CODE: "VERNO" });
+                oDDTextParam.push({ CODE: "UOM" });
+                oDDTextParam.push({ CODE: "REMARKS" });
+                oDDTextParam.push({ CODE: "CREATEDBY" });
+                oDDTextParam.push({ CODE: "CREATEDDT" });
+                oDDTextParam.push({ CODE: "UPDATEDBY" });
+                oDDTextParam.push({ CODE: "UPDATEDDT" });
+                oDDTextParam.push({ CODE: "CURRENTVERSION" });
+
+                
 
                 oDDTextParam.push({ CODE: "IONO" });
                 oDDTextParam.push({ CODE: "IODESC" });
@@ -485,7 +528,14 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "VERNO" });
                 oDDTextParam.push({ CODE: "CREATEDBY" });
                 oDDTextParam.push({ CODE: "CREATEDDT" });
+
                 oDDTextParam.push({ CODE: "IOLIST" });
+                oDDTextParam.push({ CODE: "COLORS" });
+                oDDTextParam.push({ CODE: "SIZES" });
+                oDDTextParam.push({ CODE: "PROCESS" });
+                oDDTextParam.push({ CODE: "VERSIONS" });
+                oDDTextParam.push({ CODE: "ATTRIBUTES" });
+                oDDTextParam.push({ CODE: "ATTACHMENTS" });
 
                 oDDTextParam.push({ CODE: "ATTRIBSEQ" });
                 oDDTextParam.push({ CODE: "ATTRIBTYP" });
@@ -507,10 +557,25 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "DESC2" });
                 oDDTextParam.push({ CODE: "DELETED" });
 
+
+
                 oDDTextParam.push({CODE: "INFO_INPUT_REQD_FIELDS"}); 
                 oDDTextParam.push({CODE: "INFO_NO_DATA_EDIT"}); 
                 oDDTextParam.push({CODE: "INFO_NO_SEL_RECORD_TO_PROC"}); 
-                oDDTextParam.push({CODE: "INFO_NO_RECORD_TO_REMOVE"}); 
+                oDDTextParam.push({CODE: "INFO_NO_RECORD_TO_REMOVE"});
+                oDDTextParam.push({CODE: "WARN_NO_DATA_MODIFIED" }); 
+                oDDTextParam.push({CODE: "CONFIRM_SAVE" }); 
+                oDDTextParam.push({CODE: "INFO_ERROR" })
+                oDDTextParam.push({CODE: "INFO_SAVE_SUCCESS" }); 
+                oDDTextParam.push({CODE: "INFO_NO_RECORD_SELECT" });
+                oDDTextParam.push({CODE: "INFO_BASE_INDICATOR" });
+                oDDTextParam.push({CODE: "INFO_NO_DELETE_BOM" });
+                oDDTextParam.push({CODE: "INFO_NO_DELETE_ATTR_REQ" }); 
+                oDDTextParam.push({CODE: "INFO_NO_EDIT_STYLE_IO_ORDDTLS" });
+                oDDTextParam.push({CODE: "INFO_NO_EDIT_STYLE_HAS_IO" });
+                oDDTextParam.push({CODE: "INFO_SIZE_ONLY_ALLOW_EDIT" });
+                oDDTextParam.push({CODE: "INFO_NOT_ALLOW_DUPLICATE_DESC" });
+                oDDTextParam.push({CODE: "INFO_NO_COLORS" });
                 
                 return new Promise((resolve, reject)=>{
                     oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam  }, {
@@ -522,6 +587,7 @@ sap.ui.define([
 
                             me.getView().setModel(new JSONModel(oDDTextResult), "ddtext");
                             me.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").setData({ text: oDDTextResult })
+                            _oCaption = me.getView().getModel("ddtext").getData();
                             resolve();
                         },
                         error: function (err) { resolve(); }
@@ -885,10 +951,10 @@ sap.ui.define([
                 }
                 else {
                     if (this.getView().getModel("IOData").getData().filter(fItem => fItem.WITHORDERDTL === "X").length > 0) {
-                        MessageBox.information("Header info editing not allowed.\r\nStyle already used in IO with order details.");
+                        MessageBox.information(_oCaption.INFO_NO_EDIT_STYLE_IO_ORDDTLS); //Header info editing not allowed.\r\nStyle already used in IO with order details.
                     }
                     else if (this.getView().getModel("IOData").getData().filter(fItem => fItem.WITHBOMSIZEUV === "X").length > 0) {
-                        MessageBox.information("Header info editing not allowed.\r\nStyle already used in IO and BOM by GMC has ASUV/SUV already.");
+                        MessageBox.information(_oCaption.INFO_NO_EDIT_STYLE_HAS_IO);//Header info editing not allowed.\r\nStyle already used in IO and BOM by GMC has ASUV/SUV already.
                     }
                     else {
                         // const result = await this.lockStyle("X");
@@ -914,7 +980,7 @@ sap.ui.define([
                             this.setDtlsEnableButton(false);
 
                             if (this.getView().getModel("IOData").getData().length > 0) {
-                                MessageBox.information("Only size group can be edited.\r\nStyle already used in IO.");
+                                MessageBox.information(_oCaption.INFO_SIZE_ONLY_ALLOW_EDIT);//"Only size group can be edited.\r\nStyle already used in IO."
 
                                 this.byId("STYLECD").setEnabled(false);
                                 this.byId("PRODTYP").setEnabled(false);
@@ -1087,7 +1153,7 @@ sap.ui.define([
                 //check if there are changes
                 if (!this._headerChanged) {
                     // if (oEntry === me._headerData) {
-                    Common.showMessage(this._i18n.getText('t7')); //no changes made
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED); //no changes made
                 } else {
 
                     //set http header data
@@ -1109,7 +1175,7 @@ sap.ui.define([
                         });
                         console.log(oEntry);
 
-                        MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                        MessageBox.confirm(_oCaption.CONFIRM_SAVE, {
                             actions: ["Yes", "No"],
                             onClose: function (sAction) {
                                 if (sAction === "Yes") {
@@ -1139,8 +1205,7 @@ sap.ui.define([
                                                 me.applyToIO();
                                             }
                                             Common.closeLoadingDialog(that);
-                                            //Common.showMessage(me._i18n.getText('t4'));
-                                            MessageBox.information(me._i18n.getText('t4'));
+                                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
 
                                             //change the url hash to the new style no
                                             var oHashChanger = HashChanger.getInstance();
@@ -1174,7 +1239,7 @@ sap.ui.define([
                             sbu: this._sbu
                         });
                         console.log(oEntry);
-                        MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                        MessageBox.confirm(_oCaption.CONFIRM_SAVE, {
                             actions: ["Yes", "No"],
                             onClose: function (sAction) {
                                 if (sAction === "Yes") {
@@ -1194,8 +1259,7 @@ sap.ui.define([
                                             }
                                             Common.closeLoadingDialog(that);
                                             // me.generalAttrDataCheck();
-                                            //Common.showMessage(me._i18n.getText('t4'));
-                                            MessageBox.information(me._i18n.getText('t4'));
+                                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                         },
                                         error: function (err, oMessage) {
                                             //show message strip on error
@@ -1261,7 +1325,7 @@ sap.ui.define([
                             me.setChangeStatus(false);
                             me._router.navTo("RouteStyles"); //return to styles screen
                             Common.closeLoadingDialog(me);
-                            Common.showMessage(me._i18n.getText('t4'));
+                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                         },
                         error: function () {
                             Common.closeLoadingDialog(me);
@@ -1421,7 +1485,7 @@ sap.ui.define([
                      //mark as required fields
                      var oTable = this.getView().byId("generalTable");
                      oTable.getColumns().forEach((col, idx) => {
-                        const colProp = col.mProperties.filterProperty;
+                        const colProp = col.mProperties.sortProperty;
                         if(colProp == "Attribtyp")
                             col.getLabel().addStyleClass("sapMLabelRequired");
                     });
@@ -1615,7 +1679,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._generalAttrChanged) { //check if data is changed
-                    MessageBox.information(this._i18n.getText('t7'));                    
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);                    
                 } else {
                     //get table data and build the payload
                     var sMessage = "";
@@ -1677,7 +1741,7 @@ sap.ui.define([
                     if (sMessage === "") {
                         Common.openLoadingDialog(that);
                         console.log(oEntry)
-                        MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                        MessageBox.confirm(_oCaption.CONFIRM_SAVE, {
                             actions: ["Yes", "No"],
                             onClose: function (sAction) {
                                 if (sAction === "Yes") {
@@ -1696,7 +1760,7 @@ sap.ui.define([
                                             me.setTabReadMode("GenAttrEditModeModel");
                                             me.setRowReadMode("generalTable");
                                             me.getGeneralTable();
-                                            MessageBox.information(me._i18n.getText('t4'));
+                                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
 
                                             //on save, execute apply to IO
                                             if(me._iono != ' '){
@@ -1711,7 +1775,7 @@ sap.ui.define([
                                 //             //oMsgStrip.setVisible(true);
                                 //             //oMsgStrip.setText(errorMsg);
                                 //             // Common.showMessage(me._i18n.getText('t5'));
-                                            MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                            MessageBox.information(_oCaption.INFO_ERROR + "\r\n" + errorMsg);
                                         }
                                     });
                                 }
@@ -1974,7 +2038,7 @@ sap.ui.define([
                     var oTable = this.getView().byId("colorsTable");
                     oTable.getColumns().forEach((col, idx) => {
                         //console.log(col);
-                        const colProp = col.mProperties.filterProperty;
+                        const colProp = col.mProperties.sortProperty;
                         if(colProp == "Desc1" || colProp == "Sortseq")
                             col.getLabel().addStyleClass("sapMLabelRequired");
                     });
@@ -2058,7 +2122,7 @@ sap.ui.define([
                         //mark as required fields
                         oTable.getColumns().forEach((col, idx) => {
                             //console.log(col);
-                            const colProp = col.mProperties.filterProperty;
+                            const colProp = col.mProperties.sortProperty;
                             if(colProp == "Desc1" || colProp == "Sortseq")
                                 col.getLabel().addStyleClass("sapMLabelRequired");
                         });
@@ -2153,7 +2217,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._colorChanged) { //check if there are changes to colors table
-                    MessageBox.information(this._i18n.getText('t7'));
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 } else {
 
                     //build the headers and payload
@@ -2195,14 +2259,11 @@ sap.ui.define([
                     })
 
                     if (hasDuplicateColorDesc) {
-                        //Common.showMessage("Duplicate color is not allow");
-                        // oMsgStrip.setVisible(true);
-                        // oMsgStrip.setText("Duplicate Description is not allowed");
-                        MessageBox.information("Duplicate Description is not allowed");
+                        MessageBox.information(_oCaption.INFO_NOT_ALLOW_DUPLICATE_DESC);//"Duplicate Description is not allowed"
                         return;
                     }
 
-                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                    MessageBox.confirm(_oCaption.CONFIRM_SAVE, {
                         actions: ["Yes", "No"],
                         onClose: function (sAction) {
                             if (sAction === "Yes") {
@@ -2234,7 +2295,7 @@ sap.ui.define([
                                         me.byId("btnHdrEdit").setEnabled(true);
                                         me.byId("btnHdrDelete").setEnabled(true);
 
-                                        MessageBox.information(me._i18n.getText('t4'));
+                                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                     },
                                     error: function (err) {
                                         Common.closeLoadingDialog(me);
@@ -2242,7 +2303,7 @@ sap.ui.define([
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // oMsgStrip.setVisible(true);
                                         // oMsgStrip.setText(errorMsg);
-                                        MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                        MessageBox.information(_oCaption.INFO_ERROR + "\r\n" + errorMsg);
                                     }
                                 });
                             }
@@ -2480,7 +2541,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._sizeChanged) { //check if there are changes 
-                    MessageBox.information(this._i18n.getText('t7'));
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 } else {
                     //build header and payload
                     var oData = oTableModel.getData();
@@ -2507,9 +2568,9 @@ sap.ui.define([
                     };
 
                     if (lv_baseindctr > 1) { //do not allow multiple base indicator
-                        MessageBox.information(this._i18n.getText('t9'));
+                        MessageBox.information(_oCaption.INFO_BASE_INDICATOR);
                     } else {
-                        MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                        MessageBox.confirm(_oCaption.CONFIRM_SAVE, {
                             actions: ["Yes", "No"],
                             onClose: function (sAction) {
                                 if (sAction === "Yes") {
@@ -2527,8 +2588,7 @@ sap.ui.define([
                                             me.setChangeStatus(false);
                                             Common.closeLoadingDialog(me);
                                             me.setTabReadMode("SizeEditModeModel");
-                                            //Common.showMessage(me._i18n.getText('t4'));
-                                            MessageBox.information(me._i18n.getText('t4'));
+                                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                             Utils.getProcessAttributes(me);
 
                                             //on save, execute apply to IO
@@ -2542,7 +2602,7 @@ sap.ui.define([
                                             var errorMsg = JSON.parse(err.responseText).error.message.value;
                                             //oMsgStrip.setVisible(true);
                                             //oMsgStrip.setText(errorMsg);
-                                            MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                            MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                                         }
                                     });
                                 }
@@ -2556,7 +2616,7 @@ sap.ui.define([
                                 var errorMsg = JSON.parse(err.responseText).error.message.value;
                                 // oMsgStrip.setVisible(true);
                                 // oMsgStrip.setText(errorMsg);
-                                MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                MessageBox.information(_oCaption.INFO_ERROR + "\r\n" + errorMsg);
                             }
                         });
                     }
@@ -2617,7 +2677,7 @@ sap.ui.define([
                     var oTable = this.getView().byId("processesTable");
                     //mark as required field
                     oTable.getColumns().forEach((col, idx) => {
-                        const colProp = col.mProperties.filterProperty;
+                        const colProp = col.mProperties.sortProperty;
                         if(colProp == "Processcd")
                             col.getLabel().addStyleClass("sapMLabelRequired");
                     });
@@ -2717,7 +2777,7 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._processChanged) { //check changed data
-                    MessageBox.information(this._i18n.getText('t7'));
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 } else {
                     //build header and payload
                     var oData = oTableModel.getData();
@@ -2739,7 +2799,7 @@ sap.ui.define([
                         }
                         oEntry.ProcessToItems.push(item);
                     };
-                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                    MessageBox.confirm(_oCaption.CONFIRM_SAVE, {
                         actions: ["Yes", "No"],
                         onClose: function (sAction) {
                             if (sAction === "Yes") {
@@ -2759,8 +2819,7 @@ sap.ui.define([
                                         me.setTabReadMode("ProcessEditModeModel");
                                         me.setRowReadMode("processesTable");
                                         me.getProcessesTable();
-                                        //Common.showMessage(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
+                                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                         //on save, execute apply to IO
                                         if(me._iono != ' '){
                                             me.applyToIO();
@@ -2772,7 +2831,7 @@ sap.ui.define([
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         //oMsgStrip.setVisible(true);
                                         //oMsgStrip.setText(errorMsg);
-                                        MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                        MessageBox.information(_oCaption.INFO_ERROR + "\r\n" + errorMsg);
                                     }
                                 });
                             }
@@ -2978,11 +3037,12 @@ sap.ui.define([
 
             onRouteVersion: function (oEvent) {
                 if (this.getOwnerComponent().getModel("COLOR_MODEL").getData().items.length === 0) {
-                    MessageBox.information("No colors found.")
+                    MessageBox.information(_oCaption.INFO_NO_COLORS)//"No colors found."
                 }
                 else {
                     var oTable = this.getView().byId("versionsTable");
                     var selected = oTable.getSelectedIndices();
+                    console.log(selected);
 
                     var oTmpSelected = [];
                     selected.forEach(item => {
@@ -2993,6 +3053,7 @@ sap.ui.define([
                     var oData = oTableModel.getData();
 
                     var verno = oData.results[selected].Verno;
+                    oTable.clearSelection();
 
                     if (this._GenericFilterDialog) {
                         this._GenericFilterDialog.setModel(new JSONModel());
@@ -3055,7 +3116,7 @@ sap.ui.define([
                     "Desc2": oDesc2,
                     "Currentver": oCurrent
                 };
-                MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                MessageBox.confirm(_oCaption.CONFIRM_SAVE, {
                     actions: ["Yes", "No"],
                     onClose: function (sAction) {
                         if (sAction === "Yes") {
@@ -3070,7 +3131,7 @@ sap.ui.define([
                                     me.getVersionsTable();
                                     me._NewVerionDialog.close();
                                     Common.closeLoadingDialog(that);
-                                    Common.showMessage(me._i18n.getText('t4'));
+                                    MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
 
                                     if (oCurrent) { me.getHeaderData(); }
 
@@ -3079,13 +3140,13 @@ sap.ui.define([
                                     this.byId("btnHdrDelete").setEnabled(true);
                                     this.byId("btnHdrClose").setEnabled(true);
                                     
-                                    MessageBox.information(me._i18n.getText('t4'));
+                                    MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                 },
                                 error: function (err) {
                                     Common.closeLoadingDialog(that);
                                     //Common.showMessage(me._i18n.getText('t5'));
                                     var errorMsg = JSON.parse(err.responseText).error.message.value;
-                                    MessageBox.information(me._i18n.getText('t5') + ": " + errorMsg);
+                                    MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
                                 }
                             });
                         }
@@ -3172,9 +3233,9 @@ sap.ui.define([
                 oMsgStrip.setVisible(false);
 
                 if (!this._versionChanged) { //check if there changes
-                    MessageBox.information(this._i18n.getText('t7'));
+                    MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);
                 } else {
-                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                    MessageBox.confirm(_oCaption.CONFIRM_SAVE, {
                         actions: ["Yes", "No"],
                         onClose: function (sAction) {
                             if (sAction === "Yes") {
@@ -3211,8 +3272,7 @@ sap.ui.define([
                                         me.setChangeStatus(false);
                                         me.setTabReadMode("VersionEditModeModel");
                                         me.setRowReadMode("versionsTable");
-                                        //MessageBox.information(me._i18n.getText('t4'));
-                                        MessageBox.information(me._i18n.getText('t4'));
+                                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                         // this.enableOtherTabs("detailPanel");
                                         // this.byId("btnHdrEdit").setEnabled(true);
                                         // this.byId("btnHdrDelete").setEnabled(true);
@@ -3223,7 +3283,7 @@ sap.ui.define([
                                         var errorMsg = JSON.parse(err.responseText).error.message.value;
                                         // //oMsgStrip.setVisible(true);
                             //             //oMsgStrip.setText(errorMsg);
-                                        MessageBox.information(me._i18n.getText('t5') + "\r\n" + errorMsg);
+                                        MessageBox.information(_oCaption.INFO_ERROR + "\r\n" + errorMsg);
                                     }
                                 });
                             }
@@ -3258,7 +3318,7 @@ sap.ui.define([
                         me.getHeaderData();
                         me.getVersionsTable();
                         Common.closeLoadingDialog(that);
-                        Common.showMessage(me._i18n.getText('t4'));
+                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                     },
                     error: function () {
                         Common.closeLoadingDialog(that);
@@ -3346,12 +3406,12 @@ sap.ui.define([
                             vVersion = oData.at(oTable.getBinding("rows").aIndices[oSelectedIndices[0]]).Verno;
                         }
                         else {
-                            MessageBox.information("Select only one version to copy from.")
+                            MessageBox.information(_oCaption.INFO_SEL_ONE_VERSION_COPY_FR)//Select only one version to copy from.
                             bProceed = false;
                         }
                     }
                     else {
-                        MessageBox.information("Select version to copy from.")
+                        MessageBox.information(_oCaption.INFO_SEL_ONE_VERSION_COPY_FR)//Select version to copy from.
                         bProceed = false;
                     }
                 }
@@ -3577,7 +3637,7 @@ sap.ui.define([
                     this._ConfirmDeleteFileDialog.addStyleClass("sapUiSizeCompact");
                     this._ConfirmDeleteFileDialog.open();
                 } else {
-                    Common.showMessage(this._i18n.getText('t10'));
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
                 }
             },
 
@@ -4015,8 +4075,15 @@ sap.ui.define([
                 // this.getView().setModel(new JSONModel(oModelData), "AttribCodeModel");
 
                 if (this.getView().getModel("AttribCdModel").getData()[vAttribtyp] === undefined) {
-                    var aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttribtyp);
-                    var oModelData = {};
+                    var aModelData;
+                    if(vAttribtyp ==='STYP'){
+                        const vWvTypAttrCode = oEvent.getSource().oParent.oParent.getModel("DataModel").getData().results.filter(item => item.Attribtyp === "WVTYP")[0];
+                        aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttribtyp && fItem.Attribgrp === vWvTypAttrCode.Attribcd);
+                    }
+                    else
+                        aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttribtyp);
+                    
+                        var oModelData = {};
                     oModelData["results"] = aModelData;
                     this.getView().setModel(new JSONModel(oModelData), "AttribCodeModel");
                     this.getView().getModel("AttribCdModel").setProperty("/" + vAttribtyp, aModelData);
@@ -4762,7 +4829,7 @@ sap.ui.define([
 
                             if (selected.length === noEdit) {
                                 bProceed = false;
-                                MessageBox.information("No record to delete.\r\nSelected color/s already used in BOM.")
+                                MessageBox.information(_oCaption.INFO_NO_DELETE_BOM)//"No record to delete.\r\nSelected color/s already used in BOM."
                             }
                         }
                     }
@@ -4807,7 +4874,7 @@ sap.ui.define([
 
                         if (selected.length === noEdit) {
                             bProceed = false;
-                            MessageBox.information("No record to delete.\r\nSelected attribute/s are mandatory.")
+                            MessageBox.information(_oCaption.INFO_NO_DELETE_ATTR_REQ) //No record to delete.\r\nSelected attribute/s are mandatory.
                         }                            
                     }
 
@@ -4835,8 +4902,7 @@ sap.ui.define([
                         }
                     }
                 } else {
-                    MessageBox.information(this._i18n.getText('t8'));
-                    // Common.showMessage(this._i18n.getText('t8'))
+                    MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);
                 }
             },
 
@@ -4885,7 +4951,7 @@ sap.ui.define([
 
                     //remove required field
                     oTable.getColumns().forEach((col, idx) => {
-                       const colProp = col.mProperties.filterProperty;
+                       const colProp = col.mProperties.sortProperty;
                        if(colProp == "Attribtyp")
                            col.getLabel().removeStyleClass("sapMLabelRequired");
                    });
@@ -4919,7 +4985,7 @@ sap.ui.define([
                     var oTable = this.getView().byId("processesTable");
                     //remove required field
                     oTable.getColumns().forEach((col, idx) => {
-                        const colProp = col.mProperties.filterProperty;
+                        const colProp = col.mProperties.sortProperty;
                         if(colProp == "Processcd")
                             col.getLabel().removeStyleClass("sapMLabelRequired");
                     });
@@ -4945,7 +5011,7 @@ sap.ui.define([
 
                     //remove required fields
                     oTable.getColumns().forEach((col, idx) => {
-                        const colProp = col.mProperties.filterProperty;
+                        const colProp = col.mProperties.sortProperty;
                         if (colProp == "Desc1" || colProp == "Sortseq")
                             col.getLabel().removeStyleClass("sapMLabelRequired");
                     });
@@ -5222,7 +5288,7 @@ sap.ui.define([
             },
 
             lockStyle: async function (isLock) {
-                //return { "Type":"S", "Message":"Disable Locking"}
+                return { "Type":"S", "Message":"Disable Locking"}
                 var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
 
                 // var oParamLock = {
