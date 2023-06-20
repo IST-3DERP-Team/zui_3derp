@@ -1496,7 +1496,7 @@ sap.ui.define([
                     };
 
                     var vMessage = "";
-                    if (this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                    if (this._dataMode !== "NEW" && this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
                         vMessage = "Material list with assigned SAP material no. already exists.\r\nMaterial will be deleted and a new one will be created.";
                     }
                     else {

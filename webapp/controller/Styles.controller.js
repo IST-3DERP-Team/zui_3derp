@@ -425,7 +425,7 @@ sap.ui.define([
 
                     return new sap.ui.table.Column({
                         id: sColumnId,
-                        label: sColumnLabel ? sColumnLabel : "{i18n>" + sColumnId + "}",
+                        label: sColumnLabel ? sColumnLabel : "{ddtext>/" + sColumnId + "}",
                         template: me.columnTemplate(sColumnId, sColumnType),
                         width: sColumnWidth ? sColumnWidth + 'px' : me.getColumnSize(sColumnId, sColumnType),
                         sortProperty: sColumnId,
@@ -1379,8 +1379,8 @@ sap.ui.define([
 
                 var aFilter = [];
                 var oFilter = null;
-                var oSourceTableColumns = this.byId(sSourceTabId).getColumns();
-               
+                var oSourceTableColumns = this.byId(sSourceTabId).getColumns().filter(fItem => fItem.getAggregation("label") !== null);
+
                 aColumnItems.forEach(item => {
                     var oColumn = oSourceTableColumns.filter(fItem => fItem.getAggregation("label").getProperty("text") === item.ColumnLabel)[0];                    
                     var aColFilter = [];
