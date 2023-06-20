@@ -13,8 +13,8 @@
             <ToolbarSpacer />
             <Button id="btnVersionAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADD}" press="onCreateNewVersion" visible="true"/>                                    
             <Button id="btnVersionEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setVersionEditMode" visible="true"/>
-            <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete"  tooltip="{ddtext>/DELETE}" press="onDeleteVersion" visible="true"/>
             <Button id="btnVersionCopy" type="Ghost" icon="sap-icon://copy" tooltip="{ddtext>/COPY}" press="onCopyVersion" visible="true"/>                                    
+            <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete"  tooltip="{ddtext>/DELETE}" press="onDeleteVersion" visible="true"/>
             <Button id="btnVersionSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveVersions" visible="false"/>
             <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelVersionEdit" visible="false"/>
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >

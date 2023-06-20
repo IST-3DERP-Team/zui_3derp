@@ -142,7 +142,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "COPYSTYLE" });
                 oDDTextParam.push({ CODE: "UPLOAD" });
                 oDDTextParam.push({ CODE: "UPLOADSTYLE" });
-                oDDTextParam.push({ CODE: "DOWNLOADSPREADSHEET" });
+                oDDTextParam.push({ CODE: "EXPORTTOEXCEL" });
                 oDDTextParam.push({ CODE: "SAVELAYOUT" });
                  
                 oDDTextParam.push({ CODE: "INFO_INPUT_REQD_FIELDS" });

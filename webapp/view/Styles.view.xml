@@ -140,10 +140,10 @@
                             </HBox>
                             <ToolbarSpacer />
                             <Button icon="sap-icon://add" tooltip="{ddtext>/CREATENEWSTYLE}" press="onCreateNewStyle" visible="{= ${AppAction>/appChange} === true ? true : false }" />
-                            <Button icon="sap-icon://refresh" tooltip="{ddtext>/REFRESH}" press="onRefresh" />
                             <Button icon="sap-icon://copy" tooltip="{ddtext>/COPYSTYLE}" press="onCopyMode" visible="{= ${AppAction>/appChange} === true ? true : false }" />
                             <Button icon="sap-icon://upload" tooltip="{ddtext>/UPLOADSTYLE}" press="onUploadStyle"  visible="{= ${AppAction>/appChange} === true ? true : false }"/>
-                            <Button icon="sap-icon://excel-attachment" tooltip="{ddtext18n>DOWNLOADSPREADSHEET}" press="onExport">
+                            <Button icon="sap-icon://refresh" tooltip="{ddtext>/REFRESH}" press="onRefresh" />
+                            <Button icon="sap-icon://excel-attachment" tooltip="{ddtext>/EXPORTTOEXCEL}" press="onExport">
                                 <customData>
                                     <core:CustomData key="TableName" value="styleDynTable" />
                                 </customData>
@@ -153,7 +153,7 @@
                                     <core:CustomData key="TableName" value="styleDynTable" />
                                 </customData>
                             </Button> -->
-                            <Button icon="sap-icon://grid" tooltip="{i18n>SAVELAYOUT}" press="onSaveTableLayout" />
+                            <Button icon="sap-icon://grid" tooltip="{ddtext>/SAVELAYOUT}" press="onSaveTableLayout" />
                         </Toolbar>
                     </uiT:extension>
                     <uiT:layoutData>

@@ -254,6 +254,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "DELETE" });
                 oDDTextParam.push({ CODE: "CANCEL" });
                 oDDTextParam.push({ CODE: "SAVE" });
+                oDDTextParam.push({ CODE: "ASSIGNMATERIAL" });
                 
                 oDDTextParam.push({ CODE: "ATTRIBTYP" });
                 oDDTextParam.push({ CODE: "ATTRIBCD" });

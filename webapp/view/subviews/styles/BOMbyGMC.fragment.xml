@@ -16,10 +16,6 @@
             </customData>
         </Button>        
         <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://edit"  tooltip="{ddtext>/EDIT}" press="setBOMbyGMCEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
-        <Button class="verDtlBtnPaddingRight" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteBOMItems" visible="{= ${AppAction>/appChange} === true ?  ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
-        <Button class="verDtlBtnPaddingRight" icon="sap-icon://synchronize" tooltip="{ddtext>/REFRESH}" press="onRefresh" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
-        <Button class="verDtlBtnPaddingRight" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveBOMbyGMC" visible="{BOMbyGMCEditModeModel>/editMode}"/>
-        <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelBOMbyGMCEdit" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? true : false }"/>
         <MenuButton class="verDtlBtnPaddingRight copyMenu" icon="sap-icon://copy" tooltip="{ddtext>/COPY}" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }">
             <menu>
                 <Menu class="verDtlBtnPaddingRight">
@@ -28,9 +24,13 @@
                 </Menu>
             </menu>
         </MenuButton>
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://synchronize" tooltip="{ddtext>/REFRESH}" press="onRefresh" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteBOMItems" visible="{= ${AppAction>/appChange} === true ?  ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveBOMbyGMC" visible="{BOMbyGMCEditModeModel>/editMode}"/>
+        <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelBOMbyGMCEdit" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? true : false }"/>
         <Button class="verDtlBtnPaddingRight" icon="sap-icon://cause" text="{ddtext>/GETCOMPONENTS}" tooltip="{ddtext>/GETCOMPONENTS}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
         <Button class="verDtlBtnPaddingRight" icon="sap-icon://process" text="{ddtext>/RMC}" tooltip="{ddtext>/RMC}" press="onRMC2" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>               
-        <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" tooltip="{ddtext>/DOWNLOADSPREADSHEET}" press="onExport" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" tooltip="{ddtext>/EXPORTTOEXCEL}" press="onExport" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>
             <core:CustomData key="TableName" value="bomGMCTable"/>
             </customData>

@@ -15,7 +15,7 @@
         <Button class="verDtlBtnPaddingRight" icon="sap-icon://synchronize" tooltip="{ddtext>/REFRESH}" press="onRefresh"/>
         <Button class="verDtlBtnPaddingRight" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveBOMbyUV" visible="{BOMbyUVEditModeModel>/editMode}"/>
         <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline"  tooltip="{ddtext>/CANCEL}" press="cancelBOMbyUVEdit" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? true : false }"/>
-        <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" press="onExport" tooltip="{ddtext>/DOWNLOADSPREADSHEET}">
+        <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" press="onExport" tooltip="{ddtext>/EXPORTTOEXCEL}">
             <customData>
             <core:CustomData key="TableName" value="bomUVTable"/>
             </customData>
