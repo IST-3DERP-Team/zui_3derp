@@ -215,53 +215,53 @@
         }
     ],
     "materialList": [
-        {"ColumnName": "Seqno", "ColumnLabel": "SEQ", "Order": "0", "DataType": "NUMBER", "ColumnWidth": "80", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "Mattyp", "ColumnLabel": "MATTYP", "Order": "1", "DataType": "STRING", "ColumnWidth": "115", "Length": "4", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "Matno", "ColumnLabel": "MATNO", "Order": "2", "DataType": "STRING", "ColumnWidth": "175", "Length": "20", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "Gmc", "ColumnLabel": "GMC", "Order": "3", "DataType": "STRING", "ColumnWidth": "115", "Length": "10", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "Gmcdesc", "ColumnLabel": "GMCDESC", "Order": "4", "DataType": "STRING", "ColumnWidth": "450", "Length": "500", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "Matdesc1", "ColumnLabel": "ADDTLDESC", "Order": "5", "DataType": "STRING", "ColumnWidth": "385", "Length": "500", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
-        {"ColumnName": "Consump", "ColumnLabel": "CONSUMP", "Order": "6", "DataType": "NUMBER", "ColumnWidth": "115", "Length": "18", "Decimal": "5", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "Uom", "ColumnLabel": "UOM", "Order": "7", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "Supplytyp", "ColumnLabel": "SUPPLYTYP", "Order": "8", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+        {"ColumnName": "SEQNO", "ColumnLabel": "SEQ", "Order": "0", "DataType": "NUMBER", "ColumnWidth": "80", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "MATTYP", "ColumnLabel": "MATTYP", "Order": "1", "DataType": "STRING", "ColumnWidth": "115", "Length": "4", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "MATNO", "ColumnLabel": "MATNO", "Order": "2", "DataType": "STRING", "ColumnWidth": "175", "Length": "20", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "GMC", "ColumnLabel": "GMC", "Order": "3", "DataType": "STRING", "ColumnWidth": "115", "Length": "10", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "GMCDESC", "ColumnLabel": "GMCDESC", "Order": "4", "DataType": "STRING", "ColumnWidth": "450", "Length": "500", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "MATDESC1", "ColumnLabel": "ADDTLDESC", "Order": "5", "DataType": "STRING", "ColumnWidth": "385", "Length": "500", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "CONSUMP", "ColumnLabel": "CONSUMP", "Order": "6", "DataType": "NUMBER", "ColumnWidth": "115", "Length": "18", "Decimal": "5", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "UOM", "ColumnLabel": "UOM", "Order": "7", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "SUPPLYTYP", "ColumnLabel": "SUPPLYTYP", "Order": "8", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
         "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "SupplyTypeModel", "value": "Supplytype", "text": "Desc1"},
                 "SuggestionItems": {"path": "SupplyTypeModel>/results", "text": "{SupplyTypeModel>Supplytype}", "additionalText": "{SupplyTypeModel>Desc1}", "maxSuggestionWidth": "275px"},
                 "columns": "tvh_supplytyp"
             }
         },
-        {"ColumnName": "Vendorcd", "ColumnLabel": "VENDORCD", "Order": "9", "DataType": "STRING", "ColumnWidth": "400", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+        {"ColumnName": "VENDORCD", "ColumnLabel": "VENDORCD", "Order": "9", "DataType": "STRING", "ColumnWidth": "400", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
             "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "VendorModel", "value": "Lifnr", "text": "Desc1"},
                 "SuggestionItems": {"path": "VendorModel>/results", "text": "{VendorModel>Lifnr}", "additionalText": "{VendorModel>Desc1}", "maxSuggestionWidth": "490px"},
                 "columns": "tvh_vendorcd"
             }
         },
-        {"ColumnName": "Currencycd", "ColumnLabel": "CURRENCYCD", "Order": "10", "DataType": "STRING", "ColumnWidth": "255", "Length": "5", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+        {"ColumnName": "CURRENCYCD", "ColumnLabel": "CURRENCYCD", "Order": "10", "DataType": "STRING", "ColumnWidth": "255", "Length": "5", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
             "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "CurrencyModel", "value": "Waers", "text": "Desc1"},
                 "SuggestionItems": {"path": "CurrencyModel>/results", "text": "{CurrencyModel>Waers}", "additionalText": "{CurrencyModel>Desc1}", "maxSuggestionWidth": "390px"},
                 "columns": "tvh_currencycd"
             }
         },
-        {"ColumnName": "Unitprice", "ColumnLabel": "UNITPRICE", "Order": "11", "DataType": "NUMBER", "ColumnWidth": "145", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false },
-        {"ColumnName": "Purgrp", "ColumnLabel": "PURGRP", "Order": "12", "DataType": "STRING", "ColumnWidth": "240", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+        {"ColumnName": "UNITPRICE", "ColumnLabel": "UNITPRICE", "Order": "11", "DataType": "NUMBER", "ColumnWidth": "145", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "PURGRP", "ColumnLabel": "PURGRP", "Order": "12", "DataType": "STRING", "ColumnWidth": "240", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
             "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "PurchGroupModel", "value": "Purgrp", "text": "Desc1"},
                 "SuggestionItems": {"path": "PurchGroupModel>/results", "text": "{PurchGroupModel>Purgrp}", "additionalText": "{PurchGroupModel>Desc1}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_purgrp"
             }
         },
-        {"ColumnName": "Purplant", "ColumnLabel": "PURPLANT", "Order": "13", "DataType": "STRING", "ColumnWidth": "225", "Length": "4", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+        {"ColumnName": "PURPLANT", "ColumnLabel": "PURPLANT", "Order": "13", "DataType": "STRING", "ColumnWidth": "225", "Length": "4", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
             "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "PurPlantModel", "value": "Plant", "text": "Desc1"},
                 "SuggestionItems": {"path": "PurPlantModel>/results", "text": "{PurPlantModel>Plant}", "additionalText": "{PurPlantModel>Desc1}", "maxSuggestionWidth": "200px"},
                 "columns": "tvh_purplant"
             }
         },
-        {"ColumnName": "Orderuom", "ColumnLabel": "ORDERUOM", "Order": "14", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "Umrez", "ColumnLabel": "UMREZ", "Order": "15", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "Umren", "ColumnLabel": "UMREN", "Order": "16", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false }
+        {"ColumnName": "ORDERUOM", "ColumnLabel": "ORDERUOM", "Order": "14", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "UMREZ", "ColumnLabel": "UMREZ", "Order": "15", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "UMREN", "ColumnLabel": "UMREN", "Order": "16", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false }
     ],
     "tvh_supplytyp": [
         {"ColumnName": "Supplytype", "DataType": "STRING", "ColumnWidth": "150px", "Visible": true, "Key": true, "Value": false},
@@ -297,7 +297,13 @@
         },
         {"ColumnName": "BOMSTYLVER", "ColumnLabel": "BOMSTYLVER", "Order": "5", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
         {"ColumnName": "DESC1", "ColumnLabel": "DESC1", "Order": "6", "DataType": "STRING", "ColumnWidth": "175", "Length": "256", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
-        {"ColumnName": "PARTCD", "ColumnLabel": "PARTCD", "Order": "7", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
+        {"ColumnName": "PARTCD", "ColumnLabel": "PARTCD", "Order": "7", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false ,
+            "TextFormatMode": "Key",
+            "ValueHelp": {"show": true, "items": {"path": "PartCdModel", "value": "PartCd", "text": "Desc1"},
+                "SuggestionItems": {"path": "PartCdModel>/results", "text": "{PartCdModel>PartCd}", "maxSuggestionWidth": "200px"},
+                "columns": "tvh_partcd"
+            }
+        },
         {"ColumnName": "PARTDESC", "ColumnLabel": "PARTDESC", "Order": "8", "DataType": "STRING", "ColumnWidth": "255", "Length": "512", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
         {"ColumnName": "PARTCNT", "ColumnLabel": "PARTCNT", "Order": "9", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
         {"ColumnName": "USGCLS", "ColumnLabel": "USGCLS", "Order": "10", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
@@ -354,6 +360,10 @@
         {"ColumnName": "Styleno", "DataType": "STRING", "ColumnWidth": "150px", "Visible": true, "Key": true, "Value": true},
         {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "500px", "Visible": true, "Key": false, "Value": false},
         {"ColumnName": "Verno", "DataType": "STRING", "ColumnWidth": "100px", "Visible": true, "Key": false, "Value": false}
+    ],
+    "tvh_partcd": [
+        {"ColumnName": "PartCd", "DataType": "STRING", "ColumnWidth": "100px", "Visible": true, "Key": true, "Value": true},
+        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "300px", "Visible": true, "Key": false, "Value": false}
     ],
     "bomUV": [
         {"ColumnName": "PARTCD", "ColumnLabel": "PARTCD", "Order": "1", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },

@@ -137,6 +137,7 @@ sap.ui.define([
                 this.getView().setModel(new JSONModel(lookUpData.CurrencyModel), "CurrencyModel");
                 this.getView().setModel(new JSONModel(lookUpData.PurchGroupModel), "PurchGroupModel");
                 this.getView().setModel(new JSONModel(lookUpData.PurPlantModel), "PurPlantModel");
+                this.getView().setModel(new JSONModel(lookUpData.PartCdModel), "PartCdModel");
 
                 //Get Data
                 this.getHeaderData(); //get style version header data
@@ -384,10 +385,10 @@ sap.ui.define([
                 // this.setTableValueHelp(this.byId("materialListTable"), "materialList");
                 
                 this.setLocTableColumns("versionAttrTable", this._oModelColumns["versionAttr"]);
-                this.setLocTableColumns("materialListTable", this._oModelColumns["materialList"]);
+                //this.setLocTableColumns("materialListTable", this._oModelColumns["materialList"]);
 
                 this.updateColumnMenu(this.byId("versionAttrTable"), "versionAttrTable");
-                this.updateColumnMenu(this.byId("materialListTable"), "materialListTable");
+                //this.updateColumnMenu(this.byId("materialListTable"), "materialListTable");
                 this.updateColumnMenu(this.byId("bomDetailedTable"), "bomDetailedTable");
             },
 
@@ -400,7 +401,7 @@ sap.ui.define([
 
                         if (sColumnName.toUpperCase() === "ATTRIBTYP" || sColumnName.toUpperCase() === "ATTRIBCD" || sColumnName.toUpperCase() === "VALUNIT" || sColumnName.toUpperCase() === "SUPPLYTYP"
                             || sColumnName.toUpperCase() === "VENDORCD" || sColumnName.toUpperCase() === "CURRENCYCD" || sColumnName.toUpperCase() === "PURGRP" || sColumnName.toUpperCase() === "PURPLANT"
-                            || sColumnName.toUpperCase() === "PROCESSCD" || sColumnName.toUpperCase() === "MATTYP" || sColumnName.toUpperCase() === "ENTRYUOM" || sColumnName.toUpperCase() === "GMC" || sColumnName.toUpperCase() === "BOMSTYLE") {
+                            || sColumnName.toUpperCase() === "PROCESSCD" || sColumnName.toUpperCase() === "MATTYP" || sColumnName.toUpperCase() === "ENTRYUOM" || sColumnName.toUpperCase() === "GMC" || sColumnName.toUpperCase() === "BOMSTYLE" || sColumnName.toUpperCase() === "PARTCD") {
                             sTableModel = col.getAggregation("template").getBindingInfo("value").parts[0].model;
 
                             if (sTableModel !== "") {
@@ -550,7 +551,8 @@ sap.ui.define([
                 this.getColors(); //Get Colors
                 this.getVersionAttrTable(); //Get version attributes
                 this.getDetailedBOM(); //Get Detailed BOM
-                this.getMaterialList(); //Get material list
+                //this.getMaterialList(); //Get material list
+                this.getMaterialListColumns();
             },
 
             //******************************************* */
@@ -1165,10 +1167,8 @@ sap.ui.define([
             setBOMbyGMCEditMode: async function () {
                 //set BOM by GMC table edit mode
                 if (this._colors.length <= 0) { //allow edit only if colors are maintained
-                    // Common.showMessage(this._i18n.getText('t11'));
                     MessageBox.information(this._i18n.getText('t11'));
                 } else if (this._sizes <= 0) { //allow edit only if sizes are maintained
-                    // Common.showMessage(this._i18n.getText('t12'));
                     MessageBox.information(this._i18n.getText('t12'));
                 }
                 else {
@@ -1439,6 +1439,11 @@ sap.ui.define([
                                         that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/DESC1", item.Desc1);
                                     })
                                 }
+                                else if (vColPath.toUpperCase() === "PARTCD") {
+                                    that.getView().getModel("PartCdModel").getData().results.filter(fItem => fItem.PartCd === oSource.getSelectedKey()).forEach(item => {
+                                        that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/PARTDESC", item.Desc1);
+                                    })
+                                }
                             }
                         }
                     }
@@ -1497,7 +1502,8 @@ sap.ui.define([
                     if (vWastage === "" || vWastage === undefined) { vWastage = "0"; }
                     
                     var decPlaces = 5;// oEvent.getSource().getBindingInfo("value").constraints.scale;
-                    var vCompConsump = (((+vPer) + (+vWastage)) * (+vMatConsPer)).toFixed(decPlaces);
+                    // var vCompConsump = (((+vPer) + (+vWastage)) * (+vMatConsPer)).toFixed(decPlaces);//old computation of consumption
+                    var vCompConsump = ((+vMatConsPer / +vPer) * (1 + (+vWastage))).toFixed(decPlaces);
                     oTable.getModel("DataModel").setProperty(sRowPath + '/COMCONSUMP', vCompConsump + "");
                     oTable.getModel("DataModel").setProperty(sRowPath + '/CONSUMP', vCompConsump + "");
                     // oTable.getModel("DataModel").setProperty("/results", oTable.getModel("DataModel").getData().results);
@@ -1522,7 +1528,13 @@ sap.ui.define([
                 }
                 var bProceed = true;
                 this.getView().byId("bomGMCTable").getModel("DataModel").getData().results.forEach(item => {
-                    if (item.BOMITMTYP === "" || item.PARTCD === "" || item.PARTCNT === "" || item.USGCLS === "") {
+                    if(item.BOMITMTYP === "")
+                        bProceed = false;
+
+                    if (item.BOMITMTYP === "GMC" && (item.PARTCD === "" || item.PARTCNT === "" || item.USGCLS === "" || item.MATCONSPER === "" || item.PER === "" || item.PER === 0)) {
+                        bProceed = false;
+                    }
+                    if (item.BOMITMTYP === "STY" && item.BOMSTYLE === "" ) {
                         bProceed = false;
                     }
                 })
@@ -3704,23 +3716,25 @@ sap.ui.define([
 
                     for (var i = 0; i < oSelectedIndices.length; i++) {
                         var index = oSelectedIndices[i];
-                        var entitySet = "/StyleBOMGMCSet(STYLENO='" + that._styleNo + "',VERNO='" + that._version + "',BOMSEQ='" + oData.results[index].BOMSEQ + "')";
-                        //var row = oData.results[index];
-                        //var entitySet = `/StyleBOMGMCSet(STYLENO='${that._styleNo}',VERNO='${that._version}',BOMSEQ='${row.BOMSEQ}',BOMITEM='${row.BOMITEM}',BOMITMTYP='${row.BOMITMTYP}',GMC='${row.GMC}',PARTCD='${row.PARTCD}',PARTCNT='${row.PARTCNT}',PARTDESC='${row.PARTDESC}',USGCLS='${row.USGCLS}',MATTYP='${row.MATTYP}')`;
-                        const param = {
-                            "STYLENO": that._styleNo,
-                            "VERNO": that._version,
-                            "BOMSEQ": oData.results[index].BOMSEQ,
-                            "BOMITEM": oData.results[index].BOMITEM,
-                            "BOMITMTYP": oData.results[index].BOMITMTYP,
-                            "GMC": oData.results[index].GMC,
-                            "PARTCD": oData.results[index].PARTCD,
-                            "PARTCNT": oData.results[index].PARTCNT,
-                            "PARTDESC": oData.results[index].PARTDESC,
-                            "USGCLS": oData.results[index].USGCLS,
-                            "MATTYP": oData.results[index].MATTYP,
+                        if(oData.results[index].CONSUMP > 0){
+                            var entitySet = "/StyleBOMGMCSet(STYLENO='" + that._styleNo + "',VERNO='" + that._version + "',BOMSEQ='" + oData.results[index].BOMSEQ + "')";
+                            //var row = oData.results[index];
+                            //var entitySet = `/StyleBOMGMCSet(STYLENO='${that._styleNo}',VERNO='${that._version}',BOMSEQ='${row.BOMSEQ}',BOMITEM='${row.BOMITEM}',BOMITMTYP='${row.BOMITMTYP}',GMC='${row.GMC}',PARTCD='${row.PARTCD}',PARTCNT='${row.PARTCNT}',PARTDESC='${row.PARTDESC}',USGCLS='${row.USGCLS}',MATTYP='${row.MATTYP}')`;
+                            const param = {
+                                "STYLENO": that._styleNo,
+                                "VERNO": that._version,
+                                "BOMSEQ": oData.results[index].BOMSEQ,
+                                "BOMITEM": oData.results[index].BOMITEM,
+                                "BOMITMTYP": oData.results[index].BOMITMTYP,
+                                "GMC": oData.results[index].GMC,
+                                "PARTCD": oData.results[index].PARTCD,
+                                "PARTCNT": oData.results[index].PARTCNT,
+                                "PARTDESC": oData.results[index].PARTDESC,
+                                "USGCLS": oData.results[index].USGCLS,
+                                "MATTYP": oData.results[index].MATTYP,
+                            }
+                            oModel.update(entitySet, param, mParameters);
                         }
-                        oModel.update(entitySet, param, mParameters);
                     }
                   
                     //return;
@@ -4420,6 +4434,82 @@ sap.ui.define([
             // Material List
             //******************************************* */
 
+            getMaterialListColumns: function () {
+                //get BOM by UV 
+                var me = this;
+                var columnData = [];
+                var oModelMatLst = this.getOwnerComponent().getModel();
+               
+                oModelMatLst.setHeaders({
+                    sbu: this._sbu,
+                    type: 'STYLMATLST',
+                });
+
+                 
+                //get dynamic columns of Material List
+                oModelMatLst.read("/DynamicColumnsSet", {
+                    success: function (oData, oResponse) {
+                        var columns = oData.results.filter(f => f.ColumnName !== '');
+
+                        //build the table dyanmic columns                        
+                        for (var i = 0; i < columns.length; i++) {
+                            
+                            if (columns[i].Visible === true) {
+                                var locColProp = me._oModelColumns["materialList"].filter(fItem => fItem.ColumnName.toUpperCase() === columns[i].ColumnName.toUpperCase());
+
+                                if (locColProp.length > 0) {
+                                    columnData.push({
+                                        "ColumnName": columns[i].ColumnName,
+                                        "ColumnDesc": columns[i].ColumnName,
+                                        "ColumnLabel": locColProp[0].ColumnLabel,
+                                        "ColumnType": columns[i].ColumnType,
+                                        "Editable": columns[i].Editable,
+                                        "Mandatory": columns[i].Mandatory,
+                                        "Visible": columns[i].Visible,
+                                        "DataType": locColProp[0].DataType,
+                                        "ColumnWidth": locColProp[0].ColumnWidth,
+                                        "Length": locColProp[0].Length,
+                                        "Decimal": locColProp[0].Decimal
+                                    })
+                                }
+                                else {
+                                    columnData.push({
+                                        "ColumnName": columns[i].ColumnName,
+                                        "ColumnDesc": columns[i].ColumnName,
+                                        "ColumnLabel": columns[i].ColumnName,
+                                        "ColumnType": columns[i].ColumnType,
+                                        "Editable": columns[i].Editable,
+                                        "Mandatory": columns[i].Mandatory,
+                                        "DataType": "STRING",
+                                        "ColumnWidth": "125",
+                                        "Length": "100",
+                                        "Decimal": "0"
+                                    })
+                                }
+                            }
+                        
+                            
+                        }
+
+                        columnData.forEach((column) => {
+                            var locColProp = me._oModelColumns["materialList"].filter(fItem => fItem.ColumnName.toUpperCase() === column.ColumnName.toUpperCase());
+
+                            if (locColProp.length > 0) {
+                                if (locColProp[0].TextFormatMode !== undefined) { column.TextFormatMode = locColProp[0].TextFormatMode; }
+                                if (locColProp[0].ValueHelp !== undefined) { column.ValueHelp = locColProp[0].ValueHelp; }
+                            }
+                        })
+
+                        // console.log(columnData)
+                        me.getMaterialList2(columnData);
+                    },
+                    error: function (err) {
+                        Common.closeLoadingDialog(that);
+                    }
+                });
+
+            },
+
             getMaterialList: function () {
                 //get material list
                 var me = this;
@@ -4441,6 +4531,45 @@ sap.ui.define([
                         else {
                             oTable.getModel("DataModel").setProperty("/results", oData.results);
                         }
+                        //oTable.setVisibleRowCount(oData.results.length);
+                        //oTable.attachPaste();
+                    },
+                    error: function () {
+                    }
+                })
+            },
+
+            getMaterialList2: function (columnData) {
+                //get material list
+                var me = this;
+                var oModel = this.getOwnerComponent().getModel();
+                var oJSONModel = new JSONModel();
+                var oTable = this.getView().byId("materialListTable");
+
+                var entitySet = "/StyleMaterialListSet"
+                oModel.setHeaders({
+                    styleno: this._styleNo,
+                    verno: this._version
+                });
+                oModel.read(entitySet, {
+                    success: function (oData, oResponse) {
+                        //oJSONModel.setData(oData);
+                        oJSONModel.setData({
+                            results: oData.results,
+                            columns: columnData
+                        });
+                        /*
+                        if (oTable.getModel("DataModel") === undefined) {
+                            oTable.setModel(oJSONModel, "DataModel");
+                        }
+                        else {
+                            oTable.getModel("DataModel").setProperty("/results", oData.results);
+                        }
+                        */
+                        oTable.setModel(oJSONModel, "DataModel");
+                        me.setLocTableColumns("materialListTable", columnData);
+                        me.updateColumnMenu(me.byId("materialListTable"), "materialListTable");
+
                         //oTable.setVisibleRowCount(oData.results.length);
                         //oTable.attachPaste();
                     },
@@ -4633,26 +4762,26 @@ sap.ui.define([
                     }
                     for (var i = 0; i < oData.results.length; i++) {
                         var item = {
-                            "Styleno": this._styleNo,
-                            "Bommatid": oData.results[i].Bommatid,
-                            "Verno": oData.results[i].Verno,
-                            "Seqno": oData.results[i].Seqno,
-                            "Matno": oData.results[i].Matno,
-                            "Mattyp": oData.results[i].Mattyp,
-                            "Gmc": oData.results[i].Gmc,
-                            "Matconsump": oData.results[i].Matconsump,
-                            "Wastage": oData.results[i].Wastage,
-                            "Comconsump": oData.results[i].Comconsump,
-                            "Consump": oData.results[i].Consump,
-                            "Uom": oData.results[i].Uom,
-                            "Supplytyp": oData.results[i].Supplytyp,
-                            "Vendorcd": oData.results[i].Vendorcd,
-                            "Currencycd": oData.results[i].Currencycd,
-                            "Unitprice": oData.results[i].Unitprice,
-                            "Purgrp": oData.results[i].Purgrp,
-                            "Purplant": oData.results[i].Purplant,
-                            "Matdesc1": oData.results[i].Matdesc1,
-                            "Matdesc2": oData.results[i].Matdesc2
+                            "STYLENO": this._styleNo,
+                            "BOMMATID": oData.results[i].BOMMATID,
+                            "VERNO": oData.results[i].VERNO,
+                            "SEQNO": oData.results[i].SEQNO,
+                            "MATNO": oData.results[i].MATNO,
+                            "MATTYP": oData.results[i].MATTYP,
+                            "GMC": oData.results[i].GMC,
+                            "MATCONSUMP": oData.results[i].MATCONSUMP,
+                            "WASTAGE": oData.results[i].WASTAGE,
+                            "COMCONSUMP": oData.results[i].COMCONSUMP,
+                            "CONSUMP": oData.results[i].CONSUMP,
+                            "UOM": oData.results[i].UOM,
+                            "SUPPLYTYP": oData.results[i].SUPPLYTYP,
+                            "VENDORCD": oData.results[i].VENDORCD,
+                            "CURRENCYCD": oData.results[i].CURRENCYCD,
+                            "UNITPRICE": oData.results[i].UNITPRICE,
+                            "PURGRP": oData.results[i].PURGRP,
+                            "PURPLANT": oData.results[i].PURPLANT,
+                            "MATDESC1": oData.results[i].MATDESC1,
+                            "MATDESC2": oData.results[i].MATDESC2
                         }
                         oEntry.MatListToItems.push(item);
                     };
@@ -4970,6 +5099,28 @@ sap.ui.define([
                             //setting the default text field for uneditable fields
                             oColumnTemplate = new sap.m.Text({ text: "{DataModel>" + columnName + "}", tooltip: "{DataModel>" + columnName + "}" });
                         }
+                    } else if (columnName === "PARTCD") {
+                        //setting process code input with value help
+                        oColumnTemplate = new sap.m.Input({
+                            value: "{DataModel>" + columnName + "}",
+                            showValueHelp: true,
+                            valueHelpRequest: that.onPartCdValueHelp.bind(that),
+                            showSuggestion: true,
+                            suggestionItems: {
+                                path: "PartCdModel>/results",
+                                template: new sap.ui.core.ListItem({
+                                    text: "{PartCdModel>PartCd}",
+                                    additionalText: "{PartCdModel>Desc1}"
+                                }),
+                                templateShareable: false
+                            },
+                            change: inputChangeFunction,
+                            liveChange: changeFunction,
+                            editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                            visible: column.Visible,
+                            tooltip: "{DataModel>" + columnName + "}"
+                        });
                     } else {
                         //setting the default input field
                         if (column.Editable) {
@@ -5090,8 +5241,20 @@ sap.ui.define([
                 var oModel = oTable.getModel("DataModel");
                 var oData = oModel.getProperty('/results');
                 oData.forEach(item => item.ACTIVE = "");
-
-                var aNewRow = [{ NEW: true, ACTIVE: "X" }];
+                var aNewRow = [];
+                if (tabName === "bomGMCTable"){
+                    var ZerpCheck = this.getView().getModel("bomGMCZrpChk").getData();
+                    var aNewRow = [{
+                        NEW: true,
+                        ACTIVE: "X",
+                        BOMITMTYP: "GMC",
+                        PARTCNT: ZerpCheck.results.filter(f=> f.COLUMNNAME === "PARTCNT")[0].FIELD8,
+                        PER : ZerpCheck.results.filter(f=> f.COLUMNNAME === "PER")[0].FIELD8
+                    }];
+                }
+                else{
+                    aNewRow = [{ NEW: true, ACTIVE: "X" }];
+                }
                 var aDataAfterChange = aNewRow.concat(oData);
 
                 oModel.setProperty('/results', aDataAfterChange);
@@ -5107,11 +5270,12 @@ sap.ui.define([
                 }
             },
 
-            addLineBOM: function (oEvent) {
+            addLineBOM: async function (oEvent) {
                 // if (this.getOwnerComponent().getModel("COLOR_MODEL").getData().items.length === 0) {
                 //     MessageBox.information("No colors found.")
                 // } else
                 // {
+                var zerpCheck= [];
                 if (this._dataMode === "NEW") {
                     this.addAnotherLine(oEvent);
                 }
@@ -5125,11 +5289,19 @@ sap.ui.define([
                     var oModel = oTable.getModel("DataModel");
                     var oData = oModel.getProperty('/results');
                     oData.forEach(item => item.ACTIVE = "");
+                    zerpCheck = await this.getZerpCheck(this._sbu, "BOMGMC");
+                    console.log(zerpCheck);
+                    var oJSONModel = new JSONModel();
+                    var oView = this.getView();
+                    oJSONModel.setData(zerpCheck);
+                    oView.setModel(oJSONModel, "bomGMCZrpChk");
 
                     var aNewRow = [{
                         NEW: true,
                         ACTIVE: "X",
-                        BOMITMTYP: "GMC"
+                        BOMITMTYP: "GMC",
+                        PARTCNT: zerpCheck.results.filter(f=> f.COLUMNNAME === "PARTCNT")[0].FIELD8,
+                        PER : zerpCheck.results.filter(f=> f.COLUMNNAME === "PER")[0].FIELD8
                     }];
                     var aDataAfterChange = aNewRow.concat(oData);
                     oModel.setProperty('/results', aDataAfterChange);
@@ -5940,6 +6112,36 @@ sap.ui.define([
                 evt.getSource().getBinding("items").filter([]);
             },
 
+            onPartCdValueHelp: function (oEvent) {
+                //open process codes value help
+                console.log(this)
+                TableValueHelp.handleTableValueHelp(oEvent, this);
+
+               
+            },
+            /*
+            _partcdValueHelpSearch: function (evt) {
+                //search process codes
+                var sValue = evt.getParameter("value");
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("AttribCd", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("Desc1", sap.ui.model.FilterOperator.Contains, sValue));
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                evt.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+            },
+
+            _partcdValueHelpClose: function (evt) {
+                //on select process
+                var oSelectedItem = evt.getParameter("selectedItem");
+                if (oSelectedItem) {
+                    var input = sap.ui.getCore().byId(that.inputId);
+                    input.setValue(oSelectedItem.getTitle()); //set input field selected process code
+                    that.onBOMbyGMCChange();
+                }
+                evt.getSource().getBinding("items").filter([]);
+            },
+            */
+
             handleTitleSelectorPress: function (oEvent) {
                 var oSourceControl = oEvent.getSource(),
                     oControlDomRef = oEvent.getParameter("domRef"),
@@ -6283,6 +6485,27 @@ sap.ui.define([
                     });
                 });
             },
+
+            getZerpCheck: async function (sbu, module) {
+                var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+                const filter = `SBU eq '${sbu}' and MODULE eq '${module}'`;
+
+                return new Promise((resolve, reject) => {
+                    oModel.read("/ZerpCheckSet", {
+                        urlParameters: {
+                            "$filter": filter
+                        },
+                        success: function (oData, oResponse) {
+                            return resolve(oData);
+                        },
+                        error: function (err) {
+                            var error = err.message;
+                            return resolve(error);
+                        }
+                    });
+                });
+            },
+
 
             setLocTableColumns(sTabId, oColumns) {
                 var me = this;

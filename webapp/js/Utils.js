@@ -434,6 +434,18 @@
                 },
                 error: function (err) { }
             });
+
+            //get Purchasing Plants
+            var oJSONModel14 = new JSONModel();
+            oSHModel.read("/PartCodeSet", {
+                success: function (oData, oResponse) {
+                    oJSONModel14.setData(oData);
+                    oJSONModel14.setSizeLimit(9999);
+                    oView.setModel(oJSONModel14, "PartCdModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/PartCdModel",oData);
+                },
+                error: function (err) { }
+            });
         },
 
         //use this method in Version.controller.js if user decide to refresh the browser

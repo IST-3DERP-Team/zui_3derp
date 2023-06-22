@@ -1374,6 +1374,10 @@ sap.ui.define([
                             success: function (oDataConfig, oResponse) {
                                 // me._attributesconfig = oDataConfig.results;
                                 var sMessage = "";
+                                var attributesConfigModel = new JSONModel();
+                                attributesConfigModel.setData(oDataConfig);
+                                that.getView().setModel(attributesConfigModel, "AttributesConfigSetModel");
+
 
                                 oData.results.forEach((item, index) => {
                                     item.Casverind = item.Casverind === "X" ? true : false;
@@ -1678,6 +1682,8 @@ sap.ui.define([
                 var oMsgStrip = this.getView().byId('GeneralAttrMessageStrip');
                 oMsgStrip.setVisible(false);
 
+                var attributesConfigSet = that.getView().getModel("AttributesConfigSetModel").getData().results;
+
                 if (!this._generalAttrChanged) { //check if data is changed
                     MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);                    
                 } else {
@@ -1689,9 +1695,28 @@ sap.ui.define([
                         Type: Constants.GENERAL,
                         AttributesToItems: []
                     }
+                    //limit number of data
+                    attributesConfigSet.forEach( (item, index) =>{
+                        if(item.TYPE !== "" && item.CODE === "" && item.LIMIT === 1)
+                        {
+                            var result = oData.results.filter(fItem => fItem.Attribtyp === item.TYPE);
+                            if(result.length > 1){
+                                sMessage += "Multiple entries are not allowed for type " + item.TYPE + ".\r\n";
+                            }
+                        }
+
+                        if(item.TYPE !== "" && item.CODE !== ""  && item.LIMIT === 1)
+                        {
+                            var result = oData.results.filter(fItem => fItem.Attribtyp === item.TYPE && fItem.Attribcd === item.CODE);
+                            if(result.length > 1){
+                                sMessage += "Multiple entries are not allowed for type/code " + item.TYPE + "/" + item.CODE + ".\r\n";
+                            }
+                        }
+
+                    });
+
                     for (var i = 0; i < oData.results.length; i++) {
                         var bProceed = true;
-
                         if (oData.results[i].Property === "M") {
                             if (me.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === oData.results[i].Attribtyp).length > 0 && oData.results[i].Attribcd === "") {
                                 bProceed = false;
