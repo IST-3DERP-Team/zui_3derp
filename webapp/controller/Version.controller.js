@@ -4781,7 +4781,11 @@ sap.ui.define([
                             "PURGRP": oData.results[i].PURGRP,
                             "PURPLANT": oData.results[i].PURPLANT,
                             "MATDESC1": oData.results[i].MATDESC1,
-                            "MATDESC2": oData.results[i].MATDESC2
+                            "MATDESC2": oData.results[i].MATDESC2,
+                            "UMREZ": oData.results[i].UMREZ,
+                            "UMREN": oData.results[i].UMREN,
+                            "ORDERUOM": oData.results[i].ORDERUOM,
+
                         }
                         oEntry.MatListToItems.push(item);
                     };
