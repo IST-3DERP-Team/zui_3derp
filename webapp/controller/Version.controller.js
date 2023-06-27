@@ -318,6 +318,10 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "ORDERUOM" });
                 oDDTextParam.push({ CODE: "UMREZ" });
                 oDDTextParam.push({ CODE: "UMREN" });
+                oDDTextParam.push({ CODE: "CREATEDBY" });
+                oDDTextParam.push({ CODE: "CREATEDDT" });
+                oDDTextParam.push({ CODE: "UPDATEDBY" });
+                oDDTextParam.push({ CODE: "UPDATEDDT" });
 
                 oDDTextParam.push({ CODE: "VERSIONATTRIBUTES" });
                 oDDTextParam.push({ CODE: "BOMBYGMC" });
@@ -4713,17 +4717,63 @@ sap.ui.define([
 
                         if (vColPath.toUpperCase() === "VENDORCD") {
                             if (oEvent.getParameter("value") === "") {
-                                this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/Vendorcd", "");
+                                this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/VENDORCD", "");
                             }
                             else {
-                                this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/Vendorcd", oSource.getSelectedKey());
-
-                                this.getView().getModel("VendorModel").getData().results.filter(fItem => fItem.Lifnr === oSource.getSelectedKey()).forEach(item => {
-                                    this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/Currencycd", item.Waers);
-                                })
+                                this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/VENDORCD", oSource.getSelectedKey());
+                                var vendorList = this.getView().getModel("VendorModel").getData().results.filter(fItem => fItem.Lifnr === oSource.getSelectedKey());
+                                if(vendorList.length === 1){
+                                    this.getView().getModel("VendorModel").getData().results.filter(fItem => fItem.Lifnr === oSource.getSelectedKey()).forEach(item => {
+                                        this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/CURRENCYCD", item.Waers);
+                                    })
+                                }
                             }
                         }
                         else {
+                            if (vColPath.toUpperCase() === "SUPPLYTYP") {
+                                var oTable = this.getView().byId("materialListTable");
+                                 
+                                setTimeout(() => {
+                                    //for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
+                                        var iRowIndex = sRowPath.split("/")[2];
+                                        var oRow = oTable.getRows()[iRowIndex];
+                                        var vSupplyTyp = oTable.getContextByIndex(iRowIndex).getProperty("SUPPLYTYP");
+                                        var oCellCtrlValTyp = "";
+
+                                        if (oRow) {
+                                            oRow.getCells().forEach(cell => {
+                                                if (cell.getBindingInfo("value") !== undefined) {
+                                                    oCellCtrlValTyp = "value";
+                                                }
+                                                else if (cell.getBindingInfo("selected") !== undefined) {
+                                                    oCellCtrlValTyp = "selected";
+                                                }
+
+                                                //if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) 
+                                                if (cell.getBindingInfo(oCellCtrlValTyp) !== undefined) 
+                                                {
+                                                    var vColumnName = cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() ;
+                                                    if(vColumnName === "VENDORCD" || vColumnName === "CURRENCYCD" || vColumnName === "UNITPRICE" || vColumnName === "PURGRP" ||
+                                                        vColumnName === "PURPLANT" || vColumnName === "ORDERUOM" || vColumnName === "UMREZ" || vColumnName === "UMREN" ){
+                                                        if (vSupplyTyp === "NOM") {
+                                                            cell.setEnabled(true);
+                                                        }
+                                                        else {
+                                                            cell.setEnabled(false);
+                                                            cell.setValue('');
+                                                        }
+                                                    }
+
+                                                    else if (cell.getProperty("editable")) { cell.setEnabled(true) }
+                                                    else { cell.setEnabled(false) }
+                                                }
+                                            })
+                                        }
+                                    //}                     
+                                }, 10);
+                                 
+                            }
+
                             if (oEvent.getParameter("value") === "") {
                                 this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, "");
                             }
@@ -4834,7 +4884,7 @@ sap.ui.define([
                 var oData = this.byId("materialListTable").getModel("DataModel").getData().results;
 
                 if (oData.length > 0) {
-                    if (oData.filter(fItem => fItem.Matno === "").length > 0) {
+                    if (oData.filter(fItem => fItem.MATNO === "").length > 0) {
                         if (this._GenericFilterDialog) {
                             this._GenericFilterDialog.setModel(new JSONModel());
                             this.byId("versionAttrTable").getColumns().forEach(col => col.setProperty("filtered", false));
@@ -4868,12 +4918,38 @@ sap.ui.define([
                     for (var i = 0; i < oTable.getModel("DataModel").getData().results.length; i++) {
                         var iRowIndex = oTable.getBinding("rows").aIndices[i];
                         var oRow = oTable.getRows()[iRowIndex];
+                        var vSupplyTyp = oTable.getContextByIndex(iRowIndex).getProperty("SUPPLYTYP");
+                        var oCellCtrlValTyp = "";
 
                         if (oRow) {
                             oRow.getCells().forEach(cell => {
-                                if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) {
-                                    if (cell.getProperty("editable")) { cell.setEnabled(true) }
-                                    else { cell.setEnabled(false) }
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    oCellCtrlValTyp = "value";
+                                }
+                                else if (cell.getBindingInfo("selected") !== undefined) {
+                                    oCellCtrlValTyp = "selected";
+                                }
+
+                                //if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) 
+                                if (cell.getBindingInfo(oCellCtrlValTyp) !== undefined) 
+                                {   
+                                    /*
+                                    var vColumnName = cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() ;
+                                    if(vColumnName === "VENDORCD" || vColumnName === "CURRENCYCD" || vColumnName === "UNITPRICE" || vColumnName === "PURGRP" ||
+                                        vColumnName === "PURPLANT" || vColumnName === "ORDERUOM" || vColumnName === "UMREZ" || vColumnName === "UMREN" ){
+                                        if (vSupplyTyp === "NOM") {
+                                            cell.setEnabled(true);
+                                        }
+                                        else {
+                                            cell.setEnabled(false);
+                                            cell.setValue('');
+                                        }
+                                    }
+
+                                    else 
+                                    */
+                                   if (cell.getProperty("editable")) { cell.setEnabled(true) }
+                                else { cell.setEnabled(false) }
                                 }
                             })
                         }
@@ -6577,7 +6653,7 @@ sap.ui.define([
                             })
                             oControl.addStyleClass("hyperlink") 
  
-                        }else if(sColumnId === "Matno"){
+                        }else if(sColumnId === "MATNO"){
                             //   oControl = new sap.ui.core.HTML({
                             //     content: `<a href="#" onclick="return false;" oncontextmenu="that.oController.openLinkInNewTab(event, this);">{DataModel>${sColumnId}}</a>`
                             // })
@@ -6621,7 +6697,7 @@ sap.ui.define([
                             });
                         }
                         else {
-                            if(sColumnId !== "GMC" && sColumnId !== "BOMSTYLE" && sColumnId !== "Matno" ){
+                            if(sColumnId !== "GMC" && sColumnId !== "BOMSTYLE" && sColumnId !== "MATNO" ){
                                 oControl.bindText({  
                                     parts: [  
                                         { path: "DataModel>" + sColumnId }
@@ -6678,7 +6754,9 @@ sap.ui.define([
                     liveChangeFunction = this.onMaterialListChange.bind(this);
                     inputValueHelpChangeFunction = this.onMaterialListInputChange.bind(this);
                     inputValueHelpLiveChangeFunction = this.onMaterialListInputChange.bind(this);
-                    editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>Matno} === '' ? true : false : false }";
+                    //editModeCond = "{= true}";
+                    //editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>MATNO} === '' ? true : false : false }";
+                    editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? true : false }";
                 }
 
                 oTable.getColumns().forEach((col, idx) => {
@@ -6734,16 +6812,22 @@ sap.ui.define([
                                         }
                                         else if (sColName.toUpperCase() === "VENDORCD") {
                                             valueHelpRequestFunction = this.onVendorValueHelp.bind(this);
+                                            editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>SUPPLYTYP} === 'NOM' ? true : false : false }";
                                         }
                                         else if (sColName.toUpperCase() === "CURRENCYCD") {
                                             valueHelpRequestFunction = this.onCurrencyValueHelp.bind(this);
+                                            editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>SUPPLYTYP} === 'NOM' ? true : false : false }";
                                         }
                                         else if (sColName.toUpperCase() === "PURGRP") {
                                             valueHelpRequestFunction = this.onPurGroupValueHelp.bind(this);
+                                            editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>SUPPLYTYP} === 'NOM' ? true : false : false }";
                                         }
                                         else if (sColName.toUpperCase() === "PURPLANT") {
                                             valueHelpRequestFunction = this.onPurPlantValueHelp.bind(this);
+                                            editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>SUPPLYTYP} === 'NOM' ? true : false : false }";
                                         }
+
+                                      
                                     }
                                     else if (sTabId === "bomGMCTable") {
                                         if (sColName.toUpperCase() === "PROCESSCD") {
@@ -6780,7 +6864,8 @@ sap.ui.define([
                                             templateShareable: false
                                         },
                                         change: inputValueHelpChangeFunction,
-                                        liveChange: inputValueHelpLiveChangeFunction
+                                        liveChange: inputValueHelpLiveChangeFunction,
+                                        editable: editModeCond
                                     })
 
                                     if (bValueFormatter) {
@@ -6801,6 +6886,16 @@ sap.ui.define([
 
                                     col.setTemplate(oInput);
                                 }
+                                // if (sTabId === "materialListTable"){
+                                //     var sColumnName = sColName.toUpperCase();
+                                //     if (sColumnName === "MATDESC1") {
+                                //         editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>MATNO} === '' ? true : false : false }";
+                                //     }
+                                //     else if (sColumnName === "UNITPRICE" || sColumnName === "UMREZ" || sColumnName === "UMREN" || sColumnName === "ORDERUOM" ) {
+                                //         editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>SUPPLYTYP} === 'NOM' ? true : false : false }";
+                                //     }
+                                // }
+                                     
                                 else if (ci.DataType === "DATETIME") {
                                     col.setTemplate(new sap.m.DatePicker({
                                         value: "{path: 'DataModel>" + ci.ColumnName + "', mandatory: '" + ci.Mandatory + "'}",
@@ -6811,6 +6906,13 @@ sap.ui.define([
                                     }));
                                 }
                                 else if (ci.DataType === "NUMBER") {
+                                    if (sTabId === "materialListTable"){
+                                        var sColumnName = sColName.toUpperCase();
+                                        if (sColumnName === "UNITPRICE" || sColumnName === "UMREZ" || sColumnName === "UMREN" ) {
+                                            editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>SUPPLYTYP} === 'NOM' ? true : false : false }";
+                                        }
+                                    }
+
                                     col.setTemplate(new sap.m.Input({
                                         type: sap.m.InputType.Number,
                                         textAlign: sap.ui.core.TextAlign.Right,
@@ -6826,7 +6928,8 @@ sap.ui.define([
                                             }
                                         },
                                         change: changeFunction,
-                                        liveChange: liveChangeFunction
+                                        liveChange: liveChangeFunction,
+                                        editable : editModeCond
                                     }));
                                 }
                                 else if (ci.DataType === "BOOLEAN") {
@@ -6837,6 +6940,16 @@ sap.ui.define([
                                     }));
                                 }
                                 else {
+                                    if (sTabId === "materialListTable"){
+                                        var sColumnName = sColName.toUpperCase();
+                                        if (sColumnName === "MATDESC1") {
+                                            editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>MATNO} === '' ? true : false : false }";
+                                        }
+                                        else if (sColumnName === "ORDERUOM" ) {
+                                            editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>SUPPLYTYP} === 'NOM' ? true : false : false }";
+                                        }
+                                    }
+                                         
                                     col.setTemplate(new sap.m.Input({
                                         type: "Text",
                                         value: "{DataModel>" + sColName + "}",
