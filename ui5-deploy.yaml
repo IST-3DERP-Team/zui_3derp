@@ -18,6 +18,8 @@ builder:
           url: http://159.138.39.203:8000
         app:
           name: ZUI_3DERP
-          description: 3DERP
-          package: ZPK_3DERP_UI
-          transport: LTDK908981
+          description: 3DERP Style Dev
+          package: ZPK_LTH_3DERP
+          transport: LTDK910852
+        exclude:
+          - /test/

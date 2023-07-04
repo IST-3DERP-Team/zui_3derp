@@ -125,7 +125,8 @@
     "colors": [
         {"ColumnName": "Attribseq", "ColumnLabel": "COLORCD", "Order": "1", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
         {"ColumnName": "Desc1", "ColumnLabel": "DESC", "Order": "2", "DataType": "STRING", "ColumnWidth": "175", "Length": "500", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": true  },
-        {"ColumnName": "Sortseq", "ColumnLabel": "SORTSEQ", "Order": "3", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": true  }
+        {"ColumnName": "Desc2", "ColumnLabel": "CUSTCOLDESC", "Order": "3", "DataType": "STRING", "ColumnWidth": "175", "Length": "500", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false  },
+        {"ColumnName": "Sortseq", "ColumnLabel": "SORTSEQ", "Order": "4", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": true  }
     ],    
     "processes": [
         {"ColumnName": "Processcd", "ColumnLabel": "PROCESSCD", "Order": "0", "DataType": "STRING", "ColumnWidth": "320", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,

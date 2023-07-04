@@ -30,6 +30,7 @@ sap.ui.define([
                 window.open(link.href, "_blank");
             }
         };
+        var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({ pattern: "MM/dd/yyyy" });
 
         return Controller.extend("zui3derp.controller.Version", {
 
@@ -256,6 +257,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "CANCEL" });
                 oDDTextParam.push({ CODE: "SAVE" });
                 oDDTextParam.push({ CODE: "ASSIGNMATERIAL" });
+                oDDTextParam.push({ CODE: "EXPORTTOEXCEL" });
                 
                 oDDTextParam.push({ CODE: "ATTRIBTYP" });
                 oDDTextParam.push({ CODE: "ATTRIBCD" });
@@ -355,6 +357,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "INFO_MATLIST_SAP_MATNO" });
                 oDDTextParam.push({ CODE: "INFO_NOT_ALLOW_DUPLICATE_ATTR" });
                 oDDTextParam.push({ CODE: "INFO_SEL_ONE_VERSION_COPY_FR" });
+                oDDTextParam.push({ CODE: "INFO_NO_DELETE_ATTR_REQ" });
 
                 return new Promise((resolve, reject)=>{
                     oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam }, {
@@ -565,9 +568,13 @@ sap.ui.define([
 
             getVersionAttrTable: function () {
                 //Get version attributes
+                var me = this;
                 var oTable = this.getView().byId("versionAttrTable");
                 var oModel = this.getOwnerComponent().getModel();
+                var oAttrModel = this.getOwnerComponent().getModel();
                 var oJSONModel = new JSONModel();
+                var oReqAttr = [];
+                this._verAttrInfo = "";
                 var entitySet = "/StyleVersionAttributesSet"
                 oModel.setHeaders({
                     styleno: this._styleNo,
@@ -587,6 +594,65 @@ sap.ui.define([
                         oTable.bindRows("DataModel>/results");
                         //oTable.setVisibleRowCount(oData.results.length);
                         //oTable.attachPaste();
+                        oAttrModel.setHeaders({
+                            styleno: that._styleNo,
+                            sbu: that._sbu
+                        });
+                        oAttrModel.read("/AttributesConfigSet", {
+                            success: function (oDataConfig, oResponse) {
+                                // me._attributesconfig = oDataConfig.results;
+                                var sMessage = "";
+                                var attributesConfigModel = new JSONModel();
+                                attributesConfigModel.setData(oDataConfig);
+                                that.getView().setModel(attributesConfigModel, "AttributesConfigSetModel");
+
+                                oData.results.forEach((item, index) => {
+                                    item.Casverind = item.Casverind === "X" ? true : false;
+                                    item.Property = "";
+
+                                    oDataConfig.results.filter(fItem => fItem.TYPE === item.Attribtyp).forEach(e => {
+                                        if (e.PROP === "M") {
+                                            if (oReqAttr.findIndex(val => val.TYPE === e.TYPE) < 0) {
+                                                if (me.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === e.TYPE).length > 0 && item.Attribcd === "") {
+                                                    sMessage += "Attribute code is required for type " + e.TYPE + ".\r\n";
+                                                }
+                                            }
+                                            
+                                            if (e.CODE === item.Attribcd) {
+                                                item.Property = e.PROP;
+    
+                                                if (oReqAttr.findIndex(val => val.TYPE === e.TYPE && val.CODE === e.CODE) < 0) { 
+                                                    oReqAttr.push({TYPE: e.TYPE, CODE: e.CODE}); 
+    
+                                                    if (item.Valuetyp.toUpperCase() === "STRVAL" && item.Attribval === "") {
+                                                        sMessage += "Attribute value is required for type/code " + e.TYPE + "/" + e.CODE + ".\r\n";
+                                                    }
+                                                    else if (item.Valuetyp.toUpperCase() === "NUMVALUE" && (item.Attribval === "" || item.Valunit === "")) {
+                                                        sMessage += "Attribute value and UOM is required for type/code " + e.TYPE + "/" + e.CODE + ".\r\n";
+                                                    }
+                                                }
+                                            }
+                                            else if (e.CODE === "") { 
+                                                item.Property = e.PROP;
+    
+                                                if (oReqAttr.findIndex(val => val.TYPE === e.TYPE) < 0) { 
+                                                    oReqAttr.push({TYPE: e.TYPE, CODE: ""});     
+                                                    if (item.Valuetyp.toUpperCase() === "STRVAL" && item.Attribval === "") {
+                                                        sMessage += "Attribute value is required for type " + e.TYPE + ".\r\n";
+                                                    }
+                                                    else if (item.Valuetyp.toUpperCase() === "NUMVALUE" && (item.Attribval === "" || item.Valunit === "")) {
+                                                        sMessage += "Attribute value and UOM is required for type " + e.TYPE + ".\r\n";
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+        
+                                    if (index === 0) item.ACTIVE = "X";
+                                    else item.ACTIVE = "";
+                                });
+                            }
+                        });
                     },
                     error: function () { }
                 })
@@ -601,6 +667,7 @@ sap.ui.define([
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, "VersionAttrEditModeModel");
                 this.setRowEditMode("versionAttrTable");
+                this.setVersionAttrEditModeControls();
             },
 
             cancelVersionAttrEdit: function () {
@@ -669,7 +736,58 @@ sap.ui.define([
                     if (oSource.getBindingInfo("value") !== undefined) {
                         var sRowPath = oSource.oParent.getBindingContext("DataModel").sPath;
                         var vColPath = oSource.getBindingInfo("value").parts[0].path;
+                        var vAttribtyp = oEvent.getSource().oParent.oParent.getModel("DataModel").getProperty(sRowPath + "/Attribtyp");
+                        var oModelData = {};
 
+                        if (vColPath.toUpperCase() === "ATTRIBTYP") {
+                            this.setVersionAttrEditModeControls();
+    
+                            if (oEvent.getParameter("value") === "") {
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribtyp", "");
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", "");
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
+                            }
+                            else {
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribtyp", oSource.getSelectedKey());
+                            }
+
+                            var aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === oSource.getSelectedKey());
+                            oModelData["results"] = aModelData;
+                            this.getView().setModel(new JSONModel(oModelData), "AttribCodeModel");
+                        }
+                        else if (vColPath.toUpperCase() === "ATTRIBCD") {   
+                            if (oEvent.getParameter("value") === "") {
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", "");
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
+                            }
+                            else {
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", oSource.getSelectedKey());
+                                if(vAttribtyp ==='STYP'){
+                                    const vWvTypAttrCode = oEvent.getSource().oParent.oParent.getModel("DataModel").getData().results.filter(item => item.Attribtyp === "WVTYP")[0];
+                                     
+                                    this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey() && fItem.Attribgrp === vWvTypAttrCode.Attribcd).forEach(item => {
+                                        this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
+                                        var iRowIndex = +sRowPath.replace("/results/","");
+    
+                                        if (this.byId("versionAttrTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
+                                            this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
+                                        }
+                                    })     
+                                }
+                                else
+                                {
+                                    this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey()).forEach(item => {
+                                        this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
+                                        var iRowIndex = +sRowPath.replace("/results/","");
+
+                                        if (this.byId("versionAttrTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
+                                            this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
+                                        }
+                                    })     
+                                }                           
+                            }
+                        }
+                        /*
                         if (oEvent.getParameter("value") === "") {
                             this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, "");
 
@@ -686,6 +804,7 @@ sap.ui.define([
                                 })
                             }
                         }
+                        */
                     }
                 }
             },
@@ -701,29 +820,82 @@ sap.ui.define([
                 var oMsgStrip = this.getView().byId('VersionAttrMessageStrip');
                 oMsgStrip.setVisible(false);
 
+                var attributesConfigSet = that.getView().getModel("AttributesConfigSetModel").getData().results;
+
                 if (!this._versionAttrChanged) { //check changed data
                     MessageBox.information(this._i18n.getText('t7'));
                     // Common.showMessage(this._i18n.getText('t7'));
                 } else {
                     //build headers and payload
+                    var sMessage = "";
                     var oData = oTableModel.getData();
                     var oEntry = {
                         Styleno: this._styleNo,
                         Verno: this._version,
                         VersionToItems: []
                     }
-                    for (var i = 0; i < oData.results.length; i++) {
-                        var item = {
-                            "Styleno": this._styleNo,
-                            "Verno": this._version,
-                            "Attribtyp": oData.results[i].Attribtyp,
-                            "Attribcd": oData.results[i].Attribcd,
-                            "Desc1": oData.results[i].Desc1,
-                            "Attribval": oData.results[i].Attribval,
-                            "Valunit": oData.results[i].Valunit,
-                            "Attribseq": oData.results[i].Attribseq,
+                    //limit number of data
+                    attributesConfigSet.forEach( (item, index) =>{
+                        if(item.TYPE !== "" && item.CODE === "" && item.LIMIT === 1)
+                        {
+                            var result = oData.results.filter(fItem => fItem.Attribtyp === item.TYPE);
+                            if(result.length > 1){
+                                sMessage += "Multiple entries are not allowed for type " + item.TYPE + ".\r\n";
+                            }
                         }
-                        oEntry.VersionToItems.push(item);
+
+                        if(item.TYPE !== "" && item.CODE !== ""  && item.LIMIT === 1)
+                        {
+                            var result = oData.results.filter(fItem => fItem.Attribtyp === item.TYPE && fItem.Attribcd === item.CODE);
+                            if(result.length > 1){
+                                sMessage += "Multiple entries are not allowed for type/code " + item.TYPE + "/" + item.CODE + ".\r\n";
+                            }
+                        }
+
+                    });
+
+                    for (var i = 0; i < oData.results.length; i++) {
+                        var bProceed = true;
+                        if (oData.results[i].Property === "M") {
+                            if (me.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === oData.results[i].Attribtyp).length > 0 && oData.results[i].Attribcd === "") {
+                                bProceed = false;
+                                sMessage += "Attribute code is required for type " + oData.results[i].Attribtyp + ".\r\n";
+                            }
+
+                            if (oData.results[i].Valuetyp.toUpperCase() === "STRVAL" && oData.results[i].Attribval === "") {
+                                bProceed = false;
+                                
+                                if (oData.results[i].Attribcd !== "") {
+                                    sMessage += "Attribute value is required for type/code " + oData.results[i].Attribtyp + "/" + oData.results[i].Attribcd + ".\r\n";
+                                }
+                                else {
+                                    sMessage += "Attribute value is required for type " + oData.results[i].Attribtyp + ".\r\n";
+                                }
+                            }
+                            else if (oData.results[i].Valuetyp.toUpperCase() === "NUMVALUE" && (oData.results[i].Attribval === "" || oData.results[i].Valunit === "")) {
+                                bProceed = false;
+
+                                if (oData.results[i].Attribcd !== "") {
+                                    sMessage += "Attribute value and UOM is required for type/code " + oData.results[i].Attribtyp + "/" + oData.results[i].Attribcd + ".\r\n";
+                                }
+                                else {
+                                    sMessage += "Attribute value and UOM is required for type " + oData.results[i].Attribtyp + ".\r\n";
+                                }
+                            }                            
+                        }
+                        if (bProceed) {
+                            var item = {
+                                "Styleno": this._styleNo,
+                                "Verno": this._version,
+                                "Attribtyp": oData.results[i].Attribtyp,
+                                "Attribcd": oData.results[i].Attribcd,
+                                "Desc1": oData.results[i].Desc1,
+                                "Attribval": oData.results[i].Attribval,
+                                "Valunit": oData.results[i].Valunit,
+                                "Attribseq": oData.results[i].Attribseq,
+                            }
+                            oEntry.VersionToItems.push(item);
+                        }
                     };
 
                     var hasDuplicate = false;
@@ -735,41 +907,45 @@ sap.ui.define([
                         return;
                     }
 
-                    MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
-                        actions: ["Yes", "No"],
-                        onClose: function (sAction) {
-                            if (sAction === "Yes") {
-                                Common.openLoadingDialog(that);
+                    if (sMessage === "") {
+                        MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
+                            actions: ["Yes", "No"],
+                            onClose: function (sAction) {
+                                if (sAction === "Yes") {
+                                    Common.openLoadingDialog(that);
 
-                                path = "/VersionAttributesSet";
-                                oModel.setHeaders({
-                                    sbu: this._sbu
-                                });
-                                //call create deep method for version attributes
-                                oModel.create(path, oEntry, {
-                                    method: "POST",
-                                    success: function (oData, oResponse) {
-                                        me._versionAttrChanged = false;
-                                        me.setChangeStatus(false);
-                                        Common.closeLoadingDialog(me);
-                                        me.setTabReadEditMode(false, "VersionAttrEditModeModel");
-                                        me.setRowReadMode("versionAttrTable");
-                                        // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
-                                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
-                                    },
-                                    error: function (err) {
-                                        var errorMsg = JSON.parse(err.responseText).error.message.value;
-                                        // oMsgStrip.setVisible(true);
-                                        // oMsgStrip.setText(errorMsg);
-                                        Common.closeLoadingDialog(me);
-                                        // Common.showMessage(_oCaption.INFO_ERROR);
-                                        MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
-                                    }
-                                });
+                                    path = "/VersionAttributesSet";
+                                    oModel.setHeaders({
+                                        sbu: this._sbu
+                                    });
+                                    //call create deep method for version attributes
+                                    oModel.create(path, oEntry, {
+                                        method: "POST",
+                                        success: function (oData, oResponse) {
+                                            me._versionAttrChanged = false;
+                                            me.setChangeStatus(false);
+                                            Common.closeLoadingDialog(me);
+                                            me.setTabReadEditMode(false, "VersionAttrEditModeModel");
+                                            me.setRowReadMode("versionAttrTable");
+                                            // Common.showMessage(_oCaption.INFO_SAVE_SUCCESS);
+                                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                                        },
+                                        error: function (err) {
+                                            var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                            // oMsgStrip.setVisible(true);
+                                            // oMsgStrip.setText(errorMsg);
+                                            Common.closeLoadingDialog(me);
+                                            // Common.showMessage(_oCaption.INFO_ERROR);
+                                            MessageBox.information(_oCaption.INFO_ERROR + ": " + errorMsg);
+                                        }
+                                    });
+                                }
                             }
-                        }
-                    });
-
+                        });
+                    }
+                    else {
+                        MessageBox.information(sMessage);
+                    }
                 }
             },
 
@@ -837,6 +1013,8 @@ sap.ui.define([
 
                         // var iRowIndex = +oTable.getContextByIndex(i).getPath().replace("/results/", "");
                         var oRow = oTable.getRows()[iRowIndex];
+                        var vAttrTyp = oTable.getContextByIndex(iRowIndex).getProperty("Attribtyp");
+                        var vValTyp = oTable.getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase();
                         var bNew = oTable.getContextByIndex(iRowIndex).getProperty("NEW");
                         var oCellCtrlValTyp = "";
 
@@ -860,7 +1038,7 @@ sap.ui.define([
 
                                     if (this._dataMode === "NEW") { cell.setEnabled(true) }
                                 }
-
+                                /*
                                 if (this._dataMode !== "NEW") {
                                     if (oCellCtrlValTyp !== "text") {
                                         cell.setEnabled(true);
@@ -869,6 +1047,53 @@ sap.ui.define([
                                         cell.setEnabled(false);
                                     }
                                 }
+                                */
+                                
+                                if (oCellCtrlValTyp !== "text") {
+                                    if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBTYP") {
+                                        cell.setEnabled(true);
+                                    }
+                                    else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
+                                        if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
+                                            cell.setEnabled(true);
+            
+                                            if (vValTyp === "NUMVALUE") {
+                                                cell.setType(sap.m.InputType.Number);
+                                            }
+                                            else if (vValTyp === "STRVAL") {
+                                                cell.setType(sap.m.InputType.Text);
+                                            }
+                                        }
+                                        else {
+                                            cell.setEnabled(false);
+                                        }
+                                    }
+                                    else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "VALUNIT") {
+                                        if (vValTyp === "NUMVALUE") {
+                                            cell.setEnabled(true);
+                                        }
+                                        else {
+                                            cell.setEnabled(false);
+                                        }
+                                    }
+                                    else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBCD") {
+                                        if (this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttrTyp).length > 0 && vAttrTyp !== "" && vAttrTyp !== undefined) {
+                                            cell.setEnabled(true);
+                                        }
+                                        else {
+                                            cell.setEnabled(false);
+                                        }
+                                    }
+                                    else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "CASVERIND") {
+                                        if (vAttrTyp !== "" && vAttrTyp !== undefined) {
+                                            cell.setEnabled(true);
+                                        }
+                                        else {
+                                            cell.setEnabled(false);
+                                        }
+                                    }
+                                }
+                                
                             }
                         })
                     }
@@ -4570,6 +4795,14 @@ sap.ui.define([
                             oTable.getModel("DataModel").setProperty("/results", oData.results);
                         }
                         */
+                        oData.results.forEach(item => {
+                            item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));
+                           
+                            // if (item.UPDATEDDT !== null && item.UPDATEDDT !== "  /  /" && item.UPDATEDDT !== "" && item.UPDATEDDT !== " //  /  /" && item.UPDATEDDT != "  /  /") {
+                            //     //console.log(item.UPDATEDDT)
+                            //     item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));// + " " + timeFormat.format(new Date(item.UPDATEDTM));
+                            // }
+                        })
                         oTable.setModel(oJSONModel, "DataModel");
                         me.setLocTableColumns("materialListTable", columnData);
                         me.updateColumnMenu(me.byId("materialListTable"), "materialListTable");
@@ -4811,6 +5044,48 @@ sap.ui.define([
                         MatListToItems: []
                     }
                     for (var i = 0; i < oData.results.length; i++) {
+                        if(oData.results[i].SUPPLYTYP === "NOM"){
+                            if(oData.results[i].VENDORCD === "")
+                            {
+                                MessageBox.information("Vendor is required.")
+                                return;
+                            }
+                            else if(oData.results[i].CURRENCYCD === "")
+                            {
+                                MessageBox.information("Currency is required.")
+                                return;
+                            }
+                            else if(oData.results[i].UNITPRICE === "")
+                            {
+                                MessageBox.information("Unit Price is required.")
+                                return;
+                            }
+                            else if(oData.results[i].UNITPRICE <= 0)
+                            {
+                                MessageBox.information("Unit Price should not be zero.")
+                                return;
+                            }
+                            else if(oData.results[i].PURGRP === "")
+                            {
+                                MessageBox.information("Purchasing group is required.")
+                                return;
+                            }
+                            else if(oData.results[i].PURPLANT === "")
+                            {
+                                MessageBox.information("Purchasing Plant is required.")
+                                return;
+                            }
+                            else if(oData.results[i].UMREZ === "" || oData.results[i].UMREZ <= 0)
+                            {
+                                MessageBox.information("Numerator is required.")
+                                return;
+                            }
+                            else if(oData.results[i].UMREN === "" || oData.results[i].UMREN <= 0)
+                            {
+                                MessageBox.information("Denominator is required.")
+                                return;
+                            }
+                        }
                         var item = {
                             "STYLENO": this._styleNo,
                             "BOMMATID": oData.results[i].BOMMATID,
@@ -5296,7 +5571,22 @@ sap.ui.define([
                     var oData = oModel.getProperty('/results');
                     oData.forEach(item => item.ACTIVE = "");
 
-                    var aNewRow = [{ NEW: true, ACTIVE: "X" }];
+                    if (tabName === "versionAttrTable") {
+                        aNewRow = [{
+                            NEW: true, 
+                            ACTIVE: "X",
+                            Attribcd: "",
+                            Attribtyp: "",
+                            Attribval: "",
+                            Casverind: false,
+                            Desc1: "",
+                            Valuetyp: "",
+                            Valunit: ""
+                        }];
+                    }
+                    else{
+                         var aNewRow = [{ NEW: true, ACTIVE: "X" }];
+                    }
                     var aDataAfterChange = aNewRow.concat(oData);
                     oModel.setProperty('/results', aDataAfterChange);
 
@@ -5305,7 +5595,7 @@ sap.ui.define([
                     // oTable.setVisibleRowCount(oData.length);
 
                     if (tabName === "versionAttrTable") {
-                        //this.setVersionAttrEditMode();
+                        this.setVersionAttrEditMode();
                         this.setTabReadEditMode(true, "VersionAttrEditModeModel");
                         this.onVersionAttrChange();
                         this.setVersionAttrEditModeControls();
@@ -5616,8 +5906,15 @@ sap.ui.define([
                 var vAttribtyp = oEvent.getSource().oParent.oParent.getModel("DataModel").getProperty(sRowPath + "/Attribtyp");
 
                 if (this.getView().getModel("AttribCdModel").getData()[vAttribtyp] === undefined) {
-                    var aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttribtyp);
-                    var oModelData = {};
+                    var aModelData;
+                    if(vAttribtyp ==='STYP'){
+                        const vWvTypAttrCode = oEvent.getSource().oParent.oParent.getModel("DataModel").getData().results.filter(item => item.Attribtyp === "WVTYP")[0];
+                        aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttribtyp && fItem.Attribgrp === vWvTypAttrCode.Attribcd);
+                    }
+                    else
+                        aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttribtyp);
+                    
+                        var oModelData = {};
                     oModelData["results"] = aModelData;
                     this.getView().setModel(new JSONModel(oModelData), "AttribCodeModel");
                     this.getView().getModel("AttribCdModel").setProperty("/" + vAttribtyp, aModelData);
@@ -6423,15 +6720,48 @@ sap.ui.define([
 
             onDeleteTableItems: function (oTableName, oFragmentName, oDialog) {
                 var oTable = this.getView().byId(oTableName);
+                var oTableModel = oTable.getModel("DataModel");
+                var oData = oTableModel.getData();
                 var selected = oTable.getSelectedIndices();
+                var bProceed = true;
+                var noEdit = 0;
+                var noEditMsg = "";
+                var editMsg = "";
+
                 if (selected.length > 0) {
-                    if (!oDialog) {
-                        oDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog." + oFragmentName, this);
-                        this.getView().addDependent(oDialog);
+                    if (oTableName === "versionAttrTable") {
+                        for (var i = 0; i < selected.length; i++) {
+                            var vProp = oData.results[selected[i]].Property;
+                            var vType = oData.results[selected[i]].Attribtyp;
+                            var vCode = oData.results[selected[i]].Attribcd;
+
+                            if (vProp === "M") {
+                                noEdit++;
+                                noEditMsg += vType + "/" + vCode + ", ";
+                            }
+                            else {
+                                editMsg += vType + "/" + vCode + ", ";
+                            }
+                        }
+
+                        if (selected.length === noEdit) {
+                            bProceed = false;
+                            MessageBox.information(_oCaption.INFO_NO_DELETE_ATTR_REQ) //No record to delete.\r\nSelected attribute/s are mandatory.
+                        }                            
                     }
-                    jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
-                    oDialog.addStyleClass("sapUiSizeCompact");
-                    oDialog.open();
+                    if (bProceed) {
+                        if (!oDialog) {
+                            oDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog." + oFragmentName, this);
+                            this.getView().addDependent(oDialog);
+                        }
+                        jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._LoadingDialog);
+                        oDialog.addStyleClass("sapUiSizeCompact");
+                        oDialog.open();
+                        
+                        if (oTableName === "versionAttrTable" && noEdit > 0 && selected.length !== noEdit) {
+                            oDialog.getContent()[0].getContent()[0].setProperty("text", "Mandatory attribute " + noEditMsg.substring(0, noEditMsg.length - 2) + " cannot be deleted.\r\nAttribute " + editMsg.substring(0, editMsg.length - 2) + " can be deleted.\r\nConfirm delete " + editMsg.substring(0, editMsg.length - 2) + "?\r\n\r\n");   
+                        }
+                    }
                 } else {
                     // Common.showMessage(this._i18n.getText('t8'));
                     MessageBox.information(this._i18n.getText('t8'));
@@ -6747,7 +7077,7 @@ sap.ui.define([
                     liveChangeFunction = this.onVersionAttrChange.bind(this);
                     inputValueHelpChangeFunction = this.onVersionAttrInputChange.bind(this);
                     inputValueHelpLiveChangeFunction = this.onVersionAttrChange.bind(this);
-                    editModeCond = "{= true}";
+                    editModeCond = true;
                 }
                 else if (sTabId === "materialListTable") { 
                     changeFunction = this.onMaterialListChange.bind(this);
@@ -6809,6 +7139,7 @@ sap.ui.define([
                                     else if (sTabId === "materialListTable") {
                                         if (sColName.toUpperCase() === "SUPPLYTYP") {
                                             valueHelpRequestFunction = this.onSupplyTypeValueHelp.bind(this);
+                                            editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? true : false }";
                                         }
                                         else if (sColName.toUpperCase() === "VENDORCD") {
                                             valueHelpRequestFunction = this.onVendorValueHelp.bind(this);
