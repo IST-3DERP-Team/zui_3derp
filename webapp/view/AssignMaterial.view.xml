@@ -10,7 +10,9 @@
                 <ToolbarSpacer />
                 <Button text="Assign Automatic" tooltip="Automatically assign material nos." press="onAssignAutomatic"/>
                 <Button text="Create Material" id="btnCreateMat" tooltip="Create material for selected items" press="onCreateMaterial"/>
-                <Button type="Ghost" icon="sap-icon://save" text="Save" tooltip="Save material list" press="onSaveMaterialList"/>              
+                <Button text="Request Material Mapping" id="btnReqMatMap" tooltip="Request Material Mapping" press="onReqMaterialMap"/>
+                <Button type="Ghost" icon="sap-icon://save" tooltip="Save material list" press="onSaveMaterialList"/>  
+                <Button id="btnHdrClose" type="Ghost" icon="sap-icon://sys-cancel" tooltip="{ddtext>/CLOSE}" press="closePage" visible="true" />            
             </Toolbar>
 
             <MessageStrip id="AssignMaterialMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false"/>

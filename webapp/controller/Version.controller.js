@@ -162,6 +162,7 @@ sap.ui.define([
                 }
 
                 this.closeEditModes();
+                this.lockStyleVer("O");
                 // this.getView().setModel(new JSONModel(this.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").getData().text), "ddtext");
                 
                 _promiseResult = new Promise((resolve, reject) => {
@@ -1257,7 +1258,7 @@ sap.ui.define([
                         });
                         //assigned to UsageClassUVModel
                         that.getView().setModel(new JSONModel({ results: filteredItems }), "UsageClassUVModel");
-                        rowData.forEach(item => item.EDITABLE = '');
+                        rowData.forEach(item => {item.EDITABLE = '' , item.HASMATNO = ''});
                         var oJSONModel = new JSONModel();
                         oJSONModel.setData({
                             results: rowData,
@@ -1401,20 +1402,20 @@ sap.ui.define([
                     MessageBox.information(this._i18n.getText('t12'));
                 }
                 else {
+                    var bProceed = await this.getBOMValidation(this);
+                    if (!bProceed) return;
+
+                    if (this.getView().byId("bomGMCTable").getModel("DataModel").getData().results.filter(fItem => fItem.EDITABLE === "X").length === 0) {
+                        Common.closeProcessingDialog(this);
+                        MessageBox.information(_oCaption.INFO_MATLIST_SAP_MATNO);//Material list has assigned SAP material no. and already attached to an IO.\r\nEditing not allowed.
+                        return;
+                    }
                     const result = await this.lockStyleVer("X");
                     if (result.Type != "S") {
                         MessageBox.warning(result.Message);
+                        return;
                     }
-                    else {
-                        var bProceed = await this.getBOMValidation(this);
-                        if (!bProceed) return;
-
-                        if (this.getView().byId("bomGMCTable").getModel("DataModel").getData().results.filter(fItem => fItem.EDITABLE === "X").length === 0) {
-                            Common.closeProcessingDialog(this);
-                            MessageBox.information(_oCaption.INFO_MATLIST_SAP_MATNO);//Material list has assigned SAP material no. and already attached to an IO.\r\nEditing not allowed.
-                            return;
-                        }
-                        
+                    else {   
                         var oJSONModel = new JSONModel();
                         var data = {};
                         this._BOMbyGMCChanged = false;
@@ -3715,10 +3716,50 @@ sap.ui.define([
                             me.getView().byId("bomGMCTable").getModel("DataModel").getData().results.forEach(item => {
                                 var vRow = oData.results.filter(fItem => fItem.GMC === item.GMC && fItem.MATNO === "X" && fItem.IO === "X");
                                 if (vRow.length > 0) {
-                                    // item.EDITABLE = vRow[0].IO === "X" && vRow[0].MATNO === "X" ? "" : "X";
-                                    item.EDITABLE = "";
+                                    //item.EDITABLE = vRow[0].IO === "X" && vRow[0].MATNO === "X" ? "" : "X";
+                                    item.EDITABLE = "X";
+                                    item.HASMATNO = "X"
                                 }
                                 else { item.EDITABLE = "X" }
+                            })
+
+                            // Common.closeProcessingDialog(me);
+                            resolve(true); 
+                        },
+                        error: function (err) { 
+                            resolve(false);
+                            Common.closeProcessingDialog(me);
+                            MessageBox.information(err);
+                        }
+                    })
+                })
+
+                return await promise;
+            },
+
+            getBOMValidation2: async (me, table) => {
+                var oModel = me.getOwnerComponent().getModel();
+                Common.openProcessingDialog(me, "Validating");
+
+                var promise = new Promise((resolve, reject) => {
+                    oModel.setHeaders({
+                        styleno: me._styleNo,
+                        verno: me._version
+                    })
+
+                    oModel.read('/BOMValidationSet', {
+                        success: function (oData) {
+                            oData.results.forEach(item => item.MSG = '');
+                            
+                            me.getView().setModel(new JSONModel(oData.results), "BOMValidation");
+                            me.getView().byId(table).getModel("DataModel").getData().results.forEach(item => {
+                                var vRow = oData.results.filter(fItem => fItem.GMC === item.GMC && fItem.MATNO === "X" && fItem.IO === "X");
+                                if (vRow.length > 0) {
+                                    //item.EDITABLE = vRow[0].IO === "X" && vRow[0].MATNO === "X" ? "" : "X";
+                                    item.EDITABLE = "X";
+                                    item.HASMATNO = "X"
+                                }
+                                else { item.EDITABLE = "X", item.HASMATNO = '' }
                             })
 
                             // Common.closeProcessingDialog(me);
@@ -4236,20 +4277,20 @@ sap.ui.define([
             },
 
             setBOMbyUVEditMode: async function () {
+                
+                var bProceed = await this.getBOMValidation2(this, "bomUVTable");
+                if (!bProceed) return;
+
+                if (this.getView().byId("bomUVTable").getModel("DataModel").getData().results.filter(fItem => fItem.EDITABLE === "X").length === 0) {
+                    Common.closeProcessingDialog(this);
+                    MessageBox.information(_oCaption.INFO_MATLIST_SAP_MATNO);
+                    return;
+                }
                 const result = await this.lockStyleVer("X");
                 if (result.Type != "S") {
                     MessageBox.warning(result.Message);
                 }
                 else {
-                    var bProceed = await this.getBOMValidation(this);
-                    if (!bProceed) return;
-
-                    if (this.getView().byId("bomGMCTable").getModel("DataModel").getData().results.filter(fItem => fItem.EDITABLE === "X").length === 0) {
-                        Common.closeProcessingDialog(this);
-                        MessageBox.information(_oCaption.INFO_MATLIST_SAP_MATNO);
-                        return;
-                    }
-
                     //set BOM by UV table edit mode
                     var oJSONModel = new JSONModel();
                     var data = {};
@@ -4259,6 +4300,7 @@ sap.ui.define([
                     this.getView().setModel(oJSONModel, "BOMbyUVEditModeModel");
                     
                     var oTable = this.getView().byId("bomUVTable");
+                    console.log(oTable.getModel("DataModel").getData().results)
                     oTable.getColumns().forEach((col, idx) => {
                         var sColName = "";
 
@@ -4272,7 +4314,7 @@ sap.ui.define([
                         var column = this._aColumns["bomUV"].filter(item => item.ColumnName === sColName)[0];
                         col.setTemplate(this.columnTemplate('UV', column));
                     });
-
+                    /*
                     var bomuvconfig = this._bomuvconfig.filter(fItem => fItem.MATTYP !== '');
                     var vUsgcls = "", vMattypcls = "";
 
@@ -4319,6 +4361,7 @@ sap.ui.define([
                             oWastage.setEditable(true);
                         }
                     })
+                    */
 
                     this._dataMode = "EDIT";
                     this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "EDIT");
@@ -4796,6 +4839,7 @@ sap.ui.define([
                         }
                         */
                         oData.results.forEach(item => {
+                            item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));
                             item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));
                            
                             // if (item.UPDATEDDT !== null && item.UPDATEDDT !== "  /  /" && item.UPDATEDDT !== "" && item.UPDATEDDT !== " //  /  /" && item.UPDATEDDT != "  /  /") {
@@ -5264,8 +5308,8 @@ sap.ui.define([
                         change: changeFunction,
                         liveChange: changeFunction,
                         // editable: "{= ${DataModel>USGCLS} === 'AUV' ? " + editModeCond + " : ${DataModel>USGCLS} === 'ASUV' ? " + editModeCond + " : false }",
-                        editable: "{= ${DataModel>EDITABLE === '' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " :  false }",
-                        enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " : false  }",
+                        editable: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " : false  }",
+                        enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " : false  }",
                         visible: true,
                         tooltip: "{DataModel>" + columnName + "}"
                     });
@@ -5284,7 +5328,7 @@ sap.ui.define([
                             selectedKey: Constants.GMC,
                             change: changeFunction,
                             editable: ((column.Editable) ? "{= " + editModeCond + " }" : false),
-                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -5306,7 +5350,7 @@ sap.ui.define([
                             change: inputChangeFunction,
                             liveChange: changeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
-                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -5317,7 +5361,7 @@ sap.ui.define([
                             showValueHelp: true,
                             valueHelpRequest: that.onMatTypeValueHelp.bind(that),
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
-                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
                             visible: column.Visible,
                             showSuggestion: true,
                             suggestionItems: {
@@ -5347,7 +5391,7 @@ sap.ui.define([
                             },
                             change: changeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
-                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -5362,7 +5406,7 @@ sap.ui.define([
                             change: inputChangeFunction,
                             liveChange: liveChangeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
-                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}",
                         });
@@ -5387,7 +5431,7 @@ sap.ui.define([
                             showValueHelp: true,
                             valueHelpRequest: that.onUomGMCValueHelp.bind(that),
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
-                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
                             visible: column.Visible,
                             showSuggestion: true,
                             suggestionItems: {
@@ -5409,18 +5453,18 @@ sap.ui.define([
                             change: changeFunction,
                             liveChange: liveChangeFunction,
                             editable: false,
-                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
-                    } else if (columnName === "DESC111") {
+                    } else if (columnName === "DESC1") {
                         //setting the GMC input with value help
                         oColumnTemplate = new sap.m.Input({
                             value: "{DataModel>" + columnName + "}",
                             change: changeFunction,
                             liveChange: liveChangeFunction,
                             editable: false,
-                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false :  ${DataModel>HASMATNO} === 'X' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
@@ -5437,7 +5481,7 @@ sap.ui.define([
                             tooltip: "{DataModel>" + columnName + "}",
                             textAlign: sap.ui.core.TextAlign.Right
                         });
-                    } else if (columnName === "CONSUMP" || columnName === "PARTCNT") {
+                    } else if (columnName === "CONSUMP" /*|| columnName === "PARTCNT"*/) {
                         //setting the default input field
                         if (column.Editable) {
                             oColumnTemplate = new sap.m.Input({
@@ -5455,7 +5499,7 @@ sap.ui.define([
                             oColumnTemplate = new sap.m.Text({ text: "{DataModel>" + columnName + "}", tooltip: "{DataModel>" + columnName + "}" });
                         }
                     } else if (columnName === "PARTCD") {
-                        //setting process code input with value help
+                        //setting part code input with value help
                         oColumnTemplate = new sap.m.Input({
                             value: "{DataModel>" + columnName + "}",
                             showValueHelp: true,
@@ -5472,11 +5516,30 @@ sap.ui.define([
                             change: inputChangeFunction,
                             liveChange: changeFunction,
                             editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
-                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });
-                    } else {
+                    } else if (type === "UV") {
+                        //setting for BOM UV input with value help
+                        if (column.Editable) {
+                            oColumnTemplate = new sap.m.Input({
+                                value: "{DataModel>" + columnName + "}",
+                                change: changeFunction,
+                                liveChange: changeFunction,
+                               // editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                                editable: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>MATTYPCLS} === 'ZCONS' ? true : ${DataModel>HASMATNO} === 'X' ? false : true }",
+                                enable: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>MATTYPCLS} === 'ZCONS' ? true : ${DataModel>HASMATNO} === 'X' ? false : true  }",
+                                visible: column.Visible,
+                                tooltip: "{DataModel>" + columnName + "}"
+                            })
+                        } 
+                        else {
+                            //setting the default text field for uneditable fields
+                            oColumnTemplate = new sap.m.Text({ text: "{DataModel>" + columnName + "}", tooltip: "{DataModel>" + columnName + "}" });
+                        }
+
+                    } else{
                         //setting the default input field
                         if (column.Editable) {
                             oColumnTemplate = new sap.m.Input({
@@ -5484,7 +5547,7 @@ sap.ui.define([
                                 change: changeFunction,
                                 liveChange: changeFunction,
                                 editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
-                                enabled: "{= ${DataModel>EDITABLE} === '' ? false : true  }",
+                                enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
                                 visible: column.Visible,
                                 tooltip: "{DataModel>" + columnName + "}"
                             })

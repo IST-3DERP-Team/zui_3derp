@@ -266,7 +266,8 @@ sap.ui.define([
                 //     this.getColumnProp();
                 // }, 1000);
 
-                 
+                this.lockStyle("O");
+
                 _promiseResult = new Promise((resolve, reject) => {
                     resolve(that.getColumnProp());
                 });
@@ -1489,7 +1490,10 @@ sap.ui.define([
                     this.byId("btnHdrDelete").setEnabled(false);
                     this.byId("btnHdrClose").setEnabled(false);
                     this.setRowEditMode("generalTable");
-                    this.setGeneralAttrEditModeControls();
+                    //this.setGeneralAttrEditModeControls();
+                    this.getView().byId("generalTable").getModel("DataModel").getData().results.forEach(item => {
+                        item.ACTIVE = "X";
+                    });
 
                      //mark as required fields
                      var oTable = this.getView().byId("generalTable");
@@ -1498,6 +1502,7 @@ sap.ui.define([
                         if(colProp == "Attribtyp")
                             col.getLabel().addStyleClass("sapMLabelRequired");
                     });
+
 
                     var oMsgStrip = this.getView().byId("GeneralAttrInfoMessageStrip");
                     oMsgStrip.setVisible(false);
@@ -1540,6 +1545,7 @@ sap.ui.define([
                                     if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBTYP") {
                                         cell.setEnabled(true);
                                     }
+                                     
                                     else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
                                         if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
                                             cell.setEnabled(true);
@@ -1649,6 +1655,8 @@ sap.ui.define([
                             }
                             else {
                                 this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribtyp", oSource.getSelectedKey());
+                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", "");
+                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
                             }
 
                             var aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === oSource.getSelectedKey());
@@ -2077,7 +2085,7 @@ sap.ui.define([
                     this.byId("btnHdrDelete").setEnabled(false);
                     this.byId("btnHdrClose").setEnabled(false);
                     this.setRowEditMode("colorsTable");
-                    this.setColorEditModeControls();
+                    //this.setColorEditModeControls();
 
                     //mark as required fields
                     var oTable = this.getView().byId("colorsTable");
@@ -2161,8 +2169,11 @@ sap.ui.define([
                         this.byId("btnHdrEdit").setEnabled(false);
                         this.byId("btnHdrDelete").setEnabled(false);
                         this.byId("btnHdrClose").setEnabled(false);
-                        this.setColorEditModeControls();
+                        //this.setColorEditModeControls();
                         this.setRowEditMode("colorsTable");
+                        this.getView().byId("colorsTable").getModel("DataModel").getData().results.forEach(item => {
+                            item.ACTIVE = "X";
+                        });
 
                         //mark as required fields
                         oTable.getColumns().forEach((col, idx) => {
@@ -2536,6 +2547,9 @@ sap.ui.define([
                     this.disableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(false);
                     this.byId("btnHdrDelete").setEnabled(false);
+                    this.getView().byId("sizesTable").getModel("DataModel").getData().results.forEach(item => {
+                        item.ACTIVE = "X";
+                    });
                 }
             },
 
@@ -2748,6 +2762,9 @@ sap.ui.define([
                     this.byId("btnHdrClose").setEnabled(false);
                     this.setRowEditMode("processesTable");
                     this.setProcessEditModeControls();
+                    this.getView().byId("processesTable").getModel("DataModel").getData().results.forEach(item => {
+                        item.ACTIVE = "X";
+                    });
                 }
             },
 
@@ -3234,6 +3251,9 @@ sap.ui.define([
                     this.byId("btnHdrDelete").setEnabled(false);
                     this.byId("btnHdrClose").setEnabled(false);
                     this.setRowEditMode("versionsTable");
+                    this.getView().byId("versionsTable").getModel("DataModel").getData().results.forEach(item => {
+                        item.ACTIVE = "X";
+                    });
                 }
             },
 
@@ -4707,7 +4727,7 @@ sap.ui.define([
                 var oTable = this.getView().byId(tabName);
                 var oModel = oTable.getModel("DataModel");
                 var oData = oModel.getProperty('/results');
-                oData.forEach(item => item.ACTIVE = "");
+                //oData.forEach(item => item.ACTIVE = "");
                 var aNewRow = [];
                 var length = oData.length;
 
@@ -5569,6 +5589,7 @@ sap.ui.define([
 
             setRowEditMode(sTabId) {
                 var oTable = this.byId(sTabId);
+                console.log(oTable.getModel("DataModel").getData().results)
                 var changeFunction, liveChangeFunction, inputValueHelpChangeFunction, inputValueHelpLiveChangeFunction;
                 var valueHelpRequestFunction;
 
@@ -5596,7 +5617,7 @@ sap.ui.define([
                     inputValueHelpChangeFunction = this.onVersionChange.bind(this);
                     inputValueHelpLiveChangeFunction = this.onVersionChange.bind(this);
                 }
-
+                var editModeCond = "{= ${DataModel>ACTIVE} === 'X' ? true : false }";
                 oTable.getColumns().forEach((col, idx) => {
                     var sColName = "";
                     var oValueHelp = false;
@@ -5648,9 +5669,11 @@ sap.ui.define([
                                     else if (sTabId === "generalTable") {
                                         if (sColName.toUpperCase() === "ATTRIBTYP") {
                                             valueHelpRequestFunction = this.onAttrTypesValueHelp.bind(this);
+                                            editModeCond = "{= ${DataModel>ACTIVE} === 'X' ? true : false }";
                                         }
                                         else if (sColName.toUpperCase() === "ATTRIBCD") {
                                             valueHelpRequestFunction = this.onAttrCodesValueHelp.bind(this);
+                                            editModeCond = "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Attribtyp} !== '' ? true : false :false }";
                                         }
                                     }
 
@@ -5671,7 +5694,8 @@ sap.ui.define([
                                             templateShareable: false
                                         },
                                         change: inputValueHelpChangeFunction,
-                                        liveChange: inputValueHelpLiveChangeFunction
+                                        liveChange: inputValueHelpLiveChangeFunction,
+                                        editable: editModeCond
                                     })
 
                                     if (bValueFormatter) {
@@ -5691,6 +5715,25 @@ sap.ui.define([
                                     }
 
                                     col.setTemplate(oInput);
+                                }else if (sTabId === "generalTable" && sColName.toUpperCase() === "ATTRIBVAL") {
+                                    col.setTemplate(new sap.m.Input({
+                                        type: "Text",
+                                        value: "{DataModel>" + sColName + "}",
+                                        maxLength: +ci.Length,
+                                        change: changeFunction,
+                                        liveChange: liveChangeFunction,
+                                        editable: "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' || ${DataModel>Valuetyp} === 'STRVAL' ? true : false : false }"
+                                    }));
+                                }
+                                else if (sTabId === "generalTable" && sColName.toUpperCase() === "VALUNIT") {
+                                    col.setTemplate(new sap.m.Input({
+                                        type: "Text",
+                                        value: "{DataModel>" + sColName + "}",
+                                        maxLength: +ci.Length,
+                                        change: changeFunction,
+                                        liveChange: liveChangeFunction,
+                                        editable: "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' ? true : false : false }"
+                                    }));
                                 }
                                 else if (ci.DataType === "DATETIME") {
                                     col.setTemplate(new sap.m.DatePicker({
@@ -5698,7 +5741,8 @@ sap.ui.define([
                                         displayFormat: "MM/dd/yyyy",
                                         valueFormat: "MM/dd/yyyy",
                                         change: changeFunction,
-                                        liveChange: liveChangeFunction
+                                        liveChange: liveChangeFunction,
+                                        editable: editModeCond
                                     }));
                                 }
                                 else if (ci.DataType === "NUMBER") {
@@ -5717,7 +5761,8 @@ sap.ui.define([
                                             }
                                         },
                                         change: changeFunction,
-                                        liveChange: liveChangeFunction
+                                        liveChange: liveChangeFunction,
+                                        editable: editModeCond
                                     }));
                                 }
                                 else if (ci.DataType === "BOOLEAN") {
@@ -5733,7 +5778,8 @@ sap.ui.define([
                                         value: "{DataModel>" + sColName + "}",
                                         maxLength: +ci.Length,
                                         change: changeFunction,
-                                        liveChange: liveChangeFunction
+                                        liveChange: liveChangeFunction,
+                                        editable: editModeCond
                                     }));
                                 }
 

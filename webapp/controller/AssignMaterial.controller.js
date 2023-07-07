@@ -500,6 +500,7 @@ sap.ui.define([
                         if(result.length == 0)
                         {
                             that.byId("btnCreateMat").setVisible(false);
+                            that.byId("btnReqMatMap").setVisible(true);
                         }
                         else
                         {
@@ -513,10 +514,12 @@ sap.ui.define([
                             if(filteredItems.length == 0 )
                             {
                                 that.byId("btnCreateMat").setVisible(false);
+                                that.byId("btnReqMatMap").setVisible(true);
                             }
                             else
                             {
                                 that.byId("btnCreateMat").setVisible(true);
+                                that.byId("btnReqMatMap").setVisible(false);
                             }
                         }
                     },
@@ -524,6 +527,54 @@ sap.ui.define([
                         Common.closeLoadingDialog(that);
                     }
                 })
+            },
+
+            onReqMaterialMap : function(){
+                var oModel = this.getOwnerComponent().getModel();
+                var oTable = this.byId("materialListTable");
+                var oData = oTable.getModel("DataModel").getData();;
+                var me = this;
+                var oSelectedIndices = this.getView().byId("materialListTable").getSelectedIndices();
+                var oTmpSelectedIndices = [];
+                oSelectedIndices.forEach(item => {
+                    oTmpSelectedIndices.push(oTable.getBinding("rows").aIndices[item])
+                })
+                oSelectedIndices = oTmpSelectedIndices;
+
+                oModel.setUseBatch(true);
+                oModel.setDeferredGroups(["update"]);
+                var mParameters = {
+                    "groupId": "update"
+                }
+
+                for (var i = 0; i < oSelectedIndices.length; i++) {
+                    var index = oSelectedIndices[i];
+                        var entitySet = "/ReqMatMapSet(Styleno='" + that._styleNo + "',Verno='" + oData.results[index].VERNO + "')";
+                        const param = {
+                            "Styleno": that._styleNo,
+                            "Verno": oData.results[index].VERNO,
+                            "Seqno": oData.results[index].SEQNO,
+                            "Reqmatno": "X"
+                        }
+                        oModel.update(entitySet, param, mParameters);
+                }
+   
+                oModel.submitChanges({
+                    mParameters,
+                    success: function (oData, oResponse) {
+                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                    },
+                    error: function (oData, oResponse) {
+                        MessageBox.information(_oCaption.INFO_ERROR);
+                    }
+                });
+
+                oTable.clearSelection();
+            },
+
+            closePage: function(){
+                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                oRouter.navTo("RouteStyles", {}, true);
             },
 
             getCaptionMsgs: async function () {
