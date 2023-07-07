@@ -1161,7 +1161,7 @@ sap.ui.define([
                     }
                 });
             },
-
+            
             setBOMbyGMCEditMode: async function () {
                 //set BOM by GMC table edit mode
                 if (this._colors.length <= 0) { //allow edit only if colors are maintained
