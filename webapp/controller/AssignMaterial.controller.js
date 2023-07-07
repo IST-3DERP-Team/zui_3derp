@@ -96,7 +96,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         // console.log('StyleMaterialListSet',oData);
                         var result = oData.results;
-                        result = result.filter(a => a.Matno === "");
+                        result = result.filter(a => a.MATNO === "");
                         oData.results = result;
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
@@ -161,29 +161,29 @@ sap.ui.define([
                     for (var i = 0; i < oSelected.length; i++) {
                         var index = oSelected[i];
                         var item = {
-                            "Styleno": this._styleNo,
-                            "Verno": oData.results[index].Verno,
-                            "Seqno": oData.results[index].Seqno,
-                            "Matno": oData.results[index].Matno,
-                            "Mattyp": oData.results[index].Mattyp,
-                            "Gmc": oData.results[index].Gmc,
-                            "Bommatid": oData.results[index].Bommatid,
-                            "Matconsump": oData.results[index].Matconsump,
-                            "Wastage": oData.results[index].Wastage,
-                            "Comconsump": oData.results[index].Comconsump,
-                            "Consump": oData.results[index].Consump,
-                            "Uom": oData.results[index].Uom,
-                            "Supplytyp": oData.results[index].Supplytyp,
-                            "Vendorcd": oData.results[index].Vendorcd,
-                            "Currencycd": oData.results[index].Currencycd,
-                            "Unitprice": oData.results[index].Unitprice,
-                            "Purgrp": oData.results[index].Purgrp,
-                            "Purplant": oData.results[index].Purplant,
-                            "Matdesc1": oData.results[index].Matdesc1,
-                            "Matdesc2": oData.results[index].Matdesc2,
-                            "Createdby": oData.results[index].Createdby,
-                            "Createddt": oData.results[index].Createddt,
-                            "Createdtm": oData.results[index].Createdtm,
+                            "STYLENO": this._styleNo,
+                            "VERNO": oData.results[index].VERNO,
+                            "SEQNO": oData.results[index].SEQNO,
+                            "MATNO": oData.results[index].MATNO,
+                            "MATTYP": oData.results[index].MATTYP,
+                            "GMC": oData.results[index].GMC,
+                            "BOMMATID": oData.results[index].BOMMATID,
+                            "MATCONSUMP": oData.results[index].MATCONSUMP,
+                            "WASTAGE": oData.results[index].WASTAGE,
+                            "COMCONSUMP": oData.results[index].COMCONSUMP,
+                            "CONSUMP": oData.results[index].CONSUMP,
+                            "UOM": oData.results[index].UOM,
+                            "SUPPLYTYP": oData.results[index].SUPPLYTYP,
+                            "VENDORCD": oData.results[index].VENDORCD,
+                            "CURRENCYCD": oData.results[index].CURRENCYCD,
+                            "UNITPRICE": oData.results[index].UNITPRICE,
+                            "PURGRP": oData.results[index].PURGRP,
+                            "PURPLANT": oData.results[index].PURPLANT,
+                            "MATDESC1": oData.results[index].MATDESC1,
+                            "MATDESC2": oData.results[index].MATDESC2,
+                            "CREATEDBY": oData.results[index].CREATEDBY,
+                            "CREATEDDT": oData.results[index].CREATEDDT,
+                            "CREATEDTM": oData.results[index].CREATEDTM,
                         }
                         oEntry.MatListToItems.push(item);
                     };
@@ -204,12 +204,12 @@ sap.ui.define([
                             var bAssigned = false;
 
                             for (var i = 0; i < oData.results.length; i++) {
-                                var seqno = oData.results[i].Seqno;
-                                var item = oReturnItems.find((result) => result.Seqno === seqno);
+                                var seqno = oData.results[i].SEQNO;
+                                var item = oReturnItems.find((result) => result.SEQNO === seqno);
                                 if (item !== undefined) {
                                     try {
-                                        if (item.Matno !== "") {
-                                            oData.results[i].Matno = item.Matno;
+                                        if (item.MATNO !== "") {
+                                            oData.results[i].MATNO = item.MATNO;
                                             bAssigned = true;
                                         }
                                     } catch (err) { }
@@ -277,35 +277,35 @@ sap.ui.define([
                     for (var i = 0; i < oSelected.length; i++) {
                         var index = oSelected[i];
                         //filter items with authorization based on mattypgrp
-                        const exists = roleObjcd.includes(this._sbu + oData.results[index].Mattypgrp);
+                        const exists = roleObjcd.includes(this._sbu + oData.results[index].MATTYPGRP);
                         if(exists){
                             var item = {
-                                "Styleno": this._styleNo,
-                                "Verno": oData.results[index].Verno,
-                                "Seqno": oData.results[index].Seqno,
-                                "Matno": oData.results[index].Matno,
-                                "Mattyp": oData.results[index].Mattyp,
-                                "Gmc": oData.results[index].Gmc,
-                                "Bommatid": oData.results[index].Bommatid,
-                                "Matconsump": oData.results[index].Matconsump,
-                                "Wastage": oData.results[index].Wastage,
-                                "Comconsump": oData.results[index].Comconsump,
-                                "Consump": oData.results[index].Consump,
-                                "Uom": oData.results[index].Uom,
-                                "Supplytyp": oData.results[index].Supplytyp,
-                                "Vendorcd": oData.results[index].Vendorcd,
-                                "Currencycd": oData.results[index].Currencycd,
-                                "Unitprice": oData.results[index].Unitprice,
-                                "Purgrp": oData.results[index].Purgrp,
-                                "Purplant": oData.results[index].Purplant,
-                                "Matdesc1": oData.results[index].Matdesc1,
-                                "Matdesc2": oData.results[index].Matdesc2,
-                                "Deleted": " ",
-                                "Createdby": oData.results[index].Createdby,
-                                "Createddt": oData.results[index].Createddt,
-                                "Createdtm": oData.results[index].Createdtm,
-                                "Updatedby": " ",
-                                "Updateddt": " "
+                                "STYLENO": this._styleNo,
+                                "VERNO": oData.results[index].VERNO,
+                                "SEQNO": oData.results[index].SEQNO,
+                                "MATNO": oData.results[index].MATNO,
+                                "MATTYP": oData.results[index].MATTYP,
+                                "GMC": oData.results[index].GMC,
+                                "BOMMATID": oData.results[index].BOMMATID,
+                                "MATCONSUMP": oData.results[index].MATCONSUMP,
+                                "WASTAGE": oData.results[index].WASTAGE,
+                                "COMCONSUMP": oData.results[index].COMCONSUMP,
+                                "CONSUMP": oData.results[index].CONSUMP,
+                                "UOM": oData.results[index].UOM,
+                                "SUPPLYTYP": oData.results[index].SUPPLYTYP,
+                                "VENDORCD": oData.results[index].VENDORCD,
+                                "CURRENCYCD": oData.results[index].CURRENCYCD,
+                                "UNITPRICE": oData.results[index].UNITPRICE,
+                                "PURGRP": oData.results[index].PURGRP,
+                                "PURPLANT": oData.results[index].PURPLANT,
+                                "MATDESC1": oData.results[index].MATDESC1,
+                                "MATDESC2": oData.results[index].MATDESC2,
+                                "DELETED": " ",
+                                "CREATEDBY": oData.results[index].CREATEDBY,
+                                "CREATEDDT": oData.results[index].CREATEDDT,
+                                "CREATEDTM": oData.results[index].CREATEDTM,
+                                "UPDATEDBY": " ",
+                                "UPDATEDDT": " "
                             }
                             oEntry.MatListToItems.push(item);
                         }
@@ -325,12 +325,12 @@ sap.ui.define([
                             //assign the created materials
                             var oReturnItems = oDataReturn.MatListToItems.results;
                             for (var i = 0; i < oData.results.length; i++) {
-                                var seqno = oData.results[i].Seqno;
-                                var item = oReturnItems.find((result) => result.Seqno === seqno);
+                                var seqno = oData.results[i].SEQNO;
+                                var item = oReturnItems.find((result) => result.SEQNO === seqno);
                                 if (item !== undefined) {
                                     try {
-                                        if (item.Matno !== "") {
-                                            oData.results[i].Matno = item.Matno;
+                                        if (item.MATNO !== "") {
+                                            oData.results[i].MATNO = item.MATNO;
                                         }
                                     } catch (err) { }
                                 }
@@ -384,29 +384,29 @@ sap.ui.define([
                     }
                     for (var i = 0; i < oData.results.length; i++) {
                         var item = {
-                            "Styleno": this._styleNo,
-                            "Verno": oData.results[i].Verno,
-                            "Seqno": oData.results[i].Seqno,
-                            "Matno": oData.results[i].Matno,
-                            "Mattyp": oData.results[i].Mattyp,
-                            "Gmc": oData.results[i].Gmc,
-                            "Bommatid": oData.results[i].Bommatid,
-                            "Matconsump": oData.results[i].Matconsump,
-                            "Wastage": oData.results[i].Wastage,
-                            "Comconsump": oData.results[i].Comconsump,
-                            "Consump": oData.results[i].Consump,
-                            "Uom": oData.results[i].Uom,
-                            "Supplytyp": oData.results[i].Supplytyp,
-                            "Vendorcd": oData.results[i].Vendorcd,
-                            "Currencycd": oData.results[i].Currencycd,
-                            "Unitprice": oData.results[i].Unitprice,
-                            "Purgrp": oData.results[i].Purgrp,
-                            "Purplant": oData.results[i].Purplant,
-                            "Matdesc1": oData.results[i].Matdesc1,
-                            "Matdesc2": oData.results[i].Matdesc2,
-                            "Createdby": oData.results[i].Createdby,
-                            "Createddt": oData.results[i].Createddt,
-                            "Createdtm": oData.results[i].Createdtm,
+                            "STYLENO": this._styleNo,
+                            "VERNO": oData.results[i].VERNO,
+                            "SEQNO": oData.results[i].SEQNO,
+                            "MATNO": oData.results[i].MATNO,
+                            "MATTYP": oData.results[i].MATTYP,
+                            "GMC": oData.results[i].GMC,
+                            "BOMMATID": oData.results[i].BOMMATID,
+                            "MATCONSUMP": oData.results[i].MATCONSUMP,
+                            "WASTAGE": oData.results[i].WASTAGE,
+                            "COMCONSUMP": oData.results[i].COMCONSUMP,
+                            "CONSUMP": oData.results[i].CONSUMP,
+                            "UOM": oData.results[i].UOM,
+                            "SUPPLYTYP": oData.results[i].SUPPLYTYP,
+                            "VENDORCD": oData.results[i].VENDORCD,
+                            "CURRENCYCD": oData.results[i].CURRENCYCD,
+                            "UNITPRICE": oData.results[i].UNITPRICE,
+                            "PURGRP": oData.results[i].PURGRP,
+                            "PURPLANT": oData.results[i].PURPLANT,
+                            "MATDESC1": oData.results[i].MATDESC1,
+                            "MATDESC2": oData.results[i].MATDESC2,
+                            "CREATEDBY": oData.results[i].CREATEDBY,
+                            "CREATEDDT": oData.results[i].CREATEDDT,
+                            "CREATEDTM": oData.results[i].CREATEDTM,
                         }
                         oEntry.MatListToItems.push(item);
                     };
@@ -504,7 +504,7 @@ sap.ui.define([
                         else
                         {
                             const materialList = that.byId("materialListTable").getModel("DataModel").getData().results;
-                            const distinctValues = [...new Set(materialList.map(item => that._sbu + item.Mattypgrp))];
+                            const distinctValues = [...new Set(materialList.map(item => that._sbu + item.MATTYPGRP))];
                             const filteredItems = distinctValues.filter((item) => {
                                 return result.some((obj) => {
                                     return obj.Objcd === item;

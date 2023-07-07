@@ -410,9 +410,10 @@ sap.ui.define([
             applyToIO: function () {
                 //from IO module create new Style
                 var param = {};
-                var me = this;
+                var vStylHdr = this.getView().getModel("headerData").getData();
                 param["IONO"] = this._iono;
-                param["STYLENO"] = this._styleNo
+                param["STYLENO"] = this._styleNo;
+                param["VERNO"] = vStylHdr.Verno !== undefined || vStylHdr.Verno !== null ? vStylHdr.Verno : "1";
                 //Common.openLoadingDialog(that);
 
                 this._oModelStyle.update("/CreateIOStyleSet('" + this._iono + "')", param, {
@@ -504,6 +505,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "CANCEL" });
                 oDDTextParam.push({ CODE: "SAVE" });
                 oDDTextParam.push({ CODE: "CLOSE" });
+                oDDTextParam.push({ CODE: "EXPORTTOEXCEL" });
 
                 oDDTextParam.push({ CODE: "SBU" });
                 oDDTextParam.push({ CODE: "SALESGRP" });
@@ -574,6 +576,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "DESC1" });
                 oDDTextParam.push({ CODE: "DESC2" });
                 oDDTextParam.push({ CODE: "DELETED" });
+                oDDTextParam.push({ CODE: "CUSTCOLDESC" });
 
 
 
@@ -594,6 +597,8 @@ sap.ui.define([
                 oDDTextParam.push({CODE: "INFO_SIZE_ONLY_ALLOW_EDIT" });
                 oDDTextParam.push({CODE: "INFO_NOT_ALLOW_DUPLICATE_DESC" });
                 oDDTextParam.push({CODE: "INFO_NO_COLORS" });
+                oDDTextParam.push({CODE: "INFO_BASE_INDICATOR" });
+                oDDTextParam.push({CODE: "INFO_REQ_BASE_INDICATOR" });
                 
                 return new Promise((resolve, reject)=>{
                     oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam  }, {
@@ -1392,6 +1397,10 @@ sap.ui.define([
                             success: function (oDataConfig, oResponse) {
                                 // me._attributesconfig = oDataConfig.results;
                                 var sMessage = "";
+                                var attributesConfigModel = new JSONModel();
+                                attributesConfigModel.setData(oDataConfig);
+                                that.getView().setModel(attributesConfigModel, "AttributesConfigSetModel");
+
 
                                 oData.results.forEach((item, index) => {
                                     item.Casverind = item.Casverind === "X" ? true : false;
@@ -1645,6 +1654,7 @@ sap.ui.define([
                     if (oSource.getBindingInfo("value") !== undefined) {
                         var sRowPath = oSource.oParent.getBindingContext("DataModel").sPath;
                         var vColPath = oSource.getBindingInfo("value").parts[0].path;
+                        var vAttribtyp = oEvent.getSource().oParent.oParent.getModel("DataModel").getProperty(sRowPath + "/Attribtyp");
                         var oModelData = {};
 
                         if (vColPath.toUpperCase() === "ATTRIBTYP") {
@@ -1670,15 +1680,29 @@ sap.ui.define([
                             }
                             else {
                                 this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", oSource.getSelectedKey());
+                                if(vAttribtyp ==='STYP'){
+                                    const vWvTypAttrCode = oEvent.getSource().oParent.oParent.getModel("DataModel").getData().results.filter(item => item.Attribtyp === "WVTYP")[0];
+                                     
+                                    this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey() && fItem.Attribgrp === vWvTypAttrCode.Attribcd).forEach(item => {
+                                        this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
+                                        var iRowIndex = +sRowPath.replace("/results/","");
+    
+                                        if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
+                                            this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
+                                        }
+                                    })     
+                                }
+                                else
+                                {
+                                    this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey()).forEach(item => {
+                                        this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
+                                        var iRowIndex = +sRowPath.replace("/results/","");
 
-                                this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey()).forEach(item => {
-                                    this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
-                                    var iRowIndex = +sRowPath.replace("/results/","");
-
-                                    if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
-                                        this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
-                                    }
-                                })                                
+                                        if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
+                                            this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
+                                        }
+                                    })   
+                                }                             
                             }
                         }
                     }
@@ -1696,6 +1720,8 @@ sap.ui.define([
                 var oMsgStrip = this.getView().byId('GeneralAttrMessageStrip');
                 oMsgStrip.setVisible(false);
 
+                var attributesConfigSet = that.getView().getModel("AttributesConfigSetModel").getData().results;
+
                 if (!this._generalAttrChanged) { //check if data is changed
                     MessageBox.information(_oCaption.WARN_NO_DATA_MODIFIED);                    
                 } else {
@@ -1707,9 +1733,28 @@ sap.ui.define([
                         Type: Constants.GENERAL,
                         AttributesToItems: []
                     }
+                    //limit number of data
+                    attributesConfigSet.forEach( (item, index) =>{
+                        if(item.TYPE !== "" && item.CODE === "" && item.LIMIT === 1)
+                        {
+                            var result = oData.results.filter(fItem => fItem.Attribtyp === item.TYPE);
+                            if(result.length > 1){
+                                sMessage += "Multiple entries are not allowed for type " + item.TYPE + ".\r\n";
+                            }
+                        }
+
+                        if(item.TYPE !== "" && item.CODE !== ""  && item.LIMIT === 1)
+                        {
+                            var result = oData.results.filter(fItem => fItem.Attribtyp === item.TYPE && fItem.Attribcd === item.CODE);
+                            if(result.length > 1){
+                                sMessage += "Multiple entries are not allowed for type/code " + item.TYPE + "/" + item.CODE + ".\r\n";
+                            }
+                        }
+
+                    });
+
                     for (var i = 0; i < oData.results.length; i++) {
                         var bProceed = true;
-
                         if (oData.results[i].Property === "M") {
                             if (me.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === oData.results[i].Attribtyp).length > 0 && oData.results[i].Attribcd === "") {
                                 bProceed = false;
@@ -2254,7 +2299,8 @@ sap.ui.define([
                             "Desc1": oData[i].Desc1,
                             "Valuetyp": "STRVAL",
                             "Attribseq": oData[i].Attribseq,
-                            "Sortseq": oData[i].Sortseq
+                            "Sortseq": oData[i].Sortseq,
+                            "Desc2": oData[i].Desc2,
                         };
                         oEntry.AttributesToItems.push(item);
                     };
@@ -2272,12 +2318,22 @@ sap.ui.define([
                     // }
 
                     var hasDuplicateColorDesc = false;
+                    var hasDuplicateSortSeq = false;
                     oData.map(v => v.Desc1.toLowerCase()).sort().sort((a, b) => {
                         if (a == b) hasDuplicateColorDesc = true
                     })
 
                     if (hasDuplicateColorDesc) {
                         MessageBox.information(_oCaption.INFO_NOT_ALLOW_DUPLICATE_DESC);//"Duplicate Description is not allowed"
+                        return;
+                    }
+
+                    oData.map(v => v.Sortseq.toLowerCase()).sort().sort((a, b) => {
+                        if (a == b) hasDuplicateSortSeq = true
+                    })
+
+                    if (hasDuplicateSortSeq) {
+                        MessageBox.information("Duplicate Sort Seq is not allowed");//"Duplicate Sort Seq is not allowed"
                         return;
                     }
 
@@ -2587,7 +2643,9 @@ sap.ui.define([
 
                     if (lv_baseindctr > 1) { //do not allow multiple base indicator
                         MessageBox.information(_oCaption.INFO_BASE_INDICATOR);
-                    } else {
+                    } else if (lv_baseindctr === 0) { //at least one base indicator is required
+                        MessageBox.information(_oCaption.INFO_REQ_BASE_INDICATOR);
+                    } else  {
                         MessageBox.confirm(_oCaption.CONFIRM_SAVE, {
                             actions: ["Yes", "No"],
                             onClose: function (sAction) {
@@ -3069,7 +3127,9 @@ sap.ui.define([
                     selected = oTmpSelected;
                     var oTableModel = this.getView().byId("versionsTable").getModel("DataModel");
                     var oData = oTableModel.getData();
-
+                    if(selected.length == 0)
+                        return;
+                        
                     var verno = oData.results[selected].Verno;
                     oTable.clearSelection();
 
@@ -3262,13 +3322,13 @@ sap.ui.define([
                                 //build header and payload
                                 var oData = oTableModel.getData();
                                 var oEntry = {
-                                    Styleno: this._styleNo,
+                                    Styleno: me._styleNo,
                                     VerToItems: []
                                 }
                                 for (var i = 0; i < oData.results.length; i++) {
-                                    var verno = this.pad(oData.results[i].Verno);
+                                    var verno = me.pad(oData.results[i].Verno);
                                     var item = {
-                                        "Styleno": this._styleNo,
+                                        "Styleno": me._styleNo,
                                         "Currentver": oData.results[i].Currentver,
                                         "Verno": verno,
                                         "Desc1": oData.results[i].Desc1,
@@ -3278,7 +3338,7 @@ sap.ui.define([
                                 };
                                 path = "/VersionSet";
                                 oModel.setHeaders({
-                                    sbu: this._sbu
+                                    sbu: me._sbu
                                 });
                                 //call create deep method of style versions
                                 oModel.create(path, oEntry, {
@@ -5595,6 +5655,12 @@ sap.ui.define([
                                         }
                                         else if (sColName.toUpperCase() === "VASTYP") {
                                             valueHelpRequestFunction = this.onVASTypeValueHelp.bind(this);
+                                        }
+                                        else if (sColName.toUpperCase() === "ATTRIBTYP") {
+                                            valueHelpRequestFunction = this.onProcessAttrTypesValueHelp.bind(this);
+                                        }
+                                        else if (sColName.toUpperCase() === "ATTRIBCD") {
+                                            valueHelpRequestFunction = this.onProcessAttrCodesValueHelp.bind(this);
                                         }
                                     }
                                     else if (sTabId === "generalTable") {
