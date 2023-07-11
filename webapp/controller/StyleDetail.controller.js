@@ -204,6 +204,7 @@ sap.ui.define([
                     //existing style, get the style data
                     //this.cancelHeaderEdit();
                     this.setDetailVisible(true); //make detail section visible
+                    this.setDtlsEnableButton(true);
                     this.getGeneralTable(); //get general attributes
                     this.getSizesTable(); //get sizes
                     this.getProcessesTable(); //get process
@@ -211,6 +212,23 @@ sap.ui.define([
                     setTimeout(() => {
                        // this.cancelHeaderEdit();
                     }, 500);
+
+                    this.setControlEditMode("HeaderEditModeModel", false);
+                    this.byId("btnHdrEdit").setEnabled(true);
+                    this.byId("btnHdrDelete").setEnabled(true);
+                    this.byId("btnHdrClose").setEnabled(true);
+
+                    this.setControlEditMode("GenAttrEditModeModel", false);
+                    this.setControlEditMode("SizeEditModeModel", false);
+                    this.setControlEditMode("ProcessEditModeModel", false);
+                    this.setControlEditMode("VersionEditModeModel", false);
+
+                    this.byId("btnColorAdd").setVisible(true);
+                    this.byId("btnColorRemoveRow").setVisible(false);
+                    this.byId("btnColorSave").setVisible(false);
+                    this.byId("btnColorCancel").setVisible(false);
+                    this.byId("btnColorEdit").setVisible(true);
+                    this.byId("btnColorDelete").setVisible(true);
                 }
 
                 //close all edit modes
@@ -1676,6 +1694,8 @@ sap.ui.define([
                                     this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey() && fItem.Attribgrp === vWvTypAttrCode.Attribcd).forEach(item => {
                                         this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
                                         var iRowIndex = +sRowPath.replace("/results/","");
+
+                                        this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valuetyp", item.Valuetyp);
     
                                         if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
                                             this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
@@ -1687,6 +1707,8 @@ sap.ui.define([
                                     this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey()).forEach(item => {
                                         this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
                                         var iRowIndex = +sRowPath.replace("/results/","");
+
+                                        this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valuetyp", item.Valuetyp);
 
                                         if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
                                             this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);

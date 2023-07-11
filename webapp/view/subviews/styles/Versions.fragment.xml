@@ -34,7 +34,7 @@
                 enableColumnFreeze="true"
                 showColumnVisibilityMenu="true"
                 selectionMode="MultiToggle" 
-                visibleRowCountMode="Fixed" 
+                visibleRowCountMode="Auto" 
                 class="sapUiSizeCompact" 
                 selectionBehavior="Row" >
                 <!-- <c:columns>
@@ -80,6 +80,9 @@
                         </t:template>
                     </t:Column>        
                 </c:columns> -->
+                <c:layoutData>
+                    <FlexItemData growFactor="1" baseSize="0%" />
+                </c:layoutData>                
             </c:DynamicTable>
         <!-- </ScrollContainer> -->
     <!-- </Panel> -->
