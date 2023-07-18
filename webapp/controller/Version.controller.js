@@ -1707,6 +1707,11 @@ sap.ui.define([
                             })
                         }
                     }
+                    else if (oEvent.getParameters().value === "" && (sColumnName === "MATCONSPER" || sColumnName === "PER" || sColumnName === "COMCONSUMP")){
+                            oEvent.getSource().setValueState("Error");
+                            oEvent.getSource().setValueStateText("Value should not be blank");
+                            that._validationErrors.push(oEvent.getSource().getId());
+                    }
                     else {
                         oEvent.getSource().setValueState("None");
                         that._validationErrors.forEach((item, index) => {
@@ -1761,7 +1766,7 @@ sap.ui.define([
                     if(item.BOMITMTYP === "")
                         bProceed = false;
 
-                    if (item.BOMITMTYP === "GMC" && (item.PARTCD === "" || item.PARTCNT === "" || item.USGCLS === "" || item.MATCONSPER === "" || item.PER === "" || item.PER === 0)) {
+                    if (item.BOMITMTYP === "GMC" && (item.PARTCD === "" || item.PARTCNT === "" || item.USGCLS === "" || item.MATCONSPER === "" || item.PER === "" || item.PER == 0)) {
                         bProceed = false;
                     }
                     if (item.BOMITMTYP === "STY" && item.BOMSTYLE === "" ) {
@@ -3961,8 +3966,7 @@ sap.ui.define([
                 }
                 console.log(resultDialog);
                 if (resultDialog != "No") {
-                    Common.openLoadingDialog(that);
-
+                    
                     //build header and payload
                     //var entitySet = "/StyleBOMGMCSet(STYLENO='" + that._styleNo + "',VERNO='" + that._version + "',BOMSEQ='')";
                     //oModel.setHeaders({ sbu: that._sbu });
@@ -3983,6 +3987,12 @@ sap.ui.define([
                     var mParameters = {
                         "groupId": "update"
                     }
+
+                    if(oSelectedIndices.length === 0){
+                        MessageBox.information(_oCaption.INFO_NO_SEL_RECORD_TO_PROC)
+                        return;
+                    }
+                    Common.openLoadingDialog(that);
 
                     for (var i = 0; i < oSelectedIndices.length; i++) {
                         var index = oSelectedIndices[i];
@@ -4486,8 +4496,26 @@ sap.ui.define([
                     var pivotArray= [];
                     if (usageClass === Constants.AUV) {
                         pivotArray = this._colors;
-                    } else if (usageClass === Constants.ASUV || usageClass === Constants.ASDUV || usageClass === Constants.ACSUV || usageClass === Constants.ASPOUV ){
+                    } else if (usageClass === Constants.SUV || usageClass === Constants.ASUV || usageClass === Constants.ASDUV || usageClass === Constants.ACSUV || usageClass === Constants.ASPOUV || usageClass === Constants.SDUV ){
                         pivotArray = this._sizes;
+                    }
+                    
+                    var bProceed = true;
+                    //validate SIZES and consumption, should not be blank
+                    oTableModel.getData().results.forEach(item => {
+                        console.log(item.MATTYPCLS, item.USGCLS)
+                        pivotArray.forEach(pv => {
+                            if(item.MATTYPCLS === "ZSIZE" || item.MATTYPCLS === "ZCONS"){
+                                if(item[pv.Attribcd] === ""){
+                                    bProceed= false;
+                                    return;
+                                }
+                            }
+                        })
+                    })
+                    if(!bProceed){
+                        MessageBox.information("Blank value is not allowed for Consumption/Size label");
+                        return;
                     }
 
                     // var color, size;
@@ -4509,7 +4537,7 @@ sap.ui.define([
                                     "Usgcls": oData.results[i].USGCLS,
                                     "Color": ((oData.results[i].USGCLS === Constants.AUV) ? attrib.Attribcd : ''), //for AUV save on Color
                                     //"Sze": ((oData.results[i].USGCLS !== Constants.AUV) ? attrib.Attribcd : ''), //Non-AUV save on Sze
-                                    "Sze": ((vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV ) ? attrib.Attribcd : ''), 
+                                    "Sze": ((vUSGCLS === Constants.SUV || vUSGCLS === Constants.ASUV || vUSGCLS === Constants.ASDUV || vUSGCLS === Constants.ACSUV || vUSGCLS === Constants.ASPOUV || usageClass === Constants.SDUV ) ? attrib.Attribcd : ''), 
                                     "Dest": " ",
                                     "Mattyp": oData.results[i].MATTYP,
                                     "Mattypcls": oData.results[i].MATTYPCLS,
@@ -5007,6 +5035,7 @@ sap.ui.define([
                             }
                         }
                         else {
+                            //return;
                             if (vColPath.toUpperCase() === "SUPPLYTYP") {
                                 var oTable = this.getView().byId("materialListTable");
                                  
@@ -5028,7 +5057,7 @@ sap.ui.define([
 
                                                 //if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) 
                                                 if (cell.getBindingInfo(oCellCtrlValTyp) !== undefined) 
-                                                {
+                                                {   
                                                     var vColumnName = cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() ;
                                                     if(vColumnName === "VENDORCD" || vColumnName === "CURRENCYCD" || vColumnName === "UNITPRICE" || vColumnName === "PURGRP" ||
                                                         vColumnName === "PURPLANT" || vColumnName === "ORDERUOM" || vColumnName === "UMREZ" || vColumnName === "UMREN" ){
@@ -5252,7 +5281,7 @@ sap.ui.define([
                                 //if (cell.getBindingInfo("value") !== undefined || cell.getBindingInfo("selected") !== undefined) 
                                 if (cell.getBindingInfo(oCellCtrlValTyp) !== undefined) 
                                 {   
-                                    /*
+                                    /*ncjoaquin 07/14/2023 need to comment this script because of abnormal behavior upon editing of Suppylytype and also when scrolling down
                                     var vColumnName = cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() ;
                                     if(vColumnName === "VENDORCD" || vColumnName === "CURRENCYCD" || vColumnName === "UNITPRICE" || vColumnName === "PURGRP" ||
                                         vColumnName === "PURPLANT" || vColumnName === "ORDERUOM" || vColumnName === "UMREZ" || vColumnName === "UMREN" ){
@@ -5266,9 +5295,9 @@ sap.ui.define([
                                     }
 
                                     else 
-                                    */
+                                    
                                    if (cell.getProperty("editable")) { cell.setEnabled(true) }
-                                else { cell.setEnabled(false) }
+                                    else { cell.setEnabled(false) }*/
                                 }
                             })
                         }
@@ -5529,7 +5558,7 @@ sap.ui.define([
                                 liveChange: changeFunction,
                                // editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
                                 editable: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>MATTYPCLS} === 'ZCONS' ? true : ${DataModel>HASMATNO} === 'X' ? false : true }",
-                                enable: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>MATTYPCLS} === 'ZCONS' ? true : ${DataModel>HASMATNO} === 'X' ? false : true  }",
+                                  enable: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>MATTYPCLS} === 'ZCONS' ? true : ${DataModel>HASMATNO} === 'X' ? false : true }",
                                 visible: column.Visible,
                                 tooltip: "{DataModel>" + columnName + "}"
                             })
@@ -7259,7 +7288,8 @@ sap.ui.define([
                                         },
                                         change: inputValueHelpChangeFunction,
                                         liveChange: inputValueHelpLiveChangeFunction,
-                                        editable: editModeCond
+                                        editable: editModeCond,
+                                        tooltip: "{DataModel>" + sColName + "}"
                                     })
 
                                     if (bValueFormatter) {

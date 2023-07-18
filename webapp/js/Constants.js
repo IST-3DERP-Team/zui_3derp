@@ -16,6 +16,7 @@ function() {
             BOMUV: "BOMUV",
             ZCOLR: "ZCOLR",
             AUV: "AUV",
+            SUV: "SUV",
             ASUV: "ASUV",
             STY: "STY",
             GMC: "GMC",
@@ -27,6 +28,7 @@ function() {
             ASDUV: "ASDUV",
             ACSUV: "ACSUV",
             ASPOUV : "ASPOUV",
+            SDUV:  "SDUV"
             
         };
     

@@ -96,7 +96,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         // console.log('StyleMaterialListSet',oData);
                         var result = oData.results;
-                        result = result.filter(a => a.MATNO === "");
+                        result = result.filter(a => a.MATNO === "" && a.MATDESC1 !== "");
                         oData.results = result;
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");

@@ -225,7 +225,7 @@
         {"ColumnName": "CONSUMP", "ColumnLabel": "CONSUMP", "Order": "6", "DataType": "NUMBER", "ColumnWidth": "115", "Length": "18", "Decimal": "5", "Visible": true, "Editable": false, "Mandatory": false },
         {"ColumnName": "UOM", "ColumnLabel": "UOM", "Order": "7", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
         {"ColumnName": "SUPPLYTYP", "ColumnLabel": "SUPPLYTYP", "Order": "8", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
-        "TextFormatMode": "ValueKey",
+        "TextFormatMode": "Key",
             "ValueHelp": {"show": true, "items": {"path": "SupplyTypeModel", "value": "Supplytype", "text": "Desc1"},
                 "SuggestionItems": {"path": "SupplyTypeModel>/results", "text": "{SupplyTypeModel>Supplytype}", "additionalText": "{SupplyTypeModel>Desc1}", "maxSuggestionWidth": "275px"},
                 "columns": "tvh_supplytyp"
@@ -309,14 +309,14 @@
         {"ColumnName": "PARTCNT", "ColumnLabel": "PARTCNT", "Order": "9", "DataType": "NUMBER", "ColumnWidth": "125", "Length": "3", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
         {"ColumnName": "USGCLS", "ColumnLabel": "USGCLS", "Order": "10", "DataType": "STRING", "ColumnWidth": "125", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false },
         {"ColumnName": "PROCESSCD", "ColumnLabel": "PROCESSCD", "Order": "11", "DataType": "STRING", "ColumnWidth": "285", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
-            "TextFormatMode": "ValueKey",
+            "TextFormatMode": "Key",
             "ValueHelp": {"show": true, "items": {"path": "ProcessCodeModel", "value": "ProcessCd", "text": "Desc1"},
                 "SuggestionItems": {"path": "ProcessCodeModel>/results", "text": "{ProcessCodeModel>ProcessCd}", "additionalText": "{ProcessCodeModel>Desc1}", "maxSuggestionWidth": "250px"},
                 "columns": "tvh_processcd"
             }
         },
         {"ColumnName": "MATTYP", "ColumnLabel": "MATTYP", "Order": "12", "DataType": "STRING", "ColumnWidth": "255", "Length": "4", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
-            "TextFormatMode": "ValueKey",
+            "TextFormatMode": "Key",
             "ValueHelp": {"show": true, "items": {"path": "MatTypeModel", "value": "Mattype", "text": "Desc1"},
                 "SuggestionItems": {"path": "MatTypeModel>/results", "text": "{MatTypeModel>Mattype}", "additionalText": "{MatTypeModel>Desc1}", "maxSuggestionWidth": "490px"},
                 "columns": "tvh_mattyp"
