@@ -2,6 +2,7 @@
     <VBox fitContainer="true" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
             <!-- <Label text="{i18n>MaterialList}" /> -->
+            <Text text="{ui>/rowCountMatLst} {ddtext>/ROWS}" />
             <ToolbarSpacer />
             <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setMaterialListEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
             <Button class="verDtlBtnPaddingRight" icon="sap-icon://multiselect-all" text="{ddtext>/ASSIGNMATERIAL}" tooltip="{ddtext>/ASSIGNMATERIAL}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
