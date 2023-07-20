@@ -8,12 +8,13 @@ sap.ui.define([
     "../control/DynamicTable",
     "sap/ui/core/routing/HashChanger",
     "sap/ui/model/Filter",
-	"sap/ui/model/FilterOperator"
+	"sap/ui/model/FilterOperator",
+    "sap/m/MessageBox"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Common, Constants, Utils, JSONModel, Spreadsheet, control, HashChanger, Filter, FilterOperator) {
+    function (Controller, Common, Constants, Utils, JSONModel, Spreadsheet, control, HashChanger, Filter, FilterOperator, MessageBox) {
         "use strict";
 
         var that;
@@ -148,11 +149,14 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "INFO_INPUT_REQD_FIELDS" });
                 oDDTextParam.push({ CODE: "INFO_NO_DATA_EDIT" });
                 oDDTextParam.push({ CODE: "INFO_NO_SEL_RECORD_TO_PROC" });
+                oDDTextParam.push({ CODE: "INFO_NO_SEL_VER_TO_PROC" });
                 oDDTextParam.push({ CODE: "INFO_NO_RECORD_TO_REMOVE" });
                 oDDTextParam.push({ CODE: "INFO_CHECK_INVALID_ENTRIES" });
                 oDDTextParam.push({ CODE: "INFO_INPUT_NEW_STYLE" });
                 oDDTextParam.push({ CODE: "INFO_INPUT_NEW_SEASON" });
                 oDDTextParam.push({ CODE: "INFO_LAYOUT_SAVE" });
+                oDDTextParam.push({CODE: "INFO_ERROR" })
+                oDDTextParam.push({CODE: "INFO_SAVE_SUCCESS" });
 
                 return new Promise((resolve, reject)=>{
                     oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam }, {
@@ -804,6 +808,8 @@ sap.ui.define([
 
                     if (bomCheck === true && colorCheck === false) {
                         MessageBox.information(_oCaption.INFO_INPUT_REQ_COLOR);
+                    }else if (selected.length <= 0){
+                        MessageBox.information(_oCaption.INFO_NO_SEL_VER_TO_PROC);
                     } else {
                         //add versions to copy to the payload
                         for (var i = 0; i < selected.length; i++) {
@@ -833,11 +839,11 @@ sap.ui.define([
                             success: function (data, oResponse) {
                                 me._CopyStyleDialog.close();
                                 me.onSearch();
-                                MessageBox.information(_oCaption.SAVED);
+                                MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                             },
                             error: function () {
                                 me._CopyStyleDialog.close();
-                                MessageBox.information(_oCaption.ERROR);
+                                MessageBox.information(_oCaption.INFO_ERROR);
                             }
                         });
                     }
