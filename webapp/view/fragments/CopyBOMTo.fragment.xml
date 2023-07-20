@@ -185,7 +185,7 @@
                             class="sapUiTinyMarginBottom"
                             icon="sap-icon://navigation-right-arrow"
                             tooltip="Move to Selected BOM"
-                            press="moveToTableTo"/>
+                            press="moveToTableTo('copyBomTo')"/>
                         <Button
                             icon="sap-icon://navigation-left-arrow"
                             tooltip="Move to Available BOM"
