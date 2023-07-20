@@ -332,6 +332,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "DETAILEDBOM" });
                 oDDTextParam.push({ CODE: "MATERIALLIST" });
                 oDDTextParam.push({ CODE: "VERSION" });
+                oDDTextParam.push({ CODE: "ROWS" });
 
                 oDDTextParam.push({CODE: "INFO_BOM_COPIED"}); 
                 oDDTextParam.push({CODE: "INFO_COMPONENT_SAVED"}); 
@@ -359,6 +360,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "INFO_NOT_ALLOW_DUPLICATE_ATTR" });
                 oDDTextParam.push({ CODE: "INFO_SEL_ONE_VERSION_COPY_FR" });
                 oDDTextParam.push({ CODE: "INFO_NO_DELETE_ATTR_REQ" });
+                oDDTextParam.push({ CODE: "INFO_NO_RECORD_SELECT" });
 
                 return new Promise((resolve, reject)=>{
                     oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam }, {
@@ -1899,6 +1901,7 @@ sap.ui.define([
                                                 method: "POST",
                                                 success: function (oData, oResponse) {
                                                     me.getbomGMCTable();
+                                                    me.getDetailedBOM();
                                                     me._BOMbyGMCChanged = false;
                                                     me.setChangeStatus(false);
                                                     me.lockStyleVer("O");
@@ -3273,9 +3276,18 @@ sap.ui.define([
                 this._CopyBOMDialog.getModel("DataModel").refresh(true);
             },
     
-            moveToTableTo: function() {
-                var oTableFr = sap.ui.getCore().byId("copyBOMTableFr");
-                var oTableTo = sap.ui.getCore().byId("copyBOMTableTo");
+            moveToTableTo: function(action) {
+                var oTableFr;
+                var oTableTo;
+                if(action==="copyBomTo")
+                {
+                    oTableFr = sap.ui.getCore().byId("copyStyleBOMToTableFr");
+                    oTableTo = sap.ui.getCore().byId("copyStyleBOMToTableTo");
+                }else
+                {
+                    oTableFr = sap.ui.getCore().byId("copyBOMTableFr");
+                    oTableTo = sap.ui.getCore().byId("copyBOMTableTo");
+                }
                 var oFirstRowContext = oTableTo.getContextByIndex(0);
 
                 if (oTableFr.getSelectedIndices().length === 0) {
@@ -4027,7 +4039,9 @@ sap.ui.define([
                         success: function (oData, oResponse) {
                             me.onRefresh();
                             Common.closeLoadingDialog(me);
-                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                            setTimeout(() => {
+                                MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                            }, 2000);
                         },
                         error: function (oData, oResponse) {
                             Common.closeLoadingDialog(me);
@@ -4878,6 +4892,11 @@ sap.ui.define([
                         oTable.setModel(oJSONModel, "DataModel");
                         me.setLocTableColumns("materialListTable", columnData);
                         me.updateColumnMenu(me.byId("materialListTable"), "materialListTable");
+                        var oJSONModelMat = new JSONModel();
+                        oJSONModelMat.setData({
+                            rowCountMatLst: oData.results.length,
+                        });
+                        me.getView().setModel(oJSONModelMat, "ui");
 
                         //oTable.setVisibleRowCount(oData.results.length);
                         //oTable.attachPaste();
@@ -5066,7 +5085,9 @@ sap.ui.define([
                                                         }
                                                         else {
                                                             cell.setEnabled(false);
-                                                            cell.setValue('');
+                                                            console.log(cell.getValue());
+                                                            if(vColumnName === "UNITPRICE" && cell.getValue() === "")
+                                                                cell.setValue(0);
                                                         }
                                                     }
 
@@ -5183,6 +5204,8 @@ sap.ui.define([
                             "UMREZ": oData.results[i].UMREZ,
                             "UMREN": oData.results[i].UMREN,
                             "ORDERUOM": oData.results[i].ORDERUOM,
+                            // "CREATEDBY": oData.results[i].CREATEDBY,
+                            // "CREATEDDT": oData.results[i].CREATEDDT,
 
                         }
                         oEntry.MatListToItems.push(item);
@@ -5483,6 +5506,17 @@ sap.ui.define([
                             liveChange: liveChangeFunction,
                             editable: false,
                             enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
+                            visible: column.Visible,
+                            tooltip: "{DataModel>" + columnName + "}"
+                        });
+                    } else if (columnName === "DESC1"  && type === "UV") {
+                        //appply setting for now in BOMUV-CUS usage class
+                        oColumnTemplate = new sap.m.Input({
+                            value: "{DataModel>" + columnName + "}",
+                            change: changeFunction,
+                            liveChange: liveChangeFunction,
+                            editable: "{= ${DataModel>EDITABLE} === '' ? false :  ${DataModel>HASMATNO} === 'X' ? false : true  }",
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false :  ${DataModel>HASMATNO} === 'X' ? false : true  }",
                             visible: column.Visible,
                             tooltip: "{DataModel>" + columnName + "}"
                         });

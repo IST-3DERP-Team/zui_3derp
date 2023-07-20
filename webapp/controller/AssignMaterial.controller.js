@@ -574,7 +574,12 @@ sap.ui.define([
 
             closePage: function(){
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-                oRouter.navTo("RouteStyles", {}, true);
+                // oRouter.navTo("RouteStyles", {}, true);
+                oRouter.navTo("RouteVersion", {
+                    styleno: that._styleNo,
+                    sbu: that._sbu,
+                    version: that._version
+                });
             },
 
             getCaptionMsgs: async function () {
