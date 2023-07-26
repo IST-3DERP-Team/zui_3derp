@@ -5,12 +5,17 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/routing/History",
     "../js/Constants",
-    "sap/m/MessageBox"
+    "sap/m/MessageBox",
+    "../js/TableValueHelp",
+    'sap/m/SearchField',
+    'sap/ui/model/type/String',
+    "sap/ui/model/FilterOperator",
+    "sap/m/Token",
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, JSONModel, History, Constants, MessageBox) {
+    function (Controller, Filter, Common, JSONModel, History, Constants, MessageBox,TableValueHelp, SearchField, typeString, FilterOperator, Token) {
         "use strict";
 
         var that;
@@ -96,6 +101,7 @@ sap.ui.define([
                     success: function (oData, oResponse) {
                         // console.log('StyleMaterialListSet',oData);
                         var result = oData.results;
+                        that.getView().setModel(new JSONModel({ results: result.filter(a => a.MATNO !== "") }), "AssignMaterialListsModel");
                         result = result.filter(a => a.MATNO === "" && a.MATDESC1 !== "");
                         oData.results = result;
                         oJSONModel.setData(oData);
@@ -357,10 +363,41 @@ sap.ui.define([
                 }
             },
 
-            onMaterialListChange: function () {
+            onMaterialListChange: function (oEvent) {
                 //material list change flag
                 this._materialListChanged = true;
                 this.setChangeStatus(true);
+
+                if (oEvent !== undefined){
+                    var oSource;
+                    if(this.inputSource !== undefined)
+                        oSource = this.inputSource; 
+                    else
+                        oSource = oEvent.getSource();
+
+                    if (oSource.getBindingInfo("value") !== undefined) {
+                        var sRowPath = oSource.oParent.getBindingContext("DataModel").sPath;
+                        var vColPath = oSource.getBindingInfo("value").parts[0].path;
+                        var oSelectedItem = oEvent.getParameter("selectedItem");
+                        var matDesc1 = "";
+                        if(oSelectedItem !== undefined){
+                            matDesc1 =  oSelectedItem.getInfo();
+                        }
+                        else
+                        {
+                            var matListModel =  this.getView().getModel("MaterialsModel").getData();
+                            var matFiltered = matListModel.results.filter(item=> item.MatNo === oEvent.getParameter("value"));
+                            if(matFiltered.length >0)
+                                matDesc1 = matFiltered[0].DescEn;
+                            console.log(matDesc1);
+                        }
+
+                        if(vColPath ==="MATNO"){
+                            if(matDesc1.length > 0)
+                                this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/MATDESC1", matDesc1);
+                        }
+                    }
+                }
             },
 
             onSaveMaterialList: function () {
@@ -410,6 +447,33 @@ sap.ui.define([
                         }
                         oEntry.MatListToItems.push(item);
                     };
+                    var materialsAssgndMatno = that.getView().getModel("AssignMaterialListsModel").getData();
+                    var joinMaterialList = materialsAssgndMatno.results.concat(oEntry.MatListToItems)
+                    console.log(joinMaterialList);
+
+                    const matnoSet = {}; // Use an object to keep track of encountered MATNOs
+                    const duplicateMatnos = [];
+
+                    joinMaterialList.forEach((item) => {
+                        const matno = item.MATNO;
+
+                        if (matno === "") {
+                            return; // Skip empty MATNO values
+                        }
+
+                        if (matnoSet[matno]) {
+                            duplicateMatnos.push(matno); // Found a duplicate, add it to the array
+                        } else {
+                            matnoSet[matno] = true; // Mark this MATNO as encountered
+                        }
+                    });
+                    console.log("Duplicate MATNO values:", duplicateMatnos);
+                    if(duplicateMatnos.length > 0){
+                        MessageBox.information("Duplicate material number found: " + duplicateMatnos)
+                        return;
+                    }
+                   
+
                     MessageBox.confirm(this._i18n.getText('ConfirmSave'), {
                         actions: ["Yes", "No"],
                         onClose: function (sAction) {
@@ -451,34 +515,60 @@ sap.ui.define([
 
             onMaterialValueHelp: function (oEvent) {
                 //open Materials value help
+                //TableValueHelp.handleTableValueHelp(oEvent, this);
+                //return;
                 var sInputValue = oEvent.getSource().getValue();
                 var oData = oEvent.getSource().getParent().getBindingContext('DataModel');
-                var gmc = oData.getProperty('Gmc');
+                this.gmc = oData.getProperty('GMC');
                 this.inputId = oEvent.getSource().getId(); //get input field id
+                this.inputSource = oEvent.getSource();
                 if (!this._valueHelpDialog) {
                     this._valueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.Materials", this);
                     this.getView().addDependent(this._valueHelpDialog);
                 }
-                this._valueHelpDialog.getBinding("items").filter([new Filter("Gmc", sap.ui.model.FilterOperator.EQ, gmc)]);
+                this._valueHelpDialog.getBinding("items").filter([new Filter("Gmc", sap.ui.model.FilterOperator.EQ, this.gmc)]);
                 this._valueHelpDialog.open(sInputValue);
             },
 
-            _handleValueHelpSearch: function (evt) {
+            _handleValueHelpSearch: function (oEvent) {
                 //search materials
-                var sValue = evt.getParameter("value");
-                var oFilter = new Filter("DescEn", sap.ui.model.FilterOperator.Contains, sValue);
-                evt.getSource().getBinding("items").filter([oFilter]);
+                var sValue = oEvent.getParameter("value");
+                //var oFilter = new Filter("DescEn", sap.ui.model.FilterOperator.Contains, sValue);
+                //oEvent.getSource().getBinding("items").filter([oFilter]);
+                
+                //include filtering of Matno
+                var andFilter = [], orFilter = [];
+                orFilter.push(new sap.ui.model.Filter("MatNo", sap.ui.model.FilterOperator.Contains, sValue));
+                orFilter.push(new sap.ui.model.Filter("DescEn", sap.ui.model.FilterOperator.Contains, sValue));
+
+                andFilter.push(new sap.ui.model.Filter(orFilter, false));
+                 //include also GMC
+                andFilter.push(new sap.ui.model.Filter("Gmc", sap.ui.model.FilterOperator.EQ, this.gmc));
+                oEvent.getSource().getBinding("items").filter(new sap.ui.model.Filter(andFilter, true));
+
+               
+                // var oData = evt.getSource().getParent().getBindingContext('MaterialsModel');
+                // var gmc = oData.getProperty('Gmc');
+
+                // console.log(gmc);
+                // this._valueHelpDialog.getBinding("items").filter([new Filter(
+                //     "Gmc",
+                //     sap.ui.model.FilterOperator.EQ, this.gmc
+                // )]);
+
+               
             },
 
-            _handleValueHelpClose: function (evt) {
+            _handleValueHelpClose: function (oEvent) {
                 //on select Material
-                var oSelectedItem = evt.getParameter("selectedItem");
+                var oSelectedItem = oEvent.getParameter("selectedItem");
                 if (oSelectedItem) {
-                    that.onMaterialListChange();
                     var input = this.byId(this.inputId);
                     input.setValue(oSelectedItem.getTitle()); //set input field selected Material
+                    //input.setSelectedKey(oSelectedItem.getTitle())
+                    this.onMaterialListChange(oEvent);
                 }
-                evt.getSource().getBinding("items").filter([]);
+                oEvent.getSource().getBinding("items").filter([]);
             },
 
             //get the authorization, this will hide the create material button if user is not authorized

@@ -52,7 +52,7 @@
                                 valueHelpRequest="onMaterialValueHelp" suggestionItems="{path:'MaterialsModel>/results', templateShareable: false }" value="{DataModel>MATNO}"   
                                 change="onMaterialListChange" liveChange="onMaterialListChange" tooltip="{DataModel>MATNO}"  >
                                 <suggestionItems>
-                                    <core:Item text="{MaterialsModel>MatNo}" />
+                                    <core:ListItem text="{MaterialsModel>MatNo}" additionalText="{SeasonsModel>Descen}" />
                                 </suggestionItems>
                             </Input>
                         </t:template>
