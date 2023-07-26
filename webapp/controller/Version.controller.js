@@ -671,6 +671,7 @@ sap.ui.define([
                 this.getView().setModel(oJSONModel, "VersionAttrEditModeModel");
                 this.setRowEditMode("versionAttrTable");
                 this.setVersionAttrEditModeControls();
+                this.disableOtherTabs("versionTabBar");
             },
 
             cancelVersionAttrEdit: function () {
@@ -1260,6 +1261,10 @@ sap.ui.define([
                         });
                         //assigned to UsageClassUVModel
                         that.getView().setModel(new JSONModel({ results: filteredItems }), "UsageClassUVModel");
+                        if(filteredItems.length > 0){
+                            that.getView().byId("UsageClassCB").setSelectedKey(filteredItems[0].Usgcls);
+                        }
+
                         rowData.forEach(item => {item.EDITABLE = '' , item.HASMATNO = ''});
                         var oJSONModel = new JSONModel();
                         oJSONModel.setData({
@@ -1415,6 +1420,7 @@ sap.ui.define([
                     const result = await this.lockStyleVer("X");
                     if (result.Type != "S") {
                         MessageBox.warning(result.Message);
+                        Common.closeProcessingDialog(this);
                         return;
                     }
                     else {   
@@ -1424,6 +1430,7 @@ sap.ui.define([
                         data.editMode = true;
                         oJSONModel.setData(data);
                         this.getView().setModel(oJSONModel, "BOMbyGMCEditModeModel");
+                        this.disableOtherTabs("versionTabBar");
                         // this.setRowEditMode("bomGMCTable");
 
                         var oTable = this.getView().byId("bomGMCTable");
@@ -1438,6 +1445,7 @@ sap.ui.define([
                             }
                             
                             var column = this._aColumns["bomGMC"].filter(item => item.ColumnName === sColName)[0];
+                            console.log(column)
                             col.setTemplate(this.columnTemplate('GMC', column));
                         });
 
@@ -4226,6 +4234,14 @@ sap.ui.define([
                             unique = rowData.filter((rowData, index, self) =>
                             index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS && t.SOLDTOCUST === rowData.SOLDTOCUST)));
                     
+                        }else if(usageClass === 'DUV'){
+                            unique = rowData.filter((rowData, index, self) =>
+                            index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS && t.DESTINATION === rowData.DESTINATION && t.SEQNO === rowData.SEQNO)));
+                    
+                        }else if(usageClass === 'ACSUV'){
+                            unique = rowData.filter((rowData, index, self) =>
+                            index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS && t.CUSTSTYLE === rowData.CUSTSTYLE)));
+                    
                         }
                         else{
                             unique = rowData.filter((rowData, index, self) =>
@@ -4322,6 +4338,9 @@ sap.ui.define([
                     data.editMode = true;
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "BOMbyUVEditModeModel");
+                    this.disableOtherTabs("versionTabBar");
+                    this.getView().byId("UsageClassCB").setEnabled(false);
+
                     
                     var oTable = this.getView().byId("bomUVTable");
                     console.log(oTable.getModel("DataModel").getData().results)
@@ -4924,6 +4943,7 @@ sap.ui.define([
                     this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "EDIT");
                     this.setRowEditMode("materialListTable");
                     this.setMaterialListEditModeControls();
+                    this.disableOtherTabs("versionTabBar");
 
                     var oTable = this.getView().byId("bomGMCTable");
                     var oColumnsModel = this.getView().getModel("bombByGMCColumns");
@@ -6906,6 +6926,10 @@ sap.ui.define([
                 data.editMode = dataMode;
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, editModelName);
+                if(dataMode === true)
+                    this.disableOtherTabs("versionTabBar");
+                else
+                    this.enableOtherTabs("versionTabBar");
 
                 if (!dataMode) {
                     this._dataMode = "READ";
@@ -7431,6 +7455,11 @@ sap.ui.define([
                 var oTable = this.byId(sTabId);
                 var sColName = "";
 
+                this.enableOtherTabs("versionTabBar");
+                if(sTabId === "bomUVTable"){
+                    this.getView().byId("UsageClassCB").setEnabled(true);
+                }
+
                 oTable.getColumns().forEach((col, idx) => {
                     if (col.mAggregations.template.mBindingInfos.text !== undefined) {
                         sColName = col.mAggregations.template.mBindingInfos.text.parts[0].path;
@@ -7491,6 +7520,20 @@ sap.ui.define([
                 })
 
                 this.byId(sTabId).getModel("DataModel").getData().results.forEach(item => item.EDITED = false);
+            },
+
+            disableOtherTabs: function (tabName) {
+                var oIconTabBar = this.byId(tabName);
+                oIconTabBar.getItems().filter(item => item.getProperty("key") !== oIconTabBar.getSelectedKey())
+                    .forEach(item => item.setProperty("enabled", false));
+            },
+
+            enableOtherTabs: function (tabName) {
+                var oIconTabBar = this.byId(tabName);
+                oIconTabBar.getItems().forEach(item => {
+                    item.setProperty("enabled", true)
+                });
+
             },
 
             changeFunction: function(oEvent) { },
@@ -7973,7 +8016,7 @@ sap.ui.define([
                 // this.setActiveRowHighlight(sSourceTabId.replace("Tab",""));
 
                 oDialog.getContent()[0].getMasterPages()[0].getContent()[0].getItems().forEach(item => item.setIcon("sap-icon://text-align-justified"));
-
+                this.getView().getModel("ui").setProperty("/rowCountMatLst", this.byId(sSourceTabId).getModel("DataModel").getData().results.length);
                 this.byId(sSourceTabId).getColumns().forEach(col => {
                     col.setProperty("filtered", false);
                 })
@@ -8076,6 +8119,21 @@ sap.ui.define([
 
                 console.log(oFilter)
                 this.byId(sSourceTabId).getBinding("rows").filter(oFilter, "Application");
+
+                if (oFilter !== "") {                 
+                    if (this.byId(sSourceTabId).getBinding("rows").aIndices.length === 0) {
+                        // this.getView().byId("rowCountMatLst").setText("0");
+                        this.getView().getModel("ui").setProperty("/rowCountMatLst", 0);
+                    }
+                    else {
+                        //this.getView().byId("rowCountMatLst").setText(this.byId(sSourceTabId).getBinding("rows").aIndices.length + "");
+                        this.getView().getModel("ui").setProperty("/rowCountMatLst", this.byId(sSourceTabId).getBinding("rows").aIndices.length);
+                    }
+                }
+                else {
+                    //this.getView().byId("rowCountMatLst").setText(this.byId(sSourceTabId).getModel("DataModel").getData().results.length + "");
+                    this.getView().getModel("ui").setProperty("/rowCountMatLst", this.byId(sSourceTabId).getModel("DataModel").getData().results.length);
+                }
 
                 this._colFilters[sSourceTabId] = jQuery.extend(true, {}, oDialog.getModel().getData());
                 // this.getOwnerComponent().getModel("FILTER_MODEL").setProperty("/" + sSourceTabId, this._colFilters[sSourceTabId]);
