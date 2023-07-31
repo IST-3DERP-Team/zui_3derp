@@ -61,7 +61,7 @@ sap.ui.define([
                 //get data
                 this.getMaterialList();
                 this.getMaterials();
-                this.getRoleAuth();
+                //this.getRoleAuth();
 
                 this.getOwnerComponent().getModel("UI_MODEL").setProperty("/fromScreen", "ASSIGNMAT");
             },
@@ -108,6 +108,7 @@ sap.ui.define([
                         oTable.setModel(oJSONModel, "DataModel");
                         //oTable.setVisibleRowCount(oData.results.length);
                         //oTable.attachPaste();
+                        me.getRoleAuth();
                         Common.closeLoadingDialog(that);
                         me.setChangeStatus(false);
                     },

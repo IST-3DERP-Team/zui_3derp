@@ -1508,7 +1508,7 @@ sap.ui.define([
                     this.byId("btnHdrDelete").setEnabled(false);
                     this.byId("btnHdrClose").setEnabled(false);
                     this.setRowEditMode("generalTable");
-                    //this.setGeneralAttrEditModeControls();
+                    this.setGeneralAttrEditModeControls();
                     this.getView().byId("generalTable").getModel("DataModel").getData().results.forEach(item => {
                         item.ACTIVE = "X";
                     });
@@ -1558,15 +1558,15 @@ sap.ui.define([
                                 else if (cell.getBindingInfo("selected") !== undefined) {
                                     oCellCtrlValTyp = "selected";
                                 }
-                                
+                                //disabling of control field transferred to setrowEditmode(editable property)
                                 if (oCellCtrlValTyp !== "text") {
                                     if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBTYP") {
-                                        cell.setEnabled(true);
+                                        //cell.setEnabled(true);
                                     }
                                      
                                     else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
                                         if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
-                                            cell.setEnabled(true);
+                                            //cell.setEnabled(true);
             
                                             if (vValTyp === "NUMVALUE") {
                                                 cell.setType(sap.m.InputType.Number);
@@ -1576,31 +1576,31 @@ sap.ui.define([
                                             }
                                         }
                                         else {
-                                            cell.setEnabled(false);
+                                            //cell.setEnabled(false);
                                         }
                                     }
                                     else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "VALUNIT") {
                                         if (vValTyp === "NUMVALUE") {
-                                            cell.setEnabled(true);
+                                            //cell.setEnabled(true);
                                         }
                                         else {
-                                            cell.setEnabled(false);
+                                            //cell.setEnabled(false);
                                         }
                                     }
                                     else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBCD") {
                                         if (this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttrTyp).length > 0 && vAttrTyp !== "" && vAttrTyp !== undefined) {
-                                            cell.setEnabled(true);
+                                            //cell.setEnabled(true);
                                         }
                                         else {
-                                            cell.setEnabled(false);
+                                            //cell.setEnabled(false);
                                         }
                                     }
                                     else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "CASVERIND") {
                                         if (vAttrTyp !== "" && vAttrTyp !== undefined) {
-                                            cell.setEnabled(true);
+                                            //cell.setEnabled(true);
                                         }
                                         else {
-                                            cell.setEnabled(false);
+                                            //cell.setEnabled(false);
                                         }
                                     }
                                 }
@@ -3220,8 +3220,8 @@ sap.ui.define([
                     onClose: function (sAction) {
                         if (sAction === "Yes") {
                             oModel.setHeaders({
-                                sbu: this._sbu,
-                                copy: this._copyFrVer
+                                sbu: me._sbu,
+                                copy: me._copyFrVer
                             });
                             //call create method of style version
                             oModel.create(path, oEntry, {
@@ -3234,10 +3234,10 @@ sap.ui.define([
 
                                     if (oCurrent) { me.getHeaderData(); }
 
-                                    this.enableOtherTabs("detailPanel");
-                                    this.byId("btnHdrEdit").setEnabled(true);
-                                    this.byId("btnHdrDelete").setEnabled(true);
-                                    this.byId("btnHdrClose").setEnabled(true);
+                                    me.enableOtherTabs("detailPanel");
+                                    me.byId("btnHdrEdit").setEnabled(true);
+                                    me.byId("btnHdrDelete").setEnabled(true);
+                                    me.byId("btnHdrClose").setEnabled(true);
                                     
                                     MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
                                 },
@@ -5755,6 +5755,13 @@ sap.ui.define([
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
                                         editable: "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' ? true : false : false }"
+                                    }));
+                                }
+                                else if (sTabId === "generalTable" && sColName.toUpperCase() === "CASVERIND") {
+                                    col.setTemplate(new sap.m.CheckBox({
+                                        selected: "{DataModel>" + sColName + "}", 
+                                        editable: "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Attribtyp} !== '' ? true : false : false }",
+                                        select: changeFunction
                                     }));
                                 }
                                 else if (ci.DataType === "DATETIME") {
