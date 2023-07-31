@@ -5275,7 +5275,7 @@ sap.ui.define([
                 var oData = this.byId("materialListTable").getModel("DataModel").getData().results;
 
                 if (oData.length > 0) {
-                    if (oData.filter(fItem => fItem.MATNO === "").length > 0) {
+                    if (oData.filter(fItem => fItem.MATNO === "" && fItem.MATDESC1 !== "" ).length > 0) {
                         if (this._GenericFilterDialog) {
                             this._GenericFilterDialog.setModel(new JSONModel());
                             this.byId("versionAttrTable").getColumns().forEach(col => col.setProperty("filtered", false));
