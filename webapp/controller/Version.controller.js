@@ -4238,6 +4238,14 @@ sap.ui.define([
                             unique = rowData.filter((rowData, index, self) =>
                             index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS && t.DESTINATION === rowData.DESTINATION && t.SEQNO === rowData.SEQNO)));
                     
+                        }else if(usageClass === 'ASDUV' || usageClass === 'SDUV'){
+                            unique = rowData.filter((rowData, index, self) =>
+                            index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS && t.DEST === rowData.DEST)));
+                    
+                        }else if(usageClass === 'ASPOUV'){
+                            unique = rowData.filter((rowData, index, self) =>
+                            index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS && t.CPONO === rowData.CPONO)));
+                    
                         }else if(usageClass === 'ACSUV'){
                             unique = rowData.filter((rowData, index, self) =>
                             index === self.findIndex((t) => (t.GMC === rowData.GMC && t.PARTCD === rowData.PARTCD && t.MATTYPCLS === rowData.MATTYPCLS && t.CUSTSTYLE === rowData.CUSTSTYLE)));
@@ -4252,7 +4260,34 @@ sap.ui.define([
                             //Set the pivot column for each unique item
                             for (var j = 0; j < rowData.length; j++) {
                                 // if (rowData[j].DESC1 !== "") {
-                                if (unique[i].GMC === rowData[j].GMC && unique[i].PARTCD === rowData[j].PARTCD && unique[i].MATTYPCLS === rowData[j].MATTYPCLS) {
+                                
+                                if ( (usageClass === 'ASDUV' || usageClass === 'SDUV') && unique[i].GMC === rowData[j].GMC && unique[i].PARTCD === rowData[j].PARTCD && unique[i].MATTYPCLS === rowData[j].MATTYPCLS ){
+                                    for (var k = 0; k < pivot.length; k++) {
+                                        var colname = pivot[k].Attribcd;
+
+                                        if (rowData[j].COLOR === colname) {
+                                            unique[i][colname] = rowData[j].DESC1;
+                                        } else if (rowData[j].SZE === colname) {
+                                            // console.log(colname)
+                                            if(unique[i].MATTYPCLS === "ZDEST")
+                                            {
+                                                if(unique[i].DEST === "**" && rowData[j].DESC1 === "" ){
+                                                    unique[i][colname] = rowData[j].DESC1;
+                                                }
+                                                else if(unique[i].DEST === rowData[j].DESC1 ){
+                                                    unique[i][colname] = rowData[j].DESC1;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                //console.log( unique[i][colname],"-" , rowData[j].DEST , ",", rowData[j].DESC1)
+                                                unique[i][colname] = rowData[j].DESC1;
+                                            }
+                                            //console.log(unique[i][colname])
+                                        }
+                                    }
+                                }
+                                else if (unique[i].GMC === rowData[j].GMC && unique[i].PARTCD === rowData[j].PARTCD && unique[i].MATTYPCLS === rowData[j].MATTYPCLS) {
                                     for (var k = 0; k < pivot.length; k++) {
                                         var colname = pivot[k].Attribcd;
 
@@ -5101,18 +5136,20 @@ sap.ui.define([
                                                     if(vColumnName === "VENDORCD" || vColumnName === "CURRENCYCD" || vColumnName === "UNITPRICE" || vColumnName === "PURGRP" ||
                                                         vColumnName === "PURPLANT" || vColumnName === "ORDERUOM" || vColumnName === "UMREZ" || vColumnName === "UMREN" ){
                                                         if (vSupplyTyp === "NOM") {
-                                                            cell.setEnabled(true);
+                                                            //disable 08/01/2023
+                                                            //cell.setEnabled(true);
                                                         }
                                                         else {
-                                                            cell.setEnabled(false);
+                                                            //disable 08/01/2023
+                                                            //cell.setEnabled(false);
                                                             console.log(cell.getValue());
                                                             if(vColumnName === "UNITPRICE" && cell.getValue() === "")
                                                                 cell.setValue(0);
                                                         }
                                                     }
-
-                                                    else if (cell.getProperty("editable")) { cell.setEnabled(true) }
-                                                    else { cell.setEnabled(false) }
+                                                    //disable 08/01/2023
+                                                    //else if (cell.getProperty("editable")) { cell.setEnabled(true) }
+                                                    //else { cell.setEnabled(false) }
                                                 }
                                             })
                                         }

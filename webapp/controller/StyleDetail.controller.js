@@ -206,6 +206,7 @@ sap.ui.define([
                     this.setDetailVisible(true); //make detail section visible
                     this.setDtlsEnableButton(true);
                     this.getGeneralTable(); //get general attributes
+                    this.getColorsTable();
                     this.getSizesTable(); //get sizes
                     this.getProcessesTable(); //get process
                     this.getVersionsTable(); //get versions
@@ -251,7 +252,7 @@ sap.ui.define([
                     this.getHeaderData(); //get header data from style
                 }
 
-                this.getColorsTable();
+                //this.getColorsTable();
 
                 //Load value helps
                 _promiseResult = new Promise((resolve, reject) => {
@@ -712,7 +713,7 @@ sap.ui.define([
             },
 
             formatFormValueHelp: function(sValue, sPath, sKey, sText, sFormat) {
-                // console.log(sValue, sPath, sKey, sText, sFormat);
+                 console.log(sValue, sPath, sKey, sText, sFormat);
                 var oValue = this.getView().getModel(sPath).getData().results.filter(v => v[sKey] === sValue);
 
                 if (oValue && oValue.length > 0) {
@@ -1990,7 +1991,7 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        me.enableVersionItemTab();
+                        //me.enableVersionItemTab();
 
                         // if (oData.results.filter(fItem => fItem.Sortseq === "0").length === oData.results.length) {
                         //     oData.results.forEach(item => item.Sortseq = item.Attribseq);
@@ -2008,11 +2009,12 @@ sap.ui.define([
                         else {
                             oTable.getModel("DataModel").setProperty("/results", oData.results);
                         }
-
+                        console.log("COLOR", oData.results);
                         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
                         // oTable.attachPaste(); //for copy-paste
                         Common.closeLoadingDialog(that);
                         me.getOwnerComponent().getModel("COLOR_MODEL").setProperty("/items", oData.results);
+                        me.enableVersionItemTab();
                     },
                     error: function () {
                         Common.closeLoadingDialog(that);
@@ -2540,10 +2542,11 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
-                        me.enableVersionItemTab();
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");                        
                         Common.closeLoadingDialog(that);
+                        console.log("SIZES", oData.results);
+                        me.enableVersionItemTab();
                     },
                     error: function () {
                         Common.closeLoadingDialog(that);
@@ -5569,6 +5572,7 @@ sap.ui.define([
                                         { path: "DataModel>" + sColumnId }
                                     ],  
                                     formatter: function(sColumnId) {
+                                        console.log(rscPath);
                                         var oValue = me.getView().getModel(rscPath).getData().results.filter(v => v[rscKey] === sColumnId);
         
                                         if (oValue && oValue.length > 0) {

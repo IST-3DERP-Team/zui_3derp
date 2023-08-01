@@ -501,7 +501,8 @@ sap.ui.define([
                                     error: function (err) {
                                         Common.closeLoadingDialog(that);
                                         // Common.showMessage(me._i18n.getText('t5'));
-                                        MessageBox.information(_oCaption.INFO_ERROR);
+                                        var errorMsg = JSON.parse(err.responseText).error.message.value;
+                                        MessageBox.information(errorMsg);
                                     }
                                 });
                             }
