@@ -1664,7 +1664,15 @@ sap.ui.define([
                                 }
                             }
                             else {
-                                that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, oSource.getSelectedKey());
+                                oSource.getSuggestionItems().forEach(item => {
+                                    if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                                        oSource.setSelectedKey(item.getProperty("key"));
+                                    }
+                                })
+                                setTimeout(() => {
+                                    that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, oSource.getSelectedKey());
+                                }, 100);
+                                
 
                                 if (vColPath.toUpperCase() === "GMC") {
                                     that.getView().getModel("GMCModel").getData().results.filter(fItem => fItem.Gmc === oSource.getSelectedKey()).forEach(item => {
@@ -4953,7 +4961,7 @@ sap.ui.define([
                         me.getView().setModel(oJSONModelMat, "ui");
 
                         //oTable.setVisibleRowCount(oData.results.length);
-                        //oTable.attachPaste();
+                        oTable.attachPaste();
                     },
                     error: function () {
                     }
@@ -5099,13 +5107,22 @@ sap.ui.define([
                                 this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/VENDORCD", "");
                             }
                             else {
-                                this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/VENDORCD", oSource.getSelectedKey());
-                                var vendorList = this.getView().getModel("VendorModel").getData().results.filter(fItem => fItem.Lifnr === oSource.getSelectedKey());
-                                if(vendorList.length === 1){
-                                    this.getView().getModel("VendorModel").getData().results.filter(fItem => fItem.Lifnr === oSource.getSelectedKey()).forEach(item => {
-                                        this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/CURRENCYCD", item.Waers);
-                                    })
-                                }
+                                oSource.getSuggestionItems().forEach(item => {
+                                    if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                                        oSource.setSelectedKey(item.getProperty("key"));
+                                    }
+                                })
+                                setTimeout(() => {
+                                    this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/VENDORCD", oSource.getSelectedKey());
+                                    var vendorList = this.getView().getModel("VendorModel").getData().results.filter(fItem => fItem.Lifnr === oSource.getSelectedKey());
+                                    if(vendorList.length === 1){
+                                        this.getView().getModel("VendorModel").getData().results.filter(fItem => fItem.Lifnr === oSource.getSelectedKey()).forEach(item => {
+                                            this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/CURRENCYCD", item.Waers);
+                                        })
+                                    }
+
+                                }, 100);
+                                
                             }
                         }
                         else {
@@ -5161,8 +5178,33 @@ sap.ui.define([
                             if (oEvent.getParameter("value") === "") {
                                 this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, "");
                             }
+                            /*
+                            else if (oEvent.getParameter("value") === undefined && oEvent.getSource().getValue() !== ''){
+                                console.log(oEvent.getSource().getValue());
+                                let strVal = oEvent.getSource().getValue();
+                                const regex = /\((.*?)\)/;
+                                const match = regex.exec(strVal);
+
+                                if (match && match.length >= 2) {
+                                    const extractedValue = match[1];
+                                    oEvent.getSource().setSelectedKey(extractedValue);
+                                    console.log(extractedValue, oSource.getSelectedKey()); 
+                                    this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, oSource.getSelectedKey());
+                                    console.log(this.byId("materialListTable").getModel("DataModel").getData().results.filter(item => item.SUPPLYTYP === "NOM"));
+                                }
+                            }
+                            */   
                             else {
-                                this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, oSource.getSelectedKey());
+                                //handle copy paste values by extracting the key and add settimeout 
+                                oSource.getSuggestionItems().forEach(item => {
+                                    if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                                        oSource.setSelectedKey(item.getProperty("key"));
+                                    }
+                                })
+                                setTimeout(() => {
+                                    this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, oSource.getSelectedKey());
+                                }, 100);
+                                
                             }
                         }
                     }

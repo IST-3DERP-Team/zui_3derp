@@ -261,7 +261,7 @@ sap.ui.define([
                 });
                 this._Model.read("/DynamicColumnsSet", {
                     success: function (oData, oResponse) {
-                        // console.log(oData);
+                        console.log(oData);
                         oJSONColumnsModel.setData(oData);
                         me.oJSONModel.setData(oData);
                         me.getView().setModel(oJSONColumnsModel, "DynColumns"); //set the view model
@@ -342,11 +342,11 @@ sap.ui.define([
                             // item.UPDATEDDT = dateFormat.format(item.UPDATEDDT);
                             //item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));
                             if (item.CREATEDDT !== null && item.CREATEDDT !== "  /  /" && item.CREATEDDT !== "") {
-                                item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));// + " " + timeFormat.format(new Date(item.CREATEDTM));
+                                item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT)) + " " + that.formatTimeOffSet(item.CREATEDTM.ms);// + " " + timeFormat.format(new Date(item.CREATEDTM));
                             }
                             if (item.UPDATEDDT !== null && item.UPDATEDDT !== "  /  /" && item.UPDATEDDT !== "" && item.UPDATEDDT !== " //  /  /" && item.UPDATEDDT != "  /  /") {
                                 //console.log(item.UPDATEDDT)
-                                item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));// + " " + timeFormat.format(new Date(item.UPDATEDTM));
+                                item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT)) + " " + that.formatTimeOffSet(item.UPDATEDTM.ms);// + " " + timeFormat.format(new Date(item.UPDATEDTM));
                             }
                         })
 
@@ -488,8 +488,70 @@ sap.ui.define([
 
                 //bind the data to the table
                 oTable.bindRows("/rows");
-                this.updateColumnMenu();
+               
                 Common.closeLoadingDialog(that);
+
+                //date/number sorting
+                oTable.attachSort(function(oEvent) {
+                    var sPath = oEvent.getParameter("column").getSortProperty();
+                    var bDescending = false;
+                    
+                    //remove sort icon of currently sorted column
+                    oTable.getColumns().forEach(col => {
+                        if (col.getSorted()) {
+                            col.setSorted(false);
+                        }
+                    })
+
+                    oEvent.getParameter("column").setSorted(true); //sort icon initiator
+
+                    if (oEvent.getParameter("sortOrder") === "Descending") {
+                        bDescending = true;
+                        oEvent.getParameter("column").setSortOrder("Descending") //sort icon Descending
+                    }
+                    else {
+                        oEvent.getParameter("column").setSortOrder("Ascending") //sort icon Ascending
+                    }
+
+                    var oSorter = new sap.ui.model.Sorter(sPath, bDescending ); //sorter(columnData, If Ascending(false) or Descending(True))
+                    var oColumn = oColumnsData.filter(fItem => fItem.ColumnName === oEvent.getParameter("column").getProperty("sortProperty"));
+                    var columnType = oColumn[0].DataType;
+
+                    if (columnType === "DATETIME") {
+                        oSorter.fnCompare = function(a, b) {
+                            // parse to Date object
+                            var aDate = new Date(a);
+                            var bDate = new Date(b);
+
+                            if (bDate === null) { return -1; }
+                            if (aDate === null) { return 1; }
+                            if (aDate < bDate) { return -1; }
+                            if (aDate > bDate) { return 1; }
+
+                            return 0;
+                        };
+                    }
+                    else if (columnType === "NUMBER") {
+                        oSorter.fnCompare = function(a, b) {
+                            // parse to Date object
+                            var aNumber = +a;
+                            var bNumber = +b;
+
+                            if (bNumber === null) { return -1; }
+                            if (aNumber === null) { return 1; }
+                            if (aNumber < bNumber) { return -1; }
+                            if (aNumber > bNumber) { return 1; }
+
+                            return 0;
+                        };
+                    }
+                    
+                    oTable.getBinding('rows').sort(oSorter);
+                    // prevent internal sorting by table
+                    oEvent.preventDefault();
+                });
+
+                this.updateColumnMenu();
             },
 
             setTableColumns() {
@@ -2034,6 +2096,11 @@ sap.ui.define([
                 }
 
                 return oConnector;
+            },
+
+            formatTimeOffSet(pTime) {
+                let TZOffsetMs = new Date(0).getTimezoneOffset() * 60 * 1000;
+                return timeFormat.format(new Date(pTime + TZOffsetMs));
             },
 
         });

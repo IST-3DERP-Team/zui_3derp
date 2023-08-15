@@ -1120,8 +1120,10 @@ sap.ui.define([
                 var isInvalid = !oSource.getSelectedKey() && oSource.getValue().trim();
                 oSource.setValueState(isInvalid ? "Error" : "None");
                 oSource.setValueStateText(isInvalid ? "Invalid Value" : "");
-
-                oSource.getSuggestionItems().forEach(item => {                    
+                oSource.getSuggestionItems().forEach(item => {     
+                    if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                        oSource.setSelectedKey(item.getProperty("key"));
+                    }               
                     if (item.getProperty("key") === oSource.getSelectedKey()) {
                         isInvalid = false;
                         oSource.setValueState(isInvalid ? "Error" : "None");
@@ -1217,6 +1219,7 @@ sap.ui.define([
                                             //on successful create, select data related to style
                                             me.getHeaderData();
                                             me.getGeneralTable();
+                                            me.getColorsTable();
                                             me.getSizesTable();
                                             me.getVersionsTable();
                                             me.getProcessesTable();
@@ -1224,7 +1227,10 @@ sap.ui.define([
                                             me.setChangeStatus(false);
                                             me.setDetailVisible(true);
                                             //me.setHeaderReadMode();
-                                            me.setTabReadMode("HeaderEditModeModel");
+                                            setTimeout(() => {
+                                                me.setTabReadMode("HeaderEditModeModel");
+                                            }, 1000);
+                                            
                                             //on save, execute apply to IO
                                             if(me._iono != ' '){
                                                 me.applyToIO();
@@ -1673,9 +1679,17 @@ sap.ui.define([
                                 this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
                             }
                             else {
-                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribtyp", oSource.getSelectedKey());
-                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", "");
-                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
+                                oSource.getSuggestionItems().forEach(item => {
+                                    if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                                        oSource.setSelectedKey(item.getProperty("key"));
+                                    }
+                                })
+                                setTimeout(() => {
+                                    this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribtyp", oSource.getSelectedKey());
+                                    this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", "");
+                                    this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
+                                }, 100);
+                                
                             }
 
                             var aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === oSource.getSelectedKey());
@@ -1688,34 +1702,42 @@ sap.ui.define([
                                 this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
                             }
                             else {
-                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", oSource.getSelectedKey());
-                                if(vAttribtyp ==='STYP'){
-                                    const vWvTypAttrCode = oEvent.getSource().oParent.oParent.getModel("DataModel").getData().results.filter(item => item.Attribtyp === "WVTYP")[0];
-                                     
-                                    this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey() && fItem.Attribgrp === vWvTypAttrCode.Attribcd).forEach(item => {
-                                        this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
-                                        var iRowIndex = +sRowPath.replace("/results/","");
+                                oSource.getSuggestionItems().forEach(item => {
+                                    if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                                        oSource.setSelectedKey(item.getProperty("key"));
+                                    }
+                                })
+                                setTimeout(() => {
+                                    this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", oSource.getSelectedKey());
+                                    if(vAttribtyp ==='STYP'){
+                                        const vWvTypAttrCode = oEvent.getSource().oParent.oParent.getModel("DataModel").getData().results.filter(item => item.Attribtyp === "WVTYP")[0];
+                                        
+                                        this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey() && fItem.Attribgrp === vWvTypAttrCode.Attribcd).forEach(item => {
+                                            this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
+                                            var iRowIndex = +sRowPath.replace("/results/","");
 
-                                        this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valuetyp", item.Valuetyp);
-    
-                                        if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
-                                            this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
-                                        }
-                                    })     
-                                }
-                                else
-                                {
-                                    this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey()).forEach(item => {
-                                        this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
-                                        var iRowIndex = +sRowPath.replace("/results/","");
+                                            this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valuetyp", item.Valuetyp);
+        
+                                            if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
+                                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
+                                            }
+                                        })     
+                                    }
+                                    else
+                                    {
+                                        this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey()).forEach(item => {
+                                            this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
+                                            var iRowIndex = +sRowPath.replace("/results/","");
 
-                                        this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valuetyp", item.Valuetyp);
+                                            this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valuetyp", item.Valuetyp);
 
-                                        if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
-                                            this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
-                                        }
-                                    })   
-                                }                             
+                                            if (this.byId("generalTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
+                                                this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
+                                            }
+                                        })   
+                                    }   
+                                }, 100);
+                                                          
                             }
                         }
                     }
@@ -2856,7 +2878,15 @@ sap.ui.define([
                             this.byId("processesTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, "");
                         }
                         else {
-                            this.byId("processesTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, oSource.getSelectedKey());
+                            oSource.getSuggestionItems().forEach(item => {
+                                if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                                    oSource.setSelectedKey(item.getProperty("key"));
+                                }
+                            })
+                            setTimeout(() => {
+                                this.byId("processesTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, oSource.getSelectedKey());
+                            }, 100);
+                            
                         }
 
                         // this.getView().setModel(new JSONModel(this.getView().getModel("VASTypeModel").getData()), "VASTypModel");
