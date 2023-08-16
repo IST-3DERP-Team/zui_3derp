@@ -22,6 +22,8 @@ sap.ui.define([
         var _promiseResult;
         var _sAction;
         var _oCaption = {};
+        var _startUpInfo;
+        var sapDateFormat = sap.ui.core.format.DateFormat.getDateInstance({pattern : "yyyy-MM-dd" });
 
         return Controller.extend("zui3derp.controller.StyleDetail", {
 
@@ -174,6 +176,11 @@ sap.ui.define([
                     this.getView().setModel(new JSONModel(lookUpData.VASTypModel), "VASTypModel");
                 }
                 // console.log(this.getOwnerComponent().getModel("LOOKUP_MODEL").getData())
+
+                var oModelStartUp = new sap.ui.model.json.JSONModel();
+                oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
+                    _startUpInfo = oModelStartUp.oData
+                });
 
                 _promiseResult = new Promise((resolve, reject) => {
                     resolve(that.getCaptionMsgs());
@@ -873,6 +880,14 @@ sap.ui.define([
                             // var oldData = oData;
                             // me._headerData = JSON.parse(JSON.stringify(oData));
                             //console.log(oData);
+                            if(oData !== undefined){
+                                if (oData.Createddt !== null  ) {
+                                    oData.Createddt = dateFormat.format(new Date(oData.Createddt)); 
+                                }
+                                if (oData.Updateddt !== null) {
+                                    oData.Updateddt = dateFormat.format(new Date(oData.Updateddt));
+                                }
+                            }
                             oJSONModel.setData(oData);
                             oView.setModel(oJSONModel, "headerData");
 
@@ -1188,11 +1203,18 @@ sap.ui.define([
                     oEntry.Sbu = this._sbu;
 
                     if (this._styleNo === Constants.NEW) { //creating a new style
+                        var currentdate = new Date(); 
+                        var datetime = currentdate.getDate() + "/"
+                                        + (currentdate.getMonth()+1)  + "/" 
+                                        + currentdate.getFullYear() + " "  
+                                        + currentdate.getHours() + ":"  
+                                        + currentdate.getMinutes() + ":" 
+                                        + currentdate.getSeconds();
 
                         //set default style info for NEW
                         oEntry.Statuscd = Constants.CRT;
-                        oEntry.Createdby = "$";
-                        oEntry.Createddt = "$";
+                        oEntry.Createdby = _startUpInfo.id;//"$"
+                        oEntry.Createddt = null;// "$"
                         oEntry.Verno = "1";
 
                         path = "/StyleDetailSet";
@@ -1269,6 +1291,10 @@ sap.ui.define([
                         oModel.setHeaders({
                             sbu: this._sbu
                         });
+                        oEntry.Createddt = sapDateFormat.format(new Date(oEntry.Createddt)) + "T00:00:00";
+                        if(oEntry.Updateddt !== null)
+                            oEntry.Updateddt = sapDateFormat.format(new Date(oEntry.Updateddt)) + "T00:00:00";
+                            
                         console.log(oEntry);
                         MessageBox.confirm(_oCaption.CONFIRM_SAVE, {
                             actions: ["Yes", "No"],
@@ -1707,8 +1733,9 @@ sap.ui.define([
                                         oSource.setSelectedKey(item.getProperty("key"));
                                     }
                                 })
-                                setTimeout(() => {
+                               // setTimeout(() => {
                                     this.byId("generalTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", oSource.getSelectedKey());
+                                //}, 100);    
                                     if(vAttribtyp ==='STYP'){
                                         const vWvTypAttrCode = oEvent.getSource().oParent.oParent.getModel("DataModel").getData().results.filter(item => item.Attribtyp === "WVTYP")[0];
                                         
@@ -1736,7 +1763,7 @@ sap.ui.define([
                                             }
                                         })   
                                     }   
-                                }, 100);
+                                // }, 100);
                                                           
                             }
                         }
@@ -7006,6 +7033,11 @@ sap.ui.define([
                 }
 
                 return oConnector;
+            },
+
+            formatTimeOffSet(pTime) {
+                let TZOffsetMs = new Date(0).getTimezoneOffset() * 60 * 1000;
+                return timeFormat.format(new Date(pTime + TZOffsetMs));
             },
 
         });

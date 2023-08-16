@@ -427,6 +427,7 @@
             var oJSONModel13 = new JSONModel();
             oSHModel.read("/PurPlantSet", {
                 success: function (oData, oResponse) {
+                    console.log("PurPlantSet", oData.results)
                     oJSONModel13.setData(oData);
                     oJSONModel13.setSizeLimit(9999);
                     oView.setModel(oJSONModel13, "PurPlantModel");
