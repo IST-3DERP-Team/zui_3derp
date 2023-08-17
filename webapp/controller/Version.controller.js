@@ -163,6 +163,7 @@ sap.ui.define([
 
                 this.closeEditModes();
                 this.lockStyleVer("O");
+                this.enableOtherTabs("versionTabBar");
                 // this.getView().setModel(new JSONModel(this.getOwnerComponent().getModel("CAPTION_MSGS_MODEL").getData().text), "ddtext");
                 
                 _promiseResult = new Promise((resolve, reject) => {
@@ -1431,6 +1432,7 @@ sap.ui.define([
                         oJSONModel.setData(data);
                         this.getView().setModel(oJSONModel, "BOMbyGMCEditModeModel");
                         this.disableOtherTabs("versionTabBar");
+                        this.setChangeStatus(true);
                         // this.setRowEditMode("bomGMCTable");
 
                         var oTable = this.getView().byId("bomGMCTable");
@@ -4381,6 +4383,7 @@ sap.ui.define([
                     data.editMode = true;
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "BOMbyUVEditModeModel");
+                    this.setChangeStatus(true);
                     this.disableOtherTabs("versionTabBar");
                     this.getView().byId("UsageClassCB").setEnabled(false);
 
@@ -4981,6 +4984,7 @@ sap.ui.define([
                     data.editMode = true;
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "MaterialListEditModeModel");
+                    this.setChangeStatus(true);
 
                     this._dataMode = "EDIT";
                     this.getOwnerComponent().getModel("UI_MODEL").setProperty("/dataMode", "EDIT");
@@ -5263,11 +5267,11 @@ sap.ui.define([
                                 MessageBox.information("Purchasing group is required.")
                                 return;
                             }
-                            else if(oData.results[i].PURPLANT === "")
-                            {
-                                MessageBox.information("Purchasing Plant is required.")
-                                return;
-                            }
+                            // else if(oData.results[i].PURPLANT === "")
+                            // {
+                            //     MessageBox.information("Purchasing Plant is required.")
+                            //     return;
+                            // }
                             else if(oData.results[i].UMREZ === "" || oData.results[i].UMREZ <= 0)
                             {
                                 MessageBox.information("Numerator is required.")
@@ -7073,6 +7077,7 @@ sap.ui.define([
                 }
             },
 
+            //if isLock = "X" then lock else if isLock = "O" then unlock
             lockStyleVer: async function (isLock) {
                 //return { "Type": "S", "Message": "Disable Locking" }
                 var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
@@ -7285,6 +7290,66 @@ sap.ui.define([
                         visible: sColumnVisible,                       
                         hAlign: sColumnDataType === "NUMBER" ? "End" : sColumnDataType === "BOOLEAN" ? "Center" : "Begin"
                     });
+                });
+
+                //date/number sorting
+                oTable.attachSort(function(oEvent) {
+                    var sPath = oEvent.getParameter("column").getSortProperty();
+                    var bDescending = false;
+                    
+                    //remove sort icon of currently sorted column
+                    oTable.getColumns().forEach(col => {
+                        if (col.getSorted()) {
+                            col.setSorted(false);
+                        }
+                    })
+
+                    oEvent.getParameter("column").setSorted(true); //sort icon initiator
+
+                    if (oEvent.getParameter("sortOrder") === "Descending") {
+                        bDescending = true;
+                        oEvent.getParameter("column").setSortOrder("Descending") //sort icon Descending
+                    }
+                    else {
+                        oEvent.getParameter("column").setSortOrder("Ascending") //sort icon Ascending
+                    }
+
+                    var oSorter = new sap.ui.model.Sorter(sPath, bDescending ); //sorter(columnData, If Ascending(false) or Descending(True))
+                    var oColumn = oColumns.filter(fItem => fItem.ColumnName === oEvent.getParameter("column").getProperty("sortProperty"));
+                    var columnType = oColumn[0].DataType;
+
+                    if (columnType === "DATETIME") {
+                        oSorter.fnCompare = function(a, b) {
+                            // parse to Date object
+                            var aDate = new Date(a);
+                            var bDate = new Date(b);
+
+                            if (bDate === null) { return -1; }
+                            if (aDate === null) { return 1; }
+                            if (aDate < bDate) { return -1; }
+                            if (aDate > bDate) { return 1; }
+
+                            return 0;
+                        };
+                    }
+                    else if (columnType === "NUMBER") {
+                        oSorter.fnCompare = function(a, b) {
+                            // parse to Date object
+                            var aNumber = +a;
+                            var bNumber = +b;
+
+                            if (bNumber === null) { return -1; }
+                            if (aNumber === null) { return 1; }
+                            if (aNumber < bNumber) { return -1; }
+                            if (aNumber > bNumber) { return 1; }
+
+                            return 0;
+                        };
+                    }
+                    
+                    oTable.getBinding('rows').sort(oSorter);
+                    // prevent internal sorting by table
+                    oEvent.preventDefault();
                 });
             },
 

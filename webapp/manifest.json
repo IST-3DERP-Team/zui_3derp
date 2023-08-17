@@ -219,6 +219,9 @@
                         "sap-value-list": "none"
                     }
                 }
+            },
+            "LOCK_MODEL": {
+                "type": "sap.ui.model.json.JSONModel"
             }
         },
         "resources": {

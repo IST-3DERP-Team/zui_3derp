@@ -55,7 +55,10 @@ sap.ui.define([
                 }
             })
 
-            vh.sort((a, b) => (a.VHKey > b.VHKey ? 1 : -1));
+            if(sKey.toUpperCase() === "SEASONCD")
+                vh.sort((b, a) => (a.Yr > b.Yr ? 1 : -1));   
+            else
+                vh.sort((a, b) => (a.VHKey > b.VHKey ? 1 : -1));  
 
             if (vh.length > 0) {
                 Object.keys(vh[0]).filter(fItem => fItem !== "__metadata" && fItem !== "VHKey" && fItem !== "VHValue" && fItem !== "VHSelected").forEach(item => {

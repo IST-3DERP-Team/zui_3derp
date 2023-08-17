@@ -260,7 +260,13 @@
                 "columns": "tvh_purplant"
             }
         },
-        {"ColumnName": "ORDERUOM", "ColumnLabel": "ORDERUOM", "Order": "14", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
+        {"ColumnName": "ORDERUOM", "ColumnLabel": "ORDERUOM", "Order": "14", "DataType": "STRING", "ColumnWidth": "100", "Length": "3", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false,
+            "TextFormatMode": "ValueKey",    
+            "ValueHelp": {"show": true, "items": {"path": "UOMModel", "value": "Valunit", "text": "Desc1"},
+                "SuggestionItems": {"path": "UOMModel>/results", "text": "{UOMModel>Valunit}", "additionalText": "{UOMModel>Desc1}", "maxSuggestionWidth": "250px"},
+                "columns": "tvh_uom"
+            }
+        },
         {"ColumnName": "UMREZ", "ColumnLabel": "UMREZ", "Order": "15", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false },
         {"ColumnName": "UMREN", "ColumnLabel": "UMREN", "Order": "16", "DataType": "NUMBER", "ColumnWidth": "100", "Length": "5", "Decimal": "0", "Visible": true, "Editable": false, "Mandatory": false }
     ],

@@ -27,7 +27,7 @@ sap.ui.define([
 
         return Controller.extend("zui3derp.controller.StyleDetail", {
 
-            onInit: function () {
+            onInit: function (oEvent) {
                 that = this;
 
                 //Initialize router
@@ -67,13 +67,25 @@ sap.ui.define([
                 //this.getAppAction();
 
                 //Initialize translations
+                this._oLock = [];
+                this.getOwnerComponent().getModel("LOCK_MODEL").setProperty("/item", this._oLock);
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 
-                // console.log("init");
+                var oView = this.getView();
+                oView.addEventDelegate({
+                    onBeforeHide : function(oEvent){
+                        if(that._oLock.length > 0){
+                            that.lockStyle("O")
+                        }
+                    }
+                })
             },
 
             onExit: function () {
                 sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = this._fBackButton;
+                if(that._oLock.length > 0){
+                    that.lockStyle("O")
+                }
             },
 
             getAppAction: async function () {
@@ -292,7 +304,7 @@ sap.ui.define([
                 //     this.getColumnProp();
                 // }, 1000);
 
-                this.lockStyle("O");
+                //this.lockStyle("O");
 
                 _promiseResult = new Promise((resolve, reject) => {
                     resolve(that.getColumnProp());
@@ -1018,6 +1030,7 @@ sap.ui.define([
                             this.setReqField("HeaderEditModeModel", true);
                             this.disableOtherTabs("detailPanel");
                             this.setDtlsEnableButton(false);
+                            this.setChangeStatus(true);
 
                             if (this.getView().getModel("IOData").getData().length > 0) {
                                 MessageBox.information(_oCaption.INFO_SIZE_ONLY_ALLOW_EDIT);//"Only size group can be edited.\r\nStyle already used in IO."
@@ -3140,7 +3153,7 @@ sap.ui.define([
                         else {
                             oTable.getModel("DataModel").setProperty("/results", oData.results);
                         }
-                        oTable.setVisibleRowCount(oData.results.length);
+                        //oTable.setVisibleRowCount(oData.results.length);
                         // oTable.attachPaste();
                         Common.closeLoadingDialog(that);
                     },
@@ -5449,10 +5462,11 @@ sap.ui.define([
 
             },
 
+            //if isLock = "X" then lock else if isLock = "O" then unlock
             lockStyle: async function (isLock) {
-                return { "Type":"S", "Message":"Disable Locking"}
-                var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
-
+                //return { "Type":"S", "Message":"Disable Locking"}
+                //var oModelLock = this.getOwnerComponent().getModel("ZGW_3DERP_LOCK_SRV");
+                var oModelLock = new sap.ui.model.odata.v2.ODataModel("/sap/opu/odata/sap/ZGW_3DERP_LOCK_SRV/");
                 // var oParamLock = {
                 //     StyleNo: this._styleNo,
                 //     Lock: isLock === "X" ? "X" : "",
@@ -5467,12 +5481,24 @@ sap.ui.define([
                     Iv_Count: 300,
                     STYLE_MSG: []
                 }
+                this._oLock.push(oParamLock);
                 Common.openLoadingDialog(that);
                 return new Promise((resolve, reject) => {
                     oModelLock.create("/ZERP_STYLHDR", oParamLock, {
                         method: "POST",
                         success: function (data, oResponse) {
                             console.log("success Lock_ZERP_STYLHDR", data.STYLE_MSG.results[0]);
+                            if(isLock === "X" && data.STYLE_MSG.results[0].Type === "S"){
+                                that.getOwnerComponent().getModel("LOCK_MODEL").setProperty("/item", that._oLock);
+                            }
+                            else if(isLock === "O" && data.STYLE_MSG.results[0].Type === "S")
+                            {
+                                that._oLock = [];
+                                if (that.getOwnerComponent() !== undefined) {
+                                    that.getOwnerComponent().getModel("LOCK_MODEL").setProperty("/item", that._oLock);
+                                }
+                            }
+
                             Common.closeLoadingDialog(that);
                             return resolve(data.STYLE_MSG.results[0]);
 
