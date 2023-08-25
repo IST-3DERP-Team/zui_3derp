@@ -1262,7 +1262,7 @@ sap.ui.define([
                         });
                         //assigned to UsageClassUVModel
                         that.getView().setModel(new JSONModel({ results: filteredItems }), "UsageClassUVModel");
-                        if(filteredItems.length > 0){
+                        if(filteredItems.length > 0 && that.getView().byId("UsageClassCB").getSelectedKey() === "" ){
                             that.getView().byId("UsageClassCB").setSelectedKey(filteredItems[0].Usgcls);
                         }
 
@@ -4946,6 +4946,7 @@ sap.ui.define([
                         }
                         */
                         oData.results.forEach(item => {
+                            item.EDITED = false;
                             item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));
                             item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));
                            
@@ -5092,6 +5093,9 @@ sap.ui.define([
                         })
                     }
                 }
+               
+                var sRowPath = oSource.getBindingInfo("value").binding.oContext.sPath;
+                this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + '/EDITED', true);
             },
 
             onMaterialListInputChange: function (oEvent) {
@@ -5211,6 +5215,7 @@ sap.ui.define([
                                 
                             }
                         }
+                        this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + '/EDITED', true);
                     }
                 }
             },
@@ -5240,6 +5245,10 @@ sap.ui.define([
                         Sbu: this._sbu,
                         MatListToItems: []
                     }
+                    var aEditedRows = this.byId("materialListTable").getModel("DataModel").getData().results.filter(item => item.EDITED === true);
+                    console.log(aEditedRows);
+                    oData["results"] = aEditedRows;
+
                     for (var i = 0; i < oData.results.length; i++) {
                         if(oData.results[i].SUPPLYTYP === "NOM"){
                             if(oData.results[i].VENDORCD === "")

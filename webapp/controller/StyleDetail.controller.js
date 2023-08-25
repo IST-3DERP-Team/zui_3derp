@@ -68,7 +68,7 @@ sap.ui.define([
 
                 //Initialize translations
                 this._oLock = [];
-                this.getOwnerComponent().getModel("LOCK_MODEL").setProperty("/item", this._oLock);
+                this.getOwnerComponent().getModel("LOCK_MODEL").setProperty("/style", this._oLock);
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 
                 var oView = this.getView();
@@ -5489,13 +5489,13 @@ sap.ui.define([
                         success: function (data, oResponse) {
                             console.log("success Lock_ZERP_STYLHDR", data.STYLE_MSG.results[0]);
                             if(isLock === "X" && data.STYLE_MSG.results[0].Type === "S"){
-                                that.getOwnerComponent().getModel("LOCK_MODEL").setProperty("/item", that._oLock);
+                                that.getOwnerComponent().getModel("LOCK_MODEL").setProperty("/style", that._oLock);
                             }
                             else if(isLock === "O" && data.STYLE_MSG.results[0].Type === "S")
                             {
                                 that._oLock = [];
                                 if (that.getOwnerComponent() !== undefined) {
-                                    that.getOwnerComponent().getModel("LOCK_MODEL").setProperty("/item", that._oLock);
+                                    that.getOwnerComponent().getModel("LOCK_MODEL").setProperty("/style", that._oLock);
                                 }
                             }
 
