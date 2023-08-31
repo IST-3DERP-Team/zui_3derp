@@ -598,6 +598,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "DESC2" });
                 oDDTextParam.push({ CODE: "DELETED" });
                 oDDTextParam.push({ CODE: "CUSTCOLDESC" });
+                oDDTextParam.push({ CODE: "HASOUTPUT" });
 
 
 
@@ -2801,6 +2802,9 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
+                        oData.results.forEach((item, index) => {
+                            item.Hasoutput = item.Hasoutput === "X" ? true : false;
+                        });
                         oJSONModel.setData(oData);
                         // oTable.setModel(oJSONModel, "DataModel");
 
@@ -2965,7 +2969,8 @@ sap.ui.define([
                             // "Leadtime": oData.results[i].Leadtime,
                             "Attribtyp": oData.results[i].Attribtyp,
                             "Attribcd": oData.results[i].Attribcd,
-                            "Vastyp": oData.results[i].Vastyp
+                            "Vastyp": oData.results[i].Vastyp,
+                            "Hasoutput": (oData.results[i].Hasoutput === true ? "X" : "")
                         }
                         oEntry.ProcessToItems.push(item);
                     };

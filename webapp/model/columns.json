@@ -136,22 +136,23 @@
                 "columns": "tvh_processcd"
             }
         },
-        {"ColumnName": "Vastyp", "ColumnLabel": "VASTYP", "Order": "1", "DataType": "STRING", "ColumnWidth": "320", "Length": "20", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+        {"ColumnName": "Hasoutput", "ColumnLabel": "HASOUTPUT", "Order": "1", "DataType": "BOOLEAN", "ColumnWidth": "175", "Length": "1", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false  },
+        {"ColumnName": "Vastyp", "ColumnLabel": "VASTYP", "Order": "2", "DataType": "STRING", "ColumnWidth": "320", "Length": "20", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
             "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "VASTypModel", "value": "Processcd", "text": "Desc1"},
                 "SuggestionItems": {"path": "VASTypModel>/results", "text": "{VASTypModel>Processcd}", "additionalText": "{VASTypModel>Desc1}", "maxSuggestionWidth": "500px"},
                 "columns": "tvh_vastyp"
             }
         },
-        {"ColumnName": "Leadtm", "ColumnLabel": "LEADTM", "Order": "2", "DataType": "NUMBER", "ColumnWidth": "175", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false  },
-        {"ColumnName": "Attribtyp", "ColumnLabel": "ATTRIBTYP", "Order": "3", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+        {"ColumnName": "Leadtm", "ColumnLabel": "LEADTM", "Order": "3", "DataType": "NUMBER", "ColumnWidth": "175", "Length": "18", "Decimal": "5", "Visible": true, "Editable": true, "Mandatory": false  },
+        {"ColumnName": "Attribtyp", "ColumnLabel": "ATTRIBTYP", "Order": "4", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
             "TextFormatMode": "Key",
             "ValueHelp": {"show": true, "items": {"path": "ProcessAttribTypeModel", "value": "Attribtype", "text": "Attribtype"},
                 "SuggestionItems": {"path": "ProcessAttribTypeModel>/results", "text": "{ProcessAttribTypeModel>Attribtype}"},
                 "columns": "tvh_procattribtyp"
             }
         },
-        {"ColumnName": "Attribcd", "ColumnLabel": "ATTRIBCD", "Order": "4", "DataType": "STRING", "ColumnWidth": "225", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
+        {"ColumnName": "Attribcd", "ColumnLabel": "ATTRIBCD", "Order": "5", "DataType": "STRING", "ColumnWidth": "225", "Length": "50", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
             "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "ProcessAttribCdModel", "value": "Attribcd", "text": "Desc2"},
                 "SuggestionItems": {"path": "ProcessAttribCdModel>/results", "text": "{ProcessAttribCdModel>Attribcd}", "additionalText": "{ProcessAttribCdModel>Desc2}", "maxSuggestionWidth": "250px"},
