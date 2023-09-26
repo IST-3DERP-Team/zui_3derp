@@ -71,6 +71,20 @@ sap.ui.define([
                 this.getOwnerComponent().getModel("LOCK_MODEL").setProperty("/style", this._oLock);
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 
+                var oTableEventDelegate = {
+                    onkeyup: function (oEvent) {
+                        that.onKeyUp(oEvent);
+                    },
+                };
+
+                this.byId("generalTable").addEventDelegate(oTableEventDelegate);
+                this.byId("colorsTable").addEventDelegate(oTableEventDelegate);
+                this.byId("sizesTable").addEventDelegate(oTableEventDelegate);
+                this.byId("processesTable").addEventDelegate(oTableEventDelegate);
+                this.byId("versionsTable").addEventDelegate(oTableEventDelegate);
+                this.byId("ioTable").addEventDelegate(oTableEventDelegate);
+               
+
                 var oView = this.getView();
                 oView.addEventDelegate({
                     onBeforeHide : function(oEvent){
@@ -79,6 +93,8 @@ sap.ui.define([
                         }
                     }
                 })
+
+                
             },
 
             onExit: function () {
@@ -494,17 +510,18 @@ sap.ui.define([
 
             routeTOIO: function () {
                 var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
-                var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
+                var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternalAsync({
                     target: {
                         semanticObject: "ZSO_3DERP_ORD_IO",
                         action: _sAction + "&/RouteIODetail/" + this._iono + "/" + this._sbu + "/" + this._styleNo + "/itfSTYLE"
                     }
-
                 })) || ""; // generate the Hash to display style
+                hash = "ZSO_3DERP_ORD_IO-" + _sAction + "&/RouteIODetail/" + this._iono + "/" + this._sbu + "/" + this._styleNo + "/itfSTYLE"
 
                 oCrossAppNavigator.toExternal({
                     target: {
-                        shellHash: hash
+                        // shellHash: hash
+                        shellHash : hash
                     }
                 });
             },
@@ -5704,6 +5721,13 @@ sap.ui.define([
             setRowEditMode(sTabId) {
                 var oTable = this.byId(sTabId);
                 console.log(oTable.getModel("DataModel").getData().results)
+                var me = this;
+                var oInputEventDelegate = {
+                    onkeydown: function(oEvent){
+                        me.onInputKeyDown(oEvent);
+                    },
+                };
+
                 var changeFunction, liveChangeFunction, inputValueHelpChangeFunction, inputValueHelpLiveChangeFunction;
                 var valueHelpRequestFunction;
 
@@ -5828,6 +5852,7 @@ sap.ui.define([
                                         });
                                     }
 
+                                    oInput.addEventDelegate(oInputEventDelegate);
                                     col.setTemplate(oInput);
                                 }else if (sTabId === "generalTable" && sColName.toUpperCase() === "ATTRIBVAL") {
                                     col.setTemplate(new sap.m.Input({
@@ -5837,7 +5862,7 @@ sap.ui.define([
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
                                         editable: "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' || ${DataModel>Valuetyp} === 'STRVAL' ? true : false : false }"
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else if (sTabId === "generalTable" && sColName.toUpperCase() === "VALUNIT") {
                                     col.setTemplate(new sap.m.Input({
@@ -5847,14 +5872,14 @@ sap.ui.define([
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
                                         editable: "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' ? true : false : false }"
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else if (sTabId === "generalTable" && sColName.toUpperCase() === "CASVERIND") {
                                     col.setTemplate(new sap.m.CheckBox({
                                         selected: "{DataModel>" + sColName + "}", 
                                         editable: "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Attribtyp} !== '' ? true : false : false }",
                                         select: changeFunction
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else if (ci.DataType === "DATETIME") {
                                     col.setTemplate(new sap.m.DatePicker({
@@ -5864,7 +5889,7 @@ sap.ui.define([
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
                                         editable: editModeCond
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else if (ci.DataType === "NUMBER") {
                                     col.setTemplate(new sap.m.Input({
@@ -5884,14 +5909,14 @@ sap.ui.define([
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
                                         editable: editModeCond
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else if (ci.DataType === "BOOLEAN") {
                                     col.setTemplate(new sap.m.CheckBox({
                                         selected: "{DataModel>" + sColName + "}", 
                                         editable: true,
                                         select: changeFunction
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else {
                                     col.setTemplate(new sap.m.Input({
@@ -5901,7 +5926,7 @@ sap.ui.define([
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
                                         editable: editModeCond
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
 
                                 if (ci.Mandatory) {
@@ -6014,6 +6039,127 @@ sap.ui.define([
 
                 this.byId(sTabId).getModel("DataModel").getData().results.forEach(item => item.EDITED = false);
             },
+
+            setActiveRowHighlight(sTableId) {
+                var oTable = this.byId(sTableId !== undefined && sTableId !== "" ? sTableId : this._sActiveTable);
+
+                setTimeout(() => {
+                    var iActiveRowIndex = oTable.getModel("DataModel").getData().results.findIndex(item => item.ACTIVE === "X");
+                    // var iActiveRowIndex = oTable.getModel().getData().rows.findIndex(item => item.ACTIVE === "X");
+
+                    oTable.getRows().forEach(row => {
+                        //if (row.getBindingContext() && +row.getBindingContext().sPath.replace("/rows/", "") === iActiveRowIndex) {
+                        if (row.getBindingContext("DataModel") && +row.getBindingContext("DataModel").sPath.replace("/results/", "") === iActiveRowIndex) {
+                            row.addStyleClass("activeRow");
+                        }
+                        else row.removeStyleClass("activeRow");
+                    })                    
+                }, 100);
+            },
+
+            onInputKeyDown(oEvent) {
+                if (oEvent.key === "ArrowUp" || oEvent.key === "ArrowDown") {
+                    //prevent increase/decrease of number value
+                    oEvent.preventDefault();
+                    
+                    var sTableId = oEvent.srcControl.oParent.oParent.sId;
+                    var oTable = this.byId(sTableId);
+                    var sColumnName = oEvent.srcControl.getBindingInfo("value").parts[0].path;
+                    var sCurrentRowIndex = +oEvent.srcControl.oParent.getBindingContext("DataModel").sPath.replace("/results/", "");
+                    //var sCurrentRowIndex = +oEvent.srcControl.oParent.getBindingContext().sPath.replace("/rows/", "");
+                    var sColumnIndex = -1;
+                    var sCurrentRow = -1;
+                    var sNextRow = -1;
+                    var sActiveRow = -1;
+                    var iFirstVisibleRowIndex = oTable.getFirstVisibleRow();
+                    var iVisibleRowCount = oTable.getVisibleRowCount();
+            
+                    //get active row (arrow down)
+                    oTable.getBinding("rows").aIndices.forEach((item, index) => {
+                        if (item === sCurrentRowIndex) { sCurrentRow = index; }
+                        if (sCurrentRow !== -1 && sActiveRow === -1) { 
+                            if ((sCurrentRow + 1) === index) { sActiveRow = item }
+                            else if ((index + 1) === oTable.getBinding("rows").aIndices.length) { sActiveRow = item }
+                        }
+                    })
+                    
+                    //clear active row
+                    // oTable.getModel().getData().rows.forEach(row => row.ACTIVE = "");
+                    oTable.getModel("DataModel").getData().results.forEach(row => row.ACTIVE = "");
+            
+                    //get next row to focus and active row (arrow up)
+                    if (oEvent.key === "ArrowUp") { 
+                        if (sCurrentRow !== 0) {
+                            sActiveRow = oTable.getBinding("rows").aIndices.filter((fItem, fIndex) => fIndex === (sCurrentRow - 1))[0];
+                        }
+                        else { sActiveRow = oTable.getBinding("rows").aIndices[0] }
+            
+                        sCurrentRow = sCurrentRow === 0 ? sCurrentRow : sCurrentRow - iFirstVisibleRowIndex;
+                        sNextRow = sCurrentRow === 0 ? 0 : sCurrentRow - 1;
+                    }
+                    else if (oEvent.key === "ArrowDown") { 
+                        sCurrentRow = sCurrentRow - iFirstVisibleRowIndex;
+                        sNextRow = sCurrentRow + 1;
+                    }
+            
+                    //set active row
+                    // oTable.getModel().setProperty("/rows/" + sActiveRow + "/ACTIVE", "X");
+                    oTable.getModel("DataModel").setProperty("/results/" + sActiveRow + "/ACTIVE", "X");
+            
+                    //auto-scroll up/down
+                    if (oEvent.key === "ArrowDown" && (sNextRow + 1) < oTable.getModel("DataModel").getData().results.length && (sNextRow + 1) > iVisibleRowCount) {
+                        oTable.setFirstVisibleRow(iFirstVisibleRowIndex + 1);
+                    }   
+                    else if (oEvent.key === "ArrowUp" && sCurrentRow === 0 && sNextRow === 0 && iFirstVisibleRowIndex !== 0) { 
+                        oTable.setFirstVisibleRow(iFirstVisibleRowIndex - 1);
+                    }
+            
+                    //get the cell to focus
+                    oTable.getRows()[sCurrentRow].getCells().forEach((cell, index) => {
+                        if (cell.getBindingInfo("value") !== undefined) {
+                            if (cell.getBindingInfo("value").parts[0].path === sColumnName) { sColumnIndex = index; }
+                        }
+                    })
+                    
+                    if (oEvent.key === "ArrowDown") {
+                        sNextRow = sNextRow === iVisibleRowCount ? sNextRow - 1 : sNextRow;
+                    }
+            
+                    //set focus on cell
+                    setTimeout(() => {
+                        oTable.getRows()[sNextRow].getCells()[sColumnIndex].focus();
+                        oTable.getRows()[sNextRow].getCells()[sColumnIndex].getFocusDomRef().select();
+                    }, 100);
+
+                    //set row highlight
+                    var sTabId = oTable.sId.split("--")[oTable.sId.split("--").length - 1];
+                    //this._sActiveTable = sTabId;
+            
+                    //set row highlight
+                    this.setActiveRowHighlight(sTabId);
+                }
+            },
+
+            onKeyUp(oEvent) {
+                if ((oEvent.key == "ArrowUp" || oEvent.key == "ArrowDown") && oEvent.srcControl.sParentAggregationName == "rows") {
+                    var oTable = this.byId(oEvent.srcControl.sId).oParent;
+
+                    if (this.byId(oEvent.srcControl.sId).getBindingContext()) {
+                        var sRowPath = this.byId(oEvent.srcControl.sId).getBindingContext().sPath;
+
+                        oTable.getModel().getData().rows.forEach(row => row.ACTIVE = "");
+                        oTable.getModel().setProperty(sRowPath + "/ACTIVE", "X");
+
+                        oTable.getRows().forEach(row => {
+                            if (row.getBindingContext() && row.getBindingContext().sPath.replace("/results/", "") === sRowPath.replace("/results/", "")) {
+                                row.addStyleClass("activeRow");
+                            }
+                            else row.removeStyleClass("activeRow")
+                        })
+                    }
+                }
+            },
+
 
             //******************************************* */
             // IO List

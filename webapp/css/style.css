@@ -128,3 +128,7 @@ for header.fragment
 .hyperlink {
     text-decoration: underline;
 }
+
+.activeRow {
+    background-color: #e1ebf3 !important;
+}

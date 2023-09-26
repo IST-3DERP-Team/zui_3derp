@@ -117,7 +117,7 @@
     "sap.ui5": {
         "flexEnabled": false,
         "dependencies": {
-            "minUI5Version": "1.71.45",
+            "minUI5Version": "1.71.49",
             "libs": {
                 "sap.m": {},
                 "sap.ui.core": {},

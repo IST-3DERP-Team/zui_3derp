@@ -577,7 +577,7 @@ sap.ui.define([
                         id: sColumnId,
                         //label: sColumnLabel ? sColumnLabel : "{i18n>" + sColumnId + "}",
                         // label: sColumnLabel ? sColumnLabel : "{ddtext>/" + sColumnId + "}",
-                        label: sColumnLabel ? sColumnLabel : that.getView().getModel("ddtext").getData()[sColumnId],
+                        label: new sap.m.Text({ text: sColumnLabel ? sColumnLabel : that.getView().getModel("ddtext").getData()[sColumnId] }) ,
                         template: me.columnTemplate(sColumnId, sColumnType),
                         width: sColumnWidth ? sColumnWidth + 'px' : me.getColumnSize(sColumnId, sColumnType),
                         sortProperty: sColumnId,
