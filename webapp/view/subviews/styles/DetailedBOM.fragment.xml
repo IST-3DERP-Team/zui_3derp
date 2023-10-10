@@ -3,6 +3,7 @@
 <VBox fitContainer="true" class="sapUiTinyMargin">
     <Toolbar height="2rem" style="Clear">
         <!-- <Label text="{i18n>DetailedBOM}"/> -->
+        <Text text="{counts>/rowCountbomDetailedTable} {ddtext>/ROWS}" />
         <ToolbarSpacer />
         <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" press="onExport"  tooltip="{ddtext>/EXPORTTOEXCEL}">
             <customData>

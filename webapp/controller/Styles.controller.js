@@ -154,6 +154,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "INFO_CHECK_INVALID_ENTRIES" });
                 oDDTextParam.push({ CODE: "INFO_INPUT_NEW_STYLE" });
                 oDDTextParam.push({ CODE: "INFO_INPUT_NEW_SEASON" });
+                oDDTextParam.push({ CODE: "INFO_INPUT_REQ_COLOR" });
                 oDDTextParam.push({ CODE: "INFO_LAYOUT_SAVE" });
                 oDDTextParam.push({CODE: "INFO_ERROR" })
                 oDDTextParam.push({CODE: "INFO_SAVE_SUCCESS" });
@@ -958,7 +959,7 @@ sap.ui.define([
                 if (oSelectedItem) {
                     var input = sap.ui.getCore().byId(that.inputId);
                     input.setValue(oSelectedItem.getTitle());
-                    that.onHeaderChange();
+                    //that.onHeaderChange();
                 }
                 evt.getSource().getBinding("items").filter([]);
             },
@@ -1163,13 +1164,14 @@ sap.ui.define([
                 // var oTable = this.getView().byId("styleDynTable");
                 // iSelectedIndex = oEvent.getSource().getSelectedIndex();
                 // oTable.setSelectedIndex(iSelectedIndex);
-
-                var sPath = oEvent.getParameter("rowContext").getPath();
-                var oTable = this.getView().byId("styleDynTable");
-                var model = oTable.getModel();
-                //get the selected  data from the model and set to variable style
-                var data = model.getProperty(sPath);
-                styleNo = data['STYLENO'];
+                if(oEvent.getParameter("rowContext") != null){
+                    var sPath = oEvent.getParameter("rowContext").getPath();
+                    var oTable = this.getView().byId("styleDynTable");
+                    var model = oTable.getModel();
+                    //get the selected  data from the model and set to variable style
+                    var data = model.getProperty(sPath);
+                    styleNo = data['STYLENO'];
+                }
 
             },
 

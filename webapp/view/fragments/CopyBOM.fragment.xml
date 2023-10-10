@@ -169,103 +169,103 @@
                         </uiT:extension>
                         <uiT:columns>
                             <uiT:Column width="150px" sortProperty="STYLENO">
-                                <Label text="{ddtext>/STYLENO}" />
+                                <Label text="{ddtext>/STYLENO}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>STYLENO}" tooltip="{DataModel>STYLENO}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
-                            <uiT:Column width="250px" sortProperty="STYLECD">
-                                <Label text="{ddtext>/STYLECD}" />
+                            <uiT:Column width="250px" sortProperty="STYLECD"  >
+                                <Label text="{ddtext>/STYLECD}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>STYLECD}" tooltip="{DataModel>STYLECD}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="SEASONCD">
-                                <Label text="{ddtext>/SEASONCD}" />
+                                <Label text="{ddtext>/SEASONCD}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>SEASONCD}" tooltip="{DataModel>SEASONCD}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>   
                             <uiT:Column width="100px" sortProperty="VERNO">
-                                <Label text="{ddtext>/VERNO}" />
+                                <Label text="{ddtext>/VERNO}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>VERNO}" tooltip="{DataModel>VERNO}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column> 
                             <uiT:Column width="100px" sortProperty="BOMSEQ">
-                                <Label text="{ddtext>/BOMSEQ}" />
+                                <Label text="{ddtext>/BOMSEQ}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>BOMSEQ}" tooltip="{DataModel>BOMSEQ}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column> 
                             <uiT:Column width="100px" sortProperty="BOMITEM">
-                                <Label text="{ddtext>/BOMITEM}" />
+                                <Label text="{ddtext>/BOMITEM}" wrapping="true" />
                                 <uiT:template>
                                     <Text text="{DataModel>BOMITEM}" tooltip="{DataModel>BOMITEM}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="125px" sortProperty="BOMITMTYP">
-                                <Label text="{ddtext>/BOMITMTYP}" />
+                                <Label text="{ddtext>/BOMITMTYP}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>BOMITMTYP}" tooltip="{DataModel>BOMITMTYP}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column> 
                             <uiT:Column width="100px" sortProperty="PARTCD">
-                                <Label text="{ddtext>/PARTCD}" />
+                                <Label text="{ddtext>/PARTCD}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>PARTCD}" tooltip="{DataModel>PARTCD}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="200px" sortProperty="PARTDESC">
-                                <Label text="{ddtext>/PARTDESC}" />
+                                <Label text="{ddtext>/PARTDESC}" wrapping="true" />
                                 <uiT:template>
                                     <Text text="{DataModel>PARTDESC}" tooltip="{DataModel>PARTDESC}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>  
                             <uiT:Column width="100px" sortProperty="PARTCNT">
-                                <Label text="{ddtext>/PARTCNT}" />
+                                <Label text="{ddtext>/PARTCNT}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>PARTCNT}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="USGCLS">
-                                <Label text="{ddtext>/USGCLS}" />
+                                <Label text="{ddtext>/USGCLS}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>USGCLS}" tooltip="{DataModel>USGCLS}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="125px" sortProperty="PROCESSCD">
-                                <Label text="{ddtext>/PROCESSCD}" />
+                                <Label text="{ddtext>/PROCESSCD}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>PROCESSCD}" tooltip="{DataModel>PROCESSCD}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="125px" sortProperty="MATTYP">
-                                <Label text="{ddtext>/MATTYP}" />
+                                <Label text="{ddtext>/MATTYP}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>MATTYP}" tooltip="{DataModel>MATTYP}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="GMC">
-                                <Label text="{ddtext>/GMC}" />
+                                <Label text="{ddtext>/GMC}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>GMC}" tooltip="{DataModel>GMC}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="350px" sortProperty="GMCDESC">
-                                <Label text="{ddtext>/GMCDESC}" />
+                                <Label text="{ddtext>/GMCDESC}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>GMCDESC}" tooltip="{DataModel>GMCDESC}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="REFMATNO">
-                                <Label text="{ddtext>/REFMATNO}" />
+                                <Label text="{ddtext>/REFMATNO}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>REFMATNO}" tooltip="{DataModel>REFMATNO}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="150px" sortProperty="REFMATDESC">
-                                <Label text="{ddtext>/REFMATDESC}" />
+                                <Label text="{ddtext>/REFMATDESC}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>REFMATDESC}" tooltip="{DataModel>REFMATDESC}" wrapping="false" />
                                 </uiT:template>
@@ -277,19 +277,19 @@
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="PER" hAlign="End">
-                                <Label text="{ddtext>/PER}" />
+                                <Label text="{ddtext>/PER}" wrapping="true" />
                                 <uiT:template>
                                     <Text text="{DataModel>PER}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="125px" sortProperty="ENTRYUOM">
-                                <Label text="{ddtext>/ENTRYUOM}" />
+                                <Label text="{ddtext>/ENTRYUOM}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>ENTRYUOM}" tooltip="{DataModel>ENTRYUOM}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="WASTAGE" hAlign="End">
-                                <Label text="{ddtext>/WASTAGE}" />
+                                <Label text="{ddtext>/WASTAGE}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>WASTAGE}" wrapping="false" />
                                 </uiT:template>
@@ -301,7 +301,7 @@
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="125px" sortProperty="CONSUMP" hAlign="End">
-                                <Label text="{ddtext>/CONSUMP}" />
+                                <Label text="{ddtext>/CONSUMP}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>CONSUMP}" wrapping="false" />
                                 </uiT:template>
@@ -372,103 +372,103 @@
                         </uiT:extension>
                         <uiT:columns>
                             <uiT:Column width="150px" sortProperty="STYLENO">
-                                <Label text="{ddtext>/STYLENO}" />
+                                <Label text="{ddtext>/STYLENO}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>STYLENO}" tooltip="{DataModel>STYLENO}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="250px" sortProperty="STYLECD">
-                                <Label text="{ddtext>/STYLECD}" />
+                                <Label text="{ddtext>/STYLECD}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>STYLECD}" tooltip="{DataModel>STYLECD}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="SEASONCD">
-                                <Label text="{ddtext>/SEASONCD}" />
+                                <Label text="{ddtext>/SEASONCD}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>SEASONCD}" tooltip="{DataModel>SEASONCD}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>   
                             <uiT:Column width="100px" sortProperty="VERNO">
-                                <Label text="{ddtext>/VERNO}" />
+                                <Label text="{ddtext>/VERNO}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>VERNO}" tooltip="{DataModel>VERNO}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column> 
                             <uiT:Column width="100px" sortProperty="BOMSEQ">
-                                <Label text="{ddtext>/BOMSEQ}" />
+                                <Label text="{ddtext>/BOMSEQ}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>BOMSEQ}" tooltip="{DataModel>BOMSEQ}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column> 
                             <uiT:Column width="100px" sortProperty="BOMITEM">
-                                <Label text="{ddtext>/BOMITEM}" />
+                                <Label text="{ddtext>/BOMITEM}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>BOMITEM}" tooltip="{DataModel>BOMITEM}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="125px" sortProperty="BOMITMTYP">
-                                <Label text="{ddtext>/BOMITMTYP}" />
+                                <Label text="{ddtext>/BOMITMTYP}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>BOMITMTYP}" tooltip="{DataModel>BOMITMTYP}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column> 
                             <uiT:Column width="100px" sortProperty="PARTCD">
-                                <Label text="{ddtext>/PARTCD}" />
+                                <Label text="{ddtext>/PARTCD}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>PARTCD}" tooltip="{DataModel>PARTCD}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="200px" sortProperty="PARTDESC">
-                                <Label text="{ddtext>/PARTDESC}" />
+                                <Label text="{ddtext>/PARTDESC}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>PARTDESC}" tooltip="{DataModel>PARTDESC}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>  
                             <uiT:Column width="100px" sortProperty="PARTCNT">
-                                <Label text="{ddtext>/PARTCNT}" />
+                                <Label text="{ddtext>/PARTCNT}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>PARTCNT}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="USGCLS">
-                                <Label text="{ddtext>/USGCLS}" />
+                                <Label text="{ddtext>/USGCLS}" wrapping="true" />
                                 <uiT:template>
                                     <Text text="{DataModel>USGCLS}" tooltip="{DataModel>USGCLS}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="125px" sortProperty="PROCESSCD">
-                                <Label text="{ddtext>/PROCESSCD}" />
+                                <Label text="{ddtext>/PROCESSCD}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>PROCESSCD}" tooltip="{DataModel>PROCESSCD}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="125px" sortProperty="MATTYP">
-                                <Label text="{ddtext>/MATTYP}" />
+                                <Label text="{ddtext>/MATTYP}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>MATTYP}" tooltip="{DataModel>MATTYP}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="GMC">
-                                <Label text="{ddtext>/GMC}" />
+                                <Label text="{ddtext>/GMC}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>GMC}" tooltip="{DataModel>GMC}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="350px" sortProperty="GMCDESC">
-                                <Label text="{ddtext>/GMCDESC}" />
+                                <Label text="{ddtext>/GMCDESC}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>GMCDESC}" tooltip="{DataModel>GMCDESC}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="REFMATNO">
-                                <Label text="{ddtext>/REFMATNO}" />
+                                <Label text="{ddtext>/REFMATNO}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>REFMATNO}" tooltip="{DataModel>REFMATNO}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="150px" sortProperty="REFMATDESC">
-                                <Label text="{ddtext>/REFMATDESC}" />
+                                <Label text="{ddtext>/REFMATDESC}"  wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>REFMATDESC}" tooltip="{DataModel>REFMATDESC}" wrapping="false" />
                                 </uiT:template>
@@ -480,19 +480,19 @@
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="PER" hAlign="End">
-                                <Label text="{ddtext>/PER}" />
+                                <Label text="{ddtext>/PER}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>PER}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="125px" sortProperty="ENTRYUOM">
-                                <Label text="{ddtext>/ENTRYUOM}" />
+                                <Label text="{ddtext>/ENTRYUOM}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>ENTRYUOM}" tooltip="{DataModel>ENTRYUOM}" wrapping="false" />
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="100px" sortProperty="WASTAGE" hAlign="End">
-                                <Label text="{ddtext>/WASTAGE}" />
+                                <Label text="{ddtext>/WASTAGE}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>WASTAGE}" wrapping="false" />
                                 </uiT:template>
@@ -504,7 +504,7 @@
                                 </uiT:template>
                             </uiT:Column>
                             <uiT:Column width="125px" sortProperty="CONSUMP" hAlign="End">
-                                <Label text="{ddtext>/CONSUMP}" />
+                                <Label text="{ddtext>/CONSUMP}" wrapping="true"/>
                                 <uiT:template>
                                     <Text text="{DataModel>CONSUMP}" wrapping="false" />
                                 </uiT:template>

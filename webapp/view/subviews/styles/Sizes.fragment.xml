@@ -7,11 +7,27 @@
             </Toolbar>
         </headerToolbar> -->
     <VBox fitContainer="true" class="sapUiTinyMargin">
+        <dependents>
+            <core:CommandExecution id="CE_SZEDIT" command="Edit" enabled="true" execute="setSizeEditMode" />
+            <core:CommandExecution id="CE_SZSAVE" command="Save" enabled="true" execute="onSaveSizeTable" />
+            <core:CommandExecution id="CE_SZCANCEL" command="Cancel" enabled="true" execute="cancelSizeEdit" />
+        </dependents> 
         <Toolbar height="2rem" style="Clear">
+            <Text text="{counts>/rowCountsizesTable} {ddtext>/ROWS}" />
             <ToolbarSpacer />
             <Button id="btnSizeSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveSizeTable" visible="false" />
             <Button id="btnSizeEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setSizeEditMode" visible="true" />
             <Button id="btnSizeCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelSizeEdit" visible="false" />
+            <Button id="btnSizeFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="1" />
+                </customData>
+            </Button>
+            <Button id="btnSizeExitFullScreen" icon="sap-icon://exit-full-screen" press="onTableResize" tooltip="{ddtext>/EXITFULLSCREEN}" visible="{ui>/fullscreen}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="0" />
+                </customData>
+            </Button>
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="sizesTable" />

@@ -2,8 +2,16 @@
     xmlns:c="zui3derp.control" xmlns:uiT="sap.ui.table"  xmlns:layout="sap.ui.layout" >
      
 <VBox fitContainer="true" class="sapUiTinyMargin">
+    <dependents>
+        <core:CommandExecution id="CE_GMCNEW" command="New" enabled="true" execute="addLine" />
+        <core:CommandExecution id="CE_GMCEDIT" command="Edit" enabled="true" execute="setBOMbyGMCEditMode" />
+        <core:CommandExecution id="CE_GMCDELETE" command="Delete" enabled="true" execute="onDeleteBOMItems" />
+        <core:CommandExecution id="CE_GMCSAVE" command="Save" enabled="true" execute="onSaveBOMbyGMC" />
+        <core:CommandExecution id="CE_GMCCANCEL" command="Cancel" enabled="true" execute="cancelBOMbyGMCEdit" />
+        <core:CommandExecution id="CE_GMCREFRESH" command="Refresh" enabled="true" execute="onRefresh" />
+    </dependents> 
     <Toolbar height="2rem" style="Clear">
-        <!-- <Label text="{i18n>BOMbyGMC}"/> -->
+        <Text text="{counts>/rowCountbomGMCTable} {ddtext>/ROWS}" />
         <ToolbarSpacer />
         <Button id="btnBOMGMCAdd" class="verDtlBtnPaddingRight" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLineBOM" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>

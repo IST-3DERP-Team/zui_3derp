@@ -16,6 +16,16 @@
             <Button id="btnAttachmentDelete" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteFile" visible="true" />
             <!-- <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editattachments}" press="setFilesEditMode" visible="{= ${FilesEditModeModel>/editMode} === true ? false : true }" /> -->
             <!-- <Button type="Ghost" icon="sap-icon://decline" tooltip="{i18n>Canceledit}" press="cancelFilesEdit" visible="{= ${FilesEditModeModel>/editMode} === true ? true : false }" /> -->
+            <Button id="btnAttachmentFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="1" />
+                </customData>
+            </Button>
+            <Button id="btnAttachmentExitFullScreen" icon="sap-icon://exit-full-screen" press="onTableResize" tooltip="{ddtext>/EXITFULLSCREEN}" visible="{ui>/fullscreen}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="0" />
+                </customData>
+            </Button>
         </Toolbar>
 
         <!-- Attachments -->

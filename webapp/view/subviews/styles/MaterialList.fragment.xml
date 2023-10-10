@@ -1,8 +1,13 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
     <VBox fitContainer="true" class="sapUiTinyMargin">
+        <dependents>
+            <core:CommandExecution id="CE_MATEDIT" command="Edit" enabled="true" execute="setMaterialListEditMode" />
+            <core:CommandExecution id="CE_MATSAVE" command="Save" enabled="true" execute="onSaveMaterialList" />
+            <core:CommandExecution id="CE_MATCANCEL" command="Cancel" enabled="true" execute="cancelMaterialListEdit" />
+        </dependents> 
         <Toolbar height="2rem" style="Clear">
-            <!-- <Label text="{i18n>MaterialList}" /> -->
-            <Text text="{ui>/rowCountMatLst} {ddtext>/ROWS}" />
+            <!-- <Text text="{ui>/rowCountMatLst} {ddtext>/ROWS}" /> -->
+            <Text text="{counts>/rowCountmaterialListTable} {ddtext>/ROWS}" />
             <ToolbarSpacer />
             <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setMaterialListEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
             <Button class="verDtlBtnPaddingRight" icon="sap-icon://multiselect-all" text="{ddtext>/ASSIGNMATERIAL}" tooltip="{ddtext>/ASSIGNMATERIAL}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />

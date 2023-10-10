@@ -1,7 +1,14 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
     <VBox fitContainer="true" class="sapUiTinyMargin">
+        <dependents>
+            <core:CommandExecution id="CE_VATNEW" command="New" enabled="true" execute="addLine" />
+            <core:CommandExecution id="CE_VATEDIT" command="Edit" enabled="true" execute="setVersionAttrEditMode" />
+            <core:CommandExecution id="CE_VATDELETE" command="Delete" enabled="true" execute="onDeleteVersionAttr" />
+            <core:CommandExecution id="CE_VATSAVE" command="Save" enabled="true" execute="onSaveVersionAttrTable" />
+            <core:CommandExecution id="CE_VATCANCEL" command="Cancel" enabled="true" execute="cancelVersionAttrEdit" />
+        </dependents> 
         <Toolbar height="2rem" style="Clear">
-            <!-- <Label text="{i18n>VersionAttributes}" /> -->
+            <Text text="{counts>/rowCountversionAttrTable} {ddtext>/ROWS}" />
             <ToolbarSpacer />
             <Button id="btnVersionAttrAdd" class="verDtlBtnPaddingRight" icon="sap-icon://add" press="addLine" tooltip="{ddtext>/ADDNEWLINE}" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${VersionAttrEditModeModel>/editMode} === true ? false : true : false }">
                 <customData>

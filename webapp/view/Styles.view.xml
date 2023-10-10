@@ -141,7 +141,7 @@
                             <ToolbarSpacer />
                             <Button icon="sap-icon://add" tooltip="{ddtext>/CREATENEWSTYLE}" press="onCreateNewStyle" visible="{= ${AppAction>/appChange} === true ? true : false }" />
                             <Button icon="sap-icon://copy" tooltip="{ddtext>/COPYSTYLE}" press="onCopyMode" visible="{= ${AppAction>/appChange} === true ? true : false }" />
-                            <Button icon="sap-icon://upload" tooltip="{ddtext>/UPLOADSTYLE}" press="onUploadStyle"  visible="{= ${AppAction>/appChange} === true ? true : false }"/>
+                            <Button icon="sap-icon://upload" tooltip="{ddtext>/UPLOADSTYLE}" press="onUploadStyle"  visible="false"/>
                             <Button icon="sap-icon://refresh" tooltip="{ddtext>/REFRESH}" press="onRefresh" />
                             <Button icon="sap-icon://excel-attachment" tooltip="{ddtext>/EXPORTTOEXCEL}" press="onExport">
                                 <customData>

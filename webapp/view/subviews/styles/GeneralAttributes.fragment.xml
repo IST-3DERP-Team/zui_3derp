@@ -6,10 +6,18 @@
             </Toolbar>
         </headerToolbar> -->
    <VBox fitContainer="true" class="sapUiTinyMargin">
+        <dependents>
+            <core:CommandExecution id="CE_GATNEW" command="New" enabled="true" execute="addLine" />
+            <core:CommandExecution id="CE_GATEDIT" command="Edit" enabled="true" execute="setGeneralAttrEditMode" />
+            <core:CommandExecution id="CE_GATDELETE" command="Delete" enabled="true" execute="onDeleteGeneralAttr" />
+            <core:CommandExecution id="CE_GATSAVE" command="Save" enabled="true" execute="onSaveGeneralTable" />
+            <core:CommandExecution id="CE_GATCANCEL" command="Cancel" enabled="true" execute="cancelGeneralAttrEdit" />
+        </dependents> 
     <MessageStrip id="GeneralAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiTinyMarginBottom" type="Error" visible="false" />
     <MessageStrip id="GeneralAttrInfoMessageStrip" text="" showIcon="true" showCloseButton="false" class="sapUiTinyMarginBottom" visible="false" />
 
     <Toolbar height="2rem" style="Clear">
+            <Text text="{counts>/rowCountgeneralTable} {ddtext>/ROWS}" />
             <Button id="btnGenAttrInfo" type="Reject" icon="sap-icon://alert" text="Click or hover to show details" tooltip="{UI_MODEL>/genAttrInfo}" press="viewGenAttrInfo" visible="false" />
             <ToolbarSpacer />
             <Button id="btnGenAttrAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLine" visible="true">
@@ -26,6 +34,16 @@
             <Button id="btnGenAttrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteGeneralAttr" visible="true" />
             <Button id="btnGenAttrSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveGeneralTable" visible="false" />
             <Button id="btnGenAttrCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelGeneralAttrEdit" visible="false" />
+            <Button id="btnGenAttrFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="1" />
+                </customData>
+            </Button>
+            <Button id="btnGenAttrExitFullScreen" icon="sap-icon://exit-full-screen" press="onTableResize" tooltip="{ddtext>/EXITFULLSCREEN}" visible="{ui>/fullscreen}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="0" />
+                </customData>
+            </Button>
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="generalTable" />

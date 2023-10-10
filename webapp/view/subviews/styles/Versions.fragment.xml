@@ -8,8 +8,16 @@
                 <Title text="{i18n>Versions}" />
             </Toolbar>
         </headerToolbar> -->
+        <dependents>
+            <core:CommandExecution id="CE_VERNEW" command="New" enabled="true" execute="onCreateNewVersion" />
+            <core:CommandExecution id="CE_VEREDIT" command="Edit" enabled="true" execute="setVersionEditMode" />
+            <core:CommandExecution id="CE_VERDELETE" command="Delete" enabled="true" execute="onDeleteVersion" />
+            <core:CommandExecution id="CE_VERSAVE" command="Save" enabled="true" execute="onSaveVersions" />
+            <core:CommandExecution id="CE_VERCANCEL" command="Cancel" enabled="true" execute="cancelVersionEdit" />
+        </dependents> 
 
         <Toolbar height="2rem" style="Clear">
+            <Text text="{counts>/rowCountversionsTable} {ddtext>/ROWS}" />
             <ToolbarSpacer />
             <Button id="btnVersionAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADD}" press="onCreateNewVersion" visible="true"/>                                    
             <Button id="btnVersionEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setVersionEditMode" visible="true"/>
@@ -17,6 +25,16 @@
             <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete"  tooltip="{ddtext>/DELETE}" press="onDeleteVersion" visible="true"/>
             <Button id="btnVersionSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveVersions" visible="false"/>
             <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelVersionEdit" visible="false"/>
+            <Button id="btnVersionFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="1" />
+                </customData>
+            </Button>
+            <Button id="btnVersionExitFullScreen" icon="sap-icon://exit-full-screen" press="onTableResize" tooltip="{ddtext>/EXITFULLSCREEN}" visible="{ui>/fullscreen}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="0" />
+                </customData>
+            </Button>
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="versionsTable" />

@@ -1,7 +1,14 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt"
     xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
 <VBox fitContainer="true" class="sapUiTinyMargin">
+    <dependents>
+            <core:CommandExecution id="CE_UVEDIT" command="Edit" enabled="true" execute="setBOMbyUVEditMode" />
+            <core:CommandExecution id="CE_UVSAVE" command="Save" enabled="true" execute="onSaveBOMbyUV" />
+            <core:CommandExecution id="CE_UVCANCEL" command="Cancel" enabled="true" execute="cancelBOMbyUVEdit" />
+            <core:CommandExecution id="CE_UVREFRESH" command="Refresh" enabled="true" execute="onRefresh" />
+    </dependents> 
     <Toolbar height="2rem" style="Clear">
+        <Text text="{counts>/rowCountbomUVTable} {ddtext>/ROWS}" />
         <HBox alignContent="Center" alignItems="Center">
             <Label text="{ddtext>/USAGECLASS}"/>
             <!-- change UsageClassModel to UsageClassUVModel -->

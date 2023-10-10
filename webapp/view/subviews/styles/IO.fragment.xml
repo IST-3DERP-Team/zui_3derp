@@ -2,17 +2,23 @@
     
     <VBox fitContainer="true" class="sapUiTinyMargin">
         <Toolbar height="2rem" style="Clear">
+            <Text text="{counts>/rowCountioTable} {ddtext>/ROWS}" />
             <ToolbarSpacer />
             <Button id="btnIORefresh" type="Ghost" icon="sap-icon://refresh" tooltip="{ddtext>/REFRESH}" press="onRefresh" visible="true">
                 <customData>
                     <core:CustomData key="TableName" value="ioTable" />
                 </customData>
             </Button>
-            <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
+            <Button id="btnIOFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
                 <customData>
-                    <core:CustomData key="TableName" value="ioTable" />
+                    <core:CustomData key="Fullscreen" value="1" />
                 </customData>
-            </Button> -->
+            </Button>
+            <Button id="btnIOExitFullScreen" icon="sap-icon://exit-full-screen" press="onTableResize" tooltip="{ddtext>/EXITFULLSCREEN}" visible="{ui>/fullscreen}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="0" />
+                </customData>
+            </Button>
         </Toolbar>
 
         <!-- <MessageStrip id="IOMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" /> -->

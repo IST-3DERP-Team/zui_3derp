@@ -57,6 +57,27 @@ sap.ui.define([
                 this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
                 this._tableValueHelp = TableValueHelp;
 
+                var oTableEventDelegate = {
+                    onkeyup: function (oEvent) {
+                        that.onKeyUp(oEvent);
+                    },
+                };
+
+                this.byId("versionAttrTable").addEventDelegate(oTableEventDelegate);
+                this.byId("bomGMCTable").addEventDelegate(oTableEventDelegate);
+                this.byId("bomUVTable").addEventDelegate(oTableEventDelegate);
+                this.byId("bomDetailedTable").addEventDelegate(oTableEventDelegate);
+                this.byId("materialListTable").addEventDelegate(oTableEventDelegate);
+
+                this.getView().setModel(new JSONModel({
+                    rowCountversionAttrTable: 0,
+                    rowCountbomGMCTable:0,
+                    rowCountbomUVTable: 0,
+                    rowCountbomDetailedTable: 0,
+                    rowCountmaterialListTable:0
+                }), "counts");   
+               
+
                  // if (!this._CopyBOMDialog) {
                 //     this._CopyBOMDialog = sap.ui.xmlfragment("zui3derp.view.fragments.CopyBOM", this);
                 //     this._CopyBOMDialog.setModel(new JSONModel());
@@ -594,6 +615,8 @@ sap.ui.define([
                         else {
                             oTable.getModel("DataModel").setProperty("/results", oData.results);
                         }
+                         
+                        that.getView().getModel("counts").setProperty("/rowCountversionAttrTable", oData.results.length);
 
                         oTable.bindRows("DataModel>/results");
                         //oTable.setVisibleRowCount(oData.results.length);
@@ -652,8 +675,8 @@ sap.ui.define([
                                         }
                                     });
         
-                                    if (index === 0) item.ACTIVE = "X";
-                                    else item.ACTIVE = "";
+                                    if (index === 0) item.EDITABLE = "X";
+                                    else item.EDITABLE = "";
                                 });
                             }
                         });
@@ -673,6 +696,9 @@ sap.ui.define([
                 this.setRowEditMode("versionAttrTable");
                 this.setVersionAttrEditModeControls();
                 this.disableOtherTabs("versionTabBar");
+                this.getView().byId("versionAttrTable").getModel("DataModel").getData().results.forEach(item => {
+                    item.EDITABLE = "X";
+                });
             },
 
             cancelVersionAttrEdit: function () {
@@ -724,10 +750,109 @@ sap.ui.define([
                 this.getView().setModel(new JSONModel(this.getView().getModel("AttribCdModel").getData()), "AttribCodeModel");
             },
 
-            onVersionAttrChange: function () {
+            onVersionAttrChange: function (oEvent) {
                 //set version attributes change flag
                 this._versionAttrChanged = true;
                 this.setChangeStatus(true);
+
+                if (oEvent !== undefined) {
+                    var oSource = oEvent.getSource();
+
+                    if (oSource.getBindingInfo("value") !== undefined) {
+                        var sRowPath = oSource.oParent.getBindingContext("DataModel").sPath;
+                        var vColPath = oSource.getBindingInfo("value").parts[0].path;
+                        var vAttribtyp = oEvent.getSource().oParent.oParent.getModel("DataModel").getProperty(sRowPath + "/Attribtyp");
+                        var oModelData = {};
+
+                        if (vColPath.toUpperCase() === "ATTRIBTYP") {
+                            this.setVersionAttrEditModeControls();
+    
+                            if (oEvent.getParameter("value") === "") {
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribtyp", "");
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", "");
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
+                            }
+                            else {
+                                oSource.getSuggestionItems().forEach(item => {
+                                    if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                                        oSource.setSelectedKey(item.getProperty("key"));
+                                    }
+                                })
+                                setTimeout(() => {
+                                    this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribtyp", oSource.getSelectedKey());
+                                    this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", "");
+                                    this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
+                                }, 100);
+                                
+                            }
+
+                            var aModelData = this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === oSource.getSelectedKey());
+                            oModelData["results"] = aModelData;
+                            this.getView().setModel(new JSONModel(oModelData), "AttribCodeModel");
+                        }
+                        else if (vColPath.toUpperCase() === "ATTRIBCD") {   
+                            if (oEvent.getParameter("value") === "") {
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", "");
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", "");
+                            }
+                            else {
+                                oSource.getSuggestionItems().forEach(item => {
+                                    if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                                        oSource.setSelectedKey(item.getProperty("key"));
+                                    }
+                                })
+                               // setTimeout(() => {
+                                    this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Attribcd", oSource.getSelectedKey());
+                                //}, 100);    
+                                    if(vAttribtyp ==='STYP'){
+                                        const vWvTypAttrCode = oEvent.getSource().oParent.oParent.getModel("DataModel").getData().results.filter(item => item.Attribtyp === "WVTYP")[0];
+                                        
+                                        this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey() && fItem.Attribgrp === vWvTypAttrCode.Attribcd).forEach(item => {
+                                            this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
+                                            var iRowIndex = +sRowPath.replace("/results/","");
+
+                                            this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Valuetyp", item.Valuetyp);
+        
+                                            if (this.byId("versionAttrTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
+                                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
+                                            }
+                                        })     
+                                    }
+                                    else
+                                    {
+                                        this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribcd === oSource.getSelectedKey()).forEach(item => {
+                                            this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Desc1", item.Desc1);
+                                            var iRowIndex = +sRowPath.replace("/results/","");
+
+                                            this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Valuetyp", item.Valuetyp);
+
+                                            if (this.byId("versionAttrTable").getContextByIndex(iRowIndex).getProperty("Valuetyp").toUpperCase() === "NUMVALUE") {
+                                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", item.Valunit);
+                                            }
+                                        })   
+                                    }   
+                                // }, 100);
+                                                          
+                            }
+                        }
+                        else if (vColPath.toUpperCase() === "VALUNIT") {
+                            if (oEvent.getParameter("value") === "") {
+                                this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", "");
+                            }
+                            else {
+                                oSource.getSuggestionItems().forEach(item => {
+                                    if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                                        oSource.setSelectedKey(item.getProperty("key"));
+                                    }
+                                })
+                                setTimeout(() => {
+                                    this.byId("versionAttrTable").getModel("DataModel").setProperty(sRowPath + "/Valunit", oSource.getSelectedKey());
+                                }, 100);
+                                
+                            } 
+                        }
+                    }
+                }
             },
 
             onVersionAttrInputChange: function (oEvent) {
@@ -895,6 +1020,7 @@ sap.ui.define([
                                 "Attribtyp": oData.results[i].Attribtyp,
                                 "Attribcd": oData.results[i].Attribcd,
                                 "Desc1": oData.results[i].Desc1,
+                                "Valuetyp": oData.results[i].Valuetyp,
                                 "Attribval": oData.results[i].Attribval,
                                 "Valunit": oData.results[i].Valunit,
                                 "Attribseq": oData.results[i].Attribseq,
@@ -1056,11 +1182,11 @@ sap.ui.define([
                                 
                                 if (oCellCtrlValTyp !== "text") {
                                     if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBTYP") {
-                                        cell.setEnabled(true);
+                                        //cell.setEnabled(true);
                                     }
                                     else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBVAL") {
                                         if (vValTyp === "STRVAL" || vValTyp === "NUMVALUE") {
-                                            cell.setEnabled(true);
+                                            //cell.setEnabled(true);
             
                                             if (vValTyp === "NUMVALUE") {
                                                 cell.setType(sap.m.InputType.Number);
@@ -1070,31 +1196,31 @@ sap.ui.define([
                                             }
                                         }
                                         else {
-                                            cell.setEnabled(false);
+                                            //cell.setEnabled(false);
                                         }
                                     }
                                     else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "VALUNIT") {
                                         if (vValTyp === "NUMVALUE") {
-                                            cell.setEnabled(true);
+                                            //cell.setEnabled(true);
                                         }
                                         else {
-                                            cell.setEnabled(false);
+                                            //cell.setEnabled(false);
                                         }
                                     }
                                     else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "ATTRIBCD") {
                                         if (this.getView().getModel("AttribCdModel").getData().results.filter(fItem => fItem.Attribtyp === vAttrTyp).length > 0 && vAttrTyp !== "" && vAttrTyp !== undefined) {
-                                            cell.setEnabled(true);
+                                           //cell.setEnabled(true);
                                         }
                                         else {
-                                            cell.setEnabled(false);
+                                            //cell.setEnabled(false);
                                         }
                                     }
                                     else if (cell.getBindingInfo(oCellCtrlValTyp).parts[0].path.toUpperCase() === "CASVERIND") {
                                         if (vAttrTyp !== "" && vAttrTyp !== undefined) {
-                                            cell.setEnabled(true);
+                                            //cell.setEnabled(true);
                                         }
                                         else {
-                                            cell.setEnabled(false);
+                                            //cell.setEnabled(false);
                                         }
                                     }
                                 }
@@ -1274,6 +1400,7 @@ sap.ui.define([
                         });
 
                         oTable.setModel(oJSONModel, "DataModel");
+                        that.getView().getModel("counts").setProperty("/rowCountbomGMCTable", oData.results.length);
                         //oTable.setVisibleRowCount(oData.results.length);
                         oTable.attachPaste();
 
@@ -1445,10 +1572,17 @@ sap.ui.define([
                             else if (col.mAggregations.template.mBindingInfos.selected !== undefined) {
                                 sColName = col.mAggregations.template.mBindingInfos.selected.parts[0].path;
                             }
+
+                            var me = this;
+                            var oInputEventDelegate = {
+                                onkeydown: function(oEvent){
+                                    me.onInputKeyDown(oEvent);
+                                },
+                            };
                             
                             var column = this._aColumns["bomGMC"].filter(item => item.ColumnName === sColName)[0];
                             console.log(column)
-                            col.setTemplate(this.columnTemplate('GMC', column));
+                            col.setTemplate(this.columnTemplate('GMC', column).addEventDelegate(oInputEventDelegate));
                         });
 
                         this.setTableValueHelp(oTable, "bomGMC");
@@ -1845,12 +1979,13 @@ sap.ui.define([
                     };
 
                     var vMessage = "";
-                    if (this._dataMode !== "NEW" && this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
-                        vMessage = "Material list with assigned SAP material no. already exists.\r\nMaterial will be deleted and a new one will be created.";
-                    }
-                    else {
+                     //10/05/2023 comment below checking. records will not be deleted in zerp_stylmatlst
+                    //if (this._dataMode !== "NEW" && this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                    //    vMessage = "Material list with assigned SAP material no. already exists.\r\nMaterial will be deleted and a new one will be created.";
+                    //}
+                    //else {
                         vMessage = "Are you sure you want to save?";
-                    }
+                    //}
 
                     MessageBox.confirm(vMessage, {
                         actions: ["Continue", "Cancel"],
@@ -3105,7 +3240,6 @@ sap.ui.define([
             },         
 
             onSearchCopyBOMStyles: function(oEvent) {
-                Common.openProcessingDialog(this);
 
                 var me = this;
                 var oModel = this.getOwnerComponent().getModel();
@@ -3158,6 +3292,11 @@ sap.ui.define([
                 })
 
                 aFilters.push(new Filter(aFilter, true));
+                if(aFilter.length === 0 ){
+                    MessageBox.information("No search parameter defined");
+                    return;
+                }
+                Common.openProcessingDialog(this);
                 // console.log(aFilters);
                 console.log(vCustGrp);
                 oModel.setHeaders({
@@ -4325,6 +4464,7 @@ sap.ui.define([
                             columns: columnData
                         });
                         oTable.setModel(oJSONModel, "DataModel");
+                        that.getView().getModel("counts").setProperty("/rowCountbomUVTable", unique.length);
                         //oTable.setVisibleRowCount(unique.length);
                         //oTable.attachPaste();
                         // oTable.bindColumns("DataModel>/columns", function (sId, oContext) {
@@ -4399,9 +4539,16 @@ sap.ui.define([
                         else if (col.mAggregations.template.mBindingInfos.selected !== undefined) {
                             sColName = col.mAggregations.template.mBindingInfos.selected.parts[0].path;
                         }
-                        
+
+                        var me = this;
+                        var oInputEventDelegate = {
+                            onkeydown: function(oEvent){
+                                me.onInputKeyDown(oEvent);
+                            },
+                        };
+
                         var column = this._aColumns["bomUV"].filter(item => item.ColumnName === sColName)[0];
-                        col.setTemplate(this.columnTemplate('UV', column));
+                        col.setTemplate(this.columnTemplate('UV', column).addEventDelegate(oInputEventDelegate));
                     });
                     /*
                     var bomuvconfig = this._bomuvconfig.filter(fItem => fItem.MATTYP !== '');
@@ -4651,12 +4798,13 @@ sap.ui.define([
                     };
 
                     var vMessage = "";
-                    if (this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
-                        vMessage = "Material list with assigned SAP material no. already exists.\r\nMaterial will be deleted and a new one will be created.";
-                    }
-                    else {
+                    //10/05/2023 comment below checking. records will not be deleted in zerp_stylmatlst
+                    //if (this.getView().getModel("BOMValidation").getData().filter(fItem => fItem.MSG === "02").length > 0) {
+                    //    vMessage = "Material list with assigned SAP material no. already exists.\r\nMaterial will be deleted and a new one will be created.";
+                    //}
+                    //else {
                         vMessage = "Are you sure you want to save?";
-                    }
+                    //}
 
                     MessageBox.confirm(vMessage, {
                         actions: ["Continue", "Cancel"],
@@ -4803,6 +4951,7 @@ sap.ui.define([
 
                         oJSONModel.setData(data);
                         oTable.setModel(oJSONModel, "DataModel");
+                        that.getView().getModel("counts").setProperty("/rowCountbomDetailedTable", data.results.items.length);
                     },
                     error: function () {
                     }
@@ -4958,11 +5107,7 @@ sap.ui.define([
                         oTable.setModel(oJSONModel, "DataModel");
                         me.setLocTableColumns("materialListTable", columnData);
                         me.updateColumnMenu(me.byId("materialListTable"), "materialListTable");
-                        var oJSONModelMat = new JSONModel();
-                        oJSONModelMat.setData({
-                            rowCountMatLst: oData.results.length,
-                        });
-                        me.getView().setModel(oJSONModelMat, "ui");
+                        that.getView().getModel("counts").setProperty("/rowCountmaterialListTable", oData.results.length);
 
                         //oTable.setVisibleRowCount(oData.results.length);
                         oTable.attachPaste();
@@ -5807,12 +5952,12 @@ sap.ui.define([
                     var oTable = this.getView().byId(tabName);
                     var oModel = oTable.getModel("DataModel");
                     var oData = oModel.getProperty('/results');
-                    oData.forEach(item => item.ACTIVE = "");
+                    oData.forEach(item => item.EDITABLE = "");
 
                     if (tabName === "versionAttrTable") {
                         aNewRow = [{
                             NEW: true, 
-                            ACTIVE: "X",
+                            EDITABLE: "X",
                             Attribcd: "",
                             Attribtyp: "",
                             Attribval: "",
@@ -5823,7 +5968,7 @@ sap.ui.define([
                         }];
                     }
                     else{
-                         var aNewRow = [{ NEW: true, ACTIVE: "X" }];
+                         var aNewRow = [{ NEW: true, EDITABLE: "X" }];
                     }
                     var aDataAfterChange = aNewRow.concat(oData);
                     oModel.setProperty('/results', aDataAfterChange);
@@ -5848,20 +5993,20 @@ sap.ui.define([
                 var oTable = this.getView().byId(tabName);
                 var oModel = oTable.getModel("DataModel");
                 var oData = oModel.getProperty('/results');
-                oData.forEach(item => item.ACTIVE = "");
+                oData.forEach(item => item.EDITABLE = "");
                 var aNewRow = [];
                 if (tabName === "bomGMCTable"){
                     var ZerpCheck = this.getView().getModel("bomGMCZrpChk").getData();
                     var aNewRow = [{
                         NEW: true,
-                        ACTIVE: "X",
+                        EDITABLE: "X",
                         BOMITMTYP: "GMC",
                         PARTCNT: ZerpCheck.results.filter(f=> f.COLUMNNAME === "PARTCNT")[0].FIELD8,
                         PER : ZerpCheck.results.filter(f=> f.COLUMNNAME === "PER")[0].FIELD8
                     }];
                 }
                 else{
-                    aNewRow = [{ NEW: true, ACTIVE: "X" }];
+                    aNewRow = [{ NEW: true, EDITABLE: "X" }];
                 }
                 var aDataAfterChange = aNewRow.concat(oData);
 
@@ -5896,7 +6041,7 @@ sap.ui.define([
                     var oTable = this.getView().byId(tabName);
                     var oModel = oTable.getModel("DataModel");
                     var oData = oModel.getProperty('/results');
-                    oData.forEach(item => item.ACTIVE = "");
+                    oData.forEach(item => item.EDITABLE = "");
                     zerpCheck = await this.getZerpCheck(this._sbu, "BOMGMC");
                     console.log(zerpCheck);
                     var oJSONModel = new JSONModel();
@@ -5906,7 +6051,7 @@ sap.ui.define([
 
                     var aNewRow = [{
                         NEW: true,
-                        ACTIVE: "X",
+                        EDITABLE: "X",
                         BOMITMTYP: "GMC",
                         PARTCNT: zerpCheck.results.filter(f=> f.COLUMNNAME === "PARTCNT")[0].FIELD8,
                         PER : zerpCheck.results.filter(f=> f.COLUMNNAME === "PER")[0].FIELD8
@@ -6015,7 +6160,7 @@ sap.ui.define([
                         var iIndexToActivate = -1;
                         console.log(oData)
                         oData.forEach((item, index) => {
-                            if (item.ACTIVE === "X") {
+                            if (item.EDITABLE === "X") {
                                 oData.splice(index, 1);
                                 oModel.setProperty('/results', oData);
 
@@ -6026,7 +6171,7 @@ sap.ui.define([
 
                         oData.forEach((item, index) => {
                             if (item.NEW && iIndexToActivate === -1) {
-                                item.ACTIVE = "X";
+                                item.EDITABLE = "X";
                                 iIndexToActivate = index;
                             }
                         })
@@ -7374,12 +7519,18 @@ sap.ui.define([
                 var changeFunction, liveChangeFunction, inputValueHelpChangeFunction, inputValueHelpLiveChangeFunction;
                 var valueHelpRequestFunction;
                 var editModeCond;
+                var me = this;
+                var oInputEventDelegate = {
+                    onkeydown: function(oEvent){
+                        me.onInputKeyDown(oEvent);
+                    },
+                };
 
                 if (sTabId === "versionAttrTable") { 
                     changeFunction = this.onVersionAttrChange.bind(this);
                     liveChangeFunction = this.onVersionAttrChange.bind(this);
-                    inputValueHelpChangeFunction = this.onVersionAttrInputChange.bind(this);
-                    inputValueHelpLiveChangeFunction = this.onVersionAttrChange.bind(this);
+                    inputValueHelpChangeFunction = this.onVersionAttrChange.bind(this); //this.onVersionAttrInputChange.bind(this);
+                    inputValueHelpLiveChangeFunction = this.onVersionAttrChange.bind(this); //this.onVersionAttrChange.bind(this);
                     editModeCond = true;
                 }
                 else if (sTabId === "materialListTable") { 
@@ -7431,12 +7582,15 @@ sap.ui.define([
                                     if (sTabId === "versionAttrTable") {
                                         if (sColName.toUpperCase() === "ATTRIBTYP") {
                                             valueHelpRequestFunction = this.onAttrTypesValueHelp.bind(this);
+                                            editModeCond = "{= ${DataModel>EDITABLE} === 'X' ? true : false }";
                                         }
                                         else if (sColName.toUpperCase() === "ATTRIBCD") {
                                             valueHelpRequestFunction = this.onAttrCodesValueHelp.bind(this);
+                                            editModeCond = "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Attribtyp} !== '' ? true : false :false }";
                                         }
                                         else if (sColName.toUpperCase() === "VALUNIT") {
                                             valueHelpRequestFunction = this.onUomValueHelp.bind(this);
+                                            editModeCond = "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' ? true : false : false }";
                                         }
                                     }
                                     else if (sTabId === "materialListTable") {
@@ -7518,7 +7672,7 @@ sap.ui.define([
                                             ]
                                         });
                                     }
-
+                                    oInput.addEventDelegate(oInputEventDelegate);
                                     col.setTemplate(oInput);
                                 }
                                 // if (sTabId === "materialListTable"){
@@ -7530,6 +7684,33 @@ sap.ui.define([
                                 //         editModeCond = "{= ${MaterialListEditModeModel>/editMode} ? ${DataModel>SUPPLYTYP} === 'NOM' ? true : false : false }";
                                 //     }
                                 // }
+                                else if (sTabId === "versionAttrTable" && sColName.toUpperCase() === "ATTRIBVAL") {
+                                    col.setTemplate(new sap.m.Input({
+                                        type: "Text",
+                                        value: "{DataModel>" + sColName + "}",
+                                        maxLength: +ci.Length,
+                                        change: changeFunction,
+                                        liveChange: liveChangeFunction,
+                                        editable: "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' || ${DataModel>Valuetyp} === 'STRVAL' ? true : false : false }"
+                                    }).addEventDelegate(oInputEventDelegate));
+                                }
+                                else if (sTabId === "versionAttrTable" && sColName.toUpperCase() === "VALUNIT") {
+                                    col.setTemplate(new sap.m.Input({
+                                        type: "Text",
+                                        value: "{DataModel>" + sColName + "}",
+                                        maxLength: +ci.Length,
+                                        change: changeFunction,
+                                        liveChange: liveChangeFunction,
+                                        editable: "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' ? true : false : false }"
+                                    }).addEventDelegate(oInputEventDelegate));
+                                }
+                                else if (sTabId === "versionAttrTable" && sColName.toUpperCase() === "CASVERIND") {
+                                    col.setTemplate(new sap.m.CheckBox({
+                                        selected: "{DataModel>" + sColName + "}", 
+                                        editable: "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Attribtyp} !== '' ? true : false : false }",
+                                        select: changeFunction
+                                    }).addEventDelegate(oInputEventDelegate));
+                                }
                                      
                                 else if (ci.DataType === "DATETIME") {
                                     col.setTemplate(new sap.m.DatePicker({
@@ -7538,7 +7719,7 @@ sap.ui.define([
                                         valueFormat: "MM/dd/yyyy",
                                         change: changeFunction,
                                         liveChange: liveChangeFunction
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else if (ci.DataType === "NUMBER") {
                                     if (sTabId === "materialListTable"){
@@ -7565,14 +7746,14 @@ sap.ui.define([
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
                                         editable : editModeCond
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else if (ci.DataType === "BOOLEAN") {
                                     col.setTemplate(new sap.m.CheckBox({
                                         selected: "{DataModel>" + sColName + "}", 
                                         editable: true,
                                         select: changeFunction
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else {
                                     if (sTabId === "materialListTable"){
@@ -7592,7 +7773,7 @@ sap.ui.define([
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
                                         editable: editModeCond
-                                    }));
+                                    }).addEventDelegate(oInputEventDelegate));
                                 }
 
                                 if (ci.Mandatory) {
@@ -7687,6 +7868,135 @@ sap.ui.define([
                     item.setProperty("enabled", true)
                 });
 
+            },
+
+            setActiveRowHighlight(sTableId) {
+                var oTable = this.byId(sTableId !== undefined && sTableId !== "" ? sTableId : this._sActiveTable);
+
+                setTimeout(() => {
+                    var iActiveRowIndex = oTable.getModel("DataModel").getData().results.findIndex(item => item.ACTIVE === "X");
+                    // var iActiveRowIndex = oTable.getModel().getData().rows.findIndex(item => item.ACTIVE === "X");
+
+                    oTable.getRows().forEach(row => {
+                        //if (row.getBindingContext() && +row.getBindingContext().sPath.replace("/rows/", "") === iActiveRowIndex) {
+                        if (row.getBindingContext("DataModel") && +row.getBindingContext("DataModel").sPath.replace("/results/", "") === iActiveRowIndex) {
+                            row.addStyleClass("activeRow");
+                        }
+                        else row.removeStyleClass("activeRow");
+                    })                    
+                }, 100);
+            },
+
+            onInputKeyDown(oEvent) {
+                if (oEvent.key === "ArrowUp" || oEvent.key === "ArrowDown") {
+                    //prevent increase/decrease of number value
+                    oEvent.preventDefault();
+                    
+                    var sTableId = oEvent.srcControl.oParent.oParent.sId;
+                    var oTable = this.byId(sTableId);
+                    var sColumnName = oEvent.srcControl.getBindingInfo("value").parts[0].path;
+                    var sCurrentRowIndex = +oEvent.srcControl.oParent.getBindingContext("DataModel").sPath.replace("/results/", "");
+                    //var sCurrentRowIndex = +oEvent.srcControl.oParent.getBindingContext().sPath.replace("/rows/", "");
+                    var sColumnIndex = -1;
+                    var sCurrentRow = -1;
+                    var sNextRow = -1;
+                    var sActiveRow = -1;
+                    var iFirstVisibleRowIndex = oTable.getFirstVisibleRow();
+                    var iVisibleRowCount = oTable.getVisibleRowCount();
+            
+                    //get active row (arrow down)
+                    oTable.getBinding("rows").aIndices.forEach((item, index) => {
+                        if (item === sCurrentRowIndex) { sCurrentRow = index; }
+                        if (sCurrentRow !== -1 && sActiveRow === -1) { 
+                            if ((sCurrentRow + 1) === index) { sActiveRow = item }
+                            else if ((index + 1) === oTable.getBinding("rows").aIndices.length) { sActiveRow = item }
+                        }
+                    })
+                    
+                    //clear active row
+                    // oTable.getModel().getData().rows.forEach(row => row.ACTIVE = "");
+                    oTable.getModel("DataModel").getData().results.forEach(row => row.ACTIVE = "");
+            
+                    //get next row to focus and active row (arrow up)
+                    if (oEvent.key === "ArrowUp") { 
+                        if (sCurrentRow !== 0) {
+                            sActiveRow = oTable.getBinding("rows").aIndices.filter((fItem, fIndex) => fIndex === (sCurrentRow - 1))[0];
+                        }
+                        else { sActiveRow = oTable.getBinding("rows").aIndices[0] }
+            
+                        sCurrentRow = sCurrentRow === 0 ? sCurrentRow : sCurrentRow - iFirstVisibleRowIndex;
+                        sNextRow = sCurrentRow === 0 ? 0 : sCurrentRow - 1;
+                    }
+                    else if (oEvent.key === "ArrowDown") { 
+                        sCurrentRow = sCurrentRow - iFirstVisibleRowIndex;
+                        sNextRow = sCurrentRow + 1;
+                    }
+            
+                    //set active row
+                    // oTable.getModel().setProperty("/rows/" + sActiveRow + "/ACTIVE", "X");
+                    oTable.getModel("DataModel").setProperty("/results/" + sActiveRow + "/ACTIVE", "X");
+            
+                    //auto-scroll up/down
+                    if (oEvent.key === "ArrowDown" && (sNextRow + 1) < oTable.getModel("DataModel").getData().results.length && (sNextRow + 1) > iVisibleRowCount) {
+                        oTable.setFirstVisibleRow(iFirstVisibleRowIndex + 1);
+                    }   
+                    else if (oEvent.key === "ArrowUp" && sCurrentRow === 0 && sNextRow === 0 && iFirstVisibleRowIndex !== 0) { 
+                        oTable.setFirstVisibleRow(iFirstVisibleRowIndex - 1);
+                    }
+            
+                    //get the cell to focus
+                    oTable.getRows()[sCurrentRow].getCells().forEach((cell, index) => {
+                        if (cell.getBindingInfo("value") !== undefined) {
+                            if (cell.getBindingInfo("value").parts[0].path === sColumnName) { sColumnIndex = index; }
+                        }
+                    })
+                    
+                    if (oEvent.key === "ArrowDown") {
+                        sNextRow = sNextRow === iVisibleRowCount ? sNextRow - 1 : sNextRow;
+                    }
+            
+                    //set focus on cell
+                    setTimeout(() => {
+                        oTable.getRows()[sNextRow].getCells()[sColumnIndex].focus();
+                        oTable.getRows()[sNextRow].getCells()[sColumnIndex].getFocusDomRef().select();
+                    }, 100);
+
+                    //set row highlight
+                    var sTabId = oTable.sId.split("--")[oTable.sId.split("--").length - 1];
+                    //this._sActiveTable = sTabId;
+            
+                    //set row highlight
+                    this.setActiveRowHighlight(sTabId);
+                }
+            },
+
+            onKeyUp(oEvent) {
+                if ((oEvent.key == "ArrowUp" || oEvent.key == "ArrowDown") && oEvent.srcControl.sParentAggregationName == "rows") {
+                    var oTable = this.byId(oEvent.srcControl.sId).oParent;
+
+                    if (this.byId(oEvent.srcControl.sId).getBindingContext("DataModel")) {
+                        var sRowPath = this.byId(oEvent.srcControl.sId).getBindingContext("DataModel").sPath;
+                   
+                        // oTable.getModel().getData().rows.forEach(row => row.ACTIVE = "")
+                        //oTable.getModel().setProperty(sRowPath + "/ACTIVE", "X");
+                        if(oTable.sId.includes("bomDetailedTable")){
+                            oTable.getModel("DataModel").getData().results.items.forEach(row => row.ACTIVE = "");;
+                            oTable.getModel("DataModel").setProperty(sRowPath + "/ACTIVE", "X");
+                        }
+                        else{
+                            oTable.getModel("DataModel").getData().results.forEach(row => row.ACTIVE = "");;
+                            oTable.getModel("DataModel").setProperty(sRowPath + "/ACTIVE", "X");
+
+                        }
+                        
+                        oTable.getRows().forEach(row => {
+                            if (row.getBindingContext("DataModel") && row.getBindingContext("DataModel").sPath.replace("/results/", "") === sRowPath.replace("/results/", "")) {
+                                row.addStyleClass("activeRow");
+                            }
+                            else row.removeStyleClass("activeRow")
+                        })
+                    }
+                }
             },
 
             changeFunction: function(oEvent) { },
@@ -8169,7 +8479,7 @@ sap.ui.define([
                 // this.setActiveRowHighlight(sSourceTabId.replace("Tab",""));
 
                 oDialog.getContent()[0].getMasterPages()[0].getContent()[0].getItems().forEach(item => item.setIcon("sap-icon://text-align-justified"));
-                this.getView().getModel("ui").setProperty("/rowCountMatLst", this.byId(sSourceTabId).getModel("DataModel").getData().results.length);
+                this.getView().getModel("counts").setProperty(`/rowCount${sSourceTabId}`, this.byId(sSourceTabId).getModel("DataModel").getData().results.length);
                 this.byId(sSourceTabId).getColumns().forEach(col => {
                     col.setProperty("filtered", false);
                 })
@@ -8273,19 +8583,18 @@ sap.ui.define([
                 console.log(oFilter)
                 this.byId(sSourceTabId).getBinding("rows").filter(oFilter, "Application");
 
-                if (oFilter !== "") {                 
-                    if (this.byId(sSourceTabId).getBinding("rows").aIndices.length === 0) {
-                        // this.getView().byId("rowCountMatLst").setText("0");
-                        this.getView().getModel("ui").setProperty("/rowCountMatLst", 0);
-                    }
-                    else {
-                        //this.getView().byId("rowCountMatLst").setText(this.byId(sSourceTabId).getBinding("rows").aIndices.length + "");
-                        this.getView().getModel("ui").setProperty("/rowCountMatLst", this.byId(sSourceTabId).getBinding("rows").aIndices.length);
+                if (oFilter !== "") {  
+                    if (this.byId(sSourceTabId).getBinding("rows").aIndices !== undefined){               
+                        if (this.byId(sSourceTabId).getBinding("rows").aIndices.length === 0) {
+                            this.getView().getModel("counts").setProperty(`/rowCount${sSourceTabId}`, 0);
+                        }
+                        else {
+                            this.getView().getModel("counts").setProperty(`/rowCount${sSourceTabId}`, this.byId(sSourceTabId).getBinding("rows").aIndices.length);
+                        }
                     }
                 }
                 else {
-                    //this.getView().byId("rowCountMatLst").setText(this.byId(sSourceTabId).getModel("DataModel").getData().results.length + "");
-                    this.getView().getModel("ui").setProperty("/rowCountMatLst", this.byId(sSourceTabId).getModel("DataModel").getData().results.length);
+                    this.getView().getModel("counts").setProperty(`/rowCount${sSourceTabId}`, this.byId(sSourceTabId).getModel("DataModel").getData().results.length);
                 }
 
                 this._colFilters[sSourceTabId] = jQuery.extend(true, {}, oDialog.getModel().getData());

@@ -7,7 +7,15 @@
             </Toolbar>
         </headerToolbar> -->
     <VBox fitContainer="true" class="sapUiTinyMargin">
+        <dependents>
+            <core:CommandExecution id="CE_CLRNEW" command="New" enabled="true" execute="addLine" />
+            <core:CommandExecution id="CE_CLREDIT" command="Edit" enabled="true" execute="setColorEditMode" />
+            <core:CommandExecution id="CE_CLRDELETE" command="Delete" enabled="true" execute="onDeleteColor" />
+            <core:CommandExecution id="CE_CLRSAVE" command="Save" enabled="true" execute="onSaveColorTable" />
+            <core:CommandExecution id="CE_CLRCANCEL" command="Cancel" enabled="true" execute="cancelColorsEdit" />
+        </dependents> 
         <Toolbar height="2rem" style="Clear">
+            <Text text="{counts>/rowCountcolorsTable} {ddtext>/ROWS}" />
             <ToolbarSpacer />
             <Button id="btnColorAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLine" visible="true">
                 <customData>
@@ -23,6 +31,16 @@
             <Button id="btnColorEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setColorEditMode" visible="true" />
             <Button id="btnColorDelete" type="Ghost" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteColor" visible="true" />
             <Button id="btnColorCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelColorsEdit" visible="false" />
+            <Button id="btnColorFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="1" />
+                </customData>
+            </Button>
+            <Button id="btnColorExitFullScreen" icon="sap-icon://exit-full-screen" press="onTableResize" tooltip="{ddtext>/EXITFULLSCREEN}" visible="{ui>/fullscreen}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="0" />
+                </customData>
+            </Button>
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="colorsTable" />

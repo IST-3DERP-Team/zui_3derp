@@ -8,7 +8,15 @@
             </Toolbar>
         </headerToolbar> -->
     <VBox fitContainer="true" class="sapUiTinyMargin">
+        <dependents>
+            <core:CommandExecution id="CE_PROCNEW" command="New" enabled="true" execute="addLine" />
+            <core:CommandExecution id="CE_PROCEDIT" command="Edit" enabled="true" execute="setProcessEditMode" />
+            <core:CommandExecution id="CE_PROCDELETE" command="Delete" enabled="true" execute="onDeleteProcess" />
+            <core:CommandExecution id="CE_PROCSAVE" command="Save" enabled="true" execute="onSaveProcessTable" />
+            <core:CommandExecution id="CE_PROCCANCEL" command="Cancel" enabled="true" execute="cancelProcessEdit" />
+        </dependents> 
         <Toolbar height="2rem" style="Clear">
+            <Text text="{counts>/rowCountprocessesTable} {ddtext>/ROWS}" />
             <ToolbarSpacer/>
             <Button id="btnProcessAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLine" visible="true">
                 <customData>
@@ -24,6 +32,16 @@
             <Button id="btnProcessDelete" type="Ghost" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteProcess" visible="true"/>
             <Button id="btnProcessSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveProcessTable" visible="false"/>
             <Button id="btnProcessCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelProcessEdit" visible="false"/>
+            <Button id="btnProcessFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="1" />
+                </customData>
+            </Button>
+            <Button id="btnProcessExitFullScreen" icon="sap-icon://exit-full-screen" press="onTableResize" tooltip="{ddtext>/EXITFULLSCREEN}" visible="{ui>/fullscreen}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="0" />
+                </customData>
+            </Button>
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="processesTable" />

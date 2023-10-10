@@ -94,7 +94,19 @@ sap.ui.define([
                     }
                 })
 
-                
+                this.getView().setModel(new JSONModel({
+                    fullscreen: false
+                }), "ui");
+
+                this.getView().setModel(new JSONModel({
+                    rowCountgeneralTable:0,
+                    rowCountcolorsTable: 0,
+                    rowCountprocessesTable:0,
+                    rowCountsizesTable: 0,
+                    rowCountioTable: 0,
+                    rowCountversionsTable:0
+                }), "counts");
+
             },
 
             onExit: function () {
@@ -594,6 +606,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "VERSIONS" });
                 oDDTextParam.push({ CODE: "ATTRIBUTES" });
                 oDDTextParam.push({ CODE: "ATTACHMENTS" });
+                oDDTextParam.push({ CODE: "ROWS" });
 
                 oDDTextParam.push({ CODE: "ATTRIBSEQ" });
                 oDDTextParam.push({ CODE: "ATTRIBTYP" });
@@ -1509,8 +1522,8 @@ sap.ui.define([
                                         }
                                     });
         
-                                    if (index === 0) item.ACTIVE = "X";
-                                    else item.ACTIVE = "";
+                                    if (index === 0) item.EDITABLE = "X";
+                                    else item.EDITABLE = "";
                                 });
 
                                 oJSONModel.setData(oData);
@@ -1521,6 +1534,7 @@ sap.ui.define([
                                 else {
                                     oTable.getModel("DataModel").setProperty("/results", oData.results);
                                 }
+                                that.getView().getModel("counts").setProperty("/rowCountgeneralTable", oData.results.length);
                                 //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
                                 // oTable.onAttachPaste(); //for copy-paste
                                 Common.closeLoadingDialog(that);
@@ -1560,7 +1574,7 @@ sap.ui.define([
                     //set general attributes table edit mode
                     var oJSONModel = new JSONModel();
                     var data = {};
-                    this._generalAttrChanged = true;
+                    //this._generalAttrChanged = true;
                     data.editMode = true;
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "GenAttrEditModeModel");
@@ -1574,7 +1588,7 @@ sap.ui.define([
                     this.setRowEditMode("generalTable");
                     this.setGeneralAttrEditModeControls();
                     this.getView().byId("generalTable").getModel("DataModel").getData().results.forEach(item => {
-                        item.ACTIVE = "X";
+                        item.EDITABLE = "X";
                     });
 
                      //mark as required fields
@@ -1974,7 +1988,8 @@ sap.ui.define([
                         var vProp = oData.results[selected[i]].Property;
                         var attrtype = oData.results[selected[i]].Attribtyp;
                         var attrcd = oData.results[selected[i]].Attribcd;
-                        var entitySet = "/StyleAttributesGeneralSet(Styleno='" + that._styleNo + "',Attribtyp='" + attrtype + "',Attribcd='" + attrcd + "')";
+                        var attrseq = oData.results[selected[i]].Attribseq;
+                        var entitySet = "/StyleAttributesGeneralSet(Styleno='" + that._styleNo + "',Attribtyp='" + attrtype + "',Attribcd='" + attrcd + "',Attribseq='" + attrseq + "')";
 
                         if (vProp !== "M") {
                             oModel.remove(entitySet, {
@@ -2089,7 +2104,7 @@ sap.ui.define([
                         else {
                             oTable.getModel("DataModel").setProperty("/results", oData.results);
                         }
-                        console.log("COLOR", oData.results);
+                        that.getView().getModel("counts").setProperty("/rowCountcolorsTable", oData.results.length);
                         //oTable.setVisibleRowCount(oData.results.length); //updating visible rows
                         // oTable.attachPaste(); //for copy-paste
                         Common.closeLoadingDialog(that);
@@ -2183,6 +2198,8 @@ sap.ui.define([
                     this.byId("btnColorCancel").setVisible(true);
                     this.byId("btnColorEdit").setVisible(false);
                     this.byId("btnColorDelete").setVisible(false);
+                    //this.byId("btnColorFullScreen").setVisible(false);
+                    //this.byId("btnColorExitFullScreen").setVisible(false);
 
                     this.disableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(false);
@@ -2268,6 +2285,8 @@ sap.ui.define([
                         this.byId("btnColorCancel").setVisible(true);
                         this.byId("btnColorEdit").setVisible(false);
                         this.byId("btnColorDelete").setVisible(false);
+                        //this.byId("btnColorFullScreen").setVisible(false);
+                       //this.byId("btnColorExitFullScreen").setVisible(false);
 
                         this.disableOtherTabs("detailPanel");
                         this.byId("btnHdrEdit").setEnabled(false);
@@ -2276,7 +2295,7 @@ sap.ui.define([
                         //this.setColorEditModeControls();
                         this.setRowEditMode("colorsTable");
                         this.getView().byId("colorsTable").getModel("DataModel").getData().results.forEach(item => {
-                            item.ACTIVE = "X";
+                            item.EDITABLE = "X";
                         });
 
                         //mark as required fields
@@ -2510,7 +2529,9 @@ sap.ui.define([
                     for (var i = (selected.length - 1); i >= 0; i--) {
                         var attrtype = Constants.COLOR;
                         var attrcd = oData.results[selected[i]].Attribcd;
-                        var entitySet = "/StyleAttributesColorSet(Styleno='" + that._styleNo + "',Attribtype='" + attrtype + "',Attribcd='" + attrcd + "')";
+                        var attrseq = oData.results[selected[i]].Attribseq;
+
+                        var entitySet = "/StyleAttributesColorSet(Styleno='" + that._styleNo + "',Attribtype='" + attrtype + "',Attribcd='" + attrcd + "',Attribseq='" + attrseq + "')";
 
                         if (this._bomColors.filter(fItem => fItem.COLOR === attrcd).length === 0) {
                             oModel.remove(entitySet, {
@@ -2627,6 +2648,7 @@ sap.ui.define([
                         Common.closeLoadingDialog(that);
                         console.log("SIZES", oData.results);
                         me.enableVersionItemTab();
+                        that.getView().getModel("counts").setProperty("/rowCountsizesTable", oData.results.length);
                     },
                     error: function () {
                         Common.closeLoadingDialog(that);
@@ -2653,7 +2675,7 @@ sap.ui.define([
                     this.byId("btnHdrEdit").setEnabled(false);
                     this.byId("btnHdrDelete").setEnabled(false);
                     this.getView().byId("sizesTable").getModel("DataModel").getData().results.forEach(item => {
-                        item.ACTIVE = "X";
+                        item.EDITABLE = "X";
                     });
                 }
             },
@@ -2831,6 +2853,7 @@ sap.ui.define([
                         else {
                             oTable.getModel("DataModel").setProperty("/results", oData.results);
                         }
+                        that.getView().getModel("counts").setProperty("/rowCountprocessesTable", oData.results.length);
                         //oTable.setVisibleRowCount(oData.results.length);
                         // oTable.attachPaste();
                         Common.closeLoadingDialog(that);
@@ -2871,7 +2894,7 @@ sap.ui.define([
                     this.setRowEditMode("processesTable");
                     this.setProcessEditModeControls();
                     this.getView().byId("processesTable").getModel("DataModel").getData().results.forEach(item => {
-                        item.ACTIVE = "X";
+                        item.EDITABLE = "X";
                     });
                 }
             },
@@ -3175,6 +3198,7 @@ sap.ui.define([
                         else {
                             oTable.getModel("DataModel").setProperty("/results", oData.results);
                         }
+                        that.getView().getModel("counts").setProperty("/rowCountversionsTable", oData.results.length);
                         //oTable.setVisibleRowCount(oData.results.length);
                         // oTable.attachPaste();
                         Common.closeLoadingDialog(that);
@@ -3324,6 +3348,8 @@ sap.ui.define([
                                 success: function (oData, oResponse) {
                                     me.getVersionsTable();
                                     me._NewVerionDialog.close();
+                                    me.setTabReadMode("VersionEditModeModel");
+                                    me.setRowReadMode("versionsTable");
                                     Common.closeLoadingDialog(that);
                                     MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
 
@@ -3369,7 +3395,7 @@ sap.ui.define([
                     this.byId("btnHdrClose").setEnabled(false);
                     this.setRowEditMode("versionsTable");
                     this.getView().byId("versionsTable").getModel("DataModel").getData().results.forEach(item => {
-                        item.ACTIVE = "X";
+                        item.EDITABLE = "X";
                     });
                 }
             },
@@ -4773,14 +4799,15 @@ sap.ui.define([
                     var oTable = this.getView().byId(tabName);
                     var oModel = oTable.getModel("DataModel");
                     var oData = oModel.getProperty('/results');
-                    oData.forEach(item => item.ACTIVE = "");
+                    oData.forEach(item => item.EDITABLE = "");
                     var aNewRow = [];
                     var length = oData.length;
 
                     if (tabName === "generalTable") {
                         aNewRow = [{
                             NEW: true, 
-                            ACTIVE: "X",
+                            EDITABLE: "X",
+                            // ACTIVE: "X",
                             Attribcd: "",
                             Attribtyp: "",
                             Attribval: "",
@@ -4803,12 +4830,14 @@ sap.ui.define([
 
                         aNewRow = [{
                             NEW: true, 
-                            ACTIVE: "X",
+                            // ACTIVE: "X",
+                            EDITABLE:"X",
                             Sortseq: seqno
                         }];
                     }
                     else {
-                        aNewRow = [{NEW: true, ACTIVE: "X"}];
+                        aNewRow = [{NEW: true, EDITABLE: "X"}];
+                        // aNewRow = [{NEW: true, ACTIVE: "X"}];
                     }
                     
                     var aDataAfterChange = aNewRow.concat(oData);
@@ -4851,7 +4880,8 @@ sap.ui.define([
                 if (tabName === "generalTable") {
                     aNewRow = [{
                         NEW: true, 
-                        ACTIVE: "X",
+                        // ACTIVE: "X",
+                        EDITABLE: "X",
                         Attribcd: "",
                         Attribtyp: "",
                         Attribval: "",
@@ -4874,12 +4904,12 @@ sap.ui.define([
 
                     aNewRow = [{
                         NEW: true, 
-                        ACTIVE: "X",
+                        EDITABLE: "X",
                         Sortseq: seqno
                     }];
                 }
                 else {
-                    aNewRow = [{NEW: true, ACTIVE: "X"}];
+                    aNewRow = [{NEW: true, EDITABLE: "X"}];
                 }
                 
                 var aDataAfterChange = aNewRow.concat(oData);
@@ -4968,7 +4998,7 @@ sap.ui.define([
                         var iIndexToActivate = -1;
 
                         oData.forEach((item, index) => {
-                            if (item.ACTIVE === "X") {
+                            if (item.EDITABLE === "X") {
                                 oData.splice(index, 1);
                                 oModel.setProperty('/results', oData);
 
@@ -4980,7 +5010,7 @@ sap.ui.define([
 
                         oData.forEach((item, index) => {
                             if (item.NEW && iIndexToActivate === -1) {
-                                item.ACTIVE = "X";
+                                item.EDITABLE = "X";
                                 iIndexToActivate = index;
                             }
                         })
@@ -5227,6 +5257,8 @@ sap.ui.define([
                     this.byId("btnColorCancel").setVisible(false);
                     this.byId("btnColorEdit").setVisible(true);
                     this.byId("btnColorDelete").setVisible(true);
+                    this.byId("btnColorFullScreen").setVisible(true);
+                    this.byId("btnColorExitFullScreen").setVisible(true);
                     this.enableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(true);
                     this.byId("btnHdrDelete").setEnabled(true);
@@ -5242,6 +5274,8 @@ sap.ui.define([
                 this.byId("btnGenAttrDelete").setEnabled(pEnable);
                 this.byId("btnGenAttrAdd").setEnabled(pEnable);
                 this.byId("btnGenAttrCancel").setEnabled(pEnable);
+                this.byId("btnGenAttrFullScreen").setEnabled(pEnable);
+                this.byId("btnGenAttrExitFullScreen").setEnabled(pEnable);
                 // this.byId("iconGenAttrInfo").setVisible(pEnable);
 
                 //Color
@@ -5250,11 +5284,15 @@ sap.ui.define([
                 this.byId("btnColorDelete").setEnabled(pEnable);
                 this.byId("btnColorAdd").setEnabled(pEnable);
                 this.byId("btnColorCancel").setEnabled(pEnable);
+                this.byId("btnColorFullScreen").setEnabled(pEnable);
+                this.byId("btnColorExitFullScreen").setEnabled(pEnable);
 
                 //Size
                 this.byId("btnSizeSave").setEnabled(pEnable);
                 this.byId("btnSizeEdit").setEnabled(pEnable);
                 this.byId("btnSizeCancel").setEnabled(pEnable);
+                this.byId("btnSizeFullScreen").setEnabled(pEnable);
+                this.byId("btnSizeExitFullScreen").setEnabled(pEnable);
 
                 //Process
                 this.byId("btnProcessSave").setEnabled(pEnable);
@@ -5262,6 +5300,8 @@ sap.ui.define([
                 this.byId("btnProcessCancel").setEnabled(pEnable);
                 this.byId("btnProcessAdd").setEnabled(pEnable);
                 this.byId("btnProcessDelete").setEnabled(pEnable);
+                this.byId("btnProcessFullScreen").setEnabled(pEnable);
+                this.byId("btnProcessExitFullScreen").setEnabled(pEnable);
 
                 //Version
                 this.byId("btnVersionSave").setEnabled(pEnable);
@@ -5270,10 +5310,15 @@ sap.ui.define([
                 this.byId("btnVersionCopy").setEnabled(pEnable);
                 this.byId("btnVersionAdd").setEnabled(pEnable);
                 this.byId("btnVersionCancel").setEnabled(pEnable);
+                this.byId("btnVersionFullScreen").setEnabled(pEnable);
+                this.byId("btnVersionExitFullScreen").setEnabled(pEnable);
 
                 //Attachment
                 this.byId("btnAttachmentDelete").setEnabled(pEnable);
                 this.byId("btnAttachmentAdd").setEnabled(pEnable);
+                this.byId("btnAttachmentFullScreen").setEnabled(pEnable);
+                this.byId("btnAttachmentExitFullScreen").setEnabled(pEnable);
+
             },
             
             enableTabItem: function (tabName, itemName) {
@@ -5320,12 +5365,17 @@ sap.ui.define([
                                                 
                         this.byId("btnGenAttrSave").setVisible(pEditMode);
                         this.byId("btnGenAttrCancel").setVisible(pEditMode);
+                        //this.byId("btnGenAttrFullScreen").setVisible(!pEditMode);
+                        //this.byId("btnGenAttrExitFullScreen").setVisible(!pEditMode);
+
                     }
                     else if (pModule === "SizeEditModeModel") {
                         this.byId("btnSizeEdit").setVisible(!pEditMode);
 
                         this.byId("btnSizeSave").setVisible(pEditMode);
                         this.byId("btnSizeCancel").setVisible(pEditMode);
+                        //this.byId("btnSizeFullScreen").setVisible(!pEditMode);
+                        //this.byId("btnSizeExitFullScreen").setVisible(!pEditMode);
                     }
                     else if (pModule === "ProcessEditModeModel") {
                         this.byId("btnProcessEdit").setVisible(!pEditMode);
@@ -5343,6 +5393,8 @@ sap.ui.define([
 
                         this.byId("btnProcessSave").setVisible(pEditMode);
                         this.byId("btnProcessCancel").setVisible(pEditMode);
+                        //this.byId("btnProcessFullScreen").setVisible(!pEditMode);
+                        //this.byId("btnProcessExitFullScreen").setVisible(!pEditMode);
                     }
                     else if (pModule === "VersionEditModeModel") {
                         this.byId("btnVersionEdit").setVisible(!pEditMode);
@@ -5352,6 +5404,8 @@ sap.ui.define([
 
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
+                        //this.byId("btnVersionFullScreen").setVisible(!pEditMode);
+                        //this.byId("btnVersionExitFullScreen").setVisible(!pEditMode);
                     }
                 }
                 else {
@@ -5373,12 +5427,16 @@ sap.ui.define([
                         this.byId("btnGenAttrRemoveRow").setVisible(pEditMode);
                         this.byId("btnGenAttrSave").setVisible(pEditMode);
                         this.byId("btnGenAttrCancel").setVisible(pEditMode);
+                        //this.byId("btnGenAttrFullScreen").setVisible(!pEditMode);
+                        //this.byId("btnGenAttrExitFullScreen").setVisible(!pEditMode);
                     }
                     else if (pModule === "SizeEditModeModel") {
                         this.byId("btnSizeEdit").setVisible(!pEditMode);
 
                         this.byId("btnSizeSave").setVisible(pEditMode);
                         this.byId("btnSizeCancel").setVisible(pEditMode);
+                        //this.byId("btnSizeFullScreen").setVisible(!pEditMode);
+                        //this.byId("btnSizeExitFullScreen").setVisible(!pEditMode);
                     }
                     else if (pModule === "ProcessEditModeModel") {
                         this.byId("btnProcessEdit").setVisible(!pEditMode);
@@ -5388,6 +5446,8 @@ sap.ui.define([
                         this.byId("btnProcessRemoveRow").setVisible(pEditMode);
                         this.byId("btnProcessSave").setVisible(pEditMode);
                         this.byId("btnProcessCancel").setVisible(pEditMode);
+                        //this.byId("btnProcessFullScreen").setVisible(!pEditMode);
+                        //this.byId("btnProcessExitFullScreen").setVisible(!pEditMode);
                     }
                     else if (pModule === "VersionEditModeModel") {
                         this.byId("btnVersionEdit").setVisible(!pEditMode);
@@ -5397,6 +5457,8 @@ sap.ui.define([
 
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
+                        //this.byId("btnVersionFullScreen").setVisible(!pEditMode);
+                        //this.byId("btnVersionExitFullScreen").setVisible(!pEditMode);
                     }
                 }               
             },
@@ -5755,7 +5817,7 @@ sap.ui.define([
                     inputValueHelpChangeFunction = this.onVersionChange.bind(this);
                     inputValueHelpLiveChangeFunction = this.onVersionChange.bind(this);
                 }
-                var editModeCond = "{= ${DataModel>ACTIVE} === 'X' ? true : false }";
+                var editModeCond = "{= ${DataModel>EDITABLE} === 'X' ? true : false }";
                 oTable.getColumns().forEach((col, idx) => {
                     var sColName = "";
                     var oValueHelp = false;
@@ -5807,11 +5869,11 @@ sap.ui.define([
                                     else if (sTabId === "generalTable") {
                                         if (sColName.toUpperCase() === "ATTRIBTYP") {
                                             valueHelpRequestFunction = this.onAttrTypesValueHelp.bind(this);
-                                            editModeCond = "{= ${DataModel>ACTIVE} === 'X' ? true : false }";
+                                            editModeCond = "{= ${DataModel>EDITABLE} === 'X' ? true : false }";
                                         }
                                         else if (sColName.toUpperCase() === "ATTRIBCD") {
                                             valueHelpRequestFunction = this.onAttrCodesValueHelp.bind(this);
-                                            editModeCond = "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Attribtyp} !== '' ? true : false :false }";
+                                            editModeCond = "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Attribtyp} !== '' ? true : false :false }";
                                         }
                                     }
 
@@ -5861,7 +5923,7 @@ sap.ui.define([
                                         maxLength: +ci.Length,
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
-                                        editable: "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' || ${DataModel>Valuetyp} === 'STRVAL' ? true : false : false }"
+                                        editable: "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' || ${DataModel>Valuetyp} === 'STRVAL' ? true : false : false }"
                                     }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else if (sTabId === "generalTable" && sColName.toUpperCase() === "VALUNIT") {
@@ -5871,13 +5933,13 @@ sap.ui.define([
                                         maxLength: +ci.Length,
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
-                                        editable: "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' ? true : false : false }"
+                                        editable: "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' ? true : false : false }"
                                     }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else if (sTabId === "generalTable" && sColName.toUpperCase() === "CASVERIND") {
                                     col.setTemplate(new sap.m.CheckBox({
                                         selected: "{DataModel>" + sColName + "}", 
-                                        editable: "{= ${DataModel>ACTIVE} === 'X' ? ${DataModel>Attribtyp} !== '' ? true : false : false }",
+                                        editable: "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Attribtyp} !== '' ? true : false : false }",
                                         select: changeFunction
                                     }).addEventDelegate(oInputEventDelegate));
                                 }
@@ -6144,14 +6206,16 @@ sap.ui.define([
                 if ((oEvent.key == "ArrowUp" || oEvent.key == "ArrowDown") && oEvent.srcControl.sParentAggregationName == "rows") {
                     var oTable = this.byId(oEvent.srcControl.sId).oParent;
 
-                    if (this.byId(oEvent.srcControl.sId).getBindingContext()) {
-                        var sRowPath = this.byId(oEvent.srcControl.sId).getBindingContext().sPath;
-
-                        oTable.getModel().getData().rows.forEach(row => row.ACTIVE = "");
-                        oTable.getModel().setProperty(sRowPath + "/ACTIVE", "X");
+                    if (this.byId(oEvent.srcControl.sId).getBindingContext("DataModel")) {
+                        var sRowPath = this.byId(oEvent.srcControl.sId).getBindingContext("DataModel").sPath;
+                   
+                        // oTable.getModel().getData().rows.forEach(row => row.ACTIVE = "")
+                        //oTable.getModel().setProperty(sRowPath + "/ACTIVE", "X");
+                        oTable.getModel("DataModel").getData().results.forEach(row => row.ACTIVE = "");;
+                        oTable.getModel("DataModel").setProperty(sRowPath + "/ACTIVE", "X");
 
                         oTable.getRows().forEach(row => {
-                            if (row.getBindingContext() && row.getBindingContext().sPath.replace("/results/", "") === sRowPath.replace("/results/", "")) {
+                            if (row.getBindingContext("DataModel") && row.getBindingContext("DataModel").sPath.replace("/results/", "") === sRowPath.replace("/results/", "")) {
                                 row.addStyleClass("activeRow");
                             }
                             else row.removeStyleClass("activeRow")
@@ -6160,7 +6224,16 @@ sap.ui.define([
                 }
             },
 
+            onTableResize: function(oEvent) {
+               
+                var bFullScreen = oEvent.getSource().data("Fullscreen") === "1" ? true : false;
+               
+                this.byId("headerPanel").setVisible(!bFullScreen);
+                this.getView().getModel("ui").setProperty("/fullscreen", bFullScreen);
+    
+            },
 
+             
             //******************************************* */
             // IO List
             //******************************************* */
@@ -6181,13 +6254,14 @@ sap.ui.define([
                                 if (item.CREATEDDT !== null)
                                     item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));
 
-                                if (index === 0) item.ACTIVE = "X";
-                                else item.ACTIVE = "";
+                                if (index === 0) item.EDITABLE = "X";
+                                else item.EDITABLE = "";
                             });
                         }
 
                         me.getView().setModel(new JSONModel(oData.results), "IOData");
                         oTable.setModel(new JSONModel(oData), "DataModel");
+                        that.getView().getModel("counts").setProperty("/rowCountioTable", oData.results.length);
 
                         if (showProgress) { Common.closeLoadingDialog(me); }
                     },
@@ -6608,7 +6682,7 @@ sap.ui.define([
                 // this.setActiveRowHighlight(sSourceTabId.replace("Tab",""));
                 
                 oDialog.getContent()[0].getMasterPages()[0].getContent()[0].getItems().forEach(item => item.setIcon("sap-icon://text-align-justified"));
-
+                this.getView().getModel("counts").setProperty(`/rowCount${sSourceTabId}`, this.byId(sSourceTabId).getModel("DataModel").getData().results.length);
                 this.byId(sSourceTabId).getColumns().forEach(col => {                   
                     col.setProperty("filtered", false);
                 })
@@ -6711,6 +6785,20 @@ sap.ui.define([
 
                 console.log(oFilter)
                 this.byId(sSourceTabId).getBinding("rows").filter(oFilter, "Application");
+
+                if (oFilter !== "") {  
+                    if (this.byId(sSourceTabId).getBinding("rows").aIndices !== undefined){               
+                        if (this.byId(sSourceTabId).getBinding("rows").aIndices.length === 0) {
+                            this.getView().getModel("counts").setProperty(`/rowCount${sSourceTabId}`, 0);
+                        }
+                        else {
+                            this.getView().getModel("counts").setProperty(`/rowCount${sSourceTabId}`, this.byId(sSourceTabId).getBinding("rows").aIndices.length);
+                        }
+                    }
+                }
+                else {
+                    this.getView().getModel("counts").setProperty(`/rowCount${sSourceTabId}`, this.byId(sSourceTabId).getModel("DataModel").getData().results.length);
+                }
 
                 this._colFilters[sSourceTabId] = jQuery.extend(true, {}, oDialog.getModel().getData());
                 // this.getOwnerComponent().getModel("FILTER_MODEL").setProperty("/" + sSourceTabId, this._colFilters[sSourceTabId]);
