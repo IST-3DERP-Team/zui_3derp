@@ -868,6 +868,11 @@ sap.ui.define([
                 } else if (newSeason === "") {
                     MessageBox.information(_oCaption.INFO_INPUT_NEW_SEASON);
                 } else {
+                    const isSeasonValid = this.getView().getModel("SeasonsModel").getData().results.filter(item => item.Seasoncd ===newSeason);
+                    if (isSeasonValid.length == 0){
+                        MessageBox.information("Invalid Season Code");
+                        return;
+                    }
 
                     if (bomCheck === true && colorCheck === false) {
                         MessageBox.information(_oCaption.INFO_INPUT_REQ_COLOR);

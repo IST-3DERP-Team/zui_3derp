@@ -764,20 +764,22 @@ sap.ui.define([
 
             formatFormValueHelp: function(sValue, sPath, sKey, sText, sFormat) {
                  console.log(sValue, sPath, sKey, sText, sFormat);
-                var oValue = this.getView().getModel(sPath).getData().results.filter(v => v[sKey] === sValue);
+                if(this.getView().getModel(sPath)!== undefined){
+                    var oValue = this.getView().getModel(sPath).getData().results.filter(v => v[sKey] === sValue);
 
-                if (oValue && oValue.length > 0) {
-                    if (sFormat === "Value") {
-                        return oValue[0][sText];
+                    if (oValue && oValue.length > 0) {
+                        if (sFormat === "Value") {
+                            return oValue[0][sText];
+                        }
+                        else if (sFormat === "ValueKey") {
+                            return oValue[0][sText] + " (" + sValue + ")";
+                        }
+                        else if (sFormat === "KeyValue") {
+                            return sValue + " (" + oValue[0][sText] + ")";
+                        }
                     }
-                    else if (sFormat === "ValueKey") {
-                        return oValue[0][sText] + " (" + sValue + ")";
-                    }
-                    else if (sFormat === "KeyValue") {
-                        return sValue + " (" + oValue[0][sText] + ")";
-                    }
+                    else return sValue;
                 }
-                else return sValue;
             },
 
             setTableValueHelp: function(oTable, sTable) {
@@ -1025,7 +1027,7 @@ sap.ui.define([
                     oJSONModel.setData(data);
                     this.getView().setModel(oJSONModel, "HeaderEditModeModel");
 
-                    Utils.getStyleSearchHelps(this);
+                    //Utils.getStyleSearchHelps(this);
 
                     this.setControlEditMode("HeaderEditModeModel", true);
                     this.setReqField("HeaderEditModeModel", true);
@@ -1056,7 +1058,7 @@ sap.ui.define([
                             oJSONModel.setData(data);
                             this.getView().setModel(oJSONModel, "HeaderEditModeModel");
 
-                            Utils.getStyleSearchHelps(this);
+                            //Utils.getStyleSearchHelps(this);
                             this.setControlEditMode("HeaderEditModeModel", true);
                             this.setReqField("HeaderEditModeModel", true);
                             this.disableOtherTabs("detailPanel");
@@ -1257,7 +1259,7 @@ sap.ui.define([
 
                         //set default style info for NEW
                         oEntry.Statuscd = Constants.CRT;
-                        oEntry.Createdby = _startUpInfo.id;//"$"
+                        oEntry.Createdby = _startUpInfo === undefined  ? "BAS_CONN" : _startUpInfo.id;// _startUpInfo.id;//"$"
                         oEntry.Createddt = null;// "$"
                         oEntry.Verno = "1";
 
@@ -1386,6 +1388,13 @@ sap.ui.define([
             },
 
             onDeleteStyle: function () {
+
+                const isIOExist = this.getView().getModel("IOData").getData().filter(item => item.STYLENO === this._styleNo);
+                if(isIOExist.length > 0){
+                    MessageBox.information("Unable to delete. IO already exist for this style.");
+                    return;
+                }
+
                 //show confirmation to delete style
                 if (!this._ConfirmDeleteDialog) {
                     this._ConfirmDeleteDialog = sap.ui.xmlfragment("zui3derp.view.fragments.dialog.ConfirmDeleteStyle", this);
@@ -2227,7 +2236,7 @@ sap.ui.define([
                 var oTableModel = oTable.getModel("DataModel");
                 var oData = oTableModel.getData();
                 var bProceed = true;
-                // var noEdit= 0;
+                var noEdit= 0;
 
                 if (oData.results.length === 0) {
                     MessageBox.information(this.getView().getModel("ddtext").getData()["INFO_NO_DATA_EDIT"]);
@@ -2235,36 +2244,36 @@ sap.ui.define([
                 }
                 else {
                     bProceed = true;
-                    // var oTableModel = oTable.getModel("DataModel");
-                    // var oData = oTableModel.getData();
+                    var oTableModel = oTable.getModel("DataModel");
+                    var oData = oTableModel.getData();
 
-                    // for (var i = 0; i < oData.results.length; i++) {
-                    //     if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
-                    //         // noEdit++;
-                    //         oTable.getRows()[i].getCells().forEach(cell => {
-                    //             if (cell.getBindingInfo("value") !== undefined) {
-                    //                 if (cell.getBindingInfo("value").parts[0].path === "Sortseq") {
-                    //                     cell.setProperty("editable", true);
-                    //                 }
-                    //                 else {
-                    //                     cell.setProperty("editable", false);
-                    //                 }
-                    //             }
-                    //         });
-                    //     }
-                    //     else {
-                    //         oTable.getRows()[i].getCells().forEach(cell => {
-                    //             if (cell.getBindingInfo("value") !== undefined) {
-                    //                 cell.setProperty("editable", true);
-                    //             }
-                    //         });
-                    //     }
-                    // }
+                    for (var i = 0; i < oData.results.length; i++) {
+                        if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
+                            noEdit++;
+                            oTable.getRows()[i].getCells().forEach(cell => {
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    if (cell.getBindingInfo("value").parts[0].path === "Sortseq") {
+                                        cell.setProperty("editable", true);
+                                    }
+                                    else {
+                                        cell.setProperty("editable", false);
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            oTable.getRows()[i].getCells().forEach(cell => {
+                                if (cell.getBindingInfo("value") !== undefined) {
+                                    cell.setProperty("editable", true);
+                                }
+                            });
+                        }
+                    }
 
-                    // if (oData.results.length === noEdit) {
-                    //     bProceed = false;
-                    //     MessageBox.information("Color/s already used in BOM.")
-                    // }
+                    if (oData.results.length === noEdit) {
+                        bProceed = false;
+                        MessageBox.information("Color/s already used in BOM.")
+                    }
                 }
 
                 if (bProceed) {
@@ -3351,8 +3360,7 @@ sap.ui.define([
                                     me.setTabReadMode("VersionEditModeModel");
                                     me.setRowReadMode("versionsTable");
                                     Common.closeLoadingDialog(that);
-                                    MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
-
+                                     
                                     if (oCurrent) { me.getHeaderData(); }
 
                                     me.enableOtherTabs("detailPanel");
@@ -3477,7 +3485,8 @@ sap.ui.define([
                                         "Currentver": oData.results[i].Currentver,
                                         "Verno": verno,
                                         "Desc1": oData.results[i].Desc1,
-                                        "Desc2": oData.results[i].Desc2
+                                        "Desc2": oData.results[i].Desc2,
+                                        "Statuscd":oData.results[i].Statuscd
                                     }
                                     oEntry.VerToItems.push(item);
                                 };
@@ -3522,6 +3531,11 @@ sap.ui.define([
                 var version = oData.getProperty('Verno');
                 version = this.pad(version, 3);
                 var oModel = this.getOwnerComponent().getModel();
+                const versionDeleted = this.getView().byId("versionsTable").getModel("DataModel").getData().results.filter(item => item.Verno == oData.getProperty('Verno'))[0].Deleted;
+                if(versionDeleted){
+                    MessageBox.information("This version was already tagged as deleted.");
+                    return;
+                }
 
                 Common.openLoadingDialog(that);
 
@@ -3602,9 +3616,13 @@ sap.ui.define([
                         }
                     }
 
-                    oData.results = oData.results.filter(function (value, index) {
+                    //11/22/2023 comment below. 
+                    this.getVersionsTable();
+                    /*
+                     oData.results = oData.results.filter(function (value, index) {
                         return selected.indexOf(index) == -1;
                     })
+                    */
 
                     oTableModel.setData(oData);
                     oTable.clearSelection();
@@ -5071,6 +5089,10 @@ sap.ui.define([
                                 noEdit++;
                                 sAddtlMessage = "Deletion of current version not allowed.\r\n";
                             }
+                            else if(oData.results[selected[i]].Deleted == true){
+                                noEdit++;
+                                sAddtlMessage = "No record to delete.\r\nSelected version/s already tagged as deleted.\r\n";
+                            }
                             else if (oDataIO.filter(fItem => (+fItem.VERNO) === (+oData.results[selected[i]].Verno)).length > 0) {
                                 noEdit++;
                                 noEditMsg = noEditMsg + oData.results[selected[i]].Verno + ", ";
@@ -5257,8 +5279,8 @@ sap.ui.define([
                     this.byId("btnColorCancel").setVisible(false);
                     this.byId("btnColorEdit").setVisible(true);
                     this.byId("btnColorDelete").setVisible(true);
-                    this.byId("btnColorFullScreen").setVisible(true);
-                    this.byId("btnColorExitFullScreen").setVisible(true);
+                    //this.byId("btnColorFullScreen").setVisible(true);
+                    //this.byId("btnColorExitFullScreen").setVisible(true);
                     this.enableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(true);
                     this.byId("btnHdrDelete").setEnabled(true);
@@ -5739,8 +5761,10 @@ sap.ui.define([
                                         { path: "DataModel>" + sColumnId }
                                     ],  
                                     formatter: function(sColumnId) {
-                                        console.log(rscPath);
-                                        var oValue = me.getView().getModel(rscPath).getData().results.filter(v => v[rscKey] === sColumnId);
+                                        //console.log(rscPath);
+                                        var oValue;
+                                        if(me.getView().getModel(rscPath) !== undefined)
+                                            oValue = me.getView().getModel(rscPath).getData().results.filter(v => v[rscKey] === sColumnId);
         
                                         if (oValue && oValue.length > 0) {
                                             return oValue[0][rscValue] + " (" + sColumnId + ")";
