@@ -54,7 +54,8 @@
                 selectionMode="MultiToggle" 
                 visibleRowCountMode="Auto" 
                 class="sapUiSizeCompact" 
-                selectionBehavior="Row" >
+                selectionBehavior="Row"
+                alternateRowColors="true" >
                 <!-- <c:columns>
                     <t:Column width="6rem" sortProperty="Verno" hAlign="End">
                         <Label text="{ddtext>/VERNO}"/>

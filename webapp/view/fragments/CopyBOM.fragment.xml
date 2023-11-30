@@ -139,7 +139,8 @@
                         showColumnVisibilityMenu="true"
                         enableColumnReordering="true" 
                         enableColumnFreeze="true"
-                        selectionMode="MultiToggle">
+                        selectionMode="MultiToggle"
+                        alternateRowColors="true">
                         <uiT:extension>
                             <Toolbar class="sapUiTinyMarginBottom">
                                 <!-- <Title text="Available BOM" /> -->
@@ -343,7 +344,8 @@
                         showColumnVisibilityMenu="true"
                         enableColumnReordering="true" 
                         enableColumnFreeze="true"
-                        selectionMode="MultiToggle">
+                        selectionMode="MultiToggle"
+                        alternateRowColors="true">
                         <uiT:extension>
                             <Toolbar class="sapUiTinyMarginBottom">
                                 <tnt:InfoLabel text="{ddtext>/SELBOM}" />

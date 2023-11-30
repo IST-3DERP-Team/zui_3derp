@@ -38,64 +38,75 @@
                 </ObjectHeader>
 
                 <!-- HEADER -->
-                <core:Fragment fragmentName="zui3derp.view.subviews.styles.Header" type="XML" />
+                 <l:Splitter orientation="Vertical" height="100%">
+                    <Panel id="panelHdr" width="100%" height="100%" class="sapUiNoContentPadding">
+                        <core:Fragment fragmentName="zui3derp.view.subviews.styles.Header" type="XML" />
+                        <layoutData>
+                            <l:SplitterLayoutData size="190px" id="splitterHdr" />
+                        </layoutData> 
+                    </Panel>
 
-                <!-- DETAILS -->
-                <!-- <Panel id="detailPanel"    class="sapUiSizeCompact"> -->
-                <!-- <headerToolbar>
-                <Toolbar height="2rem" style="Clear">
-                    <Title text="{i18n>Detail}" />
-                </Toolbar>
-            </headerToolbar> -->
-                <IconTabBar id="detailPanel" tabDensityMode="Compact" expandable="false" class="sapUiNoContentPadding" stretchContentHeight="true" applyContentPadding="false">
-                    <items>
-                        <IconTabFilter  key ="genAttrib" icon="sap-icon://hint" text="{ddtext>/ATTRIBUTES}" tooltip="{ddtext>/STYLEATTRIBUTES}">
-                            <!-- <IconTabFilter icon="sap-icon://hint" text="General Attributes" tooltip="{i18n>Styleattributes}"> -->
-                            <core:Fragment fragmentName="zui3derp.view.subviews.styles.GeneralAttributes" type="XML" />
-                            <!-- GENERAL ATTRIBUTES -->
-                            <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.GeneralAttributes" type="XML"/> -->
+            
+                    <Panel id="panelDtl" width="100%" height="100%" class="sapUiNoContentPadding">
+                        <IconTabBar id="detailPanel" tabDensityMode="Compact" expandable="false" class="sapUiNoContentPadding" stretchContentHeight="true" applyContentPadding="false">
+                            <items>
+                                <IconTabFilter  key ="genAttrib" icon="sap-icon://hint" text="{ddtext>/ATTRIBUTES}" tooltip="{ddtext>/STYLEATTRIBUTES}">
+                                    <!-- <IconTabFilter icon="sap-icon://hint" text="General Attributes" tooltip="{i18n>Styleattributes}"> -->
+                                    <core:Fragment fragmentName="zui3derp.view.subviews.styles.GeneralAttributes" type="XML" />
+                                    <!-- GENERAL ATTRIBUTES -->
+                                    <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.GeneralAttributes" type="XML"/> -->
 
-                            <!-- COLORS -->
-                            <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.Colors" type="XML"/> -->
+                                    <!-- COLORS -->
+                                    <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.Colors" type="XML"/> -->
 
-                            <!-- SIZES -->
-                            <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.Sizes" type="XML"/> -->
+                                    <!-- SIZES -->
+                                    <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.Sizes" type="XML"/> -->
 
-                            <!-- PROCESSES -->
-                            <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.Processes" type="XML"/> -->
-                        </IconTabFilter>
-                        <IconTabFilter  key ="color" icon="sap-icon://palette" text="{ddtext>/COLORS}" tooltip="{ddtext>/COLORS}">
-                            <core:Fragment fragmentName="zui3derp.view.subviews.styles.Colors" type="XML" />
-                        </IconTabFilter>
-                        <IconTabFilter  key ="size" icon="sap-icon://resize-horizontal" text="{ddtext>/SIZES}" tooltip="{ddtext>/SIZES}">
-                            <core:Fragment fragmentName="zui3derp.view.subviews.styles.Sizes" type="XML" />
-                        </IconTabFilter>
-                        <IconTabFilter  key ="process" icon="sap-icon://process" text="{ddtext>/PROCESS}" tooltip="{ddtext>/PROCESS}">
-                            <core:Fragment fragmentName="zui3derp.view.subviews.styles.Processes" type="XML" />
-                        </IconTabFilter>
+                                    <!-- PROCESSES -->
+                                    <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.Processes" type="XML"/> -->
+                                </IconTabFilter>
+                                <IconTabFilter  key ="color" icon="sap-icon://palette" text="{ddtext>/COLORS}" tooltip="{ddtext>/COLORS}">
+                                    <core:Fragment fragmentName="zui3derp.view.subviews.styles.Colors" type="XML" />
+                                </IconTabFilter>
+                                <IconTabFilter  key ="size" icon="sap-icon://resize-horizontal" text="{ddtext>/SIZES}" tooltip="{ddtext>/SIZES}">
+                                    <core:Fragment fragmentName="zui3derp.view.subviews.styles.Sizes" type="XML" />
+                                </IconTabFilter>
+                                <IconTabFilter  key ="process" icon="sap-icon://process" text="{ddtext>/PROCESS}" tooltip="{ddtext>/PROCESS}">
+                                    <core:Fragment fragmentName="zui3derp.view.subviews.styles.Processes" type="XML" />
+                                </IconTabFilter>
 
-                        <!-- VERSIONS -->
-                        <IconTabFilter  key ="version" icon="sap-icon://notes" text="{ddtext>/VERSIONS}" tooltip="{ddtext>/VERSIONS}">
-                            <!-- VERSIONS -->
-                            <core:Fragment fragmentName="zui3derp.view.subviews.styles.Versions" type="XML" />
-                        </IconTabFilter>
+                                <!-- VERSIONS -->
+                                <IconTabFilter  key ="version" icon="sap-icon://notes" text="{ddtext>/VERSIONS}" tooltip="{ddtext>/VERSIONS}">
+                                    <!-- VERSIONS -->
+                                    <core:Fragment fragmentName="zui3derp.view.subviews.styles.Versions" type="XML" />
+                                </IconTabFilter>
 
-                        <!-- ATTACHMENTS -->
-                        <IconTabFilter  key ="attachment" icon="sap-icon://attachment" text="{ddtext>/ATTACHMENTS}" tooltip="{ddtext>/ATTACHMENTS}">
-                            <core:Fragment fragmentName="zui3derp.view.subviews.styles.Attachments" type="XML" />
-                        </IconTabFilter>
+                                <!-- ATTACHMENTS -->
+                                <IconTabFilter  key ="attachment" icon="sap-icon://attachment" text="{ddtext>/ATTACHMENTS}" tooltip="{ddtext>/ATTACHMENTS}">
+                                    <core:Fragment fragmentName="zui3derp.view.subviews.styles.Attachments" type="XML" />
+                                </IconTabFilter>
 
-                        <!-- IO LIST -->
-                        <IconTabFilter  key ="io" icon="sap-icon://list" text="{ddtext>/IOLIST}" tooltip="{ddtext>/IOLIST}">
-                            <core:Fragment fragmentName="zui3derp.view.subviews.styles.IO" type="XML" />
-                        </IconTabFilter>
+                                <!-- IO LIST -->
+                                <IconTabFilter  key ="io" icon="sap-icon://list" text="{ddtext>/IOLIST}" tooltip="{ddtext>/IOLIST}">
+                                    <core:Fragment fragmentName="zui3derp.view.subviews.styles.IO" type="XML" />
+                                </IconTabFilter>
 
-                    </items>
-                    <layoutData>
-                        <FlexItemData growFactor="1" baseSize="0%" />
-                    </layoutData>
-                </IconTabBar>
-                <!-- </Panel> -->
+                            </items>
+                            <!-- <layoutData>
+                                <FlexItemData growFactor="1" baseSize="0%" />
+                            
+                            </layoutData> -->
+                            <layoutData>
+                                    <l:SplitterLayoutData size="auto" id="splitterDtl" />
+                            </layoutData> 
+                        </IconTabBar>
+                    </Panel>
+
+                    <l:layoutData>
+                        <FlexItemData growFactor="1" baseSize="0%"/>
+                    </l:layoutData>
+                </l:Splitter>
+              
             </VBox>
         </content>
     </Page>

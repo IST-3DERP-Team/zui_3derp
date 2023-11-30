@@ -71,7 +71,7 @@
             </f:Form>
 
             <!-- Versions Table -->
-            <t:Table id="versionsTableMain" rows="{VersionsDataModel>/results}" class="sapUiSizeCompact">
+            <t:Table id="versionsTableMain" rows="{VersionsDataModel>/results}" class="sapUiSizeCompact" alternateRowColors="true">
                 <t:columns>
                     <t:Column width="5rem" filterProperty="Verno" sortProperty="Verno">
                         <Label text="{i18n>Version}"/>

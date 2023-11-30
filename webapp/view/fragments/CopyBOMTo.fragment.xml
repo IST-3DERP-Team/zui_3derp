@@ -114,7 +114,8 @@
                         showColumnVisibilityMenu="true"
                         enableColumnReordering="true" 
                         enableColumnFreeze="true"
-                        selectionMode="MultiToggle">
+                        selectionMode="MultiToggle"
+                        alternateRowColors="true">
                         <uiT:extension>
                             <Toolbar class="sapUiTinyMarginBottom">
                                 <tnt:InfoLabel text="{ddtext>/AVAILSTYLES}" />
@@ -203,7 +204,8 @@
                         showColumnVisibilityMenu="true"
                         enableColumnReordering="true" 
                         enableColumnFreeze="true"
-                        selectionMode="MultiToggle">
+                        selectionMode="MultiToggle"
+                        alternateRowColors="true">
                         <uiT:extension>
                             <Toolbar class="sapUiTinyMarginBottom">
                                 <tnt:InfoLabel text="{ddtext>/SELSTYLES}" />

@@ -79,7 +79,8 @@
             enableColumnReordering="true" 
             enableColumnFreeze="true"
             showColumnVisibilityMenu="true"
-            selectionMode="MultiToggle" >
+            selectionMode="MultiToggle" 
+            alternateRowColors="true">
             <c:layoutData>
                 <FlexItemData growFactor="1" baseSize="0%" />
             </c:layoutData>

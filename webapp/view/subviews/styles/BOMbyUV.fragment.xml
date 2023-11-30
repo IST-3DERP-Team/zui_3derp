@@ -47,7 +47,8 @@
             enableColumnFreeze="true"
             showColumnVisibilityMenu="true"
             selectionMode="Single" 
-            visibleRowCountMode="Auto" >
+            visibleRowCountMode="Auto" 
+            alternateRowColors="true">
             <c:layoutData>
                 <FlexItemData growFactor="1" baseSize="0%" />
             </c:layoutData>

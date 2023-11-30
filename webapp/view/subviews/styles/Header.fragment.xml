@@ -1,13 +1,13 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
     <VBox fitContainer="true" class="sidePadding"  >
-    <Panel id="headerPanel" width="auto">
-    <dependents>
+    <!-- <Panel id="headerPanel" width="auto"> -->
+        <dependents>
             <core:CommandExecution id="CE_HDREDIT" command="Edit" enabled="true" execute="setHeaderEditMode" />
             <core:CommandExecution id="CE_HDRDELETE" command="Delete" enabled="true" execute="onDeleteStyle" />
             <core:CommandExecution id="CE_HDRSAVE" command="Save" enabled="true" execute="onSaveHeader" />
             <core:CommandExecution id="CE_HDRCANCEL" command="Cancel" enabled="true" execute="cancelHeaderEdit" />
         </dependents> 
-        <headerToolbar>
+        <!-- <headerToolbar> -->
             <!-- <Toolbar id="TB1" height="2rem" style="Clear"> -->
             <!-- <Title text="{i18n>Header}" /> -->
             <OverflowToolbar>
@@ -25,7 +25,7 @@
                 <!-- <Button id="btnHdrApplyIO" type="Ghost" icon="sap-icon://activate" text="{i18n>ApplytoIO}" tooltip="{i18n>ApplytoIO}" press="applyToIO" visible="{= ${IO>/blnIOMod} === true ?  ${HeaderEditModeModel>/editMode} === true ? false : true :false }" /> -->
                 <!-- </Toolbar> -->
             </OverflowToolbar>
-        </headerToolbar>
+        <!-- </headerToolbar> -->
 
         <MessageStrip id="HeaderMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
 
@@ -325,6 +325,6 @@
                 </f:FormContainer>
             </f:formContainers>
         </f:Form> -->
-    </Panel>
+    <!-- </Panel> -->
     </VBox>
 </core:FragmentDefinition>

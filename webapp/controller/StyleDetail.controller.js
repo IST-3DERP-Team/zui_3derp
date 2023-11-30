@@ -22,7 +22,7 @@ sap.ui.define([
         var _promiseResult;
         var _sAction;
         var _oCaption = {};
-        var _startUpInfo;
+        var _startUpInfo = {};
         var sapDateFormat = sap.ui.core.format.DateFormat.getDateInstance({pattern : "yyyy-MM-dd" });
 
         return Controller.extend("zui3derp.controller.StyleDetail", {
@@ -217,10 +217,15 @@ sap.ui.define([
                 }
                 // console.log(this.getOwnerComponent().getModel("LOOKUP_MODEL").getData())
 
-                var oModelStartUp = new sap.ui.model.json.JSONModel();
-                oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
-                    _startUpInfo = oModelStartUp.oData
-                });
+                if (sap.ushell.Container) {
+                    var oModelStartUp= new sap.ui.model.json.JSONModel();
+                    oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
+                        _startUpInfo = oModelStartUp.oData;
+                    });
+                }
+                else {
+                    _startUpInfo.id = "BAS_CONN";
+                }
 
                 _promiseResult = new Promise((resolve, reject) => {
                     resolve(that.getCaptionMsgs());

@@ -35,8 +35,9 @@
             enableColumnReordering="true" 
             enableColumnFreeze="true"
             showColumnVisibilityMenu="true"
-            selectionMode="Single" 
-            visibleRowCountMode="Auto">
+            selectionMode="MultiToggle" 
+            visibleRowCountMode="Auto"
+            alternateRowColors="true">
             <!-- <t:Column width="5rem" sortProperty="Seqno">
                 <Label text="{ddtext>/SEQ}" />
                 <t:template>

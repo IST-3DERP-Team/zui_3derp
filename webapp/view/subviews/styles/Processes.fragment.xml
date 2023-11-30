@@ -61,7 +61,8 @@
             class="sapUiSizeCompact" 
             visibleRowCountMode="Auto"
             selectionMode="MultiToggle"
-            sort="onSorted"> 
+            sort="onSorted"
+            alternateRowColors="true"> 
             <!-- <c:columns>
                 <t:Column width="4rem" sortProperty="Seqno" visible="false">
                     <Label text="{ddtext>/SEQ}" />

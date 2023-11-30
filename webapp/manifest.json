@@ -245,6 +245,9 @@
             },
             "LOCK_MODEL": {
                 "type": "sap.ui.model.json.JSONModel"
+            },
+            "MATLIST_MODEL": {
+                "type": "sap.ui.model.json.JSONModel"
             }
         },
         "resources": {

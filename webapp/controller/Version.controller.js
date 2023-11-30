@@ -31,6 +31,8 @@ sap.ui.define([
             }
         };
         var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({ pattern: "MM/dd/yyyy" });
+        var timeFormat = sap.ui.core.format.DateFormat.getTimeInstance({ pattern: "KK:mm:ss a" });
+        var dateFormat2 = sap.ui.core.format.DateFormat.getDateInstance({ pattern: "MM/dd/yyyy KK:mm:ss a" });
 
         return Controller.extend("zui3derp.controller.Version", {
 
@@ -76,6 +78,8 @@ sap.ui.define([
                     rowCountbomDetailedTable: 0,
                     rowCountmaterialListTable:0
                 }), "counts");   
+
+                this.getOwnerComponent().getModel("MATLIST_MODEL").setData({ items: [] });
                
 
                  // if (!this._CopyBOMDialog) {
@@ -5052,6 +5056,19 @@ sap.ui.define([
                 });
                 oModel.read(entitySet, {
                     success: function (oData, oResponse) {
+                        oData.results.forEach(item => {
+                            item.EDITED = false;
+                            //item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));
+                            //item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));
+
+                            if (item.CREATEDDT !== null) {
+                                item.CREATEDDT = dateFormat2 .format(new Date(item.CREATEDDT + " " + item.CREATEDTM)) ;
+                            }
+                            if (item.UPDATEDDT !== null ) {
+                                item.UPDATEDDT = dateFormat2.format(new Date(item.UPDATEDDT + " " + item.UPDATEDTM)) ;
+                            }
+                           
+                        })
                         oJSONModel.setData(oData);
                         if (oTable.getModel("DataModel") === undefined) {
                             oTable.setModel(oJSONModel, "DataModel");
@@ -5096,13 +5113,16 @@ sap.ui.define([
                         */
                         oData.results.forEach(item => {
                             item.EDITED = false;
-                            item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));
-                            item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));
+                            //item.CREATEDDT = dateFormat.format(new Date(item.CREATEDDT));
+                            //item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));
+
+                            if (item.CREATEDDT !== null) {
+                                item.CREATEDDT = dateFormat2 .format(new Date(item.CREATEDDT + " " + item.CREATEDTM)) ;
+                            }
+                            if (item.UPDATEDDT !== null ) {
+                                item.UPDATEDDT = dateFormat2.format(new Date(item.UPDATEDDT + " " + item.UPDATEDTM)) ;
+                            }
                            
-                            // if (item.UPDATEDDT !== null && item.UPDATEDDT !== "  /  /" && item.UPDATEDDT !== "" && item.UPDATEDDT !== " //  /  /" && item.UPDATEDDT != "  /  /") {
-                            //     //console.log(item.UPDATEDDT)
-                            //     item.UPDATEDDT = dateFormat.format(new Date(item.UPDATEDDT));// + " " + timeFormat.format(new Date(item.UPDATEDTM));
-                            // }
                         })
                         oTable.setModel(oJSONModel, "DataModel");
                         me.setLocTableColumns("materialListTable", columnData);
@@ -5508,11 +5528,12 @@ sap.ui.define([
             },
 
             onAssignMaterial: function () {
-                //addisng material button clicked, navigate to assign material page
+                //adding material button clicked, navigate to assign material page
                 var oData = this.byId("materialListTable").getModel("DataModel").getData().results;
 
                 if (oData.length > 0) {
-                    if (oData.filter(fItem => fItem.MATNO === "" && fItem.MATDESC1 !== "" ).length > 0) {
+                    //comment 11/30/2023 allow re-assigning of material by selecting record via checkbox
+                    //if (oData.filter(fItem => fItem.MATNO === "" && fItem.MATDESC1 !== "").length > 0) { 
                         if (this._GenericFilterDialog) {
                             this._GenericFilterDialog.setModel(new JSONModel());
                             this.byId("versionAttrTable").getColumns().forEach(col => col.setProperty("filtered", false));
@@ -5522,16 +5543,53 @@ sap.ui.define([
                             this.byId("materialListTable").getColumns().forEach(col => col.setProperty("filtered", false));
                         }
 
+                        var oTable = this.byId("materialListTable");
+                        var oSelectedIndices = oTable.getSelectedIndices();
+                        var oTmpSelectedIndices = [];
+                        oSelectedIndices.forEach(item => {
+                            oTmpSelectedIndices.push(oTable.getBinding("rows").aIndices[item])
+                        })
+                        oSelectedIndices = oTmpSelectedIndices;
+                        var selectedMatList=[];
+
+                        for (var i = 0; i < oSelectedIndices.length; i++) {
+                            if(oData[oSelectedIndices[i]].IONO === ""){ // allow selected with no IONO assigned
+                                var items= {
+                                    "SEQNO": oData[oSelectedIndices[i]].SEQNO,
+                                    "GMC": oData[oSelectedIndices[i]].GMC
+                                }
+                                selectedMatList.push(items)
+                            }
+                        }//console.log(selectedMatList)
+                        if(oSelectedIndices.length > 0){
+                            if(selectedMatList.length == 0)
+                            {
+                                MessageBox.information("Selected records have already assigned IO.");
+                                return;
+                            }
+                            else{
+                                this.getOwnerComponent().getModel("MATLIST_MODEL").setProperty("/items",selectedMatList);
+                            }
+
+                        }
+                        else{
+                            if (oData.filter(fItem => fItem.MATNO === "" && fItem.MATDESC1 !== "").length === 0) {
+                                MessageBox.information(_oCaption.INFO_NO_VALID_MATNO);//No valid record for material no. creation.\r\nMaterial no assigned or deleted already.
+                                return;
+                            }
+                        }
+                        
+
                         var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                         oRouter.navTo("RouteAssignMaterial", {
                             styleno: this._styleNo,
                             sbu: this._sbu,
                             version: this._version
                         });
-                    }
-                    else {
-                        MessageBox.information(_oCaption.INFO_NO_VALID_MATNO);//No valid record for material no. creation.\r\nMaterial no assigned or deleted already.
-                    }
+                    // }
+                    // else {
+                    //     MessageBox.information(_oCaption.INFO_NO_VALID_MATNO);//No valid record for material no. creation.\r\nMaterial no assigned or deleted already.
+                    // }
                 }
                 else {
                     MessageBox.information(_oCaption.INFO_NO_RECORD_SELECT);//"No available record to process."
@@ -7344,8 +7402,14 @@ sap.ui.define([
                                 text: "{DataModel>" + sColumnId + "}",
                                 press: function(oEvent) {
                                     const vGMC =  oEvent.oSource.mProperties.text;
+                                    var oData = {
+                                        DOCTYPE: "GMC",
+                                        GMC: vGMC
+                                    }
+    
+                                    me.viewDoc(oData);
                                     // Handle the click event of the hyperlink
-                                    window.open(`https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_GMC-display&/${that._sbu}/${vGMC}` , "_blank");
+                                    //window.open(`https://ltd2022.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_GMC-display&/${that._sbu}/${vGMC}` , "_blank");
                                 },
                                 // Add the custom event handler for right-click
                                 // onAfterRendering: function() {
@@ -7366,7 +7430,7 @@ sap.ui.define([
                                     const vStyleNo =  oEvent.oSource.mProperties.text;
                                     console.log(vStyleNo)
                                     
-                                    window.open(`https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_ORD_STYLE-display&/RouteStyleDetail/${vStyleNo}/VER/%20`, "_blank");
+                                    window.open(`https://ltd2022.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_ORD_STYLE-display&/RouteStyleDetail/${vStyleNo}/VER/%20`, "_blank");
                                 },
                             })
                             oControl.addStyleClass("hyperlink") 
@@ -7381,7 +7445,13 @@ sap.ui.define([
                                 press: function(oEvent) {
                                     // Handle the click event of the hyperlink
                                     const vcolumnData =  oEvent.oSource.mProperties.text;
-                                    window.open(`https://ltd.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_MATERIAL-display&/${that._sbu}/${vcolumnData}`, "_blank");
+                                    var oData = {
+                                        DOCTYPE: "MATNO",
+                                        MATNO: vcolumnData
+                                    }
+    
+                                    me.viewDoc(oData);
+                                    //window.open(`https://ltd2022.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_MATERIAL-display&/${that._sbu}/${vcolumnData}`, "_blank");
                                 },
                             })
                             oControl.addStyleClass("hyperlink") 
@@ -7504,6 +7574,39 @@ sap.ui.define([
                     oTable.getBinding('rows').sort(oSorter);
                     // prevent internal sorting by table
                     oEvent.preventDefault();
+                });
+            },
+
+            viewDoc: function(oData) {
+                var vSBU = this._sbu
+                var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
+                console.log(oData);
+                var newHash;
+                //window.open(`https://ltd2022.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_MATERIAL-display&/${that._sbu}/${vcolumnData}`, "_blank");
+                if (oData.DOCTYPE === "MATNO") {
+                    var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternalAsync({
+                        target: {
+                            semanticObject: "ZSO_3DERP_INV_MATERIAL",
+                            action: "display"
+                        },
+                    })) || ""; // generate the Hash to display style
+                    newHash = `ZSO_3DERP_INV_MATERIAL-display&/${vSBU}/${oData.MATNO}`;                }
+                else if (oData.DOCTYPE === "GMC") {
+                    //window.open(`https://ltd2022.luenthai.com:44300/sap/bc/ui2/flp#ZSO_3DERP_INV_GMC-display&/${that._sbu}/${vGMC}` , "_blank");
+                    // var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
+                    var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternalAsync({
+                        target: {
+                            semanticObject: "ZSO_3DERP_INV_GMC",
+                            action: "display&/" + vSBU  + "/" + oData.GMC
+                        }
+                    })) || ""; 
+                    newHash = "ZSO_3DERP_INV_GMC-display&/" +vSBU + "/" + oData.GMC
+                }
+
+                oCrossAppNavigator.toExternal({
+                    target: {
+                        shellHash: newHash.length > 0 ? newHash : hash
+                    }
                 });
             },
 
@@ -8828,8 +8931,24 @@ sap.ui.define([
                 }
 
                 if (sQuery) {
+                    var oQueries = sQuery.split("*");
+
                     oColumnValues[vSelectedColumn].forEach(val => {
-                        if (val.Value.toLocaleLowerCase().indexOf(sQuery.toLocaleLowerCase()) >= 0) {
+                        var vMatch = true;
+
+                        oQueries.forEach(q => {
+                            if (!vMatch) { return; }
+                            if (q.trim() === "") { return; }
+
+                            if (val.Value.toLocaleLowerCase().indexOf(q.toLocaleLowerCase().trim()) >= 0) {
+                                vMatch = true;
+                            }
+                            else {
+                                vMatch = false;
+                            }
+                        })
+
+                        if (vMatch) {
                             oCurrColumnValues.push(val);
                         }
                     })
@@ -9097,5 +9216,11 @@ sap.ui.define([
                 return oConnector;
             },
 
+            formatTimeOffSet(pTime) {
+                let TZOffsetMs = new Date(0).getTimezoneOffset() * 60 * 1000;
+                return timeFormat.format(new Date(pTime + TZOffsetMs));
+            },
+
         });
+        
     });

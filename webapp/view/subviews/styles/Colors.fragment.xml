@@ -61,7 +61,8 @@
             class="sapUiSizeCompact" 
             selectionMode="MultiToggle" 
             sort="onSorted"
-            filter="onFilter">
+            filter="onFilter"
+            alternateRowColors="true">
             <!-- <c:columns>
                 <t:Column name="ATTRIBSEQ" width="7rem" sortProperty="Attribseq">
                     <Label text="{ddtext>/COLORCD}" />

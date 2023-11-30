@@ -19,7 +19,7 @@ sap.ui.define([
         "use strict";
 
         var that;
-        var _startUpInfo;
+        var _startUpInfo = {};
         var _promiseResult;
         var _oCaption = {};
 
@@ -52,11 +52,15 @@ sap.ui.define([
                 //this._materialListChanged = false;
                 this.setChangeStatus(false);
 
-                var oModelStartUp = new sap.ui.model.json.JSONModel();
-                await oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
-                    _startUpInfo = oModelStartUp.oData
-                    //console.log(oModelStartUp, oModelStartUp.oData);
-                });
+                if (sap.ushell.Container) {
+                    var oModelStartUp= new sap.ui.model.json.JSONModel();
+                    oModelStartUp.loadData("/sap/bc/ui2/start_up").then(() => {
+                        _startUpInfo = oModelStartUp.oData;
+                    });
+                }
+                else {
+                    _startUpInfo.id = "BAS_CONN";
+                }
 
                 //get data
                 this.getMaterialList();
@@ -100,9 +104,21 @@ sap.ui.define([
                     // },
                     success: function (oData, oResponse) {
                         // console.log('StyleMaterialListSet',oData);
+                        //selected records in Material List
+                        var selectedMat =  that.getOwnerComponent().getModel("MATLIST_MODEL").getData().items;
+                        // Extract SEQNO from selectedMat
+                        const seqNoToFilter = selectedMat.map(item => item.SEQNO);
+                         
                         var result = oData.results;
                         that.getView().setModel(new JSONModel({ results: result.filter(a => a.MATNO !== "") }), "AssignMaterialListsModel");
-                        result = result.filter(a => a.MATNO === "" && a.MATDESC1 !== "");
+                        
+                        if(selectedMat.length > 0){
+                            //filtered records based on selected records in Material List
+                            result = result.filter(a => seqNoToFilter.includes(a.SEQNO));
+                        }
+                        else
+                            result = result.filter(a => a.MATNO === "" && a.MATDESC1 !== "");
+
                         oData.results = result;
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");
@@ -578,7 +594,7 @@ sap.ui.define([
                 
                 var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
                 var oJSONModel = new JSONModel();
-                var id =_startUpInfo.id; //"NCJOAQUIN" 
+                var id =_startUpInfo === undefined  ? "BAS_CONN" : _startUpInfo.id; //"NCJOAQUIN" 
                 oModel.read("/CreateMatRoleSet", {
                     urlParameters: {
                         "$filter": "Bname eq '" + id + "' and Roleid eq '" + this._sbu + "CRTMAT'"

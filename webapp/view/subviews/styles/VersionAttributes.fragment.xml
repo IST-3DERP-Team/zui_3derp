@@ -42,7 +42,8 @@
                 visibleRowCountMode="Auto" 
                 class="sapUiSizeCompact" 
                 selectionMode="MultiToggle"
-                sort="onSorted">
+                sort="onSorted"
+                alternateRowColors="true">
                 <!-- <c:columns>
                     <t:Column width="14rem" sortProperty="Attribtyp">
                         <Label text="{ddtext>/ATTRIBTYP}" />

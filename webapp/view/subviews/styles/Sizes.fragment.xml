@@ -45,7 +45,8 @@
             showColumnVisibilityMenu="true"
             class="sapUiSizeCompact" 
             visibleRowCountMode="Auto" 
-            selectionMode="None">
+            selectionMode="None"
+            alternateRowColors="true">
             <c:columns>
                 <t:Column name="ATTRIBSEQ" width="5rem" sortProperty="Attribseq" visible="false">
                     <Label text="{ddtext>/SEQ}" />

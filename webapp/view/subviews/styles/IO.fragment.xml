@@ -34,7 +34,8 @@
             class="sapUiSizeCompact" 
             selectionMode="None" 
             sort="onSorted"
-            filter="onFilter">
+            filter="onFilter"
+            alternateRowColors="true">
             <c:columns>
                 <t:Column name="IONO" width="8rem" sortProperty="IONO">
                     <Label text="{ddtext>/IONO}" />
