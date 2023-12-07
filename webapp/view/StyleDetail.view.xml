@@ -42,7 +42,7 @@
                     <Panel id="panelHdr" width="100%" height="100%" class="sapUiNoContentPadding">
                         <core:Fragment fragmentName="zui3derp.view.subviews.styles.Header" type="XML" />
                         <layoutData>
-                            <l:SplitterLayoutData size="190px" id="splitterHdr" />
+                            <l:SplitterLayoutData size="185px" id="splitterHdr" />
                         </layoutData> 
                     </Panel>
 

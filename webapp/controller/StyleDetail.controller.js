@@ -6259,6 +6259,15 @@ sap.ui.define([
                
                 this.byId("headerPanel").setVisible(!bFullScreen);
                 this.getView().getModel("ui").setProperty("/fullscreen", bFullScreen);
+
+                if (bFullScreen) {
+                    this.byId("splitterHdr").setProperty("size", "0%");
+                    this.byId("splitterDtl").setProperty("size", "100%");
+                }
+                else {
+                    this.byId("splitterHdr").setProperty("size", "185px");
+                    this.byId("splitterDtl").setProperty("size", "auto");
+                }
     
             },
 

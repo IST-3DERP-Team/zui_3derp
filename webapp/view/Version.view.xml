@@ -15,21 +15,26 @@
 >
     <Page showHeader="false" title="Manage Version" showNavButton="true" navButtonPress="onNavBack" enableScrolling="true">
       <content>
+      
         <VBox fitContainer="true">
             <!-- OBJECT HEADER intro="{i18n>Version}: {headerData>/SelectedVersion}" -->
-            <ObjectHeader 
-                id="objectHeader"
-                responsive="true" 
-                fullScreenOptimized="true" 
-                intro="{ddtext>/VERSION}: {headerData>/SelectedVersion} {CurrStylVersion>/VersionDeleted}"
-                backgroundDesign="Solid" 
-                icon="sap-icon://blank-tag-2" 
-                title="{headerData>/Stylecd}" 
-                showTitleSelector="true"
-                titleSelectorPress="handleTitleSelectorPress"
-                titleSelectorTooltip="Select Version"
-               
-            > 
+            <!-- <HBox width="auto">  -->
+            <Panel width="100%"  class="sapUiNoContentPadding">
+                <FlexBox renderType="Div" alignItems="Center" justifyContent="SpaceBetween" height="auto">
+                    <items>
+                        <ObjectHeader 
+                            id="objectHeader"
+                            responsive="true" 
+                            fullScreenOptimized="true" 
+                            intro="{ddtext>/VERSION}: {headerData>/SelectedVersion} {CurrStylVersion>/VersionDeleted}"
+                            backgroundDesign="Solid" 
+                            icon="sap-icon://blank-tag-2" 
+                            title="{headerData>/Stylecd}" 
+                            showTitleSelector="true"
+                            titleSelectorPress="handleTitleSelectorPress"
+                            titleSelectorTooltip="Select Version"
+                        
+                        > 
              <!-- number="{headerData>/Statuscd}"
                 numberUnit="{i18n>Status}"
                 numberState="{= ${headerData>/Statuscd} === 'CMP' ? 'Success' : ${headerData>/Statuscd} === 'CRT' ? 'Error' : 'Warning'}" -->
@@ -72,8 +77,10 @@
                     </f:Form>
                 </HeaderContainer>
 	        </headerContainer> -->
-           </ObjectHeader> 
-
+                    <layoutData>
+                            <FlexItemData growFactor="1" />
+                    </layoutData>
+                </ObjectHeader> 
                 <!-- <f:Form id="StyleHeaderForm2" editable="true">
                     <f:layout>
                         <f:ResponsiveGridLayout
@@ -140,7 +147,21 @@
                 </TileContent> -->
                  <!-- <HeaderContainer scrollStep="200" id="container1">
             </HeaderContainer> -->
-
+            <!-- <l:VerticalLayout width="100%" > -->
+            <!-- <HBox > -->
+                        <!-- <Panel > -->
+                        <Button type="Ghost" icon="sap-icon://undo" tooltip="Return to IO"  text="Return to IO" press="routeTOIO" visible="{= ${IO>/blnIOMod} === true ?  ${HeaderEditModeModel>/editMode} === true ? false : true :false }">
+                             <layoutData>
+                                    <FlexItemData growFactor="0" />
+                            </layoutData>
+                        </Button>
+                        <!-- </Panel> -->
+                        
+                    </items>
+                </FlexBox>
+            </Panel>
+            
+           
             <IconTabBar id="versionTabBar" expandable="false" headerMode="Inline" upperCase="true" stretchContentHeight="true" class="sapUiResponsiveContentPadding">
                 <items>
                     <!-- VERSION ATTRIBUTES -->

@@ -573,6 +573,7 @@ sap.ui.define([
                         oData.SelectedVersion = me._version;
                         oJSONModel.setData(oData);
                         oView.setModel(oJSONModel, "headerData");
+                        me.getPurPlant();
                         Common.closeLoadingDialog(that);
                         me.setChangeStatus(false);
                     },
@@ -589,6 +590,26 @@ sap.ui.define([
                 this.getDetailedBOM(); //Get Detailed BOM
                 //this.getMaterialList(); //Get material list
                 this.getMaterialListColumns();
+            },
+
+            getPurPlant:function(){
+                //get PurPLant
+                var me=this;
+                var oSHPurPlantModel = that.getOwnerComponent().getModel("SearchHelps");
+                var vCustGrp = this.getView().getModel("headerData").getData().Custgrp;
+                oSHPurPlantModel.setHeaders({
+                    sbu: that._sbu,
+                    kdgrp: vCustGrp
+
+                });
+                oSHPurPlantModel.read("/PurPlant3Set", {
+                    success: function (oData, oResponse) {
+                        me.getView().setModel(new JSONModel(oData), "PurPlant3Set");
+                    },
+                    error: function (err) { }
+                });
+
+
             },
 
             //******************************************* */
@@ -1347,6 +1368,20 @@ sap.ui.define([
                                 "Length": "100",
                                 "Decimal": "0"
                             })
+
+                            columnData.push({
+                                "ColumnName": "ChkMat" + column.Attribcd,
+                                "ColumnDesc": "ChkMat" + column.Desc1,
+                                "ColumnLabel": "ChkMat" + column.Desc1,
+                                "ColumnType": Constants.COLOR,
+                                "Editable": column.false,
+                                "Mandatory": false,
+                                "Visible": false,
+                                "DataType": "STRING",
+                                "ColumnWidth": "150",
+                                "Length": "100",
+                                "Decimal": "0"
+                            })
                         })
 
                         me.getbomGMCTableData(columnData, oGetComponentInd); //get BOM by GMC actual data
@@ -1457,6 +1492,7 @@ sap.ui.define([
                                     if (rowData[j].MATTYPCLS === Constants.ZCOLR && rowData[j].COLOR === colorName) {
                                         if (oGMCTableData.results[i].GMC === rowData[j].GMC && oGMCTableData.results[i].PARTCD === rowData[j].PARTCD && oGMCTableData.results[i].MATTYP === rowData[j].MATTYP) {
                                             oGMCTableData.results[i][colorName] = rowData[j].DESC1;
+                                            oGMCTableData.results[i]["ChkMat" + colorName]  = "";
                                         }
                                     }
                                 }
@@ -1467,6 +1503,7 @@ sap.ui.define([
                             pivot.forEach(c => {
                                 if (item[c.Attribcd] === undefined) {
                                     item[c.Attribcd] = "";
+                                    item["ChkMat" + c.Attribcd] = "";
                                 }
                             })
                         })
@@ -1585,7 +1622,7 @@ sap.ui.define([
                             };
                             
                             var column = this._aColumns["bomGMC"].filter(item => item.ColumnName === sColName)[0];
-                            console.log(column)
+                            //console.log(column)
                             col.setTemplate(this.columnTemplate('GMC', column).addEventDelegate(oInputEventDelegate));
                         });
 
@@ -3891,15 +3928,44 @@ sap.ui.define([
                             oData.results.forEach(item => item.MSG = '');
                             
                             me.getView().setModel(new JSONModel(oData.results), "BOMValidation");
-                            me.getView().byId("bomGMCTable").getModel("DataModel").getData().results.forEach(item => {
-                                var vRow = oData.results.filter(fItem => fItem.GMC === item.GMC && fItem.MATNO === "X" && fItem.IO === "X");
+                            // me.getView().byId("bomGMCTable").getModel("DataModel").getData().results.forEach(item => {
+                            //     var vRow = oData.results.filter(fItem => fItem.GMC === item.GMC && fItem.MATNO === "X" && fItem.IO === "X");
+                            //     if (vRow.length > 0) {
+                            //         //item.EDITABLE = vRow[0].IO === "X" && vRow[0].MATNO === "X" ? "" : "X";
+                            //         item.EDITABLE = "X";
+                            //         item.HASMATNO = "X"
+                            //     }
+                            //     else { item.EDITABLE = "X" }
+                            // })
+                            var oTableGMC = me.getView().byId("bomGMCTable");
+                            // var oGMCTableData = oTableGMC.getModel('DataModel').getData().results;
+                            var oGMCTableData = me.getView().byId("bomGMCTable").getModel("DataModel").getData().results;
+                            for (var i = 0; i < oGMCTableData.length; i++) {
+                            //me.getView().byId("bomGMCTable").getModel("DataModel").getData().results.forEach(item => {
+                                var vRow = oData.results.filter(fItem => fItem.GMC === oGMCTableData[i]["GMC"] && fItem.PARTCD === oGMCTableData[i]["PARTCD"] && (fItem.MATNO === "X" || fItem.IO === "X"));
                                 if (vRow.length > 0) {
                                     //item.EDITABLE = vRow[0].IO === "X" && vRow[0].MATNO === "X" ? "" : "X";
-                                    item.EDITABLE = "X";
-                                    item.HASMATNO = "X"
+                                    oGMCTableData[i]["EDITABLE"] = "X";
+                                    oGMCTableData[i]["HASMATNO"] = "X"
                                 }
-                                else { item.EDITABLE = "X" }
-                            })
+                                else { oGMCTableData[i]["EDITABLE"] = "X" }
+
+                                if(me._colors.length > 0){
+                                    var pivot = me._colors;
+                                    for (var k = 0; k < pivot.length; k++) {
+                                        var colorName = pivot[k].Attribcd;
+                                        for (var j = 0; j < oData.results.length; j++) {
+                                            if ( oData.results[j].COLOR === colorName) {
+                                                if (oGMCTableData[i]["GMC"] === oData.results[j].GMC && oGMCTableData[i]["PARTCD"] === oData.results[j].PARTCD && oGMCTableData[i]["MATTYP"] === oData.results[j].MATTYP) {
+                                                    console.log(colorName, oData.results[j].MATNO )
+                                                    oGMCTableData[i]["ChkMat" + colorName] = oData.results[j].MATNO
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            oTableGMC.getModel("DataModel").setProperty("/results", oGMCTableData);
 
                             // Common.closeProcessingDialog(me);
                             resolve(true); 
@@ -4185,6 +4251,7 @@ sap.ui.define([
                                 "PARTDESC": oData.results[index].PARTDESC,
                                 "USGCLS": oData.results[index].USGCLS,
                                 "MATTYP": oData.results[index].MATTYP,
+                                "PROCESSCD":oData.results[i].PROCESSCD,
                             }
                             oModel.update(entitySet, param, mParameters);
                         }
@@ -5293,6 +5360,10 @@ sap.ui.define([
                                             this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/CURRENCYCD", item.Waers);
                                         })
                                     }
+                                    const vPurPlant = this.getView().getModel("PurPlant3Set").getData().results.filter(fItem => fItem.PURPLANT !== "");
+                                    this.byId("materialListTable").getModel("DataModel").setProperty(sRowPath + "/PURPLANT", vPurPlant[0].PURPLANT);
+
+
 
                                 }, 100);
                                 
@@ -5675,8 +5746,9 @@ sap.ui.define([
                         change: changeFunction,
                         liveChange: changeFunction,
                         // editable: "{= ${DataModel>USGCLS} === 'AUV' ? " + editModeCond + " : ${DataModel>USGCLS} === 'ASUV' ? " + editModeCond + " : false }",
-                        editable: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " : false  }",
-                        enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " : false  }",
+                        // editable: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " : false  }",
+                        editable: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>ChkMat" + columnName + "} === 'X' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " : false  }",
+                        enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>ChkMat" + columnName + "} === 'X' ? false : ${DataModel>USGCLS} === 'AUV' || ${DataModel>USGCLS} === 'ASUV' || ${DataModel>USGCLS} === 'ASPOUV' || ${DataModel>USGCLS} === 'ASDUV' || ${DataModel>USGCLS} === 'ACSUV' ? " + editModeCond + " : false  }",
                         visible: true,
                         tooltip: "{DataModel>" + columnName + "}"
                     });
@@ -5917,7 +5989,22 @@ sap.ui.define([
                             oColumnTemplate = new sap.m.Text({ text: "{DataModel>" + columnName + "}", tooltip: "{DataModel>" + columnName + "}" });
                         }
 
-                    } else{
+                    }else if (columnName === "VENDORCD" && type === "GMC") {
+                        //setting the GMC input with value help
+                        oColumnTemplate = new sap.m.Input({
+                            value: "{DataModel>" + columnName + "}",
+                            showValueHelp: true,
+                            showSuggestion: true,
+                            valueHelpRequest: that.onVendorValueHelp.bind(that),
+                            change: inputChangeFunction,
+                            liveChange: liveChangeFunction,
+                            editable: ((column.Editable) ? "{= ${DataModel>BOMITMTYP} === 'STY' ? false : " + editModeCond + " }" : false),
+                            enabled: "{= ${DataModel>EDITABLE} === '' ? false : ${DataModel>HASMATNO} === 'X' ? false : true  }",
+                            visible: column.Visible,
+                            tooltip: "{DataModel>" + columnName + "}",
+                        });
+                    } 
+                    else{
                         //setting the default input field
                         if (column.Editable) {
                             oColumnTemplate = new sap.m.Input({
@@ -5993,7 +6080,8 @@ sap.ui.define([
                     "Consump": item.CONSUMP,
                     "Processcd": item.PROCESSCD,
                     "Refmatno": item.REFMATNO,
-                    "Refmatdesc": item.REFMATDESC
+                    "Refmatdesc": item.REFMATDESC,
+                    "Vendorcd": item.VENDORCD
                 }
             },
 
@@ -6288,6 +6376,24 @@ sap.ui.define([
                         Common.closeLoadingDialog(that);
                     }
                 })
+            },
+
+            routeTOIO: function () {
+                var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
+                var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternalAsync({
+                    target: {
+                        semanticObject: "ZSO_3DERP_ORD_IO",
+                        action: _sAction + "&/RouteIODetail/" + this._iono + "/" + this._sbu + "/" + this._styleNo + "/itfSTYLE"
+                    }
+                })) || ""; // generate the Hash to display style
+                hash = "ZSO_3DERP_ORD_IO-" + _sAction + "&/RouteIODetail/" + this._iono + "/" + this._sbu + "/" + this._styleNo + "/itfSTYLE"
+
+                oCrossAppNavigator.toExternal({
+                    target: {
+                        // shellHash: hash
+                        shellHash : hash
+                    }
+                });
             },
 
             //******************************************* */

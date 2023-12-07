@@ -153,6 +153,7 @@
             //get Attributes
             var oJSONModel1 = new JSONModel();
             oSHModel.setHeaders({
+                sbu: that._sbu,
                 dispgrp: "STYINFO"
             });
             oSHModel.read("/AttribTypeSet", {
@@ -467,6 +468,7 @@
             //get Attributes
             var oJSONModel1 = new JSONModel();
             oSHModel.setHeaders({
+                sbu: that._sbu,
                 dispgrp: "STYINFO"
             });
             oSHModel.read("/AttribTypeSet", {
