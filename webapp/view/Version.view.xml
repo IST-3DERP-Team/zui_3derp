@@ -150,7 +150,7 @@
             <!-- <l:VerticalLayout width="100%" > -->
             <!-- <HBox > -->
                         <!-- <Panel > -->
-                        <Button type="Ghost" icon="sap-icon://undo" tooltip="Return to IO"  text="Return to IO" press="routeTOIO" visible="{= ${IO>/blnIOMod} === true ?  ${HeaderEditModeModel>/editMode} === true ? false : true :false }">
+                        <Button type="Ghost" icon="sap-icon://undo" tooltip="Return to IO"  press="routeTOIO" visible="{= ${IO>/blnIOMod} === true ?  true :false }">
                              <layoutData>
                                     <FlexItemData growFactor="0" />
                             </layoutData>

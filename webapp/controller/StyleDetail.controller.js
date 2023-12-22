@@ -507,7 +507,12 @@ sap.ui.define([
                     this.byId("ioTable").getColumns().forEach(col => col.setProperty("filtered", false));
                 }
 
-                console.log(this._iono)
+                //exit full screen
+                
+                this.getView().getModel("ui").setProperty("/fullscreen", false);
+                this.byId("splitterHdr").setProperty("size", "185px");
+                this.byId("splitterDtl").setProperty("size", "auto");
+
                 if (this._iono != " ") {
                     this.routeTOIO();
                     //sap.ui.getCore().byId("backBtn").mEventRegistry.press[0].fFunction = this._fBackButton;
@@ -2251,10 +2256,22 @@ sap.ui.define([
                     bProceed = true;
                     var oTableModel = oTable.getModel("DataModel");
                     var oData = oTableModel.getData();
+                    this.getView().byId("colorsTable").getModel("DataModel").getData().results.forEach(item => {
+                        var vRow = this._bomColors.filter(fItem => fItem.COLOR === item.Attribcd);
+                        if (vRow.length > 0) {
+                            item.EDITABLE = "X";
+                            item.HASMATCOLOR = "X"
+                        }
+                        else { 
+                            item.EDITABLE = "X"
+                            item.HASMATCOLOR = '';
+                            }
+                    })
 
                     for (var i = 0; i < oData.results.length; i++) {
                         if (this._bomColors.filter(fItem => fItem.COLOR === oData.results[i].Attribcd).length > 0) {
                             noEdit++;
+                            /*
                             oTable.getRows()[i].getCells().forEach(cell => {
                                 if (cell.getBindingInfo("value") !== undefined) {
                                     if (cell.getBindingInfo("value").parts[0].path === "Sortseq") {
@@ -2265,13 +2282,16 @@ sap.ui.define([
                                     }
                                 }
                             });
+                            */
                         }
                         else {
+                            /*
                             oTable.getRows()[i].getCells().forEach(cell => {
                                 if (cell.getBindingInfo("value") !== undefined) {
                                     cell.setProperty("editable", true);
                                 }
                             });
+                            */
                         }
                     }
 
@@ -3300,7 +3320,8 @@ sap.ui.define([
                     that._router.navTo("RouteVersion", {
                         styleno: that._styleNo,
                         sbu: that._sbu,
-                        version: verno
+                        version: verno,
+                        iono:this._iono
                     });
                 }
             },
@@ -3336,8 +3357,12 @@ sap.ui.define([
                 var oDesc1 = sap.ui.getCore().byId("newVersionDesc1").getValue();
                 var oDesc2 = sap.ui.getCore().byId("newVersionDesc2").getValue();
                 var oCurrent = sap.ui.getCore().byId("newVersionCurrent").getSelected();
-
-                Common.openLoadingDialog(that);
+                var blnCopyCurrentVer = sap.ui.getCore().byId("CopyVersionCurrent").getSelected();
+                
+                if(blnCopyCurrentVer){
+                    let vCurrentVer =that.getView().byId("versionsTable").getModel("DataModel").getData().results.filter(item => item.Currentver === true)
+                    me._copyFrVer = vCurrentVer[0].Verno;
+                }
 
                 //build header and payload
                 path = "/StyleVersionSet";
@@ -3356,6 +3381,7 @@ sap.ui.define([
                                 sbu: me._sbu,
                                 copy: me._copyFrVer
                             });
+                            Common.openLoadingDialog(that);
                             //call create method of style version
                             oModel.create(path, oEntry, {
                                 method: "POST",
@@ -5164,6 +5190,11 @@ sap.ui.define([
                 oEvent.getSource().getParent().close();
             },
 
+            onCloseVersionDialog: function (oEvent) {
+                this.lockStyle("O");
+                oEvent.getSource().getParent().close();
+            },
+
             setTabReadMode: function (editModelName) {
                 //set colors table editable
                 var oJSONModel = new JSONModel();
@@ -5857,7 +5888,7 @@ sap.ui.define([
                     else if (col.mAggregations.template.mBindingInfos.selected !== undefined) {
                         sColName = col.mAggregations.template.mBindingInfos.selected.parts[0].path;
                     }
-
+                    console.log(sColName)
                     this._aColumns[sTabId.replace("Table","")].filter(item => item.ColumnName === sColName)
                         .forEach(ci => {
                             if (ci.Editable.toString().toUpperCase() !== "FALSE") {
@@ -5949,7 +5980,7 @@ sap.ui.define([
                                     col.setTemplate(new sap.m.Input({
                                         type: "Text",
                                         value: "{DataModel>" + sColName + "}",
-                                        maxLength: +ci.Length,
+                                        maxLength:5,
                                         change: changeFunction,
                                         liveChange: liveChangeFunction,
                                         editable: "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Valuetyp} === 'NumValue' || ${DataModel>Valuetyp} === 'STRVAL' ? true : false : false }"
@@ -5970,6 +6001,16 @@ sap.ui.define([
                                         selected: "{DataModel>" + sColName + "}", 
                                         editable: "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>Attribtyp} !== '' ? true : false : false }",
                                         select: changeFunction
+                                    }).addEventDelegate(oInputEventDelegate));
+                                }
+                                else if (sTabId === "colorsTable" && sColName.toUpperCase() === "DESC1") { //garment/style color
+                                    col.setTemplate(new sap.m.Input({
+                                        type: "Text",
+                                        value: "{DataModel>" + sColName + "}",
+                                        maxLength: +ci.Length,
+                                        change: changeFunction,
+                                        liveChange: liveChangeFunction,
+                                        editable: "{= ${DataModel>EDITABLE} === 'X' ? ${DataModel>HASMATCOLOR} === 'X' ? false : true : false }"
                                     }).addEventDelegate(oInputEventDelegate));
                                 }
                                 else if (ci.DataType === "DATETIME") {

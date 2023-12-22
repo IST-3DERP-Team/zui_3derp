@@ -467,11 +467,13 @@ sap.ui.define([
                     var materialsAssgndMatno = that.getView().getModel("AssignMaterialListsModel").getData();
                     var joinMaterialList = materialsAssgndMatno.results.concat(oEntry.MatListToItems)
                     console.log(joinMaterialList);
+                    const uniqueArray = Array.from(new Set(joinMaterialList.map(item => item.SEQNO))).map(SEQNO => joinMaterialList.find(item => item.SEQNO === SEQNO));
+
 
                     const matnoSet = {}; // Use an object to keep track of encountered MATNOs
                     const duplicateMatnos = [];
 
-                    joinMaterialList.forEach((item) => {
+                    uniqueArray.forEach((item) => {
                         const matno = item.MATNO;
 
                         if (matno === "") {
@@ -590,11 +592,13 @@ sap.ui.define([
             },
 
             //get the authorization, this will hide the create material button if user is not authorized
-            getRoleAuth:function (){
+            getRoleAuth: function (){
                 
                 var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_RFC_SRV");
                 var oJSONModel = new JSONModel();
-                var id =_startUpInfo === undefined  ? "BAS_CONN" : _startUpInfo.id; //"NCJOAQUIN" 
+                // var id =_startUpInfo === undefined  ? "BAS_CONN" : _startUpInfo.id; //"NCJOAQUIN" 
+                var id = sap.ushell.Container.getService('UserInfo').getId();//  _startUpInfo.id ; //"NCJOAQUIN" 
+                
                 oModel.read("/CreateMatRoleSet", {
                     urlParameters: {
                         "$filter": "Bname eq '" + id + "' and Roleid eq '" + this._sbu + "CRTMAT'"
@@ -686,7 +690,8 @@ sap.ui.define([
                 oRouter.navTo("RouteVersion", {
                     styleno: that._styleNo,
                     sbu: that._sbu,
-                    version: that._version
+                    version: that._version,
+                    iono : ' '
                 });
             },
 

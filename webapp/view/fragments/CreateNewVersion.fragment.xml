@@ -24,7 +24,12 @@
                                 <f:fields>
                                     <CheckBox id="newVersionCurrent" text="{i18n>SetCurrent}" selected="true" />
                                 </f:fields>
+
+                                 <f:fields>
+                                    <CheckBox id="CopyVersionCurrent" text="Copy Current Version ?" selected="true" />
+                                </f:fields>
                             </f:FormElement>
+                            
                         </f:formElements>
                     </f:FormContainer>
                 </f:formContainers>
@@ -32,7 +37,7 @@
 		</Panel>
 		<buttons>
 			<Button text="Save" press="onSaveNewVersion"/>
-			<Button text="Cancel" press="onCloseDialog"/>
+			<Button text="Cancel" press="onCloseVersionDialog"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

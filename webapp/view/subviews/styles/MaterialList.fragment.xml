@@ -14,7 +14,7 @@
             <Button class="verDtlBtnPaddingRight" icon="sap-icon://multiselect-all" text="{ddtext>/ASSIGNMATERIAL}" tooltip="{ddtext>/ASSIGNMATERIAL}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
             <Button class="verDtlBtnPaddingRight" icon="sap-icon://save"  tooltip="{ddtext>/SAVE}" press="onSaveMaterialList" visible="{MaterialListEditModeModel>/editMode}" />
             <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelMaterialListEdit" visible="{= ${MaterialListEditModeModel>/editMode} === true ? true : false }" />
-            <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" tooltip="{ddtext>/EXPORTTOEXCEL}" press="onExport">
+            <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" tooltip="{ddtext>/EXPORTTOEXCEL}" press="onExport" visible="{= ${MaterialListEditModeModel>/editMode} === true ? false : true }">
                 <customData>
                     <core:CustomData key="TableName" value="materialListTable" />
                 </customData>

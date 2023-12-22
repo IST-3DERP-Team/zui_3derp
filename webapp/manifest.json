@@ -287,7 +287,7 @@
                 },
                 {
                     "name": "RouteVersion",
-                    "pattern": "RouteVersion/{styleno}/{sbu}/{version}",
+                    "pattern": "RouteVersion/{styleno}/{sbu}/{version}/{iono}",
                     "greedy": false,
                     "target": [
                         "TargetVersion"

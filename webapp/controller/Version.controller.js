@@ -23,6 +23,7 @@ sap.ui.define([
         var that;
         var blnGetComponentInd = false;
         var _promiseResult;
+        var _sAction;
         var _oCaption = {};
         var oController = {
             openLinkInNewTab: function(event, link) {
@@ -103,10 +104,10 @@ sap.ui.define([
                     const fullHash = new HashChanger().getHash();
                     const urlParsing = await sap.ushell.Container.getServiceAsync("URLParsing");
                     const shellHash = urlParsing.parseShellHash(fullHash);
-                    const sAction = shellHash.action;
+                    _sAction = shellHash.action;
                     var bAppChange;
 
-                    if (sAction == "display") bAppChange = false;
+                    if (_sAction == "display") bAppChange = false;
                     else bAppChange = true;
                 } else {
                     bAppChange = true;
@@ -125,6 +126,16 @@ sap.ui.define([
                 this._styleNo = oEvent.getParameter("arguments").styleno; //get style route parameter
                 this._sbu = oEvent.getParameter("arguments").sbu; //get SBU route parameter
                 this._version = oEvent.getParameter("arguments").version; //get version route parameter
+                this._iono = oEvent.getParameter("arguments").iono; //get IONO from route pattern
+
+                //set blnIOMod to true if route from IO
+                var oJSONModel = new JSONModel();
+                var oView = this.getView();
+                var data = {
+                    "blnIOMod": this._iono != ' ' ? true : false,
+                }
+                oJSONModel.setData(data);
+                oView.setModel(oJSONModel, "IO");
 
                 //set change flag to false at start
                 this._versionAttrChanged = false;
@@ -351,6 +362,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "CREATEDDT" });
                 oDDTextParam.push({ CODE: "UPDATEDBY" });
                 oDDTextParam.push({ CODE: "UPDATEDDT" });
+                oDDTextParam.push({ CODE: "NETPRICE" });
 
                 oDDTextParam.push({ CODE: "VERSIONATTRIBUTES" });
                 oDDTextParam.push({ CODE: "BOMBYGMC" });
@@ -1269,7 +1281,7 @@ sap.ui.define([
                 });
                 oModel.read("/StyleAttributesColorSet", {
                     success: function (oData, oResponse) {
-                        oData.results.sort((a, b) => (a.Sortseq > b.Sortseq ? 1 : -1));
+                        oData.results.sort((a, b) => (parseInt(a.Sortseq) > parseInt(b.Sortseq) ? 1 : -1));
                         me._colors = oData.results;
                         me.getSizes();
                     },
@@ -1797,6 +1809,7 @@ sap.ui.define([
                                 }
                             }
                         }
+                        that.byId("bomGMCTable").getModel("DataModel").setProperty(sRowPath + "/EDITABLE", "X");
                     }
                 } catch (err) { }
             },
@@ -1961,7 +1974,7 @@ sap.ui.define([
                     if(item.BOMITMTYP === "")
                         bProceed = false;
 
-                    if (item.BOMITMTYP === "GMC" && (item.PARTCD === "" || item.PARTCNT === "" || item.USGCLS === "" || item.MATCONSPER === "" || item.PER === "" || item.PER == 0)) {
+                    if (item.BOMITMTYP === "GMC" && (item.PARTCD === "" || item.PARTCNT === "" || item.USGCLS === "" || item.MATCONSPER === "" || item.PER === "" || item.PER == 0 || item.MATTYP === "" || item.PROCESSCD === "" || item.ENTRYUOM === "")) {
                         bProceed = false;
                     }
                     if (item.BOMITMTYP === "STY" && item.BOMSTYLE === "" ) {
@@ -4176,7 +4189,9 @@ sap.ui.define([
                                     "COLOR": color.Attribcd,
                                     "MATTYP": oData.results[i].MATTYP,
                                     "MATTYPCLS": Constants.ZCOLR,
-                                    "DESC1": oData.results[i][color.Attribcd]
+                                    "DESC1": oData.results[i][color.Attribcd],
+                                    "ENTRYUOM": oData.results[i].ENTRYUOM,
+                                    "PROCESSCD": oData.results[i].PROCESSCD,
 
                                 };
                                 oEntry2.GMCToItems.push(item);
@@ -4191,9 +4206,11 @@ sap.ui.define([
                     }
                 };
                 let noOfGMC = 0;
-                let noOfBomWGMC = 0
+                let noOfBomWGMC = 0;
+                let chkProcessCd=0;
                 noOfGMC = oData.results.filter(item => item.BOMITMTYP === "GMC");
                 noOfBomWGMC = oData.results.filter(item => item.BOMITMTYP === "GMC" && item.GMC !== "");
+               
                 if (noOfGMC.length == 0) {
                     MessageBox.information(_oCaption.INFO_RMC_MAT_ASSGND);
                     return;
@@ -4235,6 +4252,10 @@ sap.ui.define([
 
                     for (var i = 0; i < oSelectedIndices.length; i++) {
                         var index = oSelectedIndices[i];
+                        if(oData.results[index].PROCESSCD === ""){
+                            MessageBox.information("Process Code is required.")
+                            return;
+                        }
                         if(oData.results[index].CONSUMP > 0){
                             var entitySet = "/StyleBOMGMCSet(STYLENO='" + that._styleNo + "',VERNO='" + that._version + "',BOMSEQ='" + oData.results[index].BOMSEQ + "')";
                             //var row = oData.results[index];
@@ -4251,7 +4272,8 @@ sap.ui.define([
                                 "PARTDESC": oData.results[index].PARTDESC,
                                 "USGCLS": oData.results[index].USGCLS,
                                 "MATTYP": oData.results[index].MATTYP,
-                                "PROCESSCD":oData.results[i].PROCESSCD,
+                                "ENTRYUOM": oData.results[index].ENTRYUOM,
+                                "PROCESSCD":oData.results[index].PROCESSCD,
                             }
                             oModel.update(entitySet, param, mParameters);
                         }
@@ -5481,48 +5503,48 @@ sap.ui.define([
                         Sbu: this._sbu,
                         MatListToItems: []
                     }
-                    var aEditedRows = this.byId("materialListTable").getModel("DataModel").getData().results.filter(item => item.EDITED === true);
+                    var aEditedRows = this.byId("materialListTable").getModel("DataModel").getData().results.filter(item => item.EDITED === true || item.SUPPLYTYP === "NOM");
                     console.log(aEditedRows);
-                    oData["results"] = aEditedRows;
+                    //oData["results"] = aEditedRows;
 
-                    for (var i = 0; i < oData.results.length; i++) {
-                        if(oData.results[i].SUPPLYTYP === "NOM"){
-                            if(oData.results[i].VENDORCD === "")
+                    for (var i = 0; i < aEditedRows.length; i++) {
+                        if(aEditedRows[i].SUPPLYTYP === "NOM"){
+                            if(aEditedRows[i].VENDORCD === "")
                             {
                                 MessageBox.information("Vendor is required.")
                                 return;
                             }
-                            else if(oData.results[i].CURRENCYCD === "")
+                            else if(aEditedRows[i].CURRENCYCD === "")
                             {
                                 MessageBox.information("Currency is required.")
                                 return;
                             }
-                            else if(oData.results[i].UNITPRICE === "")
+                            else if(aEditedRows[i].UNITPRICE === "")
                             {
                                 MessageBox.information("Unit Price is required.")
                                 return;
                             }
-                            else if(oData.results[i].UNITPRICE <= 0)
+                            else if(aEditedRows[i].UNITPRICE <= 0)
                             {
                                 MessageBox.information("Unit Price should not be zero.")
                                 return;
                             }
-                            else if(oData.results[i].PURGRP === "")
+                            else if(aEditedRows[i].PURGRP === "")
                             {
                                 MessageBox.information("Purchasing group is required.")
                                 return;
                             }
-                            // else if(oData.results[i].PURPLANT === "")
-                            // {
-                            //     MessageBox.information("Purchasing Plant is required.")
-                            //     return;
-                            // }
-                            else if(oData.results[i].UMREZ === "" || oData.results[i].UMREZ <= 0)
+                            else if(aEditedRows[i].PURPLANT === "")
+                            {
+                                MessageBox.information("Purchasing Plant is required.")
+                                return;
+                            }
+                            else if(aEditedRows[i].UMREZ === "" || aEditedRows[i].UMREZ <= 0)
                             {
                                 MessageBox.information("Numerator is required.")
                                 return;
                             }
-                            else if(oData.results[i].UMREN === "" || oData.results[i].UMREN <= 0)
+                            else if(aEditedRows[i].UMREN === "" || aEditedRows[i].UMREN <= 0)
                             {
                                 MessageBox.information("Denominator is required.")
                                 return;
@@ -5530,28 +5552,28 @@ sap.ui.define([
                         }
                         var item = {
                             "STYLENO": this._styleNo,
-                            "BOMMATID": oData.results[i].BOMMATID,
-                            "VERNO": oData.results[i].VERNO,
-                            "SEQNO": oData.results[i].SEQNO,
-                            "MATNO": oData.results[i].MATNO,
-                            "MATTYP": oData.results[i].MATTYP,
-                            "GMC": oData.results[i].GMC,
-                            "MATCONSUMP": oData.results[i].MATCONSUMP,
-                            "WASTAGE": oData.results[i].WASTAGE,
-                            "COMCONSUMP": oData.results[i].COMCONSUMP,
-                            "CONSUMP": oData.results[i].CONSUMP,
-                            "UOM": oData.results[i].UOM,
-                            "SUPPLYTYP": oData.results[i].SUPPLYTYP,
-                            "VENDORCD": oData.results[i].VENDORCD,
-                            "CURRENCYCD": oData.results[i].CURRENCYCD,
-                            "UNITPRICE": oData.results[i].UNITPRICE,
-                            "PURGRP": oData.results[i].PURGRP,
-                            "PURPLANT": oData.results[i].PURPLANT,
-                            "MATDESC1": oData.results[i].MATDESC1,
-                            "MATDESC2": oData.results[i].MATDESC2,
-                            "UMREZ": oData.results[i].UMREZ,
-                            "UMREN": oData.results[i].UMREN,
-                            "ORDERUOM": oData.results[i].ORDERUOM,
+                            "BOMMATID": aEditedRows[i].BOMMATID,
+                            "VERNO": aEditedRows[i].VERNO,
+                            "SEQNO": aEditedRows[i].SEQNO,
+                            "MATNO": aEditedRows[i].MATNO,
+                            "MATTYP": aEditedRows[i].MATTYP,
+                            "GMC": aEditedRows[i].GMC,
+                            "MATCONSUMP": aEditedRows[i].MATCONSUMP,
+                            "WASTAGE": aEditedRows[i].WASTAGE,
+                            "COMCONSUMP": aEditedRows[i].COMCONSUMP,
+                            "CONSUMP": aEditedRows[i].CONSUMP,
+                            "UOM": aEditedRows[i].UOM,
+                            "SUPPLYTYP": aEditedRows[i].SUPPLYTYP,
+                            "VENDORCD": aEditedRows[i].VENDORCD,
+                            "CURRENCYCD": aEditedRows[i].CURRENCYCD,
+                            "UNITPRICE": aEditedRows[i].UNITPRICE,
+                            "PURGRP": aEditedRows[i].PURGRP,
+                            "PURPLANT": aEditedRows[i].PURPLANT,
+                            "MATDESC1": aEditedRows[i].MATDESC1,
+                            "MATDESC2": aEditedRows[i].MATDESC2,
+                            "UMREZ": aEditedRows[i].UMREZ,
+                            "UMREN": aEditedRows[i].UMREN,
+                            "ORDERUOM": aEditedRows[i].ORDERUOM,
                             // "CREATEDBY": oData.results[i].CREATEDBY,
                             // "CREATEDDT": oData.results[i].CREATEDDT,
 
@@ -7112,7 +7134,8 @@ sap.ui.define([
                     that._router.navTo("RouteVersion", {
                         styleno: that._styleNo,
                         sbu: that._sbu,
-                        version: verno
+                        version: verno,
+                        iono : ""
                     });
                     // var input = this.byId(this.inputId);
                     // input.setValue(oSelectedItem.getTitle()); //set input field selected value
