@@ -10,11 +10,12 @@ sap.ui.define([
     "sap/ui/core/routing/History",
     "sap/m/MessageBox",
     "../js/TableValueHelp",
+	"sap/ui/model/FilterOperator",
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Filter, Common, Constants, Utils, JSONModel, jQuery, HashChanger, History, MessageBox, TableValueHelp) {
+    function (Controller, Filter, Common, Constants, Utils, JSONModel, jQuery, HashChanger, History, MessageBox, TableValueHelp, FilterOperator) {
         "use strict";
 
         var that;
@@ -166,6 +167,7 @@ sap.ui.define([
                 this._dataMode = "READ";
                 this._aColumns = {};
                 this._colFilters = {};
+                this._aCopyInfo = {};
 
                 var lookUpData = this.getOwnerComponent().getModel("LOOKUP_MODEL").getData();
                 // console.log(lookUpData)
@@ -280,6 +282,7 @@ sap.ui.define([
                     this.byId("btnColorRemoveRow").setVisible(false);
                     this.byId("btnColorSave").setVisible(false);
                     this.byId("btnColorCancel").setVisible(false);
+                    this.byId("btnColorCascade").setVisible(false);
                     this.byId("btnColorEdit").setVisible(true);
                     this.byId("btnColorDelete").setVisible(true);
                 }
@@ -337,7 +340,7 @@ sap.ui.define([
                 //     this.getColumnProp();
                 // }, 1000);
 
-                //this.lockStyle("O");
+                this.lockStyle("O");
 
                 _promiseResult = new Promise((resolve, reject) => {
                     resolve(that.getColumnProp());
@@ -566,6 +569,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "SAVE" });
                 oDDTextParam.push({ CODE: "CLOSE" });
                 oDDTextParam.push({ CODE: "EXPORTTOEXCEL" });
+                oDDTextParam.push({ CODE: "CASCADE" });
 
                 oDDTextParam.push({ CODE: "SBU" });
                 oDDTextParam.push({ CODE: "SALESGRP" });
@@ -639,6 +643,7 @@ sap.ui.define([
                 oDDTextParam.push({ CODE: "DELETED" });
                 oDDTextParam.push({ CODE: "CUSTCOLDESC" });
                 oDDTextParam.push({ CODE: "HASOUTPUT" });
+                oDDTextParam.push({ CODE: "Desc1" });
 
 
 
@@ -689,6 +694,8 @@ sap.ui.define([
                 // var oColumns = oModelColumns.getData();
                 this._oModelColumns = oModelColumns.getData();
 
+                TableValueHelp.setFormSuggestion(this, "header");
+
                 this.setFormValueHelp(this.byId("UOM"), "header");
                 this.setFormValueHelp(this.byId("SEASONCD"), "header");
                 this.setFormValueHelp(this.byId("CUSTGRP"), "header");
@@ -712,6 +719,8 @@ sap.ui.define([
                 this.updateColumnMenu(this.byId("processesTable"), "processesTable");
                 this.updateColumnMenu(this.byId("versionsTable"), "versionsTable");
                 this.updateColumnMenu(this.byId("ioTable"), "ioTable");
+
+
             },
 
             setFormValueHelp: function(oControl, sForm) {
@@ -1192,9 +1201,17 @@ sap.ui.define([
                 oSource.setValueState(isInvalid ? "Error" : "None");
                 oSource.setValueStateText(isInvalid ? "Invalid Value" : "");
                 oSource.getSuggestionItems().forEach(item => {     
-                    if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
-                        oSource.setSelectedKey(item.getProperty("key"));
-                    }               
+                    // if((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oEvent.getSource().getValue()){
+                    //     oSource.setSelectedKey(item.getProperty("key"));
+                    // }   
+                    if (oSource.getSelectedKey() === "" && oSource.getValue() !== "") {
+                        if (oSource.getProperty("textFormatMode") === "ValueKey" && ((item.getProperty("text") + " (" + item.getProperty("key") + ")") === oSource.getValue())) {
+                            oSource.setSelectedKey(item.getProperty("key"));
+                        }
+                        else if ((oSource.getProperty("textFormatMode") === "Value" || oSource.getProperty("textFormatMode") === "Key") && item.getProperty("key") === oSource.getValue()) {
+                            oSource.setSelectedKey(item.getProperty("key"));
+                        }
+                    }              
                     if (item.getProperty("key") === oSource.getSelectedKey()) {
                         isInvalid = false;
                         oSource.setValueState(isInvalid ? "Error" : "None");
@@ -2215,6 +2232,7 @@ sap.ui.define([
                     this.byId("btnColorRemoveRow").setVisible(true);
                     this.byId("btnColorSave").setVisible(true);
                     this.byId("btnColorCancel").setVisible(true);
+                    this.byId("btnColorCascade").setVisible(true);
                     this.byId("btnColorEdit").setVisible(false);
                     this.byId("btnColorDelete").setVisible(false);
                     //this.byId("btnColorFullScreen").setVisible(false);
@@ -2317,6 +2335,7 @@ sap.ui.define([
                         this.byId("btnColorAdd").setVisible(false);
                         this.byId("btnColorSave").setVisible(true);
                         this.byId("btnColorCancel").setVisible(true);
+                        this.byId("btnColorCascade").setVisible(true);
                         this.byId("btnColorEdit").setVisible(false);
                         this.byId("btnColorDelete").setVisible(false);
                         //this.byId("btnColorFullScreen").setVisible(false);
@@ -2655,6 +2674,7 @@ sap.ui.define([
                 }, 10);
             },
 
+          
             //******************************************* */
             // Sizes Attribute
             //******************************************* */
@@ -2975,9 +2995,26 @@ sap.ui.define([
                 this.getView().setModel(new JSONModel(this.getView().getModel("ProcessAttribCodeModel").getData()), "ProcessAttribCdModel");
             },
 
-            onProcessChange: function () {
+            onProcessChange: function (oEvent) {
                 this._processChanged = true;
                 this.setChangeStatus(true);
+
+                //  var oSource = oEvent.getSource();
+                // var sRowPath = oSource.oParent.getBindingContext().sPath;
+                // var isInvalid = !oSource.getSelectedKey() && oSource.getValue().trim();
+                // if (isInvalid) {
+                //     this.validateInputValue(oSource);
+                //     this._validationErrors.push(oEvent.getSource().getId()); 
+                // }
+                // else {
+                //     this.byId(this._sActiveTable).getModel().setProperty(sRowPath + '/' + oSource.getBindingInfo("value").parts[0].path, oSource.getSelectedKey());
+
+                //     this._validationErrors.forEach((item, index) => {
+                //         if (item === oEvent.getSource().getId()) {
+                //             this._validationErrors.splice(index, 1)
+                //         }
+                //     })
+                // }
             },
 
             onProcessInputChange: function (oEvent) {
@@ -2991,6 +3028,8 @@ sap.ui.define([
                         var sRowPath = oSource.oParent.getBindingContext("DataModel").sPath;
                         var vColPath = oSource.getBindingInfo("value").parts[0].path;
                         var oModelData = {};
+                        var isInvalid = !oSource.getSelectedKey() && oSource.getValue().trim();
+                        oSource.setValueState(isInvalid ? "Error" : "None");
 
                         if (oEvent.getParameter("value") === "") {
                             this.byId("processesTable").getModel("DataModel").setProperty(sRowPath + "/" + vColPath, "");
@@ -5204,6 +5243,7 @@ sap.ui.define([
                 oJSONModel.setData(data);
                 this.getView().setModel(oJSONModel, editModelName);
                 this._dataMode = "READ";
+                this._aCopyInfo={};
 
                 if (editModelName === "HeaderEditModeModel") {
                     this.setReqField("HeaderEditModeModel", false);
@@ -5240,14 +5280,17 @@ sap.ui.define([
                        if(colProp == "Attribtyp")
                            col.getLabel().removeStyleClass("sapMLabelRequired");
                    });
+                   oTable.clearSelection();
                 }
                 else if (editModelName === "SizeEditModeModel") {
+                    var oTable = this.getView().byId("sizesTable");
                     this.setControlEditMode("SizeEditModeModel", false);
                     this.enableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(true);
                     this.byId("btnHdrDelete").setEnabled(true);
                     this.byId("btnHdrClose").setEnabled(true);
                     this.lockStyle("O");
+                    oTable.clearSelection();
                 }
                 else if (editModelName === "ProcessEditModeModel") {
                     var oTable = this.getView().byId("processesTable");
@@ -5267,21 +5310,23 @@ sap.ui.define([
                     this.byId("btnHdrClose").setEnabled(true);
                     this.lockStyle("O");
 
-                    var oTable = this.getView().byId("processesTable");
                     //remove required field
                     oTable.getColumns().forEach((col, idx) => {
                         const colProp = col.mProperties.sortProperty;
                         if(colProp == "Processcd")
                             col.getLabel().removeStyleClass("sapMLabelRequired");
                     });
+                    oTable.clearSelection();
                 }
                 else if (editModelName === "VersionEditModeModel") {
+                    var oTable = this.getView().byId("versionsTable");
                     this.setControlEditMode("VersionEditModeModel", false);
                     this.enableOtherTabs("detailPanel");
                     this.byId("btnHdrEdit").setEnabled(true);
                     this.byId("btnHdrDelete").setEnabled(true);
                     this.byId("btnHdrClose").setEnabled(true);
                     this.lockStyle("O");
+                    oTable.clearSelection();
                 }
                 else if (editModelName === "ColorEditModeModel") {
                     var oTable = this.getView().byId("colorsTable");
@@ -5313,6 +5358,7 @@ sap.ui.define([
                     this.byId("btnColorRemoveRow").setVisible(false);
                     this.byId("btnColorSave").setVisible(false);
                     this.byId("btnColorCancel").setVisible(false);
+                    this.byId("btnColorCascade").setVisible(false);
                     this.byId("btnColorEdit").setVisible(true);
                     this.byId("btnColorDelete").setVisible(true);
                     //this.byId("btnColorFullScreen").setVisible(true);
@@ -5322,6 +5368,8 @@ sap.ui.define([
                     this.byId("btnHdrDelete").setEnabled(true);
                     this.byId("btnHdrClose").setEnabled(true);
                     this.lockStyle("O");
+
+                    oTable.clearSelection();
                 }
             },
 
@@ -5334,6 +5382,7 @@ sap.ui.define([
                 this.byId("btnGenAttrCancel").setEnabled(pEnable);
                 this.byId("btnGenAttrFullScreen").setEnabled(pEnable);
                 this.byId("btnGenAttrExitFullScreen").setEnabled(pEnable);
+                this.byId("btnGenAttrCascade").setEnabled(pEnable);
                 // this.byId("iconGenAttrInfo").setVisible(pEnable);
 
                 //Color
@@ -5344,6 +5393,7 @@ sap.ui.define([
                 this.byId("btnColorCancel").setEnabled(pEnable);
                 this.byId("btnColorFullScreen").setEnabled(pEnable);
                 this.byId("btnColorExitFullScreen").setEnabled(pEnable);
+                this.byId("btnColorCascade").setEnabled(pEnable);
 
                 //Size
                 this.byId("btnSizeSave").setEnabled(pEnable);
@@ -5351,6 +5401,7 @@ sap.ui.define([
                 this.byId("btnSizeCancel").setEnabled(pEnable);
                 this.byId("btnSizeFullScreen").setEnabled(pEnable);
                 this.byId("btnSizeExitFullScreen").setEnabled(pEnable);
+                this.byId("btnSizeCascade").setEnabled(pEnable);
 
                 //Process
                 this.byId("btnProcessSave").setEnabled(pEnable);
@@ -5360,6 +5411,7 @@ sap.ui.define([
                 this.byId("btnProcessDelete").setEnabled(pEnable);
                 this.byId("btnProcessFullScreen").setEnabled(pEnable);
                 this.byId("btnProcessExitFullScreen").setEnabled(pEnable);
+                this.byId("btnProcessCascade").setEnabled(pEnable);
 
                 //Version
                 this.byId("btnVersionSave").setEnabled(pEnable);
@@ -5370,6 +5422,7 @@ sap.ui.define([
                 this.byId("btnVersionCancel").setEnabled(pEnable);
                 this.byId("btnVersionFullScreen").setEnabled(pEnable);
                 this.byId("btnVersionExitFullScreen").setEnabled(pEnable);
+                this.byId("btnVersionCascade").setEnabled(pEnable);
 
                 //Attachment
                 this.byId("btnAttachmentDelete").setEnabled(pEnable);
@@ -5423,6 +5476,7 @@ sap.ui.define([
                                                 
                         this.byId("btnGenAttrSave").setVisible(pEditMode);
                         this.byId("btnGenAttrCancel").setVisible(pEditMode);
+                        this.byId("btnGenAttrCascade").setVisible(pEditMode);
                         //this.byId("btnGenAttrFullScreen").setVisible(!pEditMode);
                         //this.byId("btnGenAttrExitFullScreen").setVisible(!pEditMode);
 
@@ -5432,6 +5486,7 @@ sap.ui.define([
 
                         this.byId("btnSizeSave").setVisible(pEditMode);
                         this.byId("btnSizeCancel").setVisible(pEditMode);
+                        this.byId("btnSizeCascade").setVisible(pEditMode);
                         //this.byId("btnSizeFullScreen").setVisible(!pEditMode);
                         //this.byId("btnSizeExitFullScreen").setVisible(!pEditMode);
                     }
@@ -5451,6 +5506,7 @@ sap.ui.define([
 
                         this.byId("btnProcessSave").setVisible(pEditMode);
                         this.byId("btnProcessCancel").setVisible(pEditMode);
+                        this.byId("btnProcessCascade").setVisible(pEditMode);
                         //this.byId("btnProcessFullScreen").setVisible(!pEditMode);
                         //this.byId("btnProcessExitFullScreen").setVisible(!pEditMode);
                     }
@@ -5462,6 +5518,7 @@ sap.ui.define([
 
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
+                        this.byId("btnVersionCascade").setVisible(pEditMode);
                         //this.byId("btnVersionFullScreen").setVisible(!pEditMode);
                         //this.byId("btnVersionExitFullScreen").setVisible(!pEditMode);
                     }
@@ -5485,6 +5542,7 @@ sap.ui.define([
                         this.byId("btnGenAttrRemoveRow").setVisible(pEditMode);
                         this.byId("btnGenAttrSave").setVisible(pEditMode);
                         this.byId("btnGenAttrCancel").setVisible(pEditMode);
+                        this.byId("btnGenAttrCascade").setVisible(pEditMode);
                         //this.byId("btnGenAttrFullScreen").setVisible(!pEditMode);
                         //this.byId("btnGenAttrExitFullScreen").setVisible(!pEditMode);
                     }
@@ -5493,6 +5551,7 @@ sap.ui.define([
 
                         this.byId("btnSizeSave").setVisible(pEditMode);
                         this.byId("btnSizeCancel").setVisible(pEditMode);
+                        this.byId("btnSizeCascade").setVisible(pEditMode);
                         //this.byId("btnSizeFullScreen").setVisible(!pEditMode);
                         //this.byId("btnSizeExitFullScreen").setVisible(!pEditMode);
                     }
@@ -5504,6 +5563,7 @@ sap.ui.define([
                         this.byId("btnProcessRemoveRow").setVisible(pEditMode);
                         this.byId("btnProcessSave").setVisible(pEditMode);
                         this.byId("btnProcessCancel").setVisible(pEditMode);
+                        this.byId("btnProcessCascade").setVisible(pEditMode);
                         //this.byId("btnProcessFullScreen").setVisible(!pEditMode);
                         //this.byId("btnProcessExitFullScreen").setVisible(!pEditMode);
                     }
@@ -5515,6 +5575,7 @@ sap.ui.define([
 
                         this.byId("btnVersionSave").setVisible(pEditMode);
                         this.byId("btnVersionCancel").setVisible(pEditMode);
+                        this.byId("btnVersionCascade").setVisible(pEditMode);
                         //this.byId("btnVersionFullScreen").setVisible(!pEditMode);
                         //this.byId("btnVersionExitFullScreen").setVisible(!pEditMode);
                     }
@@ -5556,6 +5617,7 @@ sap.ui.define([
                 // this.byId("iconGenAttrInfo").setVisible(pChange);
                 this.byId("btnGenAttrSave").setVisible(false);
                 this.byId("btnGenAttrCancel").setVisible(false);
+                this.byId("btnGenAttrCascade").setVisible(false);
 
                 //Color
                 this.byId("btnColorEdit").setVisible(pChange);
@@ -5848,6 +5910,10 @@ sap.ui.define([
                     onkeydown: function(oEvent){
                         me.onInputKeyDown(oEvent);
                     },
+
+                    onclick: function(oEvent){
+                        me.onInputClick(oEvent);
+                    },
                 };
 
                 var changeFunction, liveChangeFunction, inputValueHelpChangeFunction, inputValueHelpLiveChangeFunction;
@@ -5958,6 +6024,70 @@ sap.ui.define([
                                         editable: editModeCond
                                     })
 
+                                    // oInput.attachBrowserEvent('click', function (e) {
+                                    //     e.preventDefault();
+                                    //     that.onInputClick(this); //navigate to RouteVersion page
+                                    // });
+
+                                    /*
+                                    var oColumns = [], oCells = [];
+                                        
+                                    //assign first cell to key/code
+                                    this._oModelColumns[ci.ValueHelp["columns"]].filter(fItem => fItem.Key === true).forEach(item => {
+                                        oColumns.push(new sap.m.Column({
+                                            header: new sap.m.Label({ text: this.getView().getModel("ddtext").getData()[item.ColumnName.toUpperCase()] })
+                                        }))
+
+                                        oCells.push(new sap.m.Text({
+                                            text: { path: ci.ValueHelp["items"].path + ">" + item.ColumnName }
+                                        }))
+                                    })
+
+                                    //assign second cell to display value/description
+                                    this._oModelColumns[ci.ValueHelp["columns"]].filter(fItem => fItem.Key === false && fItem.Value === true).forEach(item => {
+                                        oColumns.push(new sap.m.Column({
+                                            header: new sap.m.Label({ text: this.getView().getModel("ddtext").getData()[item.ColumnName.toUpperCase()] })
+                                        }))
+
+                                        oCells.push(new sap.m.Text({
+                                            text: { path: ci.ValueHelp["items"].path + ">" + item.ColumnName }
+                                        }))
+                                    })
+
+                                    //add other column info
+                                    this._oModelColumns[ci.ValueHelp["columns"]].filter(fItem => fItem.Visible === true && fItem.Key === false && fItem.Value === false).forEach(item => {
+                                        oColumns.push(new sap.m.Column({
+                                            header: new sap.m.Label({ text: this.getView().getModel("ddtext").getData()[item.ColumnName.toUpperCase()] }),
+                                        }))
+
+                                        oCells.push(new sap.m.Text({
+                                            text: { path: ci.ValueHelp["items"].path + ">" + item.ColumnName }
+                                        }))
+                                    })
+
+                                    var oInput = new sap.m.Input({
+                                        type: "Text",
+                                        showValueHelp: true,
+                                        valueHelpRequest: valueHelpRequestFunction,
+                                        showSuggestion: true,
+                                        maxSuggestionWidth: ci.ValueHelp["SuggestionItems"].additionalText !== undefined ? ci.ValueHelp["SuggestionItems"].maxSuggestionWidth : "1px",
+                                        suggest: this.onInputSuggest.bind(this),
+                                        suggestionColumns: oColumns,
+                                        suggestionRows: {
+                                            path: ci.ValueHelp["SuggestionItems"].path,
+                                            template: new sap.m.ColumnListItem({
+                                                cells: oCells
+                                            }),
+                                            length: 10000,
+                                            templateShareable: false
+                                        }, 
+                                        change: inputValueHelpChangeFunction,
+                                        liveChange: inputValueHelpLiveChangeFunction,
+                                        editable: editModeCond
+                                    })
+
+                                    oInput.setSuggestionRowValidator(this.suggestionRowValidator);
+                                    */
                                     if (bValueFormatter) {
                                         oInput.setProperty("textFormatMode", sTextFormatMode)
 
@@ -6270,6 +6400,28 @@ sap.ui.define([
                     //set row highlight
                     this.setActiveRowHighlight(sTabId);
                 }
+            },
+
+            onInputClick: function (oEvent) {
+                oEvent.preventDefault();
+                this._aCopyInfo={};
+
+                if(oEvent.srcControl.getBindingInfo("value") !== undefined){
+                    var sTableId = oEvent.srcControl.oParent.oParent.sId;
+                    var oTable = this.byId(sTableId);
+                    //var sModelName = oEvent.srcControl.getBindingInfo("value").parts[0].model;
+                    var sColumnName = oEvent.srcControl.getBindingInfo("value").parts[0].path;
+                    var sCurrentRowIndex = +oEvent.srcControl.oParent.getBindingContext("DataModel").sPath.replace("/results/", "");
+                    //console.log(oTable.getModel("DataModel").getData().results);
+                    //console.log(oTable.getContextByIndex(sCurrentRowIndex).getProperty(sColumnName));
+                    this._aCopyInfo={
+                        _sTableId :sTableId,
+                        _sColumnName:sColumnName,
+                        _sValue : oEvent.srcControl.getProperty("value"),
+                        _sCurrentRowIndex : sCurrentRowIndex
+                    }
+                }
+
             },
 
             onKeyUp(oEvent) {
@@ -7382,6 +7534,162 @@ sap.ui.define([
             formatTimeOffSet(pTime) {
                 let TZOffsetMs = new Date(0).getTimezoneOffset() * 60 * 1000;
                 return timeFormat.format(new Date(pTime + TZOffsetMs));
+            },
+
+            onCascadeValue: function(oEvent){
+                //var oButton = oEvent.getSource();
+                //var tabName = oButton.data('TableName')
+                //console.log(that._aCopyInfo)
+                if(Object.keys(that._aCopyInfo).length == 0 ){
+                    MessageBox.warning("No data selected.");
+                    return;
+                }
+
+                var sTableId = that._aCopyInfo._sTableId;
+                sTableId = sTableId.split('--')[1];
+                var sCopyValue = that._aCopyInfo._sValue;
+                var sColumnName = that._aCopyInfo._sColumnName;
+                var sRowIndex = that._aCopyInfo._sCurrentRowIndex;
+                var oTable = this.getView().byId(sTableId);
+                var oData =  oTable.getModel('DataModel').getData().results;
+               
+                // Extracting the value using destructuring
+                const { [sColumnName]: extractedValue } = oData[sRowIndex];
+                console.log(extractedValue); // Output:
+
+                var oSelectedIndices = oTable.getSelectedIndices();
+                var oTmpSelectedIndices = [];
+                oSelectedIndices.forEach(item => {
+                    oTmpSelectedIndices.push(oTable.getBinding("rows").aIndices[item])
+                })
+                oSelectedIndices = oTmpSelectedIndices;
+                if(oSelectedIndices.length ==0){
+                    MessageBox.warning("No row selected.");
+                    return;
+                }
+             
+                for (var i = 0; i < oSelectedIndices.length; i++) {
+                    oData[oSelectedIndices[i]][sColumnName] = extractedValue;
+                }
+                oTable.getModel("DataModel").setProperty('/results', oData);
+
+                switch (sTableId) {
+                    case "generalTable":
+                        this._generalAttrChanged = true;
+                        break;
+                    case "colorsTable":
+                        this._colorChanged = true;
+                        break;
+                    case "sizesTable":
+                        this._sizeChanged = true;
+                        break;
+                    case "processesTable":
+                        this._processChanged = true;
+                        break;
+                    case "versionsTable":
+                        this._versionChanged = true;
+                        break;
+                }
+                this.setChangeStatus(true);
+                
+            },
+
+            validateInputValue(source) {
+                var oInputSource = source;                
+                var sValue = oInputSource.getProperty("value").toLowerCase();
+                var sFieldName = oInputSource.getBindingInfo("value").parts[0].path;
+                var sDataSourceModel = oInputSource.getBindingInfo("value").parts[1].value;
+                var sKey = oInputSource.getBindingInfo("value").parts[2].value;
+                var sText = oInputSource.getBindingInfo("value").parts[3].value;
+                var sTextFormatMode = oInputSource.getProperty("textFormatMode");
+                var sRowPath = oInputSource.oParent.getBindingContext().sPath;
+                var aDataSource = jQuery.extend(true, [], this.getView().getModel(sDataSourceModel).getData());
+
+                aDataSource.forEach(item => {
+                    if (sTextFormatMode === "ValueKey") {
+                        item.DESCCODE = item[sText] + " (" + item[sKey] + ")";
+                    }
+                    else if (sTextFormatMode === "KeyValue") {
+                        item.CODEDESC = item[sKey] + " (" + item[sText] + ")";
+                    }
+                })
+
+                var aCols = Object.keys(aDataSource[0]).filter(fItem => fItem !== "__metadata");
+                var vColCount = aCols.length;
+
+                var matchedData = aDataSource.filter(function (d) {
+                    for (let i = 0; i < vColCount; i++) {
+                        // check for a match
+                        if (d[aCols[i]] != null) {
+                            if (d[aCols[i]].toString().toLowerCase().indexOf(sValue) !== -1 || !sValue) {
+                                // found match, return true to add to result set
+                                return true;
+                            }
+                        }
+                    }
+                });
+
+                if (matchedData.length !== 0) {
+                    // console.log(matchedData[0][sKey])                    
+                    
+                    if (sTextFormatMode === "ValueKey") {
+                        oInputSource.setValue(matchedData[0][sText] + " (" + matchedData[0][sKey] + ")")
+                    }
+                    else if (sTextFormatMode === "KeyValue") {
+                        oInputSource.setValue(matchedData[0][sKey] + " (" + matchedData[0][sText] + ")")
+                    }
+                    else if (sTextFormatMode === "Key") {
+                        oInputSource.setValue(matchedData[0][sKey])
+                    }
+                    else if (sTextFormatMode === "Value") {
+                        oInputSource.setValue(matchedData[0][sText])
+                    }
+
+                    oInputSource.setSelectedKey(matchedData[0][sKey]);
+                    oInputSource.setValueState("None");
+
+                    this.byId(this._sActiveTable).getModel().setProperty(sRowPath + '/' + sFieldName, matchedData[0][sKey]);
+                }
+                else {
+                    oInputSource.setValueState(isInvalid ? "Error" : "None");
+                }
+            },
+
+            onInputSuggest: function(oEvent) {
+                //override the default filtering "StartsWidth" to "Contains"
+                var oInputSource = oEvent.getSource();
+                var sSuggestValue = oEvent.getParameter("suggestValue").toLowerCase();
+                var aFilters = [];
+                var oFilter = null;
+                
+                if (oInputSource.getSuggestionRows().length > 0) {
+                    oInputSource.getSuggestionRows()[0].getCells().forEach(cell => {
+                        aFilters.push(new Filter(cell.getBinding("text").sPath, FilterOperator.Contains, sSuggestValue))
+                    })
+    
+                    oFilter = new Filter(aFilters, false);
+    
+                    oInputSource.getBinding("suggestionRows").filter(oFilter);
+                    oInputSource.setShowSuggestion(true);
+                    oInputSource.setFilterSuggests(false);
+                }
+            },
+
+            suggestionRowValidator: function (oColumnListItem) {
+                var aCells = oColumnListItem.getCells();
+
+                if (aCells.length === 1) {
+                    return new sap.ui.core.Item({
+                        key: aCells[0].getText(),
+                        text: aCells[0].getText()
+                    }); 
+                }
+                else {
+                    return new sap.ui.core.Item({
+                        key: aCells[0].getText(),
+                        text: aCells[1].getText()
+                    });
+                }
             },
 
         });

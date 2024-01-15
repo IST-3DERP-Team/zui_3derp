@@ -9,12 +9,15 @@ sap.ui.define([
     "sap/ui/core/routing/HashChanger",
     "sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
-    "sap/m/MessageBox"
+    "sap/m/MessageBox",
+    "sap/m/Token",
+    'sap/m/SearchField',
+    'sap/ui/model/type/String',
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Common, Constants, Utils, JSONModel, Spreadsheet, control, HashChanger, Filter, FilterOperator, MessageBox) {
+    function (Controller, Common, Constants, Utils, JSONModel, Spreadsheet, control, HashChanger, Filter, FilterOperator, MessageBox, Token, SearchField, typeString) {
         "use strict";
 
         var that;
@@ -96,6 +99,9 @@ sap.ui.define([
                 })
 
                 this._colFilters = {};
+
+                this._oMultiInput = this.getView().byId("multiInputMatTyp");
+                this._oMultiInput.addValidator(this._onMultiInputValidate.bind(this));
             },
 
             getCaptionMsgs: async function () {
@@ -2108,6 +2114,154 @@ sap.ui.define([
             formatTimeOffSet(pTime) {
                 let TZOffsetMs = new Date(0).getTimezoneOffset() * 60 * 1000;
                 return timeFormat.format(new Date(pTime + TZOffsetMs));
+            },
+
+            onCustomSmartFilterValueHelpChange: function(oEvent) {
+                if (oEvent.getParameter("value") === "") {
+                    this._oMultiInput.setValueState("None");
+                }
+            },
+
+            onCustomSmartFilterValueHelp: function() {
+                this.oColModel = new JSONModel({
+                    "cols": [
+                        {
+                            "label": "Sales Group",
+                            "template": "SalesGrp",
+                            "sortProperty": "SalesGrp"
+                        },
+                        {
+                            "label": "Description",
+                            "template": "Desc1",
+                            "sortProperty": "Desc1"
+                        },
+                    ]
+                });
+
+                var aCols = this.oColModel.getData().cols;
+                this._oBasicSearchField = new SearchField({
+                    showSearchButton: false
+                });
+    
+                this._oCustomSmartFilterValueHelpDialog = sap.ui.xmlfragment("zui3derp.view.fragments.searchhelps.SmartFilterValueHelpDialog", this);
+                this.getView().addDependent(this._oCustomSmartFilterValueHelpDialog);
+    
+                this._oCustomSmartFilterValueHelpDialog.setRangeKeyFields([{
+                    label: "Sales Group",
+                    key: "SalesGrp",
+                    type: "string",
+                    typeInstance: new typeString({}, {
+                        maxLength: 4
+                    })
+                }]);
+    
+                // this._oCustomSmartFilterValueHelpDialog.getFilterBar().setBasicSearch(this._oBasicSearchField);
+    
+                this._oCustomSmartFilterValueHelpDialog.getTableAsync().then(function (oTable) {
+                    oTable.setModel(this.getView().getModel("SalesGroupModel"));
+                    oTable.setModel(this.oColModel, "columns");
+
+                    if (oTable.bindRows) {
+                        oTable.bindAggregation("rows", "/results");
+                    }
+    
+                    if (oTable.bindItems) {
+                        oTable.bindAggregation("items", "/results", function () {
+                            return new ColumnListItem({
+                                cells: aCols.map(function (column) {
+                                    return new Label({ text: "{" + column.template + "}" });
+                                })
+                            });
+                        });
+                    }
+    
+                    this._oCustomSmartFilterValueHelpDialog.update();
+                }.bind(this));
+    
+                
+                this._oCustomSmartFilterValueHelpDialog.setTokens(this._oMultiInput.getTokens());
+                this._oCustomSmartFilterValueHelpDialog.open();
+            },
+
+            
+            onCustomSmartFilterValueHelpOkPress: function (oEvent) {
+                var aTokens = oEvent.getParameter("tokens");
+
+                this._oMultiInput.setTokens(aTokens);
+                this._oCustomSmartFilterValueHelpDialog.close();
+            },
+    
+            onCustomSmartFilterValueHelpCancelPress: function () {
+                this._oCustomSmartFilterValueHelpDialog.close();
+            },
+    
+            onCustomSmartFilterValueHelpAfterClose: function () {
+                this._oCustomSmartFilterValueHelpDialog.destroy();
+            },
+    
+            onFilterBarSearch: function (oEvent) {
+                var sSearchQuery = this._oBasicSearchField.getValue(),
+                    aSelectionSet = oEvent.getParameter("selectionSet");
+
+                var aFilters = aSelectionSet.reduce(function (aResult, oControl) {
+                    if (oControl.getValue()) {
+                        aResult.push(new Filter({
+                            path: oControl.getName(),
+                            operator: FilterOperator.Contains,
+                            value1: oControl.getValue()
+                        }));
+                    }
+
+                    return aResult;
+                }, []);
+    
+                this._filterTable(new Filter({
+                    filters: aFilters,
+                    and: true
+                }));
+            },
+
+            _filterTable: function (oFilter) {
+                var oValueHelpDialog = this._oCustomSmartFilterValueHelpDialog;
+    
+                oValueHelpDialog.getTableAsync().then(function (oTable) {
+                    if (oTable.bindRows) {
+                        oTable.getBinding("rows").filter(oFilter);
+                    }
+    
+                    if (oTable.bindItems) {
+                        oTable.getBinding("items").filter(oFilter);
+                    }
+    
+                    oValueHelpDialog.update();
+                });
+            },
+    
+            _onMultiInputValidate: function(oArgs) {
+                var aToken = this._oMultiInput.getTokens();
+
+                if (oArgs.suggestionObject) {
+                    var oObject = oArgs.suggestionObject.getBindingContext("SalesGroupModel").getObject(),
+                        oToken = new Token();
+
+                    oToken.setKey(oObject.SalesGrp);
+                    oToken.setText(oObject.Desc1 + " (" + oObject.SalesGrp + ")");
+                    aToken.push(oToken)
+
+                    this._oMultiInput.setTokens(aToken);
+                    this._oMultiInput.setValueState("None");
+                }
+                else if (oArgs.text !== "") {
+                    this._oMultiInput.setValueState("Error");
+                }
+    
+                return null;
+            },
+
+            onCustomSmartFilterValueHelpChange: function(oEvent) {
+                if (oEvent.getParameter("value") === "") {
+                    this._oMultiInput.setValueState("None");
+                }
             },
 
         });

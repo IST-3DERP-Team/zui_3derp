@@ -9,6 +9,7 @@
         </dependents> 
         <Toolbar height="2rem" style="Clear">
             <Text text="{counts>/rowCountversionAttrTable} {ddtext>/ROWS}" />
+            <Text text="{= ${counts>/selCountversionAttrTable} > 0 ? '- ' + ${counts>/selCountversionAttrTable} + ' selected' : '' }" />
             <ToolbarSpacer />
             <Button id="btnVersionAttrAdd" class="verDtlBtnPaddingRight" icon="sap-icon://add" press="addLine" tooltip="{ddtext>/ADDNEWLINE}" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${VersionAttrEditModeModel>/editMode} === true ? false : true : false }">
                 <customData>
@@ -43,7 +44,8 @@
                 class="sapUiSizeCompact" 
                 selectionMode="MultiToggle"
                 sort="onSorted"
-                alternateRowColors="true">
+                alternateRowColors="true"
+                rowSelectionChange="onSelectionChange">
                 <!-- <c:columns>
                     <t:Column width="14rem" sortProperty="Attribtyp">
                         <Label text="{ddtext>/ATTRIBTYP}" />

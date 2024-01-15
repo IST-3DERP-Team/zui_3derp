@@ -34,6 +34,7 @@
             <Button id="btnGenAttrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteGeneralAttr" visible="true" />
             <Button id="btnGenAttrSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveGeneralTable" visible="false" />
             <Button id="btnGenAttrCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelGeneralAttrEdit" visible="false" />
+            <Button id="btnGenAttrCascade" type="Ghost" icon="sap-icon://paste" tooltip="{ddtext>/CASCADE}" press="onCascadeValue" visible="false"/>
             <Button id="btnGenAttrFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
                 <customData>
                     <core:CustomData key="Fullscreen" value="1" />

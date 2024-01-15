@@ -25,6 +25,7 @@
             <Button id="btnVersionDelete" type="Ghost" icon="sap-icon://delete"  tooltip="{ddtext>/DELETE}" press="onDeleteVersion" visible="true"/>
             <Button id="btnVersionSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveVersions" visible="false"/>
             <Button id="btnVersionCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelVersionEdit" visible="false"/>
+            <Button id="btnVersionCascade" type="Ghost" icon="sap-icon://paste" tooltip="{ddtext>/CASCADE}" press="onCascadeValue" visible="false"/>
             <Button id="btnVersionFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
                 <customData>
                     <core:CustomData key="Fullscreen" value="1" />

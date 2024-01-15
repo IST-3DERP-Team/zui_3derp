@@ -6,12 +6,14 @@
             <core:CommandExecution id="CE_MATCANCEL" command="Cancel" enabled="true" execute="cancelMaterialListEdit" />
         </dependents> 
         <Toolbar height="2rem" style="Clear">
-            <!-- <Text text="{ui>/rowCountMatLst} {ddtext>/ROWS}" /> -->
+            <!-- <Text text="{ui>/rowCountMatLst} {ddtext>/ROWS}" /> ${counts>/selCountmaterialListTable} > 0 ? {counts>/selCountmaterialListTable} - selected} : ''" -->
             <Text text="{counts>/rowCountmaterialListTable} {ddtext>/ROWS}" />
+            <Text text="{= ${counts>/selCountmaterialListTable} > 0 ? '- ' + ${counts>/selCountmaterialListTable} + ' selected' : '' }" />
             <ToolbarSpacer />
             <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setMaterialListEditMode" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
             <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://synchronize" tooltip="{ddtext>/REFRESH}" press="getMaterialList" visible="{= ${MaterialListEditModeModel>/editMode} === true ? false : true }"/>
             <Button class="verDtlBtnPaddingRight" icon="sap-icon://multiselect-all" text="{ddtext>/ASSIGNMATERIAL}" tooltip="{ddtext>/ASSIGNMATERIAL}" press="onAssignMaterial" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${MaterialListEditModeModel>/editMode} === true ? false : true : false }" />
+            <Button id="btnCrtInfoRec" text="{ddtext>/CREATEINFOREC}" icon="sap-icon://multiselect-all" press="onCrtInfoRec" tooltip="{ddtext>/CRTINFOREC}" visible="{= ${MaterialListEditModeModel>/editMode} === true ? false : true }" />
             <Button class="verDtlBtnPaddingRight" icon="sap-icon://save"  tooltip="{ddtext>/SAVE}" press="onSaveMaterialList" visible="{MaterialListEditModeModel>/editMode}" />
             <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelMaterialListEdit" visible="{= ${MaterialListEditModeModel>/editMode} === true ? true : false }" />
             <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" tooltip="{ddtext>/EXPORTTOEXCEL}" press="onExport" visible="{= ${MaterialListEditModeModel>/editMode} === true ? false : true }">
@@ -19,6 +21,7 @@
                     <core:CustomData key="TableName" value="materialListTable" />
                 </customData>
             </Button>
+            <Button id="btnMatCascade" type="Ghost" icon="sap-icon://paste" tooltip="{ddtext>/CASCADE}" press="onCascadeValue" visible="{= ${MaterialListEditModeModel>/editMode} === true ? true : false }"/>
             <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
                 <customData>
                     <core:CustomData key="TableName" value="materialListTable" />
@@ -38,7 +41,8 @@
             showColumnVisibilityMenu="true"
             selectionMode="MultiToggle" 
             visibleRowCountMode="Auto"
-            alternateRowColors="true">
+            alternateRowColors="true"
+            rowSelectionChange="onSelectionChange">
             <!-- <t:Column width="5rem" sortProperty="Seqno">
                 <Label text="{ddtext>/SEQ}" />
                 <t:template>

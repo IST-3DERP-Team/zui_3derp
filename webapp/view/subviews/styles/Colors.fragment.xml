@@ -31,6 +31,11 @@
             <Button id="btnColorEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setColorEditMode" visible="true" />
             <Button id="btnColorDelete" type="Ghost" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteColor" visible="true" />
             <Button id="btnColorCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelColorsEdit" visible="false" />
+            <Button id="btnColorCascade" type="Ghost" icon="sap-icon://paste" tooltip="{ddtext>/CASCADE}" press="onCascadeValue" visible="false">
+                 <customData>
+                    <core:CustomData key="TableName" value="colorsTable" />
+                </customData>
+            </Button>
             <Button id="btnColorFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
                 <customData>
                     <core:CustomData key="Fullscreen" value="1" />

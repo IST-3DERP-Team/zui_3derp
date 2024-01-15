@@ -52,15 +52,15 @@
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
                                     valueHelpRequest="onProdTypeValueHelp"
-                                    suggestionItems="{ProdTypeModel>/results}"
+                                    
                                     value="{headerData>/Prodtyp}"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Prodtyp}"
                                 >
-                                    <suggestionItems>
+                                    <!-- <suggestionItems> suggestionItems="{ProdTypeModel>/results}"
                                         <core:ListItem text="{ProdTypeModel>ProdTyp}" additionalText="{ProdTypeModel>Desc1}" />
-                                    </suggestionItems>
+                                    </suggestionItems> -->
                                 </Input>
                             </f:fields>
                         </f:FormElement>
@@ -74,15 +74,15 @@
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
                                     valueHelpRequest="onStyleCatValueHelp"
-                                    suggestionItems="{StyleCatModel>/results}"
+                                  
                                     value="{headerData>/Stylecat}"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Stylecat}"
                                 >
-                                    <suggestionItems>
+                                    <!-- <suggestionItems> suggestionItems="{StyleCatModel>/results}"
                                         <core:ListItem text="{StyleCatModel>Stylcat}" additionalText="{StyleCatModel>Desc1}" />
-                                    </suggestionItems>
+                                    </suggestionItems> -->
                                 </Input>
                             </f:fields>
                         </f:FormElement>
@@ -111,15 +111,16 @@
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
                                     valueHelpRequest="onSalesGroupValueHelp"
-                                    suggestionItems="{SalesGroupModel>/results}"
+                                    
                                     value="{headerData>/Salesgrp}"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Salesgrp}"
+                                    maxSuggestionWidth="1000px"
                                 >
-                                    <suggestionItems>
+                                    <!-- <suggestionItems> suggestionItems="{SalesGroupModel>/results}"
                                         <core:ListItem text="{SalesGroupModel>SalesGrp}" additionalText="{SalesGroupModel>Desc1}" />
-                                    </suggestionItems>
+                                    </suggestionItems> -->
                                 </Input>
                             </f:fields>
                         </f:FormElement>
@@ -147,15 +148,15 @@
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
                                     valueHelpRequest="onSeasonsValueHelp"
-                                    suggestionItems="{SeasonsModel>/results}"
+                                   
                                     value="{headerData>/Seasoncd}"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Seasoncd}"
                                 >
-                                    <suggestionItems>
+                                    <!-- <suggestionItems>  suggestionItems="{SeasonsModel>/results}"
                                         <core:ListItem text="{SeasonsModel>Seasoncd}" additionalText="{SeasonsModel>Desc1}" />
-                                    </suggestionItems>
+                                    </suggestionItems> -->
                                 </Input>
                             </f:fields>
                         </f:FormElement>
@@ -169,15 +170,15 @@
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
                                     valueHelpRequest="onCustGroupValueHelp"
-                                    suggestionItems="{CustGroupModel>/results}"
+                                   
                                     value="{headerData>/Custgrp}"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Custgrp}"
                                 >
-                                    <suggestionItems>
+                                    <!-- <suggestionItems>  suggestionItems="{CustGroupModel>/results}"
                                         <core:ListItem text="{CustGroupModel>CustGrp}" additionalText="{CustGroupModel>Desc1}" />
-                                    </suggestionItems>
+                                    </suggestionItems> -->
                                 </Input>
                             </f:fields>
                         </f:FormElement>
@@ -190,15 +191,15 @@
                                 editable="{HeaderEditModeModel>/editMode}"
                                 valueStateText="Required"
                                 valueHelpRequest="onCustomersValueHelp"
-                                suggestionItems="{CustomersModel>/results}"
+                              
                                 value="{headerData>/Soldtocust}"
                                 change="onHeaderInputChange"
                                 liveChange="onHeaderInputLiveChange"
                                 tooltip="{headerData>/Soldtocust}"
                             >
-                                <suggestionItems>
+                                <!-- <suggestionItems>   suggestionItems="{CustomersModel>/results}"
                                     <core:ListItem text="{CustomersModel>Custno}" additionalText="{CustomersModel>Desc1}" />
-                                </suggestionItems>
+                                </suggestionItems> -->
                             </Input>
                         </f:FormElement>
                         <f:FormElement id="feSIZEGRP" label="{ddtext>/SIZEGRP}" visible="{= ${VisibleFieldsData>/SIZEGRP} === true ? true : false }">
@@ -211,15 +212,15 @@
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
                                     valueHelpRequest="onSizeGroupValueHelp"
-                                    suggestionItems="{SizeGroupModel>/results}"
+                                    
                                     value="{headerData>/Sizegrp}"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Sizegrp}"
                                 >
-                                    <suggestionItems>
+                                    <!-- <suggestionItems> suggestionItems="{SizeGroupModel>/results}"
                                         <core:ListItem text="{SizeGroupModel>AttribGrp}" />
-                                    </suggestionItems>
+                                    </suggestionItems> -->
                                 </Input>
                             </f:fields>
                         </f:FormElement>
@@ -242,15 +243,15 @@
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
                                     valueHelpRequest="onUomValueHelp"
-                                    suggestionItems="{UOMModel>/results}"
+                                   
                                     value="{headerData>/Uom}"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Uom}"
                                 >
-                                    <suggestionItems>
+                                    <!-- <suggestionItems>  suggestionItems="{UOMModel>/results}"
                                         <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}" />
-                                    </suggestionItems>
+                                    </suggestionItems> -->
                                 </Input>
                             </f:fields>
                         </f:FormElement>

@@ -816,5 +816,81 @@ sap.ui.define([
             oTable.getBinding("rows").filter(oFilter, "Application");
         },
 
+        setFormSuggestion: function (oThis, sModel) {
+            var me = oThis;
+
+            me._oModelColumns[sModel].forEach(col => {
+                var oCells = [];
+                var oInput = me.byId(/*"fld" +*/ col.ColumnName);
+                // console.log(col.ColumnName)
+                if (oInput.getSuggestionItems().length > 0) {
+                    oInput.removeAllSuggestionItems();
+                }
+
+                if (oInput.getSuggestionColumns().length === 0 && me._oModelColumns[col.ValueHelp["columns"]] !== undefined) {
+                    //assign first cell to key/code
+                    me._oModelColumns[col.ValueHelp["columns"]].filter(fItem => fItem.Key === true).forEach(item => {
+                        oInput.addSuggestionColumn(new sap.m.Column({
+                            header: new sap.m.Label({ text: me.getView().getModel("ddtext").getData()[item.ColumnName.toUpperCase()] })
+                        }))
+
+                        oCells.push(new sap.m.Text({
+                            text: { path: col.ValueHelp["items"].path + ">" + item.ColumnName }
+                        }))
+                    })
+
+                    //assign second cell to display value/description
+                    me._oModelColumns[col.ValueHelp["columns"]].filter(fItem => fItem.Key === false && fItem.Value === true).forEach(item => {
+                        oInput.addSuggestionColumn(new sap.m.Column({
+                            header: new sap.m.Label({ text: me.getView().getModel("ddtext").getData()[item.ColumnName.toUpperCase()] })
+                        }))
+
+                        oCells.push(new sap.m.Text({
+                            text: { path: col.ValueHelp["items"].path + ">" + item.ColumnName }
+                        }))
+                    })
+
+                    //add other column info
+                    me._oModelColumns[col.ValueHelp["columns"]].filter(fItem => fItem.Visible === true && fItem.Key === false && fItem.Value === false).forEach(item => {
+                        oInput.addSuggestionColumn(new sap.m.Column({
+                            header: new sap.m.Label({ text: me.getView().getModel("ddtext").getData()[item.ColumnName.toUpperCase()] })
+                        }))
+
+                        oCells.push(new sap.m.Text({
+                            text: { path: col.ValueHelp["items"].path + ">" + item.ColumnName }
+                        }))
+                    })
+
+                    oInput.bindSuggestionRows({
+                        path: col.ValueHelp["SuggestionItems"].path,
+                        template: new sap.m.ColumnListItem({
+                            cells: oCells
+                        }),
+                        length: 10000,
+                        templateShareable: false
+                    }); 
+
+                    oInput.setSuggestionRowValidator(this.suggestionRowValidator);
+                }
+            })
+        },
+
+        suggestionRowValidator: function (oColumnListItem) {
+            var aCells = oColumnListItem.getCells();
+
+            if (aCells.length === 1) {
+                return new sap.ui.core.Item({
+                    key: aCells[0].getText(),
+                    text: aCells[0].getText()
+                }); 
+            }
+            else {
+                return new sap.ui.core.Item({
+                    key: aCells[0].getText(),
+                    text: aCells[1].getText()
+                });
+            }
+        },
+
 	};
 });

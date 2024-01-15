@@ -20,7 +20,7 @@
         },
         {"ColumnName": "SOLDTOCUST", "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "CustomerModel", "value": "Custno", "text": "Desc1"},
-                "SuggestionItems": {"path": "CustomerModel>/results", "text": "{CustomerModel>Custno}", "additionalText": "{CustomerModel>Desc1}", "maxSuggestionWidth": "350px"},
+                "SuggestionItems": {"path": "CustomerModel>/results", "text": "{CustomerModel>Custno}", "additionalText": "{CustomerModel>Desc1}", "maxSuggestionWidth": "420px"},
                 "columns": "tvh_soltocust"
             }
         },
@@ -32,7 +32,7 @@
         },
         {"ColumnName": "PRODTYP", "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "ProdTypeModel", "value": "ProdTyp", "text": "Desc1"},
-                "SuggestionItems": {"path": "ProdTypeModel>/results", "text": "{ProdTypeModel>ProdTyp}", "additionalText": "{ProdTypeModel>Desc1}", "maxSuggestionWidth": "350px"},
+                "SuggestionItems": {"path": "ProdTypeModel>/results", "text": "{ProdTypeModel>ProdTyp}", "additionalText": "{ProdTypeModel>Desc1}", "maxSuggestionWidth": "400px"},
                 "columns": "tvh_prodtyp"
             }
         },
@@ -44,7 +44,7 @@
         },
         {"ColumnName": "SALESGRP", "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "SalesGroupModel", "value": "SalesGrp", "text": "Desc1"},
-                "SuggestionItems": {"path": "SalesGroupModel>/results", "text": "{SalesGroupModel>SalesGrp}", "additionalText": "{SalesGroupModel>Desc1}", "maxSuggestionWidth": "250px"},
+                "SuggestionItems": {"path": "SalesGroupModel>/results", "text": "{SalesGroupModel>SalesGrp}", "additionalText": "{SalesGroupModel>Desc1}", "maxSuggestionWidth": "350px"},
                 "columns": "tvh_salesgrp"
             }
         }
@@ -67,9 +67,9 @@
     ],
     "tvh_soltocust": [
         {"ColumnName": "Custno", "DataType": "STRING", "ColumnWidth": "150px", "Visible": true, "Key": true, "Value": false},
-        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "260px", "Visible": true, "Key": false, "Value": true},
-        {"ColumnName": "Custgrp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false},
-        {"ColumnName": "Salesgrp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false}
+        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "260px", "Visible": true, "Key": true, "Value": true},
+        {"ColumnName": "Custgrp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": true, "Value": false},
+        {"ColumnName": "Salesgrp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": true, "Value": false}
     ],
     "tvh_sizegrp": [
         {"ColumnName": "AttribGrp", "DataType": "STRING", "ColumnWidth": "340px", "Visible": true, "Key": true, "Value": true}
@@ -87,8 +87,8 @@
     ],
     "tvh_salesgrp": [
         {"ColumnName": "SalesGrp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": true, "Value": false},
-        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": false, "Value": true},
-        {"ColumnName": "UserName", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false}
+        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": true, "Value": true},
+        {"ColumnName": "UserName", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": true, "Value": false}
     ],
     "general": [
         {"ColumnName": "Attribtyp", "ColumnLabel": "ATTRIBTYP", "Order": "0", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,

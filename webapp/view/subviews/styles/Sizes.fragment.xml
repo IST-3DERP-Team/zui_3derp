@@ -18,6 +18,7 @@
             <Button id="btnSizeSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveSizeTable" visible="false" />
             <Button id="btnSizeEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setSizeEditMode" visible="true" />
             <Button id="btnSizeCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelSizeEdit" visible="false" />
+            <Button id="btnSizeCascade" type="Ghost" icon="sap-icon://paste" tooltip="{ddtext>/CASCADE}" press="onCascadeValue" visible="false"/>
             <Button id="btnSizeFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
                 <customData>
                     <core:CustomData key="Fullscreen" value="1" />

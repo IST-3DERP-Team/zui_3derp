@@ -12,6 +12,7 @@
     </dependents> 
     <Toolbar height="2rem" style="Clear">
         <Text text="{counts>/rowCountbomGMCTable} {ddtext>/ROWS}" />
+        <Text text="{= ${counts>/selCountbomGMCTable} > 0 ? '- ' + ${counts>/selCountbomGMCTable} + ' selected' : '' }" />
         <ToolbarSpacer />
         <Button id="btnBOMGMCAdd" class="verDtlBtnPaddingRight" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLineBOM" visible="{= ${AppAction>/appChange} === true ? ${CurrStylVersion>/VersionDeleted} === 'DELETED' ? false : ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>
@@ -29,6 +30,7 @@
                 <Menu class="verDtlBtnPaddingRight">
                     <MenuItem id="_IDGenMenuItem1" text="{ddtext>/COPYBOMFROM}" tooltip="{ddtext>/COPYBOMFROM}" press="onCopyBOMFrom" />
                     <MenuItem id="_IDGenMenuItem2" text="{ddtext>/COPYBOMTO}" tooltip="{ddtext>/COPYBOMTO}" press="onCopyBOMTo" />
+                    <MenuItem id="_IDGenMenuItem3" text="{ddtext>/COPYBOMITEMS}" tooltip="{ddtext>/COPYBOMITEMS}" press="onCopyBOMItems" />
                 </Menu>
             </menu>
         </MenuButton>
@@ -80,7 +82,8 @@
             enableColumnFreeze="true"
             showColumnVisibilityMenu="true"
             selectionMode="MultiToggle" 
-            alternateRowColors="true">
+            alternateRowColors="true"
+            rowSelectionChange="onSelectionChange">
             <c:layoutData>
                 <FlexItemData growFactor="1" baseSize="0%" />
             </c:layoutData>

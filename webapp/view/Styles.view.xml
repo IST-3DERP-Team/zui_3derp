@@ -22,7 +22,38 @@
                         <smartfilterbar:ControlConfiguration id="filterSBU" key="SBU" groupId="_BASIC" label="{ddtext>/SBU}" tooltip="{ddtext>/SBU}" mandatory="mandatory" controlType="dropDownList" filterType="single" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration id="filterSalesGroup" key="SALESGRP" groupId="_BASIC" label="{ddtext>/SALESGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
+                        <!-- <smartfilterbar:ControlConfiguration id="filterSalesGroup" key="SALESGRP" groupId="_BASIC" label="{ddtext>/SALESGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" /> -->
+                        <smartfilterbar:ControlConfiguration key="SALESGRP" label="{ddtext>/SALESGRP}" groupId="_BASIC" preventInitialDataFetchInValueHelpDialog="false" width="15rem" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="multiInputMatTyp"
+                                    change="onCustomSmartFilterValueHelpChange"
+                                    valueHelpRequest=".onCustomSmartFilterValueHelp"
+                                    maxSuggestionWidth="350px"
+                                    suggestionRows="{
+                                        path: 'SalesGroupModel>/results',
+                                        sorter: { path: 'SalesGrp' },
+                                        length: 1000,
+                                        templateShareable: false
+                                    }">
+                                    <suggestionColumns>
+                                        <Column width="100px">
+                                            <Label text="Sales Group"/>
+                                        </Column>
+                                        <Column width="200px">
+                                            <Label text="Description"/>
+                                        </Column>
+                                    </suggestionColumns>
+                                    <suggestionRows>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Label text="{SalesGroupModel>SalesGrp}" />
+                                                <Label text="{SalesGroupModel>Desc1}" />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </suggestionRows>
+                                </MultiInput>
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
                         <smartfilterbar:ControlConfiguration id="filterCustomerGroup" key="CUSTGRP" groupId="_BASIC" label="{ddtext>/CUSTGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />

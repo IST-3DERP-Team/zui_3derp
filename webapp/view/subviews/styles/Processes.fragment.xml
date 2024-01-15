@@ -32,6 +32,7 @@
             <Button id="btnProcessDelete" type="Ghost" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteProcess" visible="true"/>
             <Button id="btnProcessSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveProcessTable" visible="false"/>
             <Button id="btnProcessCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelProcessEdit" visible="false"/>
+            <Button id="btnProcessCascade" type="Ghost" icon="sap-icon://paste" tooltip="{ddtext>/CASCADE}" press="onCascadeValue" visible="false"/>
             <Button id="btnProcessFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
                 <customData>
                     <core:CustomData key="Fullscreen" value="1" />
