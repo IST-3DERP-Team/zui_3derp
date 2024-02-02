@@ -1,4 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+   <!-- <Page showHeader="false"> -->
     <!-- <Panel expandable="true" expanded="false" width="80%" class="sapUiSizeCompact">
 
         <headerToolbar>
@@ -14,7 +15,7 @@
             <core:CommandExecution id="CE_CLRSAVE" command="Save" enabled="true" execute="onSaveColorTable" />
             <core:CommandExecution id="CE_CLRCANCEL" command="Cancel" enabled="true" execute="cancelColorsEdit" />
         </dependents> 
-        <Toolbar height="2rem" style="Clear">
+        <!-- <Toolbar height="2rem" style="Clear">
             <Text text="{counts>/rowCountcolorsTable} {ddtext>/ROWS}" />
             <ToolbarSpacer />
             <Button id="btnColorAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLine" visible="true">
@@ -46,12 +47,8 @@
                     <core:CustomData key="Fullscreen" value="0" />
                 </customData>
             </Button>
-            <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
-                <customData>
-                    <core:CustomData key="TableName" value="colorsTable" />
-                </customData>
-            </Button>             -->
-        </Toolbar>
+                     
+        </Toolbar> -->
 
         <MessageStrip id="ColorsMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" />
 
@@ -68,6 +65,43 @@
             sort="onSorted"
             filter="onFilter"
             alternateRowColors="true">
+
+            <c:extension>
+                <OverflowToolbar height="2rem" style="Clear">
+                    <Text text="{counts>/rowCountcolorsTable} {ddtext>/ROWS}" />
+                    <ToolbarSpacer />
+                    <Button id="btnColorAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLine" visible="true">
+                        <customData>
+                            <core:CustomData key="TableName" value="colorsTable" />
+                        </customData>
+                    </Button>
+                    <Button id="btnColorRemoveRow" type="Ghost" icon="sap-icon://less" tooltip="{ddtext>/REMOVENEWLINE}" press="removeNewLine" visible="false">
+                        <customData>
+                            <core:CustomData key="TableName" value="colorsTable" />
+                        </customData>
+                    </Button>            
+                    <Button id="btnColorSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveColorTable" visible="false" />
+                    <Button id="btnColorEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setColorEditMode" visible="true" />
+                    <Button id="btnColorDelete" type="Ghost" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteColor" visible="true" />
+                    <Button id="btnColorCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelColorsEdit" visible="false" />
+                    <Button id="btnColorCascade" type="Ghost" icon="sap-icon://paste" tooltip="{ddtext>/CASCADE}" press="onCascadeValue" visible="false">
+                        <customData>
+                            <core:CustomData key="TableName" value="colorsTable" />
+                        </customData>
+                    </Button>
+                    <Button id="btnColorFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
+                        <customData>
+                            <core:CustomData key="Fullscreen" value="1" />
+                        </customData>
+                    </Button>
+                    <Button id="btnColorExitFullScreen" icon="sap-icon://exit-full-screen" press="onTableResize" tooltip="{ddtext>/EXITFULLSCREEN}" visible="{ui>/fullscreen}" >
+                        <customData>
+                            <core:CustomData key="Fullscreen" value="0" />
+                        </customData>
+                    </Button>
+                            
+                </OverflowToolbar>
+            </c:extension>
             <!-- <c:columns>
                 <t:Column name="ATTRIBSEQ" width="7rem" sortProperty="Attribseq">
                     <Label text="{ddtext>/COLORCD}" />
@@ -96,4 +130,5 @@
     </VBox>
 
     <!-- </Panel> -->
+    <!-- </Page> -->
 </core:FragmentDefinition>

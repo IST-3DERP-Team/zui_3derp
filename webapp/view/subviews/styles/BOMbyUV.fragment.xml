@@ -30,6 +30,7 @@
                 <ToolbarLayoutData shrinkable="true"/>
             </layoutData>
         </Button>
+        <!-- <Button id="btnBOMUVCascade" type="Ghost" icon="sap-icon://paste" tooltip="{ddtext>/CASCADE}" press="onCascadeValue" visible="{= ${BOMbyUVEditModeModel>/editMode} === true ? true : false }"/> -->
         <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
             <customData>
                 <core:CustomData key="TableName" value="bomUVTable" />

@@ -428,7 +428,7 @@
             var oJSONModel13 = new JSONModel();
             oSHModel.read("/PurPlantSet", {
                 success: function (oData, oResponse) {
-                    console.log("PurPlantSet", oData.results)
+                    //console.log("PurPlantSet", oData.results)
                     oJSONModel13.setData(oData);
                     oJSONModel13.setSizeLimit(9999);
                     oView.setModel(oJSONModel13, "PurPlantModel");
@@ -445,6 +445,18 @@
                     oJSONModel14.setSizeLimit(9999);
                     oView.setModel(oJSONModel14, "PartCdModel");
                     that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/PartCdModel",oData);
+                },
+                error: function (err) { }
+            });
+
+            //get GMCCusGrp
+            var oJSONModel15 = new JSONModel();
+            oSHModel.read("/GMCCusGrpSet", {
+                success: function (oData, oResponse) {
+                    oJSONModel15.setData(oData);
+                    oJSONModel15.setSizeLimit(9999);
+                    oView.setModel(oJSONModel15, "GMCCusGrpModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/GMCCusGrpModel",oData);
                 },
                 error: function (err) { }
             });
@@ -520,6 +532,18 @@
                  },
                  error: function (err) { }
              });
+
+              //get GMCCusGrp
+            var oJSONModel15 = new JSONModel();
+            oSHModel.read("/GMCCusGrpSet", {
+                success: function (oData, oResponse) {
+                    oJSONModel15.setData(oData);
+                    oJSONModel15.setSizeLimit(9999);
+                    oView.setModel(oJSONModel15, "GMCCusGrpModel");
+                    that.getOwnerComponent().getModel("LOOKUP_MODEL").setProperty("/GMCCusGrpModel",oData);
+                },
+                error: function (err) { }
+            });
         },
 
         onExport: function (oEvent) {

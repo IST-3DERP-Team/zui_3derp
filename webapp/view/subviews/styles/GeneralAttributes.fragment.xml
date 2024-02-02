@@ -1,11 +1,12 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" >
+    <Page showHeader="false">
     <!-- <Panel expandable="true" expanded="false" width="100%" class="sapUiSizeCompact">
         <headerToolbar>
             <Toolbar height="2rem" style="Clear">
                 <Label text="{i18n>GeneralAttributes}"/>
             </Toolbar>
         </headerToolbar> -->
-   <VBox fitContainer="true" class="sapUiTinyMargin">
+   <!-- <VBox fitContainer="true" class="sapUiTinyMargin"> -->
         <dependents>
             <core:CommandExecution id="CE_GATNEW" command="New" enabled="true" execute="addLine" />
             <core:CommandExecution id="CE_GATEDIT" command="Edit" enabled="true" execute="setGeneralAttrEditMode" />
@@ -16,7 +17,7 @@
     <MessageStrip id="GeneralAttrMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiTinyMarginBottom" type="Error" visible="false" />
     <MessageStrip id="GeneralAttrInfoMessageStrip" text="" showIcon="true" showCloseButton="false" class="sapUiTinyMarginBottom" visible="false" />
 
-    <Toolbar height="2rem" style="Clear">
+    <!-- <Toolbar height="2rem" style="Clear">
             <Text text="{counts>/rowCountgeneralTable} {ddtext>/ROWS}" />
             <Button id="btnGenAttrInfo" type="Reject" icon="sap-icon://alert" text="Click or hover to show details" tooltip="{UI_MODEL>/genAttrInfo}" press="viewGenAttrInfo" visible="false" />
             <ToolbarSpacer />
@@ -45,12 +46,8 @@
                     <core:CustomData key="Fullscreen" value="0" />
                 </customData>
             </Button>
-            <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
-                <customData>
-                    <core:CustomData key="TableName" value="generalTable" />
-                </customData>
-            </Button> -->
-        </Toolbar>
+            
+        </Toolbar> -->
 
     <!-- General Attributes Table -->
     <!-- <ScrollContainer height="auto" vertical="true" > -->
@@ -70,20 +67,40 @@
         alternateRowColors="true"
         
     >
-        <!-- <t:extension>
-            <Toolbar height="2rem" style="Clear">
-                <ToolbarSpacer />
-                <Button type="Ghost" icon="sap-icon://save" text="{i18n>Save}" tooltip="{i18n>Saveattributes}" press="onSaveGeneralTable" visible="{GenAttrEditModeModel>/editMode}" />
-                <Button type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLine" visible="{GenAttrEditModeModel>/editMode}">
-                    <customData>
-                        <core:CustomData key="TableName" value="generalTable" />
-                    </customData>
-                </Button>
-                <Button type="Ghost" icon="sap-icon://delete" tooltip="{i18n>Deleteselectedattributes}" press="onDeleteGeneralAttr" visible="{GenAttrEditModeModel>/editMode}" />
-                <Button type="Ghost" icon="sap-icon://edit" text="{i18n>Edit}" tooltip="{i18n>Editattributes}" press="setGeneralAttrEditMode" visible="true" />
-                <Button type="Ghost" icon="sap-icon://decline" text="{i18n>Cancel}" tooltip="{i18n>Canceledit}" press="cancelGeneralAttrEdit" visible="{= ${GenAttrEditModeModel>/editMode} === true ? true : false }" />
-            </Toolbar>
-        </t:extension> -->
+        <t:extension>
+           <OverflowToolbar>
+            <Text text="{counts>/rowCountgeneralTable} {ddtext>/ROWS}" />
+            <Button id="btnGenAttrInfo" type="Reject" icon="sap-icon://alert" text="Click or hover to show details" tooltip="{UI_MODEL>/genAttrInfo}" press="viewGenAttrInfo" visible="false" />
+            <ToolbarSpacer />
+            <Button id="btnGenAttrAdd" type="Ghost" icon="sap-icon://add" tooltip="{ddtext>/ADDNEWLINE}" press="addLine" visible="true">
+                <customData>
+                    <core:CustomData key="TableName" value="generalTable" />
+                </customData>
+            </Button>
+            <Button id="btnGenAttrRemoveRow" type="Ghost" icon="sap-icon://less" tooltip="{ddtext>/REMOVENEWLINE}" press="removeNewLine" visible="false">
+                <customData>
+                    <core:CustomData key="TableName" value="generalTable" />
+                </customData>
+            </Button>
+            <Button id="btnGenAttrEdit" type="Ghost" icon="sap-icon://edit" tooltip="{ddtext>/EDIT}" press="setGeneralAttrEditMode" visible="true" />
+            <Button id="btnGenAttrDelete" type="Ghost" icon="sap-icon://delete" tooltip="{ddtext>/DELETE}" press="onDeleteGeneralAttr" visible="true" />
+            <Button id="btnGenAttrSave" type="Ghost" icon="sap-icon://save" tooltip="{ddtext>/SAVE}" press="onSaveGeneralTable" visible="false" />
+            <Button id="btnGenAttrCancel" type="Ghost" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelGeneralAttrEdit" visible="false" />
+            <Button id="btnGenAttrCascade" type="Ghost" icon="sap-icon://paste" tooltip="{ddtext>/CASCADE}" press="onCascadeValue" visible="false"/>
+            <Button id="btnGenAttrFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="1" />
+                </customData>
+            </Button>
+            <Button id="btnGenAttrExitFullScreen" icon="sap-icon://exit-full-screen" press="onTableResize" tooltip="{ddtext>/EXITFULLSCREEN}" visible="{ui>/fullscreen}" >
+                <customData>
+                    <core:CustomData key="Fullscreen" value="0" />
+                </customData>
+            </Button>
+            
+        </OverflowToolbar>
+
+        </t:extension> 
         <!-- <t:columns>
             <t:Column name="ATTRIBSEQ" width="5rem" sortProperty="Attribseq" visible="false">
                 <Text text="{ddtext>/ATTRIBSEQ}" />
@@ -167,6 +184,7 @@
     </t:Table>
     <!-- </c:DynamicTable> -->
     <!-- </ScrollContainer> -->
-    </VBox>
+    <!-- </VBox> -->
     <!-- </Panel> -->
+    </Page>
 </core:FragmentDefinition>

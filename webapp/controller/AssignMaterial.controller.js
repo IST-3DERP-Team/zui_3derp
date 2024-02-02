@@ -687,12 +687,30 @@ sap.ui.define([
             closePage: function(){
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                 // oRouter.navTo("RouteStyles", {}, true);
-                oRouter.navTo("RouteVersion", {
-                    styleno: that._styleNo,
-                    sbu: that._sbu,
-                    version: that._version,
-                    iono : ' '
-                });
+                var oHistory, sPreviousHash;
+                if (sap.ui.core.routing.History !== undefined) {
+                    oHistory = sap.ui.core.routing.History.getInstance();
+                    sPreviousHash = oHistory.getPreviousHash();
+                }
+    
+                if (sPreviousHash !== undefined) {
+                    window.history.go(-1);
+                } else { 
+                    var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                    oRouter.navTo("RouteMain", {
+                        styleno: that._styleNo,
+                        sbu: that._sbu,
+                        version: that._version,
+                        iono : ' '
+                    }, true /*no history*/);
+                }
+
+                // oRouter.navTo("RouteVersion", {
+                //     styleno: that._styleNo,
+                //     sbu: that._sbu,
+                //     version: that._version,
+                //     iono : ' '
+                // });
             },
 
             getCaptionMsgs: async function () {

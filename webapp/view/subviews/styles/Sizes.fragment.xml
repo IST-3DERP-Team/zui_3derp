@@ -1,4 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
+   <Page showHeader="false">
     <!-- <Panel expandable="true" expanded="false" width="80%" class="sapUiSizeCompact">
     
         <headerToolbar>
@@ -6,7 +7,7 @@
                 <Label text="{i18n>Sizes}" />
             </Toolbar>
         </headerToolbar> -->
-    <VBox fitContainer="true" class="sapUiTinyMargin">
+    <!-- <VBox fitContainer="true" class="sapUiTinyMargin"> -->
         <dependents>
             <core:CommandExecution id="CE_SZEDIT" command="Edit" enabled="true" execute="setSizeEditMode" />
             <core:CommandExecution id="CE_SZSAVE" command="Save" enabled="true" execute="onSaveSizeTable" />
@@ -79,6 +80,7 @@
                 <FlexItemData growFactor="1" baseSize="0%" />
             </c:layoutData>
         </c:DynamicTable>
-    </VBox>
+    <!-- </VBox> -->
     <!-- </Panel> -->
+    </Page>
 </core:FragmentDefinition>

@@ -55,30 +55,79 @@
                             </smartfilterbar:customControl>
                         </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
+
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration id="filterCustomerGroup" key="CUSTGRP" groupId="_BASIC" label="{ddtext>/CUSTGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
+                        <!-- <smartfilterbar:ControlConfiguration id="filterCustomerGroup" key="CUSTGRP" groupId="_BASIC" label="{ddtext>/CUSTGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" /> -->
+                          <smartfilterbar:ControlConfiguration key="CUSTGRP"  groupId="_BASIC" label="{ddtext>/CUSTGRP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="sffCUSTGRP" name="CUSTGRP" maxSuggestionWidth="300px" />
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
+
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{ddtext>/SEASONCD}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
+                        <!-- <smartfilterbar:ControlConfiguration id="filterSeason" key="SEASONCD" groupId="_BASIC" label="{ddtext>/SEASONCD}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" /> -->
+                        <smartfilterbar:ControlConfiguration key="SEASONCD"  groupId="_BASIC" label="{ddtext>/SEASONCD}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="sffSEASONCD" name="SEASONCD" maxSuggestionWidth="350px" />
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
+
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{ddtext>/PRODTYP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" />
+                        <!-- <smartfilterbar:ControlConfiguration id="filterProductType" key="PRODTYP" groupId="_BASIC" label="{ddtext>/PRODTYP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" /> -->
+                        <smartfilterbar:ControlConfiguration key="PRODTYP"  groupId="_BASIC" label="{ddtext>/PRODTYP}" mandatory="notMandatory" displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="sffPRODTYP" name="PRODTYP" maxSuggestionWidth="300px" />
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
+
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="STYLENO" groupId="_ADVANCED" label="{ddtext>/STYLENO}" preventInitialDataFetchInValueHelpDialog="false" />
+                        <!-- <smartfilterbar:ControlConfiguration key="STYLENO" groupId="_ADVANCED" label="{ddtext>/STYLENO}" preventInitialDataFetchInValueHelpDialog="false" /> -->
+                        <smartfilterbar:ControlConfiguration key="STYLENO"  groupId="_ADVANCED" label="{ddtext>/STYLENO}" mandatory="notMandatory" preventInitialDataFetchInValueHelpDialog="false" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="sffSTYLENO" name="STYLENO" maxSuggestionWidth="300px" />
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
+                    
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="STYLECAT" groupId="_ADVANCED" label="{ddtext>/STYLECAT}" />
+                        <!-- <smartfilterbar:ControlConfiguration key="STYLECAT" groupId="_ADVANCED" label="{ddtext>/STYLECAT}" /> -->
+                        <smartfilterbar:ControlConfiguration key="STYLECAT"  groupId="_ADVANCED" label="{ddtext>/STYLECAT}" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="sffSTYLECAT" name="STYLECAT" maxSuggestionWidth="300px" />
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
+
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="STYLECD" groupId="_ADVANCED" label="{ddtext>/STYLECD}" />
+                        <!-- <smartfilterbar:ControlConfiguration key="STYLECD" groupId="_ADVANCED" label="{ddtext>/STYLECD}" /> -->
+                         <smartfilterbar:ControlConfiguration key="STYLECD"  groupId="_ADVANCED" label="{ddtext>/STYLECD}" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="sffSTYLECD" name="STYLECD" maxSuggestionWidth="300px" />
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
+
                     <smartfilterbar:controlConfiguration>
                         <smartfilterbar:ControlConfiguration key="FTSTYLE" groupId="_ADVANCED" label="{ddtext>/FTSTYLE}" />
+                         <!-- <smartfilterbar:ControlConfiguration key="FTSTYLE"  groupId="_ADVANCED" label="{ddtext>/FTSTYLE}" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="sffFTSTYLE" name="FTSTYLE" maxSuggestionWidth="300px" />
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration> -->
                     </smartfilterbar:controlConfiguration>
+                   
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="SOLDTOCUST" groupId="_ADVANCED" label="{ddtext>/SOLDTOCUST}" preventInitialDataFetchInValueHelpDialog="false" />
+                        <!-- <smartfilterbar:ControlConfiguration key="SOLDTOCUST" groupId="_ADVANCED" label="{ddtext>/SOLDTOCUST}" preventInitialDataFetchInValueHelpDialog="false" /> -->
+                         <smartfilterbar:ControlConfiguration key="SOLDTOCUST"  groupId="_ADVANCED" label="{ddtext>/SOLDTOCUST}" preventInitialDataFetchInValueHelpDialog="false" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="sffSOLDTOCUST" name="SOLDTOCUST" maxSuggestionWidth="300px" />
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
+
                     <smartfilterbar:controlConfiguration>
                         <smartfilterbar:ControlConfiguration key="DESC1" groupId="_ADVANCED" label="{ddtext>/DESC1}" />
                     </smartfilterbar:controlConfiguration>
@@ -87,6 +136,11 @@
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
                         <smartfilterbar:ControlConfiguration key="STATUSCD" groupId="_ADVANCED" label="{ddtext>/STATUSCD}" />
+                         <!-- <smartfilterbar:ControlConfiguration key="STATUSCD"  groupId="_ADVANCED" label="{ddtext>/STATUSCD}" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="sffSTATUSCD" name="STATUSCD" maxSuggestionWidth="300px" />
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration> -->
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
                         <smartfilterbar:ControlConfiguration key="CUSTPRDTYP" groupId="_ADVANCED" label="{ddtext>/CUSTPRDTYP}" />
@@ -95,7 +149,12 @@
                         <smartfilterbar:ControlConfiguration key="PRODGRP" groupId="_ADVANCED" label="{ddtext>/PRODGRP}" />
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
-                        <smartfilterbar:ControlConfiguration key="SIZEGRP" groupId="_ADVANCED" label="{ddtext>/SIZEGRP}" />
+                        <!-- <smartfilterbar:ControlConfiguration key="SIZEGRP" groupId="_ADVANCED" label="{ddtext>/SIZEGRP}" /> -->
+                         <smartfilterbar:ControlConfiguration key="SIZEGRP"  groupId="_ADVANCED" label="{ddtext>/SIZEGRP}" >
+                            <smartfilterbar:customControl>
+                                <MultiInput id="sffSIZEGRP" name="SIZEGRP" maxSuggestionWidth="300px" />
+                            </smartfilterbar:customControl>
+                        </smartfilterbar:ControlConfiguration>
                     </smartfilterbar:controlConfiguration>
                     <smartfilterbar:controlConfiguration>
                         <smartfilterbar:ControlConfiguration key="UOM" groupId="_ADVANCED" label="{ddtext>/UOM}" />

@@ -12,7 +12,7 @@
     xmlns:c="zui3derp.control"
     xmlns:t="sap.ui.table"
 >
-    <Page showHeader="false" title="Manage Style" showNavButton="true" navButtonPress="onNavBack" enableScrolling="false">
+    <Page showHeader="false" title="Manage Style" showNavButton="true" navButtonPress="onNavBack" enableScrolling="true">
         <content>
             <VBox fitContainer="true" class="sidePadding vBoxStyleDetail">
                 <!-- OBJECT HEADER -->
@@ -42,7 +42,7 @@
                     <Panel id="panelHdr" width="100%" height="100%" class="sapUiNoContentPadding">
                         <core:Fragment fragmentName="zui3derp.view.subviews.styles.Header" type="XML" />
                         <layoutData>
-                            <l:SplitterLayoutData size="185px" id="splitterHdr" />
+                            <l:SplitterLayoutData size="190px" id="splitterHdr" />
                         </layoutData> 
                     </Panel>
 
@@ -51,19 +51,7 @@
                         <IconTabBar id="detailPanel" tabDensityMode="Compact" expandable="false" class="sapUiNoContentPadding" stretchContentHeight="true" applyContentPadding="false">
                             <items>
                                 <IconTabFilter  key ="genAttrib" icon="sap-icon://hint" text="{ddtext>/ATTRIBUTES}" tooltip="{ddtext>/STYLEATTRIBUTES}">
-                                    <!-- <IconTabFilter icon="sap-icon://hint" text="General Attributes" tooltip="{i18n>Styleattributes}"> -->
                                     <core:Fragment fragmentName="zui3derp.view.subviews.styles.GeneralAttributes" type="XML" />
-                                    <!-- GENERAL ATTRIBUTES -->
-                                    <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.GeneralAttributes" type="XML"/> -->
-
-                                    <!-- COLORS -->
-                                    <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.Colors" type="XML"/> -->
-
-                                    <!-- SIZES -->
-                                    <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.Sizes" type="XML"/> -->
-
-                                    <!-- PROCESSES -->
-                                    <!-- <core:Fragment fragmentName="zui3derp.view.subviews.styles.Processes" type="XML"/> -->
                                 </IconTabFilter>
                                 <IconTabFilter  key ="color" icon="sap-icon://palette" text="{ddtext>/COLORS}" tooltip="{ddtext>/COLORS}">
                                     <core:Fragment fragmentName="zui3derp.view.subviews.styles.Colors" type="XML" />
@@ -92,14 +80,13 @@
                                 </IconTabFilter>
 
                             </items>
-                            <!-- <layoutData>
-                                <FlexItemData growFactor="1" baseSize="0%" />
-                            
-                            </layoutData> -->
                             <layoutData>
-                                    <l:SplitterLayoutData size="auto" id="splitterDtl" />
-                            </layoutData> 
+                                <FlexItemData growFactor="1" baseSize="0%" />
+                            </layoutData>
                         </IconTabBar>
+                         <layoutData>
+                            <l:SplitterLayoutData size="auto" id="splitterDtl" />
+                        </layoutData> 
                     </Panel>
 
                     <l:layoutData>

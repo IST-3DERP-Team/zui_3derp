@@ -20,7 +20,7 @@ sap.ui.define([
             var oTableSource = oSource.oParent.oParent;
             var sTabId = oTableSource.sId.split("--")[oTableSource.sId.split("--").length - 1];
             var oModel = me.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
-            var vColProp = me._oModelColumns["header"].filter(item => item.ColumnName.toUpperCase() === me._inputField);
+            var vColProp = me._oModelColumns["headerData"].filter(item => item.ColumnName.toUpperCase() === me._inputField);
             var sPath = vColProp[0].ValueHelp.items.path;
             var sKey = me._inputField, sValue = me._inputField;
             var sTextFormatMode = vColProp[0].TextFormatMode === undefined || vColProp[0].TextFormatMode === "" ? "Key" : vColProp[0].TextFormatMode;
@@ -247,6 +247,266 @@ sap.ui.define([
 
             if (vh.length > 5) {
                 me._tableValueHelpDialog.setContentHeight("500px");
+            }
+            else {
+                me._tableValueHelpDialog.setContentHeight("280px");
+            }
+
+            if (oColumns.columns.length === 1) {
+                me._tableValueHelpDialog.setContentWidth("375px");
+            }
+            else if (oColumns.columns.length === 2) {
+                me._tableValueHelpDialog.setContentWidth("435px");
+            }
+            else {
+                me._tableValueHelpDialog.setContentWidth("645px");
+            }
+
+            // sap.ui.getCore().byId("tvhSearchField").setProperty("value", "");
+            me._tableValueHelpDialog.getContent()[0].getItems()[0].getExtension()[0].getContent()[3].setProperty("value", "");
+        },
+
+        handleFormValueHelp: async function (oEvent, oThis) {
+            var me = oThis;
+            var oSource = oEvent.getSource();
+            me._inputSource = oSource;
+            me._inputId = oSource.getId();
+            me._inputValue = oSource.getValue();
+            let input = oSource.getBindingInfo("value").parts[0].path;
+            me._inputField = input.slice(1).toUpperCase(); //slice and uppercase
+
+            var sModel = oSource.getBindingInfo("value").parts[0].model;
+            var sTitle = oSource.getProperty("name") === undefined || oSource.getProperty("name") === "" ? me._inputField : oSource.getProperty("name");
+            var oTableSource = oSource.oParent.oParent;
+            // var sTabId = oTableSource.sId.split("--")[oTableSource.sId.split("--").length - 1];
+            var oModel = me.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+            var vColProp = me._oModelColumns[sModel].filter(item => item.ColumnName === me._inputField);
+            var sPath = vColProp[0].ValueHelp.items.path;
+            var sKey = me._inputField, sValue = me._inputField;
+            var sTextFormatMode = vColProp[0].TextFormatMode === undefined || vColProp[0].TextFormatMode === "" ? "Key" : vColProp[0].TextFormatMode;
+            var sColumns = vColProp[0].ValueHelp.columns;
+            var vhColumns = me._oModelColumns[sColumns];
+            var vh = me.getView().getModel(sPath).getData().results;            
+            var aColumns = [], oDDTextParam = [];
+            var oDDText = me.getView().getModel("ddtext").getData();
+
+            if (vhColumns !== undefined) {
+                vhColumns.forEach(item => {
+                    if (item.Key) sKey = item.ColumnName;
+                    if (item.Value) sValue = item.ColumnName;
+                })
+            }
+
+            vh.forEach(item => {
+                item.VHKey = item[sKey];
+                item.VHValue = sValue === undefined || sKey === sValue ? "" : item[sValue];
+
+                if (sTextFormatMode === "Key") {
+                    item.VHSelected = me._inputValue === item[sKey];
+                }
+                else if (sTextFormatMode === "Value") {
+                    item.VHSelected = me._inputValue === item[sValue];
+                }
+                else if (sTextFormatMode === "KeyValue") {
+                    item.VHSelected = me._inputValue === (item[sKey] + " (" + item[sValue] + ")");
+                }
+                else if (sTextFormatMode === "ValueKey") {
+                    item.VHSelected = me._inputValue === (item[sValue] + " (" + item[sKey] + ")");
+                }
+            })
+
+            if(sKey.toUpperCase() === "SEASONCD")
+                vh.sort((b, a) => (a.Yr > b.Yr ? 1 : -1));   
+            else
+                vh.sort((a, b) => (a.VHKey > b.VHKey ? 1 : -1));  
+
+            if (vh.length > 0) {
+                Object.keys(vh[0]).filter(fItem => fItem !== "__metadata" && fItem !== "VHKey" && fItem !== "VHValue" && fItem !== "VHSelected").forEach(item => {
+                    if (vhColumns !== undefined) {
+                        var oColProp = vhColumns.filter(fItem => fItem.ColumnName === item);
+
+                        if (oColProp && oColProp.length > 0) {
+                            if (oColProp[0].Visible) {
+                                aColumns.push({
+                                    ColumnName: oColProp[0].ColumnName,
+                                    ColumnLabel: oColProp[0].ColumnName,
+                                    Width: vhColumns.length === 1 ? "340px" : oColProp[0].ColumnWidth,
+                                    DataType: oColProp[0].DataType,
+                                    Visible: oColProp[0].Visible
+                                })
+                            } 
+                        }
+                        else {
+                            aColumns.push({
+                                ColumnName: item,
+                                ColumnLabel: item
+                            })
+                        }
+                    }
+                    else {
+                        aColumns.push({
+                            ColumnName: item,
+                            ColumnLabel: item
+                        })
+                    }                                              
+                })
+            }
+            else {
+                if (vhColumns !== undefined) {
+                    vhColumns.forEach(item => {
+                        if (item.Visible) {
+                            aColumns.push({
+                                ColumnName: item.ColumnName,
+                                ColumnLabel: item.ColumnName,
+                                Width: item.ColumnWidth,
+                                DataType: item.DataType,
+                                Visible: item.Visible
+                            })
+                        }
+                    })
+                }
+                else  {
+                    aColumns.push({
+                        ColumnName: sKey,
+                        ColumnLabel: sKey
+                    }) 
+                    
+                    if (sKey !== sValue) {
+                        aColumns.push({
+                            ColumnName: sValue,
+                            ColumnLabel: sValue
+                        }) 
+                    }
+                } 
+            }
+
+            aColumns.forEach(item => {
+                if (oDDText[item.ColumnName.toUpperCase()] === undefined || oDDText[item.ColumnName.toUpperCase()] === "") {
+                    oDDTextParam.push({CODE: item.ColumnName.toUpperCase()});
+                }
+            })
+
+            if (oDDText[sTitle.toUpperCase()] === undefined || oDDText[sTitle.toUpperCase()] === "") {
+                oDDTextParam.push({CODE: sTitle.toUpperCase()});
+            }
+
+            if (oDDText["DESC"] === undefined || oDDText["DESC"] === "") {
+                oDDTextParam.push({CODE: "DESC"});
+            }
+
+            var oModel = me.getOwnerComponent().getModel("ZGW_3DERP_COMMON_SRV");
+            var oPromiseResult = new Promise((resolve, reject) => {
+                if (oDDTextParam.length > 0) {
+                    oModel.create("/CaptionMsgSet", { CaptionMsgItems: oDDTextParam  }, {
+                        method: "POST",
+                        success: function(oData, oResponse) {        
+                            oData.CaptionMsgItems.results.forEach(item => {
+                                oDDText[item.CODE] = item.TEXT;
+                            })
+    
+                            me.getView().setModel(new JSONModel(oDDText), "ddtext");
+                            resolve(oDDText);
+                        },
+                        error: function(oError) { 
+                            resolve(oDDText);
+                        }
+                    });
+                }
+                else { resolve(oDDText); }
+            });
+
+            oDDText = await oPromiseResult;
+
+            aColumns.forEach(item => {
+                if (item.ColumnLabel.toUpperCase() === "DESC1" && !(oDDText["DESC1"] === undefined || oDDText["DESC1"] === "")) {
+                    item.ColumnLabel = oDDText["DESC"];
+                }
+                else if (item.ColumnLabel.toUpperCase() === "DESC2" && !(oDDText["DESC2"] === undefined || oDDText["DESC2"] === "")) {
+                    item.ColumnLabel = oDDText["DESC"];
+                }
+                else if (!(oDDText[item.ColumnName.toUpperCase()] === undefined || oDDText[item.ColumnName.toUpperCase()] === "")) {
+                    item.ColumnLabel = oDDText[item.ColumnName.toUpperCase()];
+                }
+                else {
+                    item.ColumnLabel = item.ColumnName;
+                }
+            })                
+
+            var oColumns = { columns: aColumns };
+            var oVHModel = new JSONModel({
+                title: oDDText[sTitle.toUpperCase()],
+                count: vh.length,
+                textFormatMode: sTextFormatMode
+            });             
+
+            // create value help dialog
+            if (!me._tableValueHelpDialog) {
+                me._tableValueHelpDialog = sap.ui.xmlfragment(
+                    "zui3derp.view.fragments.searchhelps.TableValueHelpDialog",
+                    me
+                );
+
+                me._tableValueHelpDialog.setModel(oVHModel);
+                me.getView().addDependent(me._tableValueHelpDialog);
+            }
+            else {
+                me._tableValueHelpDialog.setModel(oVHModel);
+            }
+
+            me._tableValueHelpDialog.open();
+            var oTable = me._tableValueHelpDialog.getContent()[0].getAggregation("items")[0];
+            oTable.attachCellClick(me._tableValueHelp.handleTableValueHelpSelect.bind(me));
+            // sap.ui.getCore().byId("tvhSearchField").attachSearch(me._tableValueHelp.handleTableValueHelpFilter); 
+            // sap.ui.getCore().byId("btnTVHCancel").attachPress(me._tableValueHelp.handleTableValueHelpCancel.bind(me));
+            me._tableValueHelpDialog.getContent()[0].getItems()[0].getExtension()[0].getContent()[3].attachSearch(me._tableValueHelp.handleTableValueHelpFilter);
+            me._tableValueHelpDialog.getButtons()[0].attachPress(me._tableValueHelp.handleTableValueHelpCancel.bind(me));
+
+            //bind columns to the table
+            oTable.getModel().setProperty("/columns", oColumns.columns);
+            oTable.bindColumns("/columns", function (index, context) {
+                var sColumnId = context.getObject().ColumnName;
+                var sColumnLabel =  context.getObject().ColumnLabel;
+                var sColumnWidth = context.getObject().Width;
+                var sColumnVisible = context.getObject().Visible;
+                var sColumnDataType = context.getObject().DataType;
+                var oCtrl; 
+
+                if (sColumnWidth === undefined || sColumnWidth === "0px") {
+                    if (oColumns.columns.length === 1) sColumnWidth = "340px";
+                    else sColumnWidth = "200px";
+                }
+                
+                sColumnDataType = sColumnDataType !== undefined ? sColumnDataType : "STRING";
+                if (sColumnDataType.toUpperCase() === "STRING") {
+                    oCtrl = new sap.m.Text({
+                        text: "{" + context.getObject().ColumnName + "}",
+                        wrapping: false
+                    })    
+                }
+                else {
+                    oCtrl = new sap.m.CheckBox({
+                        selected: "{" + context.getObject().ColumnName + "}",
+                        wrapping: false
+                    })    
+                }
+
+                return new sap.ui.table.Column({
+                    // id: sTabId.replace("Tab", "") + "Col" + sColumnId,
+                    label: new sap.m.Text({ text: sColumnLabel }),
+                    template: oCtrl,
+                    autoResizable: true,
+                    width: sColumnWidth,
+                    sortProperty: sColumnId,
+                    visible: sColumnVisible !== undefined ? sColumnVisible : true
+                });                    
+            });
+
+            //bind rows to the table
+            oTable.getModel().setProperty("/rows", vh);
+            oTable.bindRows("/rows");
+
+            if (vh.length > 5) {
+                me._tableValueHelpDialog.setContentHeight("505px");
             }
             else {
                 me._tableValueHelpDialog.setContentHeight("280px");
@@ -776,7 +1036,9 @@ sap.ui.define([
         handleTableValueHelpSelect: function (oEvent) {
             var sRowPath = oEvent.getParameters().rowBindingContext.sPath;
             this._inputSource.setSelectedKey(oEvent.getSource().getModel().getProperty(sRowPath + "/VHKey"));
-            this._inputSource.setValueState("None");
+            console.log(oEvent.getSource().getModel().getProperty(sRowPath + "/VHKey"))
+            this._inputSource.fireChange();
+            //this._inputSource.setValueState("None");
             this._tableValueHelpDialog.close();
             // console.log(oEvent.getSource().getModel())
         }, 

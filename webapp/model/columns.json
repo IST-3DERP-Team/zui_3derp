@@ -1,5 +1,5 @@
 {
-    "header": [
+    "headerData": [
         {"ColumnName": "UOM", "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "UOMModel", "value": "Valunit", "text": "Desc1"},
                 "SuggestionItems": {"path": "UOMModel>/results", "text": "{UOMModel>Valunit}", "additionalText": "{UOMModel>Desc1}", "maxSuggestionWidth": "250px"},
@@ -24,7 +24,7 @@
                 "columns": "tvh_soltocust"
             }
         },
-        {"ColumnName": "SIZEGRP", "TextFormatMode": "Key",
+        {"ColumnName": "SIZEGRP", "TextFormatMode": "Value",
             "ValueHelp": {"show": true, "items": {"path": "SizeGroupModel", "value": "AttribGrp", "text": "AttribGrp"},
                 "SuggestionItems": {"path": "SizeGroupModel>/results", "text": "{SizeGroupModel>AttribGrp}"},
                 "columns": "tvh_sizegrp"
@@ -67,9 +67,9 @@
     ],
     "tvh_soltocust": [
         {"ColumnName": "Custno", "DataType": "STRING", "ColumnWidth": "150px", "Visible": true, "Key": true, "Value": false},
-        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "260px", "Visible": true, "Key": true, "Value": true},
-        {"ColumnName": "Custgrp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": true, "Value": false},
-        {"ColumnName": "Salesgrp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": true, "Value": false}
+        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "260px", "Visible": true, "Key": false, "Value": true},
+        {"ColumnName": "Custgrp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false},
+        {"ColumnName": "Salesgrp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false}
     ],
     "tvh_sizegrp": [
         {"ColumnName": "AttribGrp", "DataType": "STRING", "ColumnWidth": "340px", "Visible": true, "Key": true, "Value": true}
@@ -87,8 +87,8 @@
     ],
     "tvh_salesgrp": [
         {"ColumnName": "SalesGrp", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": true, "Value": false},
-        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": true, "Value": true},
-        {"ColumnName": "UserName", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": true, "Value": false}
+        {"ColumnName": "Desc1", "DataType": "STRING", "ColumnWidth": "200px", "Visible": true, "Key": false, "Value": true},
+        {"ColumnName": "UserName", "DataType": "STRING", "ColumnWidth": "200px", "Visible": false, "Key": false, "Value": false}
     ],
     "general": [
         {"ColumnName": "Attribtyp", "ColumnLabel": "ATTRIBTYP", "Order": "0", "DataType": "STRING", "ColumnWidth": "225", "Length": "10", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
@@ -324,7 +324,7 @@
             }
         },
         {"ColumnName": "MATTYP", "ColumnLabel": "MATTYP", "Order": "12", "DataType": "STRING", "ColumnWidth": "255", "Length": "4", "Decimal": "0", "Visible": true, "Editable": true, "Mandatory": false,
-            "TextFormatMode": "Key",
+            "TextFormatMode": "ValueKey",
             "ValueHelp": {"show": true, "items": {"path": "MatTypeModel", "value": "Mattype", "text": "Desc1"},
                 "SuggestionItems": {"path": "MatTypeModel>/results", "text": "{MatTypeModel>Mattype}", "additionalText": "{MatTypeModel>Desc1}", "maxSuggestionWidth": "490px"},
                 "columns": "tvh_mattyp"

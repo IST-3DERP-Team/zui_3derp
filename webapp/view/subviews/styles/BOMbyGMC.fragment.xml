@@ -40,6 +40,8 @@
         <Button type="Ghost" class="verDtlBtnPaddingRight" icon="sap-icon://decline" tooltip="{ddtext>/CANCEL}" press="cancelBOMbyGMCEdit" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? true : false }"/>
         <Button class="verDtlBtnPaddingRight" icon="sap-icon://cause" text="{ddtext>/GETCOMPONENTS}" tooltip="{ddtext>/GETCOMPONENTS}" press="onGetComponent" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true: false }"/>
         <Button class="verDtlBtnPaddingRight" icon="sap-icon://process" text="{ddtext>/RMC}" tooltip="{ddtext>/RMC}" press="onRMC2" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>               
+         <Button id="btnBOMGMCCascade" type="Ghost" icon="sap-icon://paste" tooltip="{ddtext>/CASCADE}" press="onCascadeValue" visible="{= ${BOMbyGMCEditModeModel>/editMode} === true ? true : false }"/>
+        <Button id="btnBOMGMAssignGMC" class="verDtlBtnPaddingRight" icon="sap-icon://chain-link" text="{ddtext>/ASSIGNGMC}" tooltip="{ddtext>/ASSIGNGMC}" press="onRouteStylBOMGMC" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }"/>               
         <Button class="verDtlBtnPaddingRight" icon="sap-icon://excel-attachment" tooltip="{ddtext>/EXPORTTOEXCEL}" press="onExport" visible="{= ${AppAction>/appChange} === true ? ${BOMbyGMCEditModeModel>/editMode} === true ? false : true : false }">
             <customData>
             <core:CustomData key="TableName" value="bomGMCTable"/>
@@ -48,6 +50,7 @@
                 <ToolbarLayoutData shrinkable="true"/>
             </layoutData>
         </Button>
+       
         <!-- <Button icon="sap-icon://filter" tooltip="{i18n>Filter}" press="onColFilter" >
             <customData>
                 <core:CustomData key="TableName" value="bomGMCTable" />

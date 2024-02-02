@@ -1,7 +1,7 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table">
-    
-    <VBox fitContainer="true" class="sapUiTinyMargin">
-        <Toolbar height="2rem" style="Clear">
+    <Page showHeader="false">
+    <!-- <VBox fitContainer="true" class="sapUiTinyMargin"> -->
+        <!-- <Toolbar height="2rem" style="Clear">
             <Text text="{counts>/rowCountioTable} {ddtext>/ROWS}" />
             <ToolbarSpacer />
             <Button id="btnIORefresh" type="Ghost" icon="sap-icon://refresh" tooltip="{ddtext>/REFRESH}" press="onRefresh" visible="true">
@@ -19,7 +19,7 @@
                     <core:CustomData key="Fullscreen" value="0" />
                 </customData>
             </Button>
-        </Toolbar>
+        </Toolbar> -->
 
         <!-- <MessageStrip id="IOMessageStrip" text="" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom" type="Error" visible="false" /> -->
 
@@ -36,6 +36,27 @@
             sort="onSorted"
             filter="onFilter"
             alternateRowColors="true">
+            <c:extension>
+            <OverflowToolbar height="2rem" style="Clear">
+                <Text text="{counts>/rowCountioTable} {ddtext>/ROWS}" />
+                <ToolbarSpacer />
+                <Button id="btnIORefresh" type="Ghost" icon="sap-icon://refresh" tooltip="{ddtext>/REFRESH}" press="onRefresh" visible="true">
+                    <customData>
+                        <core:CustomData key="TableName" value="ioTable" />
+                    </customData>
+                </Button>
+                <Button id="btnIOFullScreen"  icon="sap-icon://full-screen" press="onTableResize" tooltip="{ddtext>/FULLSCREEN}" visible="{= ${ui>/fullscreen} === true ? false : true}" >
+                    <customData>
+                        <core:CustomData key="Fullscreen" value="1" />
+                    </customData>
+                </Button>
+                <Button id="btnIOExitFullScreen" icon="sap-icon://exit-full-screen" press="onTableResize" tooltip="{ddtext>/EXITFULLSCREEN}" visible="{ui>/fullscreen}" >
+                    <customData>
+                        <core:CustomData key="Fullscreen" value="0" />
+                    </customData>
+                </Button>
+            </OverflowToolbar>
+            </c:extension>
             <c:columns>
                 <t:Column name="IONO" width="8rem" sortProperty="IONO">
                     <Label text="{ddtext>/IONO}" />
@@ -103,7 +124,8 @@
             </c:layoutData>
         </c:DynamicTable>
         <!-- </ScrollContainer> -->
-    </VBox>
+    <!-- </VBox> -->
 
     <!-- </Panel> -->
+    </Page>
 </core:FragmentDefinition>

@@ -96,7 +96,8 @@ sap.ui.define([
                 })
 
                 this.getView().setModel(new JSONModel({
-                    fullscreen: false
+                    fullscreen: false,
+                    activeVerNo:""
                 }), "ui");
 
                 this.getView().setModel(new JSONModel({
@@ -340,7 +341,7 @@ sap.ui.define([
                 //     this.getColumnProp();
                 // }, 1000);
 
-                this.lockStyle("O");
+                //this.lockStyle("O");
 
                 _promiseResult = new Promise((resolve, reject) => {
                     resolve(that.getColumnProp());
@@ -694,16 +695,16 @@ sap.ui.define([
                 // var oColumns = oModelColumns.getData();
                 this._oModelColumns = oModelColumns.getData();
 
-                TableValueHelp.setFormSuggestion(this, "header");
+                TableValueHelp.setFormSuggestion(this, "headerData");
 
-                this.setFormValueHelp(this.byId("UOM"), "header");
-                this.setFormValueHelp(this.byId("SEASONCD"), "header");
-                this.setFormValueHelp(this.byId("CUSTGRP"), "header");
-                this.setFormValueHelp(this.byId("SOLDTOCUST"), "header");
-                this.setFormValueHelp(this.byId("SIZEGRP"), "header");
-                this.setFormValueHelp(this.byId("SALESGRP"), "header");
-                this.setFormValueHelp(this.byId("STYLECAT"), "header");
-                this.setFormValueHelp(this.byId("PRODTYP"), "header");
+                // this.setFormValueHelp(this.byId("UOM"), "header");
+                // this.setFormValueHelp(this.byId("SEASONCD"), "headerData");
+                // this.setFormValueHelp(this.byId("CUSTGRP"), "header");
+                // this.setFormValueHelp(this.byId("SOLDTOCUST"), "header");
+                // this.setFormValueHelp(this.byId("SIZEGRP"), "header");
+                // this.setFormValueHelp(this.byId("SALESGRP"), "header");
+                // this.setFormValueHelp(this.byId("STYLECAT"), "header");
+                //this.setFormValueHelp(this.byId("PRODTYP"), "header");
 
                 // this.setTableValueHelp(this.byId("generalTable"), "general");
                 // this.setTableValueHelp(this.byId("processesTable"), "processes");
@@ -782,7 +783,7 @@ sap.ui.define([
             },
 
             formatFormValueHelp: function(sValue, sPath, sKey, sText, sFormat) {
-                 console.log(sValue, sPath, sKey, sText, sFormat);
+                 //console.log(sValue, sPath, sKey, sText, sFormat);
                 if(this.getView().getModel(sPath)!== undefined){
                     var oValue = this.getView().getModel(sPath).getData().results.filter(v => v[sKey] === sValue);
 
@@ -800,6 +801,29 @@ sap.ui.define([
                     else return sValue;
                 }
             },
+
+            formatValueHelp: function(sValue, sPath, sKey, sText, sFormat) {
+                //console.log(sValue, sPath, sKey, sText, sFormat);
+                var oValue = this.getView().getModel(sPath).getData().results.filter(v => v[sKey] === sValue);;
+    
+                if (oValue && oValue.length > 0) {
+                    if (sFormat === "Value") {
+                        return oValue[0][sText];
+                    }
+                    else if (sFormat === "ValueKey") {
+                        return oValue[0][sText] + " (" + sValue + ")";
+                    }
+                    else if (sFormat === "KeyValue") {
+                        return sValue + " (" + oValue[0][sText] + ")";
+                    }
+                    else {
+                        return sValue
+                    }
+                }
+                else return sValue;
+            },
+
+            
 
             setTableValueHelp: function(oTable, sTable) {
                 var sColumnName = "", sTableModel = "", sColumnPath = "";
@@ -1173,6 +1197,9 @@ sap.ui.define([
                 if (this.getView().getModel("CustomersModel") !== undefined) {
                     this.getView().setModel(new JSONModel(this.getView().getModel("CustomersModel").getData()), "CustomerModel");
                 }
+                
+                if(this.getView().getModel("UI_MODEL").getProperty("/genAttrInfo") !== "")
+                    this.disableOtherTabs("detailPanel");
             },
 
             onHeaderChange: function (oEvent) {
@@ -1231,7 +1258,8 @@ sap.ui.define([
                     }
                 }
                 else {
-                    this.getView().getModel("headerData").setProperty(oSource.getBindingInfo("value").parts[0].path, oSource.getSelectedKey());
+
+                    // this.getView().getModel("headerData").setProperty(oSource.getBindingInfo("value").parts[0].path, oSource.getSelectedKey());
 
                     this._validationErrors.forEach((item, index) => {
                         if (item === oEvent.getSource().getId()) {
@@ -1250,6 +1278,8 @@ sap.ui.define([
                         const result = prodTyp.results.filter(item => item.ProdTyp === oSource.getSelectedKey())
                         this.getView().getModel("headerData").setProperty("/Uom", result[0].Uom);
                     }
+
+                    this.getView().getModel("headerData").setProperty(oSource.getBindingInfo("value").parts[0].path, oSource.getSelectedKey());
                 }
             },
 
@@ -1762,6 +1792,9 @@ sap.ui.define([
                 // this.byId("btnHdrEdit").setEnabled(true);
                 // this.byId("btnHdrDelete").setEnabled(true);
                 this.getView().setModel(new JSONModel(this.getView().getModel("AttribCdModel").getData()), "AttribCodeModel");
+                
+                if(this.getView().getModel("UI_MODEL").getProperty("/genAttrInfo") !== "")
+                    this.disableOtherTabs("detailPanel");
             },
 
             onGeneralAttrChange: function (oEvent) {
@@ -2700,7 +2733,7 @@ sap.ui.define([
                         oJSONModel.setData(oData);
                         oTable.setModel(oJSONModel, "DataModel");                        
                         Common.closeLoadingDialog(that);
-                        console.log("SIZES", oData.results);
+                        //console.log("SIZES", oData.results);
                         me.enableVersionItemTab();
                         that.getView().getModel("counts").setProperty("/rowCountsizesTable", oData.results.length);
                     },
@@ -3329,9 +3362,10 @@ sap.ui.define([
                     MessageBox.information(_oCaption.INFO_NO_COLORS)//"No colors found."
                 }
                 else {
+                    /* 01/31/2024 comment
                     var oTable = this.getView().byId("versionsTable");
                     var selected = oTable.getSelectedIndices();
-                    console.log(selected);
+                    //console.log(selected);
 
                     var oTmpSelected = [];
                     selected.forEach(item => {
@@ -3345,6 +3379,8 @@ sap.ui.define([
                         
                     var verno = oData.results[selected].Verno;
                     oTable.clearSelection();
+                    */
+                    var verno = this.getView().getModel("ui").getProperty("/activeVerNo");
 
                     if (this._GenericFilterDialog) {
                         this._GenericFilterDialog.setModel(new JSONModel());
@@ -3978,6 +4014,12 @@ sap.ui.define([
             //******************************************* */
             // Search Helps
             //******************************************* */
+
+            handleFormValueHelp: function (oEvent) {
+                //open product type value help
+                // console.log(TableValueHelp)
+                TableValueHelp.handleFormValueHelp(oEvent, this);
+            },
 
             onSeasonsValueHelp: function (oEvent) {
                 //open seasons value help
@@ -6443,6 +6485,58 @@ sap.ui.define([
                             else row.removeStyleClass("activeRow")
                         })
                     }
+                }
+            },
+
+            onCellClick: async function (oEvent) {
+                if (oEvent.getParameters().rowBindingContext) {
+                    var sRowPath = oEvent.getParameters().rowBindingContext.sPath;
+                    sRowPath = "/results/" + sRowPath.split("/")[2];
+                    var oRow;
+                    var oTable;
+                    var oTableId;
+                    //var dlvNo = this.getView().getModel("ui").getProperty("/activeDlvNo");
+                    var me = this;
+
+                    if (oEvent.getParameters().id.includes("versionsTable")) {
+                        oRow = this.byId("versionsTable").getModel("DataModel").getProperty(sRowPath)
+                        oTable = this.byId("versionsTable");
+                        this.getView().getModel("ui").setProperty("/activeVerNo", oRow.Verno);
+ 
+
+                        _promiseResult = new Promise((resolve, reject) => {
+                            oTable.getRows().forEach((row) => {
+                                if (
+                                    row.getBindingContext("DataModel").sPath.replace("/results/", "") ===
+                                    sRowPath.split("/")[2]
+                                ) {
+                                    resolve(row.addStyleClass("activeRow"));
+                                } else {
+                                    resolve(row.removeStyleClass("activeRow"));
+                                }
+                            });
+                        });
+                        await _promiseResult;
+                        this._tblChange = false;
+                    } else  {
+                        oTableId=oEvent.getParameters().id.split("--")[1];
+                        //oRow = this.getView().getModel("mdlDlvDetHU").getProperty(sRowPath);
+                        oRow =this.byId(oTableId).getModel("DataModel").getProperty(sRowPath)
+                        oTable = this.byId(oTableId);
+                        _promiseResult = new Promise((resolve, reject) => {
+                            oTable.getRows().forEach((row) => {
+                                if (
+                                    row.getBindingContext("DataModel").sPath.replace("/results/", "") ===
+                                    sRowPath.split("/")[2]
+                                ) {
+                                    resolve(row.addStyleClass("activeRow"));
+                                } else {
+                                    resolve(row.removeStyleClass("activeRow"));
+                                }
+                            });
+                        });
+                        await _promiseResult;
+                    }  
                 }
             },
 

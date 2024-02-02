@@ -44,6 +44,7 @@
                         </f:FormElement>
                          <f:FormElement id="fePRODTYP" label="{ddtext>/PRODTYP}" visible="{= ${VisibleFieldsData>/PRODTYP} === true ? true : false }">
                             <f:fields>
+                            <!-- apply custom value help and comment suggestionItems below then add the value properties -->
                                 <Input
                                     id="PRODTYP"
                                     type="Text"
@@ -51,14 +52,17 @@
                                     showValueHelp="true"
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
-                                    valueHelpRequest="onProdTypeValueHelp"
-                                    
-                                    value="{headerData>/Prodtyp}"
+                                    valueHelpRequest="handleFormValueHelp"
+                                    value="{ 
+                                        parts: [{ path: 'headerData>/Prodtyp' },{ value: 'ProdTypeModel' },{ value: 'ProdTyp' },{ value: 'Desc1' },{ value: 'ValueKey' }],
+                                        formatter: '.formatValueHelp'
+                                    }"
+                                    textFormatMode="ValueKey"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Prodtyp}"
                                 >
-                                    <!-- <suggestionItems> suggestionItems="{ProdTypeModel>/results}"
+                                    <!-- <suggestionItems> suggestionItems="{ProdTypeModel>/results}  value="{headerData>/Prodtyp}""
                                         <core:ListItem text="{ProdTypeModel>ProdTyp}" additionalText="{ProdTypeModel>Desc1}" />
                                     </suggestionItems> -->
                                 </Input>
@@ -110,17 +114,21 @@
                                     showValueHelp="true"
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
-                                    valueHelpRequest="onSalesGroupValueHelp"
-                                    
-                                    value="{headerData>/Salesgrp}"
+                                    valueHelpRequest="handleFormValueHelp"
+                                    value="{ 
+                                        parts: [{ path: 'headerData>/Salesgrp' },{ value: 'SalesGroupModel' },{ value: 'SalesGrp' },{ value: 'Desc1' },{ value: 'ValueKey' }],
+                                        formatter: '.formatValueHelp'
+                                    }"
+                                    textFormatMode="ValueKey"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Salesgrp}"
-                                    maxSuggestionWidth="1000px"
+                                    maxSuggestionWidth="400px"
                                 >
-                                    <!-- <suggestionItems> suggestionItems="{SalesGroupModel>/results}"
+                                    <!-- <suggestionItems> suggestionItems="{SalesGroupModel>/results}" valueHelpRequest="onSalesGroupValueHelp" value="{headerData>/Salesgrp}"
                                         <core:ListItem text="{SalesGroupModel>SalesGrp}" additionalText="{SalesGroupModel>Desc1}" />
                                     </suggestionItems> -->
+                                   
                                 </Input>
                             </f:fields>
                         </f:FormElement>
@@ -147,14 +155,17 @@
                                     showValueHelp="true"
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
-                                    valueHelpRequest="onSeasonsValueHelp"
-                                   
-                                    value="{headerData>/Seasoncd}"
+                                    valueHelpRequest="handleFormValueHelp"
+                                    value="{ 
+                                        parts: [{ path: 'headerData>/Seasoncd' },{ value: 'SeasonsModel' },{ value: 'Seasoncd' },{ value: 'Desc1' },{ value: 'ValueKey' }],
+                                        formatter: '.formatValueHelp'
+                                    }"
+                                    textFormatMode="ValueKey"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Seasoncd}"
                                 >
-                                    <!-- <suggestionItems>  suggestionItems="{SeasonsModel>/results}"
+                                    <!-- <suggestionItems>  suggestionItems="{SeasonsModel>/results}" valueHelpRequest="onSeasonsValueHelp" value="{headerData>/Seasoncd}"
                                         <core:ListItem text="{SeasonsModel>Seasoncd}" additionalText="{SeasonsModel>Desc1}" />
                                     </suggestionItems> -->
                                 </Input>
@@ -169,14 +180,17 @@
                                     showValueHelp="true"
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
-                                    valueHelpRequest="onCustGroupValueHelp"
-                                   
-                                    value="{headerData>/Custgrp}"
+                                    valueHelpRequest="handleFormValueHelp"
+                                    value="{ 
+                                        parts: [{ path: 'headerData>/Custgrp' },{ value: 'CustGroupModel' },{ value: 'CustGrp' },{ value: 'Desc1' },{ value: 'ValueKey' }],
+                                        formatter: '.formatValueHelp'
+                                    }"
+                                    textFormatMode="ValueKey"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Custgrp}"
                                 >
-                                    <!-- <suggestionItems>  suggestionItems="{CustGroupModel>/results}"
+                                    <!-- <suggestionItems>  suggestionItems="{CustGroupModel>/results}" valueHelpRequest="onCustGroupValueHelp" value="{headerData>/Custgrp}"
                                         <core:ListItem text="{CustGroupModel>CustGrp}" additionalText="{CustGroupModel>Desc1}" />
                                     </suggestionItems> -->
                                 </Input>
@@ -190,14 +204,17 @@
                                 showValueHelp="true"
                                 editable="{HeaderEditModeModel>/editMode}"
                                 valueStateText="Required"
-                                valueHelpRequest="onCustomersValueHelp"
-                              
-                                value="{headerData>/Soldtocust}"
+                                valueHelpRequest="handleFormValueHelp"
+                                value="{ 
+                                        parts: [{ path: 'headerData>/Soldtocust' },{ value: 'CustomersModel' },{ value: 'Custno' },{ value: 'Desc1' },{ value: 'ValueKey' }],
+                                        formatter: '.formatValueHelp'
+                                    }"
+                                textFormatMode="ValueKey"
                                 change="onHeaderInputChange"
                                 liveChange="onHeaderInputLiveChange"
                                 tooltip="{headerData>/Soldtocust}"
                             >
-                                <!-- <suggestionItems>   suggestionItems="{CustomersModel>/results}"
+                                <!-- <suggestionItems>   suggestionItems="{CustomersModel>/results}" valueHelpRequest="onCustomersValueHelp" value="{headerData>/Soldtocust}"
                                     <core:ListItem text="{CustomersModel>Custno}" additionalText="{CustomersModel>Desc1}" />
                                 </suggestionItems> -->
                             </Input>
@@ -211,14 +228,17 @@
                                     showValueHelp="true"
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
-                                    valueHelpRequest="onSizeGroupValueHelp"
-                                    
-                                    value="{headerData>/Sizegrp}"
+                                    valueHelpRequest="handleFormValueHelp"
+                                    value="{ 
+                                        parts: [{ path: 'headerData>/Sizegrp' },{ value: 'SizeGroupModel' },{ value: 'AttribGrp' },{ value: 'AttribGrp' },{ value: 'Value' }],
+                                        formatter: '.formatValueHelp'
+                                    }"
+                                    textFormatMode="Value"
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Sizegrp}"
                                 >
-                                    <!-- <suggestionItems> suggestionItems="{SizeGroupModel>/results}"
+                                    <!-- <suggestionItems> suggestionItems="{SizeGroupModel>/results}" valueHelpRequest="onSizeGroupValueHelp" value="{headerData>/Sizegrp}"
                                         <core:ListItem text="{SizeGroupModel>AttribGrp}" />
                                     </suggestionItems> -->
                                 </Input>
@@ -242,14 +262,17 @@
                                     showValueHelp="true"
                                     editable="{HeaderEditModeModel>/editMode}"
                                     valueStateText="Required"
-                                    valueHelpRequest="onUomValueHelp"
-                                   
-                                    value="{headerData>/Uom}"
+                                    valueHelpRequest="handleFormValueHelp"
+                                    value="{ 
+                                        parts: [{ path: 'headerData>/Uom' },{ value: 'UOMModel' },{ value: 'Valunit' },{ value: 'Desc1' },{ value: 'ValueKey' }],
+                                        formatter: '.formatValueHelp'
+                                    }"
+                                    textFormatMode="Value"    
                                     change="onHeaderInputChange"
                                     liveChange="onHeaderInputLiveChange"
                                     tooltip="{headerData>/Uom}"
                                 >
-                                    <!-- <suggestionItems>  suggestionItems="{UOMModel>/results}"
+                                    <!-- <suggestionItems>  suggestionItems="{UOMModel>/results}"valueHelpRequest="onUomValueHelp" value="{headerData>/Uom}"
                                         <core:ListItem text="{UOMModel>Valunit}" additionalText="{UOMModel>Desc1}" />
                                     </suggestionItems> -->
                                 </Input>

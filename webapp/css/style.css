@@ -90,6 +90,47 @@ for header.fragment
     max-width: 100%;
     overflow: hidden;
 }
+/* 
+.vBoxStyleDetail .sapUiRespGrid {
+    padding: 0.25rem !important;
+}
+
+
+.vBoxStyleDetail .titleFontStyle {
+    font-weight: bold;
+}
+
+.vBoxStyleDetail .hdrTitleBgColor {
+    background-color: lightgrey;
+}
+
+.vBoxStyleDetail .sapMITBHead {
+    margin: 0 0.75rem 0 0.25rem !important;
+}
+
+.vBoxStyleDetail .sapMITBInLine.sapMITBTextOnly>.sapMITBVertical {
+    height: 2.5rem !important;
+}
+
+.vBoxStyleDetail .sapMITBInLine .sapMITBFilter>.sapMITBText {
+    margin: 0.5rem 0 0.1875rem 0 !important;
+}
+
+.vBoxStyleDetail .sapMITBInLine.sapMITBTextOnly>.sapMITBVertical.sapMITBFilter>.sapMITBText + .sapMITBContentArrow {
+    height: 0.5rem !important;
+}
+
+.dtlToolbarBorderTop {
+    border-top: 1px solid lightgrey;
+}
+
+.vBoxStyleDetail .headerTitle {
+    background-color: bisque !important;
+    padding: 0.15rem 0.5rem !important;
+    border-radius: 0.5rem !important;
+    font-weight: bold !important;
+    font-size: 1rem !important;
+} */
 
 .styleAttachments .sapUiFup {
     display: none !important;
