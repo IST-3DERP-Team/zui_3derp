@@ -2552,7 +2552,7 @@ sap.ui.define([
 
                                 oModel.create(path, oEntry, {
                                     method: "POST",
-                                    success: function (oData, oResponse) {
+                                    success: function (oDataRes, oResponse) {
                                         Common.closeLoadingDialog(me);
                                         me._colorChanged = false;
                                         me.setChangeStatus(false);
@@ -2570,8 +2570,47 @@ sap.ui.define([
                                         me.enableOtherTabs("detailPanel");
                                         me.byId("btnHdrEdit").setEnabled(true);
                                         me.byId("btnHdrDelete").setEnabled(true);
+                                        //MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                                        if(oData.filter(x=>x.NEW === true).length > 0){
+                                            let IOData=  me.getView().getModel("IOData").getData().filter(x=> x.STATUSCD === "CRT" || x.STATUSCD === "MAT");
+                                            if(IOData.length > 0){
+                                                MessageBox.confirm("Do you want to add new color/s to open IO's?", {
+                                                    actions: ["Yes", "No"],
+                                                    onClose: function (sAction) {
+                                                        if (sAction === "Yes") {
+                                                            if (!me._ApplyColortoIODialog) {
+                                                                var colorData= oData.filter(x=>x.NEW === true);
+                                                                var oJSONModelNewColor = new JSONModel();
+                                                                oJSONModelNewColor.setData(colorData);
+                                                                me.getView().setModel(oJSONModelNewColor, "applyNewColorToIOModel");
 
-                                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                                                                me._ApplyColortoIODialog = sap.ui.xmlfragment("zui3derp.view.fragments.ApplyColorToIO", me);
+                                        
+                                                                var oJSONModelRes = new JSONModel();
+                                                                oJSONModelRes.setData(IOData);
+                                        
+                                                                var oTable = sap.ui.getCore().byId("applyColorToIOTab");
+                                                                oTable.setModel(new JSONModel({
+                                                                    rows: []
+                                                                }));
+                                        
+                                        
+                                                                me.getView().setModel(oJSONModelRes, "applyColorToIOModel");
+                                                                sap.ui.getCore().byId("applyColorToIOTab").getModel().setProperty("/rows", IOData);
+                                                                sap.ui.getCore().byId("applyColorToIOTab").bindRows("/rows");
+                                                                
+                                                                me.getView().addDependent(me._ApplyColortoIODialog);
+                                                            }
+                                                            me._ApplyColortoIODialog.open();
+                                                        }
+                                                    }
+                                                });        
+                                            }       
+                                        }
+                                        else{
+                                            MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                                        }
+
                                     },
                                     error: function (err) {
                                         Common.closeLoadingDialog(me);
@@ -2586,6 +2625,66 @@ sap.ui.define([
                         }
                     });
                 }
+            },
+
+            onfragmentApplyColortoIO: function () {
+                var oModel = this.getOwnerComponent().getModel("ZGW_3DERP_IOSTYLE_SRV");
+                var oTable =sap.ui.getCore().byId("applyColorToIOTab");
+                var oSelectedIndices = oTable.getSelectedIndices();
+                var oTmpSelectedIndices = []
+                
+                oSelectedIndices.forEach(item => {
+                    oTmpSelectedIndices.push(oTable.getBinding("rows").aIndices[item])
+                })
+
+                oSelectedIndices = oTmpSelectedIndices;
+
+                var oParam = {
+                    Styleno: this._styleNo,
+                    Verno: "1",
+                    AddColorFrStyletoIOSet:[]
+                }
+                var item = {};
+
+                if(oSelectedIndices.length > 0){
+                    let varNewColors = this.getView().getModel("applyNewColorToIOModel").getData();
+                    let colorModel = that.getOwnerComponent().getModel("COLOR_MODEL").getData().items;
+                    let fltrColor;
+                    varNewColors.forEach(color => {
+                        console.log(color)
+                        fltrColor = colorModel.filter(x=>x.Desc1 === color.Desc1);
+                        oSelectedIndices.forEach(itm => {
+                            item = {
+                                "Iono": oTable.getModel().getData().rows.at(itm).IONO,
+                                "Vernoio":"1",
+                                "Attribtyp":"COLOR",
+                                "Attribcd": fltrColor[0].Attribcd,
+                                "Attribseq": fltrColor[0].Attribseq,
+                                "Desc1": color.Desc1,
+                                "Desc2": fltrColor[0].Desc2
+                            }
+                            oParam.AddColorFrStyletoIOSet.push(item)
+                        })
+                    })
+
+                }
+                //console.log(oParam);
+                oModel.create("/StyletoIOSet", oParam, {
+                    method: "POST",
+                    success: async function (oData, oResponse) {
+                        MessageBox.information(_oCaption.INFO_SAVE_SUCCESS);
+                    }
+                });
+
+                this._ApplyColortoIODialog.close();
+                this._ApplyColortoIODialog.destroy();
+                this._ApplyColortoIODialog = null;
+            },
+
+            onCancelApplyColortoIO: function () {
+                this._ApplyColortoIODialog.close();
+                this._ApplyColortoIODialog.destroy();
+                this._ApplyColortoIODialog = null;
             },
 
             onDeleteColor: function () {
@@ -3919,7 +4018,7 @@ sap.ui.define([
                 var fileDesc1 = sap.ui.getCore().byId("FileDesc1");
                 var oFileDesc1Param = new sap.m.UploadCollectionParameter({
                     name: "desc1",
-                    value: fileDesc1.getValue()
+                    value: encodeURI(fileDesc1.getValue())
                 });
                 oEvent.getParameters().addHeaderParameter(oFileDesc1Param);
                 fileDesc1.setValue('');
@@ -3928,7 +4027,7 @@ sap.ui.define([
                 var fileDesc2 = sap.ui.getCore().byId("FileDesc2");
                 var oFileDesc2Param = new sap.m.UploadCollectionParameter({
                     name: "desc2",
-                    value: fileDesc2.getValue()
+                    value: encodeURI(fileDesc2.getValue())
                 });
                 oEvent.getParameters().addHeaderParameter(oFileDesc2Param);
                 fileDesc2.setValue('');
@@ -3937,7 +4036,7 @@ sap.ui.define([
                 var fileRemarks = sap.ui.getCore().byId("FileRemarks");
                 var oFileRemarksParam = new sap.m.UploadCollectionParameter({
                     name: "remarks",
-                    value: fileRemarks.getValue()
+                    value: encodeURI(fileRemarks.getValue())
                 });
                 oEvent.getParameters().addHeaderParameter(oFileRemarksParam);
                 fileRemarks.setValue('');
@@ -3945,22 +4044,26 @@ sap.ui.define([
                 //filename selected
                 var oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
                     name: "slug",
-                    value: oEvent.getParameter("fileName")
+                    value: encodeURI(oEvent.getParameter("fileName"))
                 });
                 oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
 
                 var oModel = that.getView().getModel("FileModel");
                 oModel.refreshSecurityToken();
 
+                 
+
                 //add the HTTP headers
                 var oHeaders = oModel.oHeaders;
                 var sToken = oHeaders['x-csrf-token'];
+                //oHeaders.setRequestHeader("Content-Type", "text/plain; charset=utf-8");
 
                 var oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
                     name: "x-csrf-token",
                     value: sToken
                 });
                 oEvent.getParameters().addHeaderParameter(oCustomerHeaderToken);
+             
             },
 
             onUploadComplete: function () {

@@ -1,0 +1,63 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:mvc="sap.ui.core.mvc" class="sapUiSizeCompact" xmlns:tnt="sap.tnt" xmlns:c="zuiio2.control" xmlns:t="sap.ui.table" xmlns:t2="sap.m.Table">
+    <Dialog title="Apply to IO Result" xmlns:c="zui3derp.control" xmlns:t="sap.ui.table" xmlns:tnt="sap.tnt" contentHeight="90%" contentWidth="35%"
+    escapeHandler=".onCancelApplytoIORes" afterClose=".onCancelApplytoIORes">
+     <VBox id="vbAppltoIoRes" fitContainer="true">
+        <!-- <Panel width="100%" height="100%"  headerText="Style Material List" class="sapUiNoContentPadding"> -->
+           
+            <t:Table id="applyToIOResultTab" 
+                rows="{applyToIOResultModel}"
+                class="sapUiSizeCompact" 
+                visibleRowCountMode="Auto"
+                minAutoRowCount ="1"
+                showColumnVisibilityMenu="true" 
+                enableColumnFreeze="true" 
+                enableCellFilter="false" 
+                selectionMode="None" 
+             >
+                <t:Column width="8rem">
+                        <Label text="IO Number"/>
+                        <t:template>
+                            <Text text="{Iono}" tooltip="{Iono}"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="5rem">
+                        <Label text="Seq No"/>
+                        <t:template>
+                            <Text text="{Seqno}" tooltip="{Seqno}"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="10rem">
+                        <Label text="Material No."/>
+                        <t:template>
+                            <Text text="{Matno}" tooltip="{Matno}"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="10rem">
+                        <Label text="Result"/>
+                        <t:template>
+                            <Text text="{MsgTyp}" tooltip="{MsgTyp}"/>
+                        </t:template>
+                    </t:Column>
+
+                <!-- <t:extension>
+                     <OverflowToolbar>
+                        <ToolbarSpacer />
+                    </OverflowToolbar>
+                </t:extension> -->
+                 <t:layoutData>
+                    <FlexItemData growFactor="1" baseSize="0%" />
+                </t:layoutData>
+            </t:Table>
+             <!-- </Panel> -->
+            <!-- <IconTabBar id="itbDetail" expanded="{device>/isNoPhone}" expandable="false" class="designSection2" select="onSelectTab" headerBackgroundDesign="Solid" stretchContentHeight="true" applyContentPadding="false">
+                    <items>
+                        <IconTabFilter text="{ddtext>/DETAILS}"> -->
+        </VBox>
+       
+        <buttons>
+            <!-- <Button id="btnApplytoIO" text="{i18n>Submit}" press="onfragmentApplytoIO" tooltip="Submit" visible="true" />
+            <Button id="btnCancel" text="{i18n>Cancel}" press="onCancelApplytoIO" tooltip="Cancel" visible="true" /> -->
+            <Button id="btnAPORClose" text="{i18n>Close}" press="onCloseApplytoIORes" tooltip="Close" visible="true" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

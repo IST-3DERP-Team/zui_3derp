@@ -173,3 +173,20 @@ for header.fragment
 .activeRow {
     background-color: #e1ebf3 !important;
 }
+
+.headerTitle {
+    background-color: bisque !important;
+    padding: 0.15rem 0.5rem !important;
+    border-radius: 0.5rem !important;
+    font-weight: bold !important;
+    font-size: 1rem !important;
+}
+
+.sapMPanelHdr {
+    height: 1.5rem !important;
+    line-height: 1.5rem !important;
+    font-weight: bold!important;
+    color: lightslategray !important;
+    background-color: lightcyan !important;
+    font-family: emoji !important;
+}
